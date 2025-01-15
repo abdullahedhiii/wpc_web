@@ -185,6 +185,8 @@ const Register = () => {
               >
                 REGISTER
               </button>
+              <p className="text-right mb-10 text-red-600 mb-4">All fields are mandatory</p>
+
               <hr className="my-4 border-t-1 border-black" />
 
               <div className="text-center">

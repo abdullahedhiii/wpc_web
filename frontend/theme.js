@@ -1,4 +1,4 @@
-// theme.js
+
 
 const theme = {
   colors: {
@@ -8,7 +8,6 @@ const theme = {
     text_c : '#2870C1',
     pinkbg: '#fef6f6',
     tt: '#007BFF',
-    // Add more custom colors here
   },
 };
 

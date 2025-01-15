@@ -84,12 +84,12 @@ const Login = () => {
                 LOGIN
               </button>
 
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex justify-between items-center mt-4 mb-10">
                 <a href="#" className="text-tt hover:underline">
                   Forgot Password?
                 </a>
                 <button
-                  className="text-red-600 font-bold hover:underline"
+                  className="text-red-600  hover:underline"
                   onClick={() => navigate("/register")}
                 >
                   Register Now
