@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
+import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -30,9 +31,28 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    try{
+      const response = await axios.post('/api/register',formData);
+      console.log(response.data.user);
+      setFormData({
+        companyName: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        contactNumber: "",
+        password: "",
+        confirmPassword: "",
+        privacyPolicyAccepted: false,
+        termsAccepted: false,
+      });
+      navigate('/');
+    }
+    catch(err){
+      console.log('error registering',err);
+    }
   };
 
   return (
