@@ -50,6 +50,7 @@ const MainLayout = () => {
         {isSidebarOpen && <Sidebar 
           moduleName={sidebarData.moduleName} 
           subModules={sidebarData.subModules}
+          subName = {sidebarData.subName}
         />}
       </div>
 

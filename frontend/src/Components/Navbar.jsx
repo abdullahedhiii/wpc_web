@@ -25,13 +25,13 @@ const Navbar = ({isOpen ,closeSideBar}) => {
       <div className="flex items-center justify-between p-2">
         <div className="flex items-center">
           <img src="/images/logo.png" alt="Logo" className="w-24 h-auto ml-10" />
-          {(isLoggedIn || location.pathname !== "/employeeDashboard") && (
+          {(isLoggedIn && location.pathname !== "/employeeDashboard") && (
             <button
               onClick={toggleSidebar}
               className="ml-20 text-tt  hover:text-blue-800"
               title="Toggle Sidebar"
             >
-              <i className="la la-navicon text-2xl"></i>
+              <i className="la la-navicon font-extrabold text-2xl"></i>
             </button>
           )}
         </div>
@@ -48,14 +48,17 @@ const Navbar = ({isOpen ,closeSideBar}) => {
             </button>
           </div>
         ) : (
-          <div className="flex items-center space-x-4 mr-10">
+          isLoggedIn && (
+            <div className="flex items-center space-x-4 mr-10">
             <button onClick={() => navigate("/employeeDashboard")}>
-              <i className="la la-home text-2xl text-gray-600"></i>
+              <i className="la la-home text-2xl text-tt"></i>
             </button>
             <button onClick={handleLogout} title="Logout">
-              <i className="la la-key text-2xl text-gray-600"></i>
+              <i className="la la-key text-2xl text-tt"></i>
             </button>
           </div>
+          )
+          
         )}
       </div>
     </nav>
