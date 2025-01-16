@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  //later from backend
+
   const Modules = [
     { id: 1, name: 'Organisation Profile', icon: 'la-building' },
     { id: 2, name: 'Settings', icon: 'la-cogs' },
@@ -25,20 +25,18 @@ const Dashboard = () => {
   ];
 
   return (
-    <>
-      <div className="grid gap-0.5 p-4 sm:grid-cols-2 lg:grid-cols-6">
-        {Modules.map((module) => (
-          <button
-            key={module.id}
-            className="bg-background text-white shadow-md flex flex-col items-center hover:bg-purple-500 justify-center p-6"
-            onClick={() => navigate(`${module.name}`)}
-          >
-            <i className={`la ${module.icon} text-4xl mb-4`}></i>
-            <p className="text-center text-lg font-semibold">{module.name}</p>
-          </button>
-        ))}
-      </div>
-    </>
+    <div className="grid gap-0.5 p-4 sm:grid-cols-2 lg:grid-cols-6">
+      {Modules.map((module) => (
+        <button
+          key={module.id}
+          className="bg-background text-white shadow-md flex flex-col items-center hover:bg-purple-500 justify-center p-6"
+          onClick={() => navigate(`/hcms/${module.name.replace(/\s+/g, '-')}`)}
+        >
+          <i className={`la ${module.icon} text-4xl mb-4`}></i>
+          <p className="text-center text-lg font-semibold">{module.name}</p>
+        </button>
+      ))}
+    </div>
   );
 };
 
