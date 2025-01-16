@@ -23,5 +23,7 @@ sequelize
 
 // Import models
 const User = require('../models/User')(sequelize, DataTypes);
+const Module = require('../models/Module')(sequelize, DataTypes);
+const SubModule = require('../models/SubModule')(sequelize, DataTypes);
 
 module.exports = { sequelize, User };

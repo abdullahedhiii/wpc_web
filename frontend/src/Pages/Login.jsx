@@ -12,15 +12,15 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [error, setError] = useState(""); // State for error messages
-  const [isSubmitting, setIsSubmitting] = useState(false); // State for form submission
+  const [error, setError] = useState(""); 
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   const handleChange = (e) => {
     setInfo({
       ...info,
       [e.target.name]: e.target.value,
     });
-    setError(""); // Clear error on input change
+    setError(""); 
   };
 
   const handleSubmit = async (e) => {
@@ -31,7 +31,7 @@ const Login = () => {
       console.log(response.data.user);
       dispatch(login(response.data.user));
 
-      navigate("/dashboard");
+      navigate("/employeeDashboard");
     } catch (err) {
       console.error("Login error:", err);
       setError(
