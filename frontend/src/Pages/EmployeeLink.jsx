@@ -13,7 +13,7 @@ const EmployeeLink = () => {
     "Employee Link"
   ];
 
-  const data = []; // Add your data here
+  const data = []; 
 
   return (
     <>

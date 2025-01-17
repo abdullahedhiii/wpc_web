@@ -15,7 +15,6 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
 
   const displayedData = filteredData.slice(0, numentries);
 
-  // Remove "id" from fields for display
   const filteredFields = fields.filter(field => field !== "id");
 
   return (
@@ -82,7 +81,7 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
               {filteredFields.map((field, index) => (
                 <th
                   key={index}
-                  className="relative px-4 py-1 text-left text-sm font-semibold text-gray-700 bg-background"
+                  className="relative px-4 py-1 text-left text-sm font-semibold text-white bg-background"
                 >
                   <div className="flex justify-between items-start">
                     {field}

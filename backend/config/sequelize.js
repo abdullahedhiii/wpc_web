@@ -21,7 +21,6 @@ sequelize
     console.error('Unable to connect to the database:', error);
   });
 
-// Import models
 const User = require('../models/User')(sequelize, DataTypes);
 const Module = require('../models/Module')(sequelize, DataTypes);
 const SubModule = require('../models/SubModule')(sequelize, DataTypes);
