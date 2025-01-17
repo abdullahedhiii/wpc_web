@@ -139,10 +139,10 @@ const CompanyForm = () => {
         const response = await axios.get('/api/getCompanyDetails', { params: { id: company_id } });
         console.log(response.data);
         if (response.data) {
-          setFormData(prevState => ({
+          setFormData({
             Email: user.email,
             ...response.data,  
-          }));
+          });
         }
       }
       } catch (err) {
@@ -161,7 +161,7 @@ const CompanyForm = () => {
   };
   
   useEffect(() => {
-
+    console.log("Form data updated",formData);
   },[formData]);
   
   const handleSubmit = async (e) => {

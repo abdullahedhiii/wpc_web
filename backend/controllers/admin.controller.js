@@ -64,7 +64,6 @@ module.exports.submitCompanyForm = async (req, res) => {
         attributes: [
           'id',
           'Name', 
-          'Address',
           'Website',
           'OrganisationEmail',
           'Contact', 
@@ -79,19 +78,16 @@ module.exports.submitCompanyForm = async (req, res) => {
       }
   
       const responseData = organisations.map((org, index) => ({
-         id,
+        "id" : org.id,
         "Sl. No.": index + 1, 
         "Organisation Name": org.Name,
-        "Organisation Address": org.Address || "empty to be done", 
+        "Organisation Address": "empty to be done", 
         "Website": org.Website,
         "Email ID": org.OrganisationEmail,
         "Phone No.": org.Contact,
       }));
   
-      return res.status(200).json({
-        message: "Organisations fetched successfully",
-        data: responseData,
-      });
+      return res.status(200).json(responseData);
     } catch (error) {
       console.error("Error fetching organisations:", error.message);
       return res.status(500).json({
@@ -101,3 +97,20 @@ module.exports.submitCompanyForm = async (req, res) => {
     }
   };
   
+
+  module.exports.getFormDetails = async (req, res) => {
+    try {
+      const { id } = req.query;
+  
+      const companyDetails = await Organisation.findAll({where : {id}});
+  
+      if (!companyDetails) {
+        return res.status(404).json({ message: 'Company not found' });
+      }
+      console.log(companyDetails);
+      return res.status(200).json(companyDetails);
+    } catch (err) {
+      console.error("Error fetching company details:", err);
+      return res.status(500).json({ message: 'Server error' });
+    }
+  };
