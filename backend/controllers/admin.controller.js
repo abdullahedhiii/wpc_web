@@ -102,7 +102,7 @@ module.exports.submitCompanyForm = async (req, res) => {
     try {
       const { id } = req.query;
   
-      const companyDetails = await Organisation.findAll({where : {id}});
+      const companyDetails = await Organisation.findOne({where : {id}});
   
       if (!companyDetails) {
         return res.status(404).json({ message: 'Company not found' });
