@@ -9,6 +9,8 @@ import 'line-awesome/dist/line-awesome/css/line-awesome.css';
 import ProtectedRoute from './ProtectedRoute';
 import OrganisationProfile from './Pages/OrganisationProfile';
 import Sidebar from './Components/Sidebar';
+import EmployeeLink from './Pages/EmployeeLink';
+import CompanyForm from './Pages/CompanyForm';
 
 const MainLayout = () => {
   const location = useLocation();
@@ -20,13 +22,14 @@ const MainLayout = () => {
   });
 
   useEffect(() => {
-    if (location.pathname.includes("Organisation-Profile")) {
+    if (location.pathname.includes("company-profile")) {
       setSidebarData({
         moduleName: "Organisation Profile",
         subModules: [
                      { 
                        name: "Organisation",
-                       features: ['Organisation Profile','Employee Creation Link']
+                       features: [{name: 'Organisation Profile',next_route: 'company-profile/edit-company'},
+                                  {name: 'Employee Creation Link', next_route: 'company-profile/employee-link'}]
                      },            
                     ],
       });
@@ -106,10 +109,26 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       {
-        path: "Organisation-Profile", 
+        path: "company-profile", 
         element: (
           <ProtectedRoute>
             <OrganisationProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "company-profile/edit-company", 
+        element: (
+          <ProtectedRoute>
+            <CompanyForm/>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "company-profile/employee-link", 
+        element: (
+          <ProtectedRoute>
+            <EmployeeLink/>
           </ProtectedRoute>
         ),
       },

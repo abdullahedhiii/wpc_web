@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ moduleName, subModules = [] }) => {
-  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
+  const { user } = useSelector((state) => state.user);
+  //console.log(moduleName,subModules,'in sidebar');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
 
@@ -69,9 +72,10 @@ const Sidebar = ({ moduleName, subModules = [] }) => {
                       <li
                         key={featureIndex}
                         className="cursor-pointer hover:text-gray-900 relative pl-6"
+                        onClick={() =>{ setOpenSubModuleIndex(null), navigate(`/hcms/${feature.next_route}`)}}
                       >
                         <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                        {feature}
+                        {feature.name}
                       </li>
                     ))}
                   </ul>
