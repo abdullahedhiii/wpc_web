@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CompanyForm = () => {
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
+  const {company_id} = useParams();
 
   const fields = [
     {
@@ -114,7 +117,7 @@ const CompanyForm = () => {
     Type: "Private Company Limited by shares",
     RegNo: "",
     Contact: "",
-    Email: user?.email || "",
+    Email: user.email ,
     OrganisationEmail: "",
     Website: "",
     Landline: "",
@@ -125,7 +128,30 @@ const CompanyForm = () => {
     Penalty: "No",
     Logo: null,
   });
+  
 
+  
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        if(company_id){
+        console.log('sending id',company_id);
+        const response = await axios.get('/api/getCompanyDetails', { params: { id: company_id } });
+        console.log(response.data);
+        if (response.data) {
+          setFormData(prevState => ({
+            Email: user.email,
+            ...response.data,  
+          }));
+        }
+      }
+      } catch (err) {
+        console.log("Error fetching pre set form details", err);
+      }
+    };
+    fetchDetails();
+  }, [company_id]); 
+  
   const handleChange = (e, fieldType, fieldValue) => {
     const value = fieldType === "file" ? e.target.files[0] : e.target.value;
     setFormData((prev) => ({
@@ -133,16 +159,17 @@ const CompanyForm = () => {
       [fieldValue]: value,
     }));
   };
+  
+  useEffect(() => {
 
+  },[formData]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Create a new FormData instance
     const formDataToSend = new FormData();
   
-    // Append fields to FormData
     Object.entries(formData).forEach(([key, value]) => {
-      // Handle file input separately
       if (key === "Logo" && value) {
         formDataToSend.append(key, value);
       } else if (value !== null && value !== undefined) {
@@ -150,7 +177,7 @@ const CompanyForm = () => {
       }
     });
   
-    console.log(...formDataToSend.entries()); // Debugging: View appended fields
+    console.log(...formDataToSend.entries()); 
   
     try {
       const response = await axios.post(
@@ -162,6 +189,7 @@ const CompanyForm = () => {
         }
       );
       console.log("Form submitted successfully:", response.data);
+      navigate("/hcms/company-profile")
     } catch (err) {
       console.error(
         "Error registering organisation:",

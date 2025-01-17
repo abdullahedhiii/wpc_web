@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const DataTable = ({ title, fields, data, showEntries = true, searchable = true, downloadable = true }) => {
+  const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -13,9 +15,11 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
 
   const displayedData = filteredData.slice(0, numentries);
 
+  // Remove "id" from fields for display
+  const filteredFields = fields.filter(field => field !== "id");
+
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md">
-      {/* Title */}
       {title && (
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
@@ -33,7 +37,6 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
         </div>
       )}
 
-      {/* Controls */}
       {(showEntries || searchable) && (
         <div className="flex justify-between items-center mb-4">
           {showEntries && (
@@ -72,27 +75,25 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
         </div>
       )}
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full table-auto border-spacing-0.5 border-separate">
           <thead>
-          <tr className="bg-gray-100">
-  {fields.map((field, index) => (
-    <th
-      key={index}
-      className="relative px-4 py-1 text-left text-sm font-semibold text-gray-700 bg-background"
-    >
-      <div className="flex justify-between items-start">
-        {field}
-        <div className="absolute text-xs top-0 right-0 space-y-1 pr-1">
-          <i className="la la-arrow-up text-white block"></i>
-          <i className="la la-arrow-down text-white block"></i>
-        </div>
-      </div>
-    </th>
-  ))}
-</tr>
-
+            <tr className="bg-gray-100">
+              {filteredFields.map((field, index) => (
+                <th
+                  key={index}
+                  className="relative px-4 py-1 text-left text-sm font-semibold text-gray-700 bg-background"
+                >
+                  <div className="flex justify-between items-start">
+                    {field}
+                    <div className="absolute text-xs top-0 right-0 space-y-1 pr-1">
+                      <i className="la la-arrow-up text-white block"></i>
+                      <i className="la la-arrow-down text-white block"></i>
+                    </div>
+                  </div>
+                </th>
+              ))}
+            </tr>
           </thead>
           <tbody>
             {displayedData.length > 0 ? (
@@ -101,12 +102,19 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
                   key={rowIndex}
                   className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
                 >
-                  {fields.map((field, colIndex) => (
+                  {filteredFields.map((field, colIndex) => (
                     <td
                       key={colIndex}
                       className="px-6 py-1 border text-sm text-gray-600"
                     >
-                      {row[field] || '-'}
+                      {field === "Action" ? (
+                        <li 
+                          className="la la-edit text-2xl text-tt cursor-pointer"
+                          onClick={() => navigate(`/hcms/company-profile/edit-company/${row["id"]}`)}
+                        ></li>
+                      ) : (
+                        row[field] || "-"
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -114,7 +122,7 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
             ) : (
               <tr>
                 <td
-                  colSpan={fields.length}
+                  colSpan={filteredFields.length}
                   className="px-6 py-2 text-center text-gray-500 border"
                 >
                   No data available in the table.
@@ -125,7 +133,6 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
         </table>
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
         <div>
           Showing {Math.min(filteredData.length, numentries)} of {filteredData.length} entries

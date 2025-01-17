@@ -5,5 +5,5 @@ const router = express.Router();
 const {submitCompanyForm} = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',upload.single("Logo"),submitCompanyForm);
-
+router.get('/getOrganisations')
 module.exports = router;

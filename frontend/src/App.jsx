@@ -117,6 +117,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "company-profile/edit-company/:company_id", 
+        element: (
+          <ProtectedRoute>
+            <CompanyForm/>
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: "company-profile/edit-company", 
         element: (
           <ProtectedRoute>
