@@ -170,33 +170,34 @@ const CompanyForm = () => {
     const formDataToSend = new FormData();
   
     Object.entries(formData).forEach(([key, value]) => {
-      if (key === "Logo" && value) {
+      if (key === "Logo" && value instanceof File) {
         formDataToSend.append(key, value);
-      } else if (value !== null && value !== undefined) {
+      } else if (key !== "Logo" && value !== null && value !== undefined) {
         formDataToSend.append(key, value);
       }
     });
   
-    console.log(...formDataToSend.entries()); 
+    if (!formData.Logo || formData.Logo instanceof String) {
+      formDataToSend.append("Logo", formData.Logo); 
+    }
   
     try {
       const response = await axios.post(
-        "/api/submitCompanyForm",
-        formDataToSend,{
+        `/api/${company_id ? `updateCompany/${company_id}` : 'submitCompanyForm'}`,
+        formDataToSend,
+        {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
       console.log("Form submitted successfully:", response.data);
-      navigate("/hcms/company-profile")
+      navigate("/hcms/company-profile");
     } catch (err) {
-      console.error(
-        "Error registering organisation:",
-        err.response?.data || err.message
-      );
+      console.error("Error registering organisation:", err.response?.data || err.message);
     }
   };
+  
   
 
   return (
@@ -257,7 +258,7 @@ const CompanyForm = () => {
           ))}
         </div>
         <button className="mb-4 p-2 rounded-lg text-white bg-blue-900">
-          Submit
+          {company_id ? "Update" : "Submit"}
         </button>
         <h1 className="text-blue-900 text-xl font-medium">
           Authorised Person Details

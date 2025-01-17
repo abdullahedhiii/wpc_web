@@ -18,6 +18,7 @@ app.use(cookieParser());
 
 app.use('/',userRoutes);
 app.use('/',adminRoutes);
+app.use('/uploads', express.static('uploads'));
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(process.env.PORT, () => {

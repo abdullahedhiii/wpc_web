@@ -114,3 +114,46 @@ module.exports.submitCompanyForm = async (req, res) => {
       return res.status(500).json({ message: 'Server error' });
     }
   };
+
+  module.exports.updateCompany = async (req, res) => {
+    try {
+      const { company_id } = req.params;
+      const { Name, Type, RegNo, Contact, Email, OrganisationEmail, Website, Landline, TradingName, Period, Sector, NameChanged, Penalty, Logo } = req.body;
+  
+      const updatedLogoPath = req.file ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}` : Logo;
+  
+      const company = await Organisation.findByPk(company_id);
+  
+      if (!company) {
+        return res.status(404).json({ error: "Company not found" });
+      }
+  
+      const updatedCompany = await company.update({
+        Name,
+        Type,
+        RegNo,
+        Contact,
+        Email,
+        OrganisationEmail,
+        Website,
+        Landline,
+        TradingName,
+        Period,
+        Sector,
+        NameChanged,
+        Penalty,
+        Logo: updatedLogoPath,  
+      });
+  
+      return res.status(200).json({
+        message: "Company updated successfully",
+        company: updatedCompany,
+      });
+    } catch (error) {
+      console.error("Error updating company:", error.message);
+      return res.status(500).json({
+        error: "An error occurred while updating the company",
+        details: error.message,
+      });
+    }
+  };
