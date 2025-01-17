@@ -51,7 +51,7 @@ const MainLayout = () => {
     </div>
 
     <div className="flex pt-16">
-      <div className={`fixed left-0 top-24 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
+      <div className={`fixed left-0 top-20 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
         transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
         {isSidebarOpen && <Sidebar 
           moduleName={sidebarData.moduleName} 

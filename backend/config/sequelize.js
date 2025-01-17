@@ -25,5 +25,6 @@ sequelize
 const User = require('../models/User')(sequelize, DataTypes);
 const Module = require('../models/Module')(sequelize, DataTypes);
 const SubModule = require('../models/SubModule')(sequelize, DataTypes);
+const Organisation = require('../models/Organisation')(sequelize, DataTypes);
 
-module.exports = { sequelize, User };
+module.exports = { sequelize, User,Organisation };

@@ -1,212 +1,243 @@
-
+import { useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const CompanyForm = () => {
-   return(
-     <>
-        <div className="p-6 max-w-[1200px] mx-auto">
+  const { user } = useSelector((state) => state.user);
+
+  const fields = [
+    {
+      label: "Organisation Name",
+      value: "Name",
+      type: "text",
+      required: true,
+      additionalElement: (
+        <button className="px-2 py-1 bg-background text-white rounded-md text-sm w-auto">
+          Find
+        </button>
+      ),
+    },
+    {
+      label: "Type of Organisation",
+      value: "Type",
+      type: "select",
+      options: ["Private Company Limited by shares"],
+      required: true,
+    },
+    {
+      label: "Registration No.",
+      value: "RegNo",
+      type: "text",
+      required: true,
+      additionalElement: (
+        <button className="px-2 py-1 bg-blue-600 text-white rounded-md text-sm w-auto">
+          Find
+        </button>
+      ),
+    },
+    {
+      label: "Contact No.",
+      value: "Contact",
+      type: "text",
+      required: true,
+    },
+    {
+      label: "Login Email ID",
+      value: "Email",
+      type: "email",
+      required: true,
+      readOnly: true,
+    },
+    {
+      label: "Organisation Email ID",
+      value: "OrganisationEmail",
+      type: "email",
+      required: true,
+    },
+    {
+      label: "Website",
+      value: "Website",
+      type: "url",
+    },
+    {
+      label: "Landline Number",
+      value: "Landline",
+      type: "text",
+    },
+    {
+      label: "Trading Name",
+      value: "TradingName",
+      type: "text",
+      required: true,
+    },
+    {
+      label: "Trading Period",
+      value: "Period",
+      type: "select",
+      options: ["Over 12 to 18 months"],
+      required: true,
+    },
+    {
+      label: "Name of Sector",
+      value: "Sector",
+      type: "select",
+      required: true,
+      options: ["Other service activities"],
+    },
+    {
+      label: "Have you changed Organisation/Trading name in last 5 years?",
+      value: "NameChanged",
+      type: "select",
+      options: ["No", "Yes"],
+      required: true,
+    },
+    {
+      label:
+        "Did your organisation face penalty (e.g., recruiting illegal employee) in last 5 years?",
+      value: "Penalty",
+      type: "select",
+      options: ["No", "Yes"],
+      required: true,
+    },
+    {
+      label: "Your Logo",
+      value: "Logo",
+      type: "file",
+      required: true,
+      additionalElement: null,
+    },
+  ];
+  
+  const [formData, setFormData] = useState({
+    admin_id: user.id,
+    Name: "",
+    Type: "Private Company Limited by shares",
+    RegNo: "",
+    Contact: "",
+    Email: user?.email || "",
+    OrganisationEmail: "",
+    Website: "",
+    Landline: "",
+    TradingName: "",
+    Period: "Over 12 to 18 months",
+    Sector: "Other service activities",
+    NameChanged: "No",
+    Penalty: "No",
+    Logo: null,
+  });
+
+  const handleChange = (e, fieldType, fieldValue) => {
+    const value = fieldType === "file" ? e.target.files[0] : e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      [fieldValue]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Create a new FormData instance
+    const formDataToSend = new FormData();
+  
+    // Append fields to FormData
+    Object.entries(formData).forEach(([key, value]) => {
+      // Handle file input separately
+      if (key === "Logo" && value) {
+        formDataToSend.append(key, value);
+      } else if (value !== null && value !== undefined) {
+        formDataToSend.append(key, value);
+      }
+    });
+  
+    console.log(...formDataToSend.entries()); // Debugging: View appended fields
+  
+    try {
+      const response = await axios.post(
+        "/api/submitCompanyForm",
+        formDataToSend,{
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Form submitted successfully:", response.data);
+    } catch (err) {
+      console.error(
+        "Error registering organisation:",
+        err.response?.data || err.message
+      );
+    }
+  };
+  
+
+  return (
+    <div className="p-6 max-w-[1200px] mx-auto">
       <div className="flex items-center gap-2 mb-6">
-        <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-        <h1 className="text-blue-600 text-xl font-medium">Profile Update</h1>
+        <i className="la la-user-edit text-xl text-blue-900"></i>
+        <h1 className="text-blue-900 text-xl font-medium">Profile Update</h1>
       </div>
-
-      <form className="space-y-6">
+      <hr className="my-4 border-t-1 border-gray-400" />
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Organization Name */}
-          <div className="relative">
-            <label className="block text-sm mb-1">
-              Organisation Name
-              <span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                className="w-full px-3 py-2 border rounded-md"
-                defaultValue="Work Permit Cloud Ltd"
-              />
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">
-                Find
-              </button>
+          {fields.map((field, index) => (
+            <div key={index}>
+              <div className="flex items-center gap-2 mb-1">
+                <label className="text-sm">{field.label}</label>
+                {field.additionalElement && (
+                  <div className="ml-2">{field.additionalElement}</div>
+                )}
+                {field.value === "Logo" && formData.Logo && (
+                  <img
+                    src={formData.Logo}
+                    alt="Logo Preview"
+                    className="mt-2 w-12 h-12 rounded-md"
+                  />
+                )}
+                {field.required && (
+                  <span className="text-red-500 font-bold">(*)</span>
+                )}
+              </div>
+              {field.type === "select" ? (
+                <select
+                  name={field.value}
+                  value={formData[field.value]}
+                  onChange={(e) => handleChange(e, "select", field.value)}
+                  className="w-full px-3 py-2 border rounded-md bg-white"
+                >
+                  {field.options.map((option, idx) => (
+                    <option key={idx} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  name={field.value}
+                  type={field.type}
+                  value={
+                    field.type === "file" ? undefined : formData[field.value]
+                  }
+                  onChange={(e) => handleChange(e, field.type, field.value)}
+                  className={`w-full px-3 py-2 border rounded-md ${
+                    field.readOnly ? "bg-gray-100" : ""
+                  }`}
+                  readOnly={field.readOnly || false}
+                />
+              )}
             </div>
-          </div>
-
-          {/* Type of Organization */}
-          <div>
-            <label className="block text-sm mb-1">
-              Type of Organisation
-              <span className="text-red-500">*</span>
-            </label>
-            <select className="w-full px-3 py-2 border rounded-md bg-white">
-              <option>Private Company Limited by shares</option>
-            </select>
-          </div>
-
-          {/* Registration No */}
-          <div>
-            <label className="block text-sm mb-1">
-              Registration No.
-              <span className="text-red-500">*</span>
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                className="w-full px-3 py-2 border rounded-md"
-                defaultValue="11484732"
-              />
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm">
-                Find
-              </button>
-            </div>
-          </div>
-
-          {/* Contact No */}
-          <div>
-            <label className="block text-sm mb-1">
-              Contact No.
-              <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md"
-              defaultValue="07968180454"
-            />
-          </div>
-
-          {/* Login Email ID */}
-          <div>
-            <label className="block text-sm mb-1">
-              Login Email ID
-              <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              className="w-full px-3 py-2 border rounded-md bg-gray-100"
-              defaultValue="lutfur@workpermitcloud.co.uk"
-              readOnly
-            />
-          </div>
-
-          {/* Organisation Email ID */}
-          <div>
-            <label className="block text-sm mb-1">
-              Organisation Email ID
-              <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="email"
-              className="w-full px-3 py-2 border rounded-md"
-              defaultValue="lutfur@workpermitcloud.co.uk"
-            />
-          </div>
-
-          {/* Website */}
-          <div>
-            <label className="block text-sm mb-1">Website</label>
-            <input
-              type="url"
-              className="w-full px-3 py-2 border rounded-md"
-              defaultValue="https://www.workpermitcloud.co.uk/"
-            />
-          </div>
-
-          {/* Landline Number */}
-          <div>
-            <label className="block text-sm mb-1">Landline Number</label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md"
-              defaultValue="07449992991"
-            />
-          </div>
-
-          {/* Trading Name */}
-          <div>
-            <label className="block text-sm mb-1">
-              Trading Name
-              <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md"
-              defaultValue="Work Permit Cloud"
-            />
-          </div>
-
-          {/* Trading Period */}
-          <div>
-            <label className="block text-sm mb-1">
-              Trading Period
-              <span className="text-red-500">*</span>
-            </label>
-            <select className="w-full px-3 py-2 border rounded-md bg-white">
-              <option>Over 12 to 18 months</option>
-            </select>
-          </div>
-
-          {/* Name of Sector */}
-          <div>
-            <label className="block text-sm mb-1">
-              Name of Sector
-              <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md"
-              defaultValue="Other service activities"
-            />
-          </div>
+          ))}
         </div>
-
-        {/* Organization Change Question */}
-        <div>
-          <label className="block text-sm mb-1">
-            Have you changed Organisation/Trading name in last 5 years?
-            <span className="text-red-500">*</span>
-          </label>
-          <select className="w-full px-3 py-2 border rounded-md bg-white">
-            <option>No</option>
-            <option>Yes</option>
-          </select>
-        </div>
-
-        {/* Penalty Question */}
-        <div>
-          <label className="block text-sm mb-1">
-            Did your organisation faced penalty (e.g., recruiting illegal employee) in last 5 years?
-            <span className="text-red-500">*</span>
-          </label>
-          <select className="w-full px-3 py-2 border rounded-md bg-white">
-            <option>No</option>
-            <option>Yes</option>
-          </select>
-        </div>
-
-        {/* Logo Upload */}
-        <div>
-          <label className="block text-sm mb-1">
-            Your Logo
-            <span className="text-red-500">*</span>
-          </label>
-          <div className="flex items-center gap-4">
-            <button className="px-4 py-2 border rounded-md bg-gray-50 text-sm">
-              Choose File
-            </button>
-            <span className="text-sm text-gray-500">No file chosen</span>
-          </div>
-        </div>
-
-        {/* Authorized Person Details Section */}
-        <div>
-          <h2 className="text-blue-600 text-lg font-medium mb-4">
-            Authorised Person Details
-          </h2>
-          {/* Additional fields would go here */}
-        </div>
+        <button className="mb-4 p-2 rounded-lg text-white bg-blue-900">
+          Submit
+        </button>
+        <h1 className="text-blue-900 text-xl font-medium">
+          Authorised Person Details
+        </h1>
+        <hr className="my-4 border-t-1 border-gray-400" />
       </form>
     </div>
-     </>
-   );
+  );
 };
 
-export default CompanyForm
+export default CompanyForm;

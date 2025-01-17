@@ -19,7 +19,7 @@ const Sidebar = ({ moduleName, subModules = [] }) => {
   };
 
   return (
-    <aside className="fixed top-100 left-0 h-full w-64 bg-white text-black shadow-2xl z-40">
+    <aside className="fixed h-full w-64 bg-white text-black shadow-2xl z-40">
       <div className="p-4 text-lg flex items-center space-x-2">
         <div className="flex bg-gradient-to-r from-blue-400 to-purple-300 text-white rounded-full p-2">
           <i className="la la-user text-2xl"></i>
