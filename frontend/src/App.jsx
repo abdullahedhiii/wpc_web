@@ -23,14 +23,17 @@ const MainLayout = () => {
     if (location.pathname.includes("Organisation-Profile")) {
       setSidebarData({
         moduleName: "Organisation Profile",
-        subModules: ["Organisation Profile", "Employee Creation Link"],
-        subName: "Organisation"
+        subModules: [
+                     { 
+                       name: "Organisation",
+                       features: ['Organisation Profile','Employee Creation Link']
+                     },            
+                    ],
       });
     } else {
       setSidebarData({
         moduleName: "Default Title",
-        subModules: [],
-        subName: "Default"
+        subModules: [{}],
       });
     }
   }, [location.pathname]);

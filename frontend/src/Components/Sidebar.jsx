@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { useOutletContext } from "react-router-dom";
 
-const Sidebar = ({moduleName,subModules =[],subName}) => {
+const Sidebar = ({ moduleName, subModules = [] }) => {
   const { user } = useSelector((state) => state.user);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isSubModuleOpen,setIsSubModuleOpen] = useState(false);
-  console.log('in sidebar ',moduleName,subModules);
-  
+  const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const toggleSubModule = (index) => {
+    setOpenSubModuleIndex(openSubModuleIndex === index ? null : index);
   };
 
   return (
@@ -21,7 +23,7 @@ const Sidebar = ({moduleName,subModules =[],subName}) => {
         </div>
         <div className="text-gray-500">
           {moduleName === "Organisation Profile"
-            ? user.company_name
+            ? user?.company_name || "Company Name"
             : moduleName}
         </div>
       </div>
@@ -42,29 +44,42 @@ const Sidebar = ({moduleName,subModules =[],subName}) => {
           ></i>
         </button>
 
-        <div className="flex items-center space-x-3 bg-gray-100 rounded-lg shadow-sm p-4 "
-           onClick={() => {setIsSubModuleOpen(!isSubModuleOpen)}}
-        >
-          <i className="la la-th-large text-xl text-gray-500"></i>
-          <span className=" text-gray-700 font-semibold">{subName}</span>
-          <i  className={`la la-caret-down transform transition-transform ${
-              isSubModuleOpen ? "rotate-180" : ""
-            }`}></i>
-        </div>
+        {isDropdownOpen && (
+          <div>
+            {subModules.map((subModule, index) => (
+              <div key={index} className="mb-4">
+                <div
+                  className="flex items-center space-x-3 bg-gray-100 rounded-lg shadow-sm p-4 cursor-pointer"
+                  onClick={() => toggleSubModule(index)}
+                >
+                  <i className="la la-th-large text-xl text-gray-500"></i>
+                  <span className="text-gray-700 font-semibold">
+                    {subModule.name}
+                  </span>
+                  <i
+                    className={`la la-caret-down transform transition-transform ${
+                      openSubModuleIndex === index ? "rotate-180" : ""
+                    }`}
+                  ></i>
+                </div>
 
-        {isSubModuleOpen && <ul className="space-y-2 pl-8 text-sm text-gray-600 p-4">
-          {subModules.map((module, index) => {
-            return (
-              <li
-                key={index}
-                className="cursor-pointer hover:text-gray-900 relative pl-6"
-              >
-                <span className="absolute left-0 top-1/2 transform -translate-y-3/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                {module}
-              </li>
-            );
-          })}
-        </ul>}
+                {openSubModuleIndex === index && (
+                  <ul className="space-y-2 pl-8 mt-2 text-sm text-gray-600">
+                    {subModule.features.map((feature, featureIndex) => (
+                      <li
+                        key={featureIndex}
+                        className="cursor-pointer hover:text-gray-900 relative pl-6"
+                      >
+                        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </aside>
   );
