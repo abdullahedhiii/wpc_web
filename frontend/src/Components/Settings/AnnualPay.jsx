@@ -1,18 +1,16 @@
 import DataTable from "../DataTable";
 
-const Designation = () => {
+const AnnualPay = () => {
     const columns = [
         "Sl. No.",
-        "Department Name",
-        "Designation",
+        "Annual Pay ",
         "Action",
       ];
     
       const data = [
         {
            "Sl. No." : 1,
-           "Department Name" : "DDD",
-           "Designation" : "HR",
+           "Annual Pay" : "DDD",
            "Action" : "Edit"
         }
       ]; 
@@ -20,10 +18,10 @@ const Designation = () => {
       return (
         <>
           <p className="mt-10 text-gray-400 mb-4">
-            Home / HCM Master<span className="text-tt"> / Designation</span>
+            Home / HCM Master<span className="text-tt"> / Annual Pay</span>
           </p>
           <DataTable
-            title="Designation"
+            title="Annual Pay"
             fields={columns}
             data={data}
             showEntries
@@ -35,4 +33,4 @@ const Designation = () => {
       );
 };
 
-export default Designation;
+export default AnnualPay;

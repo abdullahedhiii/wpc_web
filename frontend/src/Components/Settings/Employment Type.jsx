@@ -26,7 +26,8 @@ const EmploymentType = () => {
             data={data}
             showEntries
             searchable
-            downloadable
+            downloadable = {false}
+            addMore = {true}
           />
         </>
       );

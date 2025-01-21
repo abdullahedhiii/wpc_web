@@ -1,13 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const DataTable = ({ title, fields, data, showEntries = true, searchable = true, downloadable = true }) => {
+const DataTable = ({ title, fields, data, showEntries = true, searchable = true, downloadable = true, addMore  }) => {
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortField] = useState({ field: "", order: "" });
 
-  // Filtered data based on the search query
   const filteredData = useMemo(() => {
     return data.filter((row) =>
       searchQuery === "" ||
@@ -17,7 +16,6 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
     );
   }, [data, searchQuery]);
 
-  // Sorted data based on the selected field and order
   const sortedData = useMemo(() => {
     if (!sortBy.field) return filteredData;
 
@@ -25,30 +23,25 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
       const valueA = a[sortBy.field];
       const valueB = b[sortBy.field];
 
-      // Handle null or undefined values
       if (valueA == null) return 1;
       if (valueB == null) return -1;
 
-      // Handle strings
       if (typeof valueA === "string" && typeof valueB === "string") {
         return sortBy.order === "Ascending"
           ? valueA.localeCompare(valueB)
           : valueB.localeCompare(valueA);
       }
 
-      // Handle numbers
       if (typeof valueA === "number" && typeof valueB === "number") {
         return sortBy.order === "Ascending" ? valueA - valueB : valueB - valueA;
       }
 
-      // Fallback for mixed types
       return sortBy.order === "Ascending"
         ? valueA.toString().localeCompare(valueB.toString())
         : valueB.toString().localeCompare(valueA.toString());
     });
   }, [filteredData, sortBy]);
 
-  // Paginate the data to match the number of entries
   const displayedData = useMemo(() => sortedData.slice(0, numentries), [sortedData, numentries]);
 
   const handleClickSort = (field, order) => {
@@ -73,6 +66,16 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
               <i className="la la-download text-2xl"></i>
             </button>
           )}
+          {
+            addMore && (
+              <button
+              title="Export Data"
+              className="bg-background text-white w-10 h-10 border rounded-full hover:text-blue-700"
+              >
+              <i className="la la-plus text-2xl"></i>
+              </button>
+            )
+          }
         </div>
       )}
 

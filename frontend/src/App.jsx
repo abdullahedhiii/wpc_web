@@ -16,6 +16,7 @@ import Department from './Components/Settings/Department';
 import Designation from './Components/Settings/Designation';
 import EmploymentType from './Components/Settings/Employment Type';
 import PayGroup from './Components/Settings/Pay Group';
+import AnnualPay from './Components/Settings/AnnualPay';
 
 const MainLayout = () => {
   const location = useLocation();
@@ -219,6 +220,14 @@ const router = createBrowserRouter([
              <PayGroup/>
           </ProtectedRoute>
         ),
+      },
+      {
+        path : "settings/Annual-Pay",
+        element:(
+          <ProtectedRoute>
+            <AnnualPay/>
+          </ProtectedRoute>
+        )
       }
     ],
   },

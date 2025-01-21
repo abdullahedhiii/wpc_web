@@ -26,7 +26,8 @@ const PayGroup = () => {
             data={data}
             showEntries
             searchable
-            downloadable
+            downloadable = {false}
+            addMore = {true}
           />
         </>
       );
