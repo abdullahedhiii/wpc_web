@@ -233,6 +233,8 @@ const CompanyForm = () => {
                   value={formData[field.value]}
                   onChange={(e) => handleChange(e, "select", field.value)}
                   className="w-full px-3 py-2 border rounded-md bg-white"
+                  required = {field.required}
+
                 >
                   {field.options.map((option, idx) => (
                     <option key={idx} value={option}>
@@ -252,6 +254,7 @@ const CompanyForm = () => {
                     field.readOnly ? "bg-gray-100" : ""
                   }`}
                   readOnly={field.readOnly || false}
+                  required = {field.required}
                 />
               )}
             </div>

@@ -24,14 +24,14 @@ const Sidebar = ({ moduleName, subModules = [] }) => {
         <div className="flex bg-gradient-to-r from-blue-400 to-purple-300 text-white rounded-full p-2">
           <i className="la la-user text-2xl"></i>
         </div>
-        <div className="text-gray-500">
+        <div className="text-gray-500 text-md">
           {moduleName === "Organisation Profile"
             ? user?.company_name || "Company Name"
             : moduleName}
         </div>
       </div>
 
-      <div className="px-4">
+      <div className="mt-8 px-4">
         <button
           className="flex items-center justify-between w-full bg-blue-500 text-white rounded-lg py-3 px-4 mb-4"
           onClick={toggleDropdown}
@@ -71,7 +71,7 @@ const Sidebar = ({ moduleName, subModules = [] }) => {
                     {subModule.features.map((feature, featureIndex) => (
                       <li
                         key={featureIndex}
-                        className="cursor-pointer hover:text-gray-900 relative pl-6"
+                        className="cursor-pointer hover:text-gray-900 relative pl-6 leading-8"
                         onClick={() =>{ setOpenSubModuleIndex(null), navigate(`/hcms/${feature.next_route}`)}}
                       >
                         <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>

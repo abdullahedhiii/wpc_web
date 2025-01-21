@@ -1,24 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DataTable = ({ title, fields, data, showEntries = true, searchable = true, downloadable = true }) => {
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortField] = useState({ field: "", order: "" });
 
-  const filteredData = data.filter(row => 
-    searchQuery === "" ||
-    Object.values(row).some(value => 
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
+  // Filtered data based on the search query
+  const filteredData = useMemo(() => {
+    return data.filter((row) =>
+      searchQuery === "" ||
+      Object.values(row).some((value) =>
+        value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [data, searchQuery]);
 
-  const displayedData = filteredData.slice(0, numentries);
+  // Sorted data based on the selected field and order
+  const sortedData = useMemo(() => {
+    if (!sortBy.field) return filteredData;
 
-  const filteredFields = fields.filter(field => field !== "id");
+    return [...filteredData].sort((a, b) => {
+      const valueA = a[sortBy.field];
+      const valueB = b[sortBy.field];
+
+      // Handle null or undefined values
+      if (valueA == null) return 1;
+      if (valueB == null) return -1;
+
+      // Handle strings
+      if (typeof valueA === "string" && typeof valueB === "string") {
+        return sortBy.order === "Ascending"
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+
+      // Handle numbers
+      if (typeof valueA === "number" && typeof valueB === "number") {
+        return sortBy.order === "Ascending" ? valueA - valueB : valueB - valueA;
+      }
+
+      // Fallback for mixed types
+      return sortBy.order === "Ascending"
+        ? valueA.toString().localeCompare(valueB.toString())
+        : valueB.toString().localeCompare(valueA.toString());
+    });
+  }, [filteredData, sortBy]);
+
+  // Paginate the data to match the number of entries
+  const displayedData = useMemo(() => sortedData.slice(0, numentries), [sortedData, numentries]);
+
+  const handleClickSort = (field, order) => {
+    setSortField({ field, order });
+  };
+
+  const filteredFields = fields.filter((field) => field !== "id");
 
   return (
-    <div className="w-full p-4 bg-white rounded-lg shadow-md">
+    <div className="w-full p-4 border-t-4 border-tt bg-white rounded-lg shadow-md">
       {title && (
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
@@ -86,8 +126,14 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
                   <div className="flex justify-between items-start">
                     {field}
                     <div className="absolute text-xs top-0 right-0 space-y-1 pr-1">
-                      <i className="la la-arrow-up text-white block"></i>
-                      <i className="la la-arrow-down text-white block"></i>
+                      <i
+                        className="la la-arrow-up text-white block cursor-pointer"
+                        onClick={() => handleClickSort(field, "Ascending")}
+                      ></i>
+                      <i
+                        className="la la-arrow-down text-white block cursor-pointer"
+                        onClick={() => handleClickSort(field, "Descending")}
+                      ></i>
                     </div>
                   </div>
                 </th>
@@ -99,7 +145,7 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
               displayedData.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                  className={rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}
                 >
                   {filteredFields.map((field, colIndex) => (
                     <td
@@ -107,9 +153,11 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
                       className="px-6 py-1 border text-sm text-gray-600"
                     >
                       {field === "Action" ? (
-                        <li 
+                        <li
                           className="la la-edit text-2xl text-tt cursor-pointer"
-                          onClick={() => navigate(`/hcms/company-profile/edit-company/${row["id"]}`)}
+                          onClick={() =>
+                            navigate(`/hcms/company-profile/edit-company/${row["id"]}`)
+                          }
                         ></li>
                       ) : (
                         row[field] || "-"

@@ -6,7 +6,7 @@ const Dashboard = () => {
 
   const Modules = [
     { id: 1, name: 'Organisation Profile', icon: 'la-building',next_route: 'company-profile' },
-    { id: 2, name: 'Settings', icon: 'la-cogs',next_route: 'company-profile' },
+    { id: 2, name: 'Settings', icon: 'la-cogs',next_route: 'settings' },
     { id: 3, name: 'Recruitment', icon: 'la-user-plus',next_route: 'company-profile' },
     { id: 4, name: 'Employee', icon: 'la-users',next_route: 'company-profile' },
     { id: 5, name: 'User Access', icon: 'la-user-shield',next_route: 'company-profile' },

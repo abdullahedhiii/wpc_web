@@ -9,31 +9,71 @@ import 'line-awesome/dist/line-awesome/css/line-awesome.css';
 import ProtectedRoute from './ProtectedRoute';
 import OrganisationProfile from './Pages/OrganisationProfile';
 import Sidebar from './Components/Sidebar';
-import EmployeeLink from './Pages/EmployeeLink';
-import CompanyForm from './Pages/CompanyForm';
+import EmployeeLink from './Components/Organisation Profile/EmployeeLink';
+import CompanyForm from './Components/Organisation Profile/CompanyForm';
+import Settings from './Pages/Settings';
+import Department from './Components/Settings/Department';
+import Designation from './Components/Settings/Designation';
+import EmploymentType from './Components/Settings/Employment Type';
+import PayGroup from './Components/Settings/Pay Group';
 
 const MainLayout = () => {
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [sidebarData, setSidebarData] = useState({
     moduleName: "",
-    subModules: [],
-    subName: ""
+    subModules: null,
   });
-
+  
+  const modules = [
+    {
+      name: "Organisation Profile",
+      subModules: [
+        { 
+          name: "Organisation",
+          features: [{name: 'Organisation Profile',next_route: 'company-profile/edit-company'},
+                     {name: 'Employee Creation Link', next_route: 'company-profile/employee-link'}]
+        },            
+       ],
+    },
+    {
+      name : "Settings",
+      subModules: [
+        {
+          name : "HCM Master",
+          features: [{name : "Department", next_route : 'settings/Department'},
+                     {name : "Designation",next_route : 'settings/Designation'},
+                     {name : "Employment Type",next_route: 'settings/Employment-Type'},
+                     {name : "Pay Group", next_route : 'settings/Pay-Group'},
+                     {name : "Annual Pay", next_route : 'settings/Annual-Pay'},
+                     {name : "Bank Master", next_route : 'settings/Bank-Master'},
+                     {name : "Bank Sortcode", next_route : 'settings/Bank-Sortcode'},
+                     {name : "Tax Master", next_route : 'settings/Tax-Master'},
+                     {name : "Payment Type", next_route : 'settings/Payment-Type'},
+                     {name : "Wedges pay mode", next_route : 'settings/Wedges-pay-mode'},
+                    ]
+        },
+        {
+           name : "Payroll",
+           features: []
+        }
+      ]
+    }
+  ]
   useEffect(() => {
     if (location.pathname.includes("company-profile")) {
       setSidebarData({
-        moduleName: "Organisation Profile",
-        subModules: [
-                     { 
-                       name: "Organisation",
-                       features: [{name: 'Organisation Profile',next_route: 'company-profile/edit-company'},
-                                  {name: 'Employee Creation Link', next_route: 'company-profile/employee-link'}]
-                     },            
-                    ],
+         moduleName : modules[0].name,
+         subModules : modules[0].subModules
       });
-    } else {
+    }
+    else if(location.pathname.includes("settings")){
+      setSidebarData({
+        moduleName : modules[1].name,
+        subModules : modules[1].subModules
+     });
+    }
+    else {
       setSidebarData({
         moduleName: "Default Title",
         subModules: [{}],
@@ -140,6 +180,46 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+        path: "settings", 
+        element: (
+          <ProtectedRoute>
+            <Settings/>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "settings/Department", 
+        element: (
+          <ProtectedRoute>
+            <Department/>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "settings/Designation", 
+        element: (
+          <ProtectedRoute>
+             <Designation/>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path : "settings/Employment-Type",
+        element: (
+          <ProtectedRoute>
+             <EmploymentType/>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path : "settings/Pay-Group",
+        element: (
+          <ProtectedRoute>
+             <PayGroup/>
+          </ProtectedRoute>
+        ),
+      }
     ],
   },
 ]);

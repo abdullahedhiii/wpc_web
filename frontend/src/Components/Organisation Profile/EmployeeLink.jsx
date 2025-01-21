@@ -1,5 +1,5 @@
 import React from 'react';
-import DataTable from '../Components/DataTable';
+import DataTable from '../DataTable';
 
 const EmployeeLink = () => {
   const columns = [
