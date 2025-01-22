@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
+import {  useNavigate } from "react-router-dom";
+import { useModuleContext } from "../contexts/ModuleContext";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ moduleName, subModules = [] }) => {
+const Sidebar = () => {
   const navigate = useNavigate();
+  const {selectedModule } = useModuleContext();
+
 
   const { user } = useSelector((state) => state.user);
-  //console.log(moduleName,subModules,'in sidebar');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
 
@@ -24,10 +26,10 @@ const Sidebar = ({ moduleName, subModules = [] }) => {
         <div className="flex bg-gradient-to-r from-blue-400 to-purple-300 text-white rounded-full p-2">
           <i className="la la-user text-2xl"></i>
         </div>
-        <div className="text-gray-500 text-md">
-          {moduleName === "Organisation Profile"
+        <div className="text-gray-500 text-sm">
+          {selectedModule.name === "Organisation Profile"
             ? user?.company_name || "Company Name"
-            : moduleName}
+            : selectedModule.name}
         </div>
       </div>
 
@@ -49,21 +51,22 @@ const Sidebar = ({ moduleName, subModules = [] }) => {
 
         {isDropdownOpen && (
           <div>
-            {subModules.map((subModule, index) => (
+            {selectedModule.subModules.map((subModule, index) => (
               <div key={index} className="mb-4">
                 <div
                   className="flex items-center space-x-3 bg-gray-100 rounded-lg shadow-sm p-4 cursor-pointer"
-                  onClick={() => toggleSubModule(index)}
+                  onClick={() => navigate(`/hcms/${subModule.main_route}`)}
                 >
                   <i className="la la-th-large text-xl text-gray-500"></i>
-                  <span className="text-gray-700 font-semibold">
+                  <span className="text-gray-700 text-sm font-semibold">
                     {subModule.name}
                   </span>
-                  <i
+                  {subModule.features.length > 0 && <i
                     className={`la la-caret-down transform transition-transform ${
                       openSubModuleIndex === index ? "rotate-180" : ""
                     }`}
-                  ></i>
+                    onClick={() => toggleSubModule(index)}
+                  ></i>}
                 </div>
 
                 {openSubModuleIndex === index && (
