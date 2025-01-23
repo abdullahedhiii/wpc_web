@@ -192,7 +192,7 @@ const CompanyForm = () => {
         }
       );
       console.log("Form submitted successfully:", response.data);
-      navigate("/hcms/company-profile");
+      navigate("/hrms/company-profile");
     } catch (err) {
       console.error("Error registering organisation:", err.response?.data || err.message);
     }

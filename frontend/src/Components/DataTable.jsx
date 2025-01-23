@@ -1,18 +1,24 @@
-import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useModuleContext } from "../contexts/ModuleContext";
 
-const DataTable = ({ title, fields, data, showEntries = true, searchable = true, downloadable = true, addMore  }) => {
+const DataTable = ({title,fields,data,showEntries = true,searchable = true,downloadable = true,addMore,}) => {
+  const {selectedFeature} = useModuleContext();
+  console.log(selectedFeature);
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortField] = useState({ field: "", order: "" });
+  
+
 
   const filteredData = useMemo(() => {
-    return data.filter((row) =>
-      searchQuery === "" ||
-      Object.values(row).some((value) =>
-        value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    return data.filter(
+      (row) =>
+        searchQuery === "" ||
+        Object.values(row).some((value) =>
+          value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+        )
     );
   }, [data, searchQuery]);
 
@@ -42,7 +48,10 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
     });
   }, [filteredData, sortBy]);
 
-  const displayedData = useMemo(() => sortedData.slice(0, numentries), [sortedData, numentries]);
+  const displayedData = useMemo(
+    () => sortedData.slice(0, numentries),
+    [sortedData, numentries]
+  );
 
   const handleClickSort = (field, order) => {
     setSortField({ field, order });
@@ -51,11 +60,12 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
   const filteredFields = fields.filter((field) => field !== "id");
 
   return (
-    <div className="w-full p-4 border-t-4 border-tt bg-white rounded-lg shadow-md">
+    <div className="m-8 w-full p-4 border-t-4 border-tt bg-white rounded-lg shadow-md">
       {title && (
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
-            <i className="la la-database text-2xl"></i>
+            {selectedFeature && <i className={`la ${selectedFeature.icon} text-2xl`}></i> }
+            {!selectedFeature && <i className="la la-building text-2xl"></i>}
             <h2 className="text-lg">{title}</h2>
           </div>
           {downloadable && (
@@ -66,16 +76,14 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
               <i className="la la-download text-2xl"></i>
             </button>
           )}
-          {
-            addMore && (
-              <button
+          {addMore && (
+            <button
               title="Export Data"
               className="bg-background text-white w-10 h-10 border rounded-full hover:text-blue-700"
-              >
+            >
               <i className="la la-plus text-2xl"></i>
-              </button>
-            )
-          }
+            </button>
+          )}
         </div>
       )}
 
@@ -156,12 +164,21 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
                       className="px-6 py-1 border text-sm text-gray-600"
                     >
                       {field === "Action" ? (
-                        <li
-                          className="la la-edit text-2xl text-tt cursor-pointer"
-                          onClick={() =>
-                            navigate(`/hcms/company-profile/edit-company/${row["id"]}`)
-                          }
-                        ></li>
+                        row["Action"] === "Edit" ? (
+                          <li
+                            className="la la-edit text-2xl text-tt cursor-pointer"
+                            onClick={() =>
+                              navigate(
+                                `/hrms/company-profile/edit-company/${row["id"]}`
+                              )
+                            }
+                          ></li>
+                        ) : row["Action"] === "Delete" ? (
+                          <li
+                            className="la la-trash text-2xl text-tt cursor-pointer"
+                            onClick={() => {}}
+                          ></li>
+                        ) : null
                       ) : (
                         row[field] || "-"
                       )}
@@ -185,7 +202,8 @@ const DataTable = ({ title, fields, data, showEntries = true, searchable = true,
 
       <div className="flex justify-between items-center mt-4">
         <div>
-          Showing {Math.min(filteredData.length, numentries)} of {filteredData.length} entries
+          Showing {Math.min(filteredData.length, numentries)} of{" "}
+          {filteredData.length} entries
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-const {User} = require('../config/sequelize');
+const {User,Module,SubModule,Feature,Dashboard} = require('../config/sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
@@ -79,5 +79,71 @@ module.exports.Login = async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     return res.status(500).json({ error: 'An error occurred' });
+  }
+};
+
+module.exports.getModules = async (req, res) => {
+  console.log('modules endpoint hittt');
+  try {
+    // Fetch modules with related data
+    const modules = await Module.findAll({
+      order: [['id', 'ASC']],
+      include: [
+        {
+          model: Dashboard,
+          as: 'dashboard',
+          attributes: ['name', 'completed', 'color', 'icon', 'count', 'percentage'],
+        },
+        {
+          model: SubModule,
+          as: 'subModules',
+          include: [
+            {
+              model: Feature,
+              as: 'features',
+              attributes: ['name', 'next_route', 'icon'], // Fetch necessary fields for features
+            },
+          ],
+          attributes: ['name', 'main_route','icon'], 
+        },
+      ],
+    });
+
+    const formattedModules = modules.map((module) => ({
+      id: module.id,
+      name: module.name,
+      icon_image: module.icon_image,
+      next_route: module.next_route,
+      dashboard: module.dashboard
+        .sort((a, b) => a.id - b.id)
+        .map((d) => ({
+          name: d.name,
+          completed: d.completed,
+          color: d.color,
+          icon: d.icon || '',
+          count: d.count || -1, 
+          percentage: d.percentage || -1,
+        })),
+      subModules: module.subModules
+        .sort((a, b) => a.id - b.id) 
+        .map((subModule) => ({
+          name: subModule.name,
+          main_route: subModule.main_route,
+          icon : subModule.icon,
+          features: subModule.features
+            .sort((a, b) => a.id - b.id) 
+            .map((feature) => ({
+              name: feature.name,
+              next_route: feature.next_route,
+              icon: feature.icon || '',
+            })),
+        })),
+    }));
+
+    res.status(200).json(formattedModules);
+    console.log('sending modules back ', formattedModules);
+  } catch (error) {
+    console.error('Error fetching modules:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };

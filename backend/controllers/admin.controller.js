@@ -85,6 +85,7 @@ module.exports.submitCompanyForm = async (req, res) => {
         "Website": org.Website,
         "Email ID": org.OrganisationEmail,
         "Phone No.": org.Contact,
+        "Action" : "Edit"
       }));
   
       return res.status(200).json(responseData);

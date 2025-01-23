@@ -9,7 +9,7 @@ const SubDashboard = () => {
     const dashboard = selectedModule.dashboard;
     return (
         <>
-        <p className="w-full p-8 text-white bg-background text-2xl">Dashboard</p>
+        <p className="p-12 text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl">Dashboard</p>
         <div className="min-h-screen bg-white p-6">
           <div className="relative top-[-86px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-12">
             {dashboard.map((feature, index) => (

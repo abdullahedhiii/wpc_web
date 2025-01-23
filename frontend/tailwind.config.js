@@ -24,6 +24,7 @@ module.exports = {
     'text-red-500',
     'text-purple-500',
     'text-green-500',
+    'border-gray-700'
     // Add more if you're using more colors dynamically
   ],
 }

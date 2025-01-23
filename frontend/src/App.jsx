@@ -6,6 +6,8 @@ import Register from './Pages/Register';
 import Navbar from './Components/Navbar';
 import Dashboard from './Components/Dashboard';
 import 'line-awesome/dist/line-awesome/css/line-awesome.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import ProtectedRoute from './ProtectedRoute';
 import OrganisationProfile from './Pages/OrganisationProfile';
 import Sidebar from './Components/Sidebar';
@@ -19,35 +21,60 @@ import PayGroup from './Components/Settings/Pay Group';
 import AnnualPay from './Components/Settings/AnnualPay';
 import BankMaster from './Components/Settings/Bank Master';
 import SubDashboard from './Components/SubDashboard';
+import UserConfiguration from './Components/User access/UserConfiguration';
+import RoleManagement from './Components/User access/RoleManagement';
+import StatisticsDashboard from './Components/StatisticsDashboard';
+
 
 const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [logoVisible, setLogoVisible] = useState(true);
+  
+  const handleResize = () => {
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    } else {
+      setIsSidebarOpen(true);
+    }
+  };
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
-    <div className="fixed top-0 left-0 right-0 z-50">
-      <Navbar 
-        isOpen = {isSidebarOpen}
-        closeSideBar = {setIsSidebarOpen}
-      />
-    </div>
-
-    <div className="flex pt-14">
-      <div className={`fixed left-0 top-20 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
-        transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'}`}>
-        {isSidebarOpen && <Sidebar/>}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Navbar 
+          isOpen={isSidebarOpen}
+          isLogo={logoVisible}
+          closeSideBar={setIsSidebarOpen}
+          closeLogo={setLogoVisible}
+        />
       </div>
 
-      <div className={`flex-1 transition-all duration-300
-        ${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
-        <main className="p-6">
-          <Outlet />
-        </main>
+      <div className="flex pt-16">
+        <div className={`fixed left-0 top-20 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
+          transition-all duration-300`}>
+          {(window.innerWidth >= 1024 || isSidebarOpen )&& <Sidebar isOpen={isSidebarOpen} setOpen={() => { setIsSidebarOpen(true); setLogoVisible(true); }} />}
+        
+        </div>
+
+        <div className={`flex-1 transition-all duration-300
+          ${isSidebarOpen ?  'ml-56' : innerWidth >1024 ? 'ml-14' : undefined}`}>
+          <main className='mt-6'>
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
-  </div>
   );
 };
+
 
 
 const SimpleLayout = () => {
@@ -83,14 +110,14 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/hcms/",  
+    path: "/hrms/",  
     element: <MainLayout />,
     children: [
       {
         path: "companydashboard", 
         element: (
           <ProtectedRoute>
-            <SubDashboard/>
+            <StatisticsDashboard title={"Organisation Statistics"}/>
           </ProtectedRoute>
         ),
       },
@@ -109,6 +136,30 @@ const router = createBrowserRouter([
              <SubDashboard/>
           </ProtectedRoute>
         )
+      },
+      {
+        path : "roledashboard",
+        element:(
+          <ProtectedRoute>
+             <SubDashboard/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "role/user-configuration",
+        element : (
+          <ProtectedRoute>
+            <UserConfiguration/>
+          </ProtectedRoute>
+        )
+      },
+      {
+         path : "role/role-management",
+         element : (
+           <ProtectedRoute>
+              <RoleManagement/>
+           </ProtectedRoute>
+         )
       },
       {
         path : "company-profile/company",

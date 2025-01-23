@@ -39,7 +39,7 @@ const OrganisationProfile = () => {
 
   return (
     <>
-      <p className="mt-10 text-gray-400 mb-4">
+      <p className="mt-10 m-8 text-gray-400 mb-4">
         Home / <span className="text-tt">Organisation</span>
       </p>
       <DataTable

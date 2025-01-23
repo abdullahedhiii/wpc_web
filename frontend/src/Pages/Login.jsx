@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { login } from "../redux/userSlice"; 
+import { useModuleContext } from "../contexts/ModuleContext";
 
 const Login = () => {
+  const {fetchModules} = useModuleContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [info, setInfo] = useState({
@@ -28,9 +30,8 @@ const Login = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post("/api/login", info);
-      console.log(response.data.user);
       dispatch(login(response.data.user));
-
+      fetchModules();
       navigate("/employeeDashboard");
     } catch (err) {
       console.error("Login error:", err);
