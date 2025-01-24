@@ -60,7 +60,7 @@ const DataTable = ({title,fields,data,showEntries = true,searchable = true,downl
   const filteredFields = fields.filter((field) => field !== "id");
 
   return (
-    <div className="m-8 w-full p-4 border-t-4 border-tt bg-white rounded-lg shadow-md">
+    <div className=" w-full p-4 border-t-4 border-tt bg-white rounded-lg shadow-md">
       {title && (
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
@@ -165,14 +165,11 @@ const DataTable = ({title,fields,data,showEntries = true,searchable = true,downl
                     >
                       {field === "Action" ? (
                         row["Action"] === "Edit" ? (
-                          <li
-                            className="la la-edit text-2xl text-tt cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                `/hrms/company-profile/edit-company/${row["id"]}`
-                              )
-                            }
-                          ></li>
+                          <img
+                            src="/images/edit.png"
+                            className="h-4 w-4 cursor-pointer"
+                            onClick={() => navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)}
+                          />
                         ) : row["Action"] === "Delete" ? (
                           <li
                             className="la la-trash text-2xl text-tt cursor-pointer"

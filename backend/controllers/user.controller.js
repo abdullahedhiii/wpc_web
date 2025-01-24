@@ -101,7 +101,7 @@ module.exports.getModules = async (req, res) => {
             {
               model: Feature,
               as: 'features',
-              attributes: ['name', 'next_route', 'icon'], // Fetch necessary fields for features
+              attributes: ['name', 'next_route','plus_icon_route','action_route', 'icon'], // Fetch necessary fields for features
             },
           ],
           attributes: ['name', 'main_route','icon'], 
@@ -136,6 +136,8 @@ module.exports.getModules = async (req, res) => {
               name: feature.name,
               next_route: feature.next_route,
               icon: feature.icon || '',
+              plus_icon_route: feature.plus_icon_route,
+              action_route: feature.action_route,
             })),
         })),
     }));

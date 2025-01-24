@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import DataTable from "../Components/DataTable";
 import { useSelector } from "react-redux"; 
 import axios from "axios"; 
+import { useNavigate } from "react-router-dom";
 
 const OrganisationProfile = () => {
   const { user } = useSelector((state) => state.user); 
+  const navigate = useNavigate();
   const columns = [
     "id",
     "Sl. No.",
@@ -19,13 +21,14 @@ const OrganisationProfile = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchOrganisations = async () => {
+    const fetchOrganisation = async () => {
       try {
         const response = await axios.get('/api/getOrganisations', {
           params: { admin_id: user.id },
         });
+        console.log('api response organis' , response.data);
         if (response.data && response.data.length > 0) {
-          setData(response.data);
+          setData([response.data]);
         } else {
           setData([]);
         }
@@ -34,12 +37,16 @@ const OrganisationProfile = () => {
       }
     };
 
-    fetchOrganisations();
+    fetchOrganisation();
   }, [user.id]);
-
+  
+  useEffect(() => {
+   console.log('in effect  ',data);
+  },[data]);
   return (
     <>
-      <p className="mt-10 m-8 text-gray-400 mb-4">
+    <div className="p-6">
+       <p className="mt-10 text-gray-400 mb-4">
         Home / <span className="text-tt">Organisation</span>
       </p>
       <DataTable
@@ -50,6 +57,8 @@ const OrganisationProfile = () => {
         searchable
         downloadable
       />
+    </div>
+     
     </>
   );
 };

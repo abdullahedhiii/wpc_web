@@ -36,7 +36,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
   if (location.pathname === "/" || location.pathname === "/register") {
     return (
       <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-24">
-        <div className="h-full flex items-center px-4">
+        <div className="ml-28 h-full flex items-center px-4">
           <img
             src="/images/logo.png"
             alt="Logo"
@@ -47,23 +47,22 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
     );
   } else if (location.pathname === "/employeeDashboard") {
     return (
-      <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-24">
-        <div className="h-full flex items-center justify-between px-4">
-          {/* Logo on the left */}
+      <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-28">
+        <div className="h-auto flex items-center justify-between px-4">
           <img
             src="/images/logo.png"
             alt="Logo"
-            className="w-28 h-auto transition-all duration-200"
+            className="w-44 h-auto transition-all duration-200"
           />
 
           <div className="flex items-center space-x-4 mr-10">
             <div className="text-left">
-              <p className="font-bold">{user.first_name + " " + user.last_name}</p>
-              <p className="text-gray-600 text-sm">{user.email}</p>
-              <p className="text-gray-600 text-sm">{user.phone_number}</p>
+              <p className="font-bold text-2xl">{user.first_name + " " + user.last_name}</p>
+              <p className="text-gray-600 text-xl">{user.email}</p>
+              <p className="text-gray-600 text-xl">{user.phone_number}</p>
             </div>
             <button onClick={handleLogout} title="Logout">
-              <i className="la la-power-off text-4xl text-red-400"></i>
+              <i className="la la-power-off text-4xl text-red-600"></i>
             </button>
           </div>
         </div>
@@ -72,7 +71,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
   }
 
   return (
-    <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-24">
+    <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-16">
       <div className="h-full flex items-center px-4">
         {isMobile ? (
           <>
@@ -148,7 +147,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                 <img
                   src="/images/logo.png"
                   alt="Logo"
-                  className="w-32 h-auto transition-all duration-200"
+                  className="w-24 h-auto transition-all duration-200"
                 />
               )}
               {isLoggedIn && location.pathname !== "/employeeDashboard" && (
@@ -158,9 +157,9 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                   title="Toggle Sidebar"
                 >
                   {isLogo ? (
-                    <i className="ml-16 fas fa-bars font-extrabold text-2xl"></i>
+                    <i className="ml-20 fas fa-bars font-extrabold text-2xl"></i>
                   ) : (
-                    <i className="la la-ellipsis-v font-extrabold text-3xl text-tt"></i>
+                    <i className="fa-solid fa-ellipsis-v  text-2xl text-tt ml-6"></i>
                   )}
                 </button>
               )}
@@ -175,7 +174,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                 >
                   <i className="la la-home text-2xl"></i>
                 </button>
-                <button
+                {selectedModule.name !== "Organisation Profile" && <button
                   onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
                   title="HRMS"
                 >
@@ -184,7 +183,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                     alt="Dashboard Icon"
                     className="w-5 h-5"
                   />
-                </button>
+                </button>}
                 <button onClick={handleLogout} title="Logout">
                   <i className="la la-key text-2xl text-tt"></i>
                 </button>

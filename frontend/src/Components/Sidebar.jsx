@@ -28,7 +28,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
   return (
     <aside
-      className={`pt-4 fixed h-full bg-white text-black shadow-2xl z-40 transition-all duration-300 ${
+      className={` fixed h-full bg-white text-black shadow-2xl z-40 transition-all duration-300 ${
         isOpen ? "w-64" : "w-20"
       }`}
       onMouseOver={!isOpen ? setOpen : undefined}
@@ -39,11 +39,11 @@ const Sidebar = ({ isOpen, setOpen }) => {
         }`}
       >
         <div className="flex bg-gradient-to-r from-blue-400 to-purple-300 text-white rounded-full p-2">
-          <i className="la la-user text-4xl"></i>
+          <i className="la la-user text-2xl"></i>
         </div>
   
         {isOpen && (
-          <div className="text-gray-500 text-sm">
+          <div className="text-gray-500 text-md uppercase">
             {selectedModule.name === "Organisation Profile"
               ? user?.company_name || "Company Name"
               : selectedModule.name}
@@ -69,6 +69,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
             className={`flex items-center ${
               isOpen ? "space-x-3" : "justify-center"
             }`}
+            onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
           >
             <i className={`fas fa-home ${isOpen ? "text-xl" : "text-3xl"}`}></i>
             {isOpen && <span className="font-semibold">Dashboard</span>}
@@ -84,30 +85,33 @@ const Sidebar = ({ isOpen, setOpen }) => {
           <div>
             {selectedModule.subModules.map((subModule, index) => (
               <div key={index} className="mb-4">
-                <div
-                  className="flex items-center space-x-3 bg-gray-100 rounded-lg shadow-sm p-4 cursor-pointer"
-                  onClick={() => navigate(`/hrms/${subModule.main_route}`)}
-                >
+              <div
+                className="flex items-center justify-between bg-gray-100 rounded-lg shadow-sm p-4 cursor-pointer"
+              >
+                <div className="flex items-center space-x-3">
                   <i className={`${subModule.icon} text-xl text-gray-500`}></i>
-                  <span className="text-gray-700 text-sm font-semibold">
+                  <span className="text-gray-700 text-md font-semibold">
                     {subModule.name}
                   </span>
-                  {subModule.features.length > 0 && (
-                    <i
-                      className={`fa-solid fa-caret-down transform transition-transform ${
-                        openSubModuleIndex === index ? "rotate-180" : ""
-                      }`}
-                      onClick={() => toggleSubModule(index)}
-                    ></i>
-                  )}
                 </div>
+        
+                {subModule.features.length > 0 && (
+                  <i
+                    className={`fa-solid fa-caret-down text-gray-400 transform transition-transform duration-400 ease-in-out ${
+                      openSubModuleIndex === index ? "rotate-180" : ""
+                    }`}
+                    onClick={() => toggleSubModule(index)}
+                  ></i>
+                )}
+              </div>
+
 
                 {openSubModuleIndex === index && (
-                  <ul className="space-y-2 pl-8 mt-2 text-sm text-gray-600">
+                  <ul className="space-y-2 pl-8 pt-4 mt-2 text-sm text-gray-600">
                     {subModule.features.map((feature, featureIndex) => (
                       <li
                         key={featureIndex}
-                        className="cursor-pointer hover:text-gray-900 relative pl-6 leading-8"
+                        className="cursor-pointer hover:bg-gray-300 relative pl-6 leading-8"
                         onClick={() => handleFeatureSelect(feature)}
                       >
                         <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
@@ -123,7 +127,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
         {!isOpen && (
           <div className="flex flex-col items-center space-y-4">
-          <i className="la la-ellipsis-h font-extrabold text-3xl text-gray-500"></i>
+          <i className="fa-solid fa-ellipsis font-extrabold text-3xl text-gray-500"></i>
 
             {selectedModule.subModules.map((subModule, index) => (
               <button

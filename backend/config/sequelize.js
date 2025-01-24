@@ -28,6 +28,7 @@ const Dashboard = require('../models/Dashboard')(sequelize, DataTypes);
 const Feature = require('../models/Feature')(sequelize, DataTypes);
 const SubModule = require('../models/SubModule')(sequelize, DataTypes);
 const Organisation = require('../models/Organisation')(sequelize, DataTypes);
+const TradingHour = require('../models/TradingHour')(sequelize,DataTypes);
 
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
@@ -39,5 +40,8 @@ SubModule.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
 SubModule.hasMany(Feature, { as: 'features', foreignKey: 'submodule_id' });
 Feature.belongsTo(SubModule, { as: 'submodule', foreignKey: 'submodule_id' });
 
+Organisation.hasMany(TradingHour, { as: 'tradingHours', foreignKey: 'organisation_id' });
+TradingHour.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+
 // Export Sequelize instance and models
-module.exports = { sequelize, User, Organisation, Module, Dashboard, SubModule, Feature };
+module.exports = { sequelize, User, Organisation, Module, Dashboard, SubModule, Feature,TradingHour};

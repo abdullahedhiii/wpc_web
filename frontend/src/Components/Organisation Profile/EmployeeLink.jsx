@@ -17,6 +17,7 @@ const EmployeeLink = () => {
 
   return (
     <>
+    <div className="p-6">
       <p className="mt-10 text-gray-400 mb-4">
         Home / <span className="text-tt">Employee Creation Link</span>
       </p>
@@ -27,7 +28,7 @@ const EmployeeLink = () => {
         showEntries
         searchable
         downloadable
-      />
+      /></div>
     </>
   );
 };

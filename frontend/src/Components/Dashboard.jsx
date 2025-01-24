@@ -31,11 +31,11 @@ const Dashboard = () => {
       {modules.map((module) => (
         <button
           key={module.id}
-          className="bg-background text-white shadow-md flex flex-col items-center hover:bg-purple-500 justify-center p-12"
+          className="bg-background text-white shadow-md flex flex-col items-center justify-center p-10"
           onClick={() => handleModuleSelect(module)}
         >
           <i className={`la ${module.icon} text-4xl mb-4`}></i>
-          <img src= {module.icon_image} className='mb-4 h-12 w-12'/>
+          <img src= {module.icon_image} className='mb-4 h-10 w-10'/>
           <p className="text-center text-lg font-semibold">{module.name}</p>
         </button>
       ))}

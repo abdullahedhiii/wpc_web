@@ -33,6 +33,7 @@ const MainLayout = () => {
   const handleResize = () => {
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
+      setLogoVisible(true);
     } else {
       setIsSidebarOpen(true);
     }
@@ -57,16 +58,16 @@ const MainLayout = () => {
         />
       </div>
 
-      <div className="flex pt-16">
-        <div className={`fixed left-0 top-20 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
+      <div className="flex pt-12">
+        <div className={`fixed left-0 top-16 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
           transition-all duration-300`}>
           {(window.innerWidth >= 1024 || isSidebarOpen )&& <Sidebar isOpen={isSidebarOpen} setOpen={() => { setIsSidebarOpen(true); setLogoVisible(true); }} />}
         
         </div>
 
         <div className={`flex-1 transition-all duration-300
-          ${isSidebarOpen ?  'ml-56' : innerWidth >1024 ? 'ml-14' : undefined}`}>
-          <main className='mt-6'>
+          ${isSidebarOpen ?  'ml-64' : innerWidth > 1024 ? 'ml-20' : undefined}`}>
+          <main >
             <Outlet />
           </main>
         </div>

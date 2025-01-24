@@ -21,9 +21,13 @@ module.exports = (sequelize, DataTypes) => {
         type : DataTypes.STRING(255),
         allowNull : true,
       },
+      action_route:{
+        type : DataTypes.STRING(255),
+        allowNull:true,
+      },
       icon: {
-        type: DataTypes.ENUM('la-building', 'la-user', 'la-cogs', 'la-user-shield', 'la-clock', 'la-calendar', 'la-edit', 'la-trash', 'la-file-alt', 
-          'la-check-circle', 'la-tasks','la-user-plus','la-users','la-sitemap','la-calendar-times'),
+        type: DataTypes.STRING(255),
+        allowNull:true,
       }
     });
   
