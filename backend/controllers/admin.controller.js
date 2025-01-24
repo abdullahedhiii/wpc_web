@@ -220,7 +220,7 @@ module.exports.submitCompanyForm = async (req, res) => {
   module.exports.getOrganisations = async (req, res) => {
     try {
       const { admin_id } = req.query; 
-      console.log(admin_id);
+      console.log('here to find organisation ' ,admin_id);
       const organisation = await Organisation.findOne({
         where: { admin_id },
         attributes: [
@@ -237,7 +237,6 @@ module.exports.submitCompanyForm = async (req, res) => {
           'Address_Country',
         ],
       });
-      console.log(organisation,'query result');
       if (!organisation) {
         return res.status(200).json({
           message: "No organisations found",
@@ -255,7 +254,6 @@ module.exports.submitCompanyForm = async (req, res) => {
         "Phone No.": organisation.Company_Contact,
         "Action" : "Edit"
       };
-      console.log('responding with' ,responseData);
       return res.status(200).json(responseData);
     } catch (error) {
       console.error("Error fetching organisations:", error.message);
@@ -271,18 +269,31 @@ module.exports.submitCompanyForm = async (req, res) => {
     try {
       const { id } = req.query;
   
-      const companyDetails = await Organisation.findOne({where : {id}});
+      // Fetch company details
+      const companyDetails = await Organisation.findOne({
+        where: { id }
+      });
   
       if (!companyDetails) {
         return res.status(404).json({ message: 'Company not found' });
       }
-      console.log(companyDetails);
-      return res.status(200).json(companyDetails);
+  
+      const tradingHours = await TradingHour.findAll({
+        where: { organisation_id: id } 
+      });
+  
+      const response = {
+        allData : companyDetails,
+        tradingHours
+      };
+  
+      return res.status(200).json(response);
     } catch (err) {
       console.error("Error fetching company details:", err);
       return res.status(500).json({ message: 'Server error' });
     }
   };
+  
 
   module.exports.updateCompany = async (req, res) => {
     try {
@@ -326,3 +337,7 @@ module.exports.submitCompanyForm = async (req, res) => {
       });
     }
   };
+
+module.exports.uploadDocuments = (req,res) => {
+   console.log('upload documents hittt' ,req.file.filename);
+}

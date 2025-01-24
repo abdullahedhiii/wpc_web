@@ -24,6 +24,10 @@ import SubDashboard from './Components/SubDashboard';
 import UserConfiguration from './Components/User access/UserConfiguration';
 import RoleManagement from './Components/User access/RoleManagement';
 import StatisticsDashboard from './Components/StatisticsDashboard';
+import Level1User from './Components/Organisation Profile/Level1User';
+import RTIEmployee from './Components/Organisation Profile/RTI_Employee';
+import AuthorizingOfficer from './Components/Organisation Profile/Authorizing_Officer';
+import KeyContact from './Components/Organisation Profile/KeyContact';
 
 
 const MainLayout = () => {
@@ -116,141 +120,44 @@ const router = createBrowserRouter([
     children: [
       {
         path: "companydashboard", 
-        element: (
-          <ProtectedRoute>
-            <StatisticsDashboard title={"Organisation Statistics"}/>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path : "recruitmentdashboard",
-        element:(
-          <ProtectedRoute>
-             <SubDashboard/>
-          </ProtectedRoute>
-        )
+        element: (<ProtectedRoute> <StatisticsDashboard title={"Organisation Statistics"}/></ProtectedRoute>),
       },
       {
         path : "employeedashboard",
-        element:(
-          <ProtectedRoute>
-             <SubDashboard/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "roledashboard",
-        element:(
-          <ProtectedRoute>
-             <SubDashboard/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "role/user-configuration",
-        element : (
-          <ProtectedRoute>
-            <UserConfiguration/>
-          </ProtectedRoute>
-        )
-      },
-      {
-         path : "role/role-management",
-         element : (
-           <ProtectedRoute>
-              <RoleManagement/>
-           </ProtectedRoute>
-         )
+        element:( <ProtectedRoute> <SubDashboard/>  </ProtectedRoute>  )
       },
       {
         path : "company-profile/company",
-        element : (
-             <ProtectedRoute>
-              <OrganisationProfile/>
-             </ProtectedRoute>
-        )
+        element : (<ProtectedRoute><OrganisationProfile/> </ProtectedRoute> )
       },
       {
         path: "company-profile/edit-company/:company_id", 
-        element: (
-          <ProtectedRoute>
-            <CompanyForm/>
-          </ProtectedRoute>
-        ),
+        element: (<ProtectedRoute><CompanyForm/> </ProtectedRoute> ),
       },
       {
         path: "company-profile/edit-company", 
-        element: (
-          <ProtectedRoute>
-            <CompanyForm/>
-          </ProtectedRoute>
-        ),
+        element: ( <ProtectedRoute> <CompanyForm/> </ProtectedRoute>),
       },
       {
         path: "company-profile/employee-link", 
-        element: (
-          <ProtectedRoute>
-            <EmployeeLink/>
-          </ProtectedRoute>
-        ),
+        element: (<ProtectedRoute><EmployeeLink/></ProtectedRoute>),
       },
       {
-        path: "settings", 
-        element: (
-          <ProtectedRoute>
-            <Settings/>
-          </ProtectedRoute>
-        ),
+        path : "company-level-user",
+        element : (<ProtectedRoute><Level1User/></ProtectedRoute>)
       },
       {
-        path: "settings/Department", 
-        element: (
-          <ProtectedRoute>
-            <Department/>
-          </ProtectedRoute>
-        ),
+        path : "company-employee-rti",
+        element : (<ProtectedRoute><RTIEmployee/> </ProtectedRoute>)
       },
       {
-        path: "settings/Designation", 
-        element: (
-          <ProtectedRoute>
-             <Designation/>
-          </ProtectedRoute>
-        ),
+        path : "company-authorizing-officer",
+        element : (<ProtectedRoute><AuthorizingOfficer/> </ProtectedRoute>)
       },
       {
-        path : "settings/Employment-Type",
-        element: (
-          <ProtectedRoute>
-             <EmploymentType/>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path : "settings/Pay-Group",
-        element: (
-          <ProtectedRoute>
-             <PayGroup/>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path : "settings/Annual-Pay",
-        element:(
-          <ProtectedRoute>
-            <AnnualPay/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "settings/Bank-Master",
-        element:(
-          <ProtectedRoute>
-             <BankMaster/>
-          </ProtectedRoute>
-        )
-      },
-    
+        path : "company-key-contact",
+        element : (<ProtectedRoute><KeyContact/> </ProtectedRoute>)
+      }
     ],
   },
 ]);

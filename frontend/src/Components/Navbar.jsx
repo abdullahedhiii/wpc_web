@@ -8,7 +8,6 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
   const { isLoggedIn, user } = useSelector((state) => state.user);
   const { selectedModule } = useModuleContext();
 

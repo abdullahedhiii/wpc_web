@@ -2,15 +2,21 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 
-const DataTable = ({title,fields,data,showEntries = true,searchable = true,downloadable = true,addMore,}) => {
-  const {selectedFeature} = useModuleContext();
-  console.log(selectedFeature);
+const DataTable = ({
+  title,
+  fields,
+  data,
+  showEntries = true,
+  searchable = true,
+  downloadable = true,
+  addMore,
+}) => {
+  const { selectedFeature } = useModuleContext();
+  console.log("in data table ", data);
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortField] = useState({ field: "", order: "" });
-  
-
 
   const filteredData = useMemo(() => {
     return data.filter(
@@ -64,7 +70,9 @@ const DataTable = ({title,fields,data,showEntries = true,searchable = true,downl
       {title && (
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center space-x-2">
-            {selectedFeature && <i className={`la ${selectedFeature.icon} text-2xl`}></i> }
+            {selectedFeature && (
+              <i className={`la ${selectedFeature.icon} text-2xl`}></i>
+            )}
             {!selectedFeature && <i className="la la-building text-2xl"></i>}
             <h2 className="text-lg">{title}</h2>
           </div>
@@ -168,7 +176,11 @@ const DataTable = ({title,fields,data,showEntries = true,searchable = true,downl
                           <img
                             src="/images/edit.png"
                             className="h-4 w-4 cursor-pointer"
-                            onClick={() => navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)}
+                            onClick={() =>
+                              navigate(
+                                `/hrms/${selectedFeature.action_route}/${row["id"]}`
+                              )
+                            }
                           />
                         ) : row["Action"] === "Delete" ? (
                           <li
@@ -176,6 +188,15 @@ const DataTable = ({title,fields,data,showEntries = true,searchable = true,downl
                             onClick={() => {}}
                           ></li>
                         ) : null
+                      ) : row[field] &&
+                        typeof row[field] === "string" &&
+                        row[field].startsWith("http") &&
+                        /\.(jpg|jpeg|png|gif|svg)$/i.test(row[field]) ? (
+                        <img
+                          src={row[field]}
+                          alt="Dynamic Content"
+                          className="h-12 w-12 object-cover rounded"
+                        />
                       ) : (
                         row[field] || "-"
                       )}

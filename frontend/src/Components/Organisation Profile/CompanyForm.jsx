@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 
 const CompanyForm = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const { company_id } = useParams();
-  
+  const { setAllDetails } = useCompanyContext();
   const options = [
     "PAYEE And Account Reference Letter From HMRC",
     "Latest RTI from Accountant",
@@ -476,12 +477,18 @@ const CompanyForm = () => {
         ...Array.from({ length: 18 }, (_, i) => ({
           documentType: options[i],
           file: null,
+          sampleDocument:
+            i === 0
+              ? "/sample_documents/PAYEE And Account Reference Letter From HMRC.pdf"
+              : i === 2
+              ? "/sample_documents/Employer Liability Insurance Certificate.pdf"
+              : i === 9
+              ? "/sample_documents/VAT Certificate (if registered).pdf"
+              : null,
         })),
       ],
-     
     },
   ];
- 
 
   const [tradingHours, setTradingHours] = useState([
     {
@@ -527,7 +534,7 @@ const CompanyForm = () => {
       closingTime: "closed",
     },
   ]);
-  
+
   const handleTradingHoursChange = (rowIndex, field, value) => {
     setTradingHours((prevTradingHours) => {
       const updatedTradingHours = [...prevTradingHours];
@@ -538,8 +545,6 @@ const CompanyForm = () => {
       return updatedTradingHours;
     });
   };
-
- 
 
   const [uploadDocuments, setUploadDocuments] = useState(
     Array.from({ length: 18 }, (_, i) => ({
@@ -576,7 +581,7 @@ const CompanyForm = () => {
     Company_NameChanged: "No",
     Company_Penalty: "No",
     Company_Logo: null,
-  
+
     Authorizing_fname: "",
     Authorizing_lname: "",
     Authorizing_designation: "",
@@ -584,7 +589,7 @@ const CompanyForm = () => {
     Authorizing_phone: "",
     Authorizing_proof_id: null,
     Authorizing_history: "No",
-  
+
     KeyContact_check: false,
     KeyContact_fname: "",
     KeyContact_lname: "",
@@ -593,7 +598,7 @@ const CompanyForm = () => {
     KeyContact_phone: "",
     KeyContact_proof_id: null,
     KeyContact_history: "No",
-  
+
     Level1_check: false,
     Level1_fname: "",
     Level1_lname: "",
@@ -602,7 +607,7 @@ const CompanyForm = () => {
     Level1_phone: "",
     Level1_proof_id: null,
     Level1_history: "No",
-  
+
     Address_Postcode: "",
     Address_Select: "",
     Address_Line1: "",
@@ -610,166 +615,167 @@ const CompanyForm = () => {
     Address_Line3: "",
     Address_City_County: "",
     Address_Country: "",
-  
+
     RTI_fname: "",
     RTI_department: "",
     RTI_job_type: "",
     RTI_job_title: "",
     RTI_Immigration_status: "",
   });
-  
 
   useEffect(() => {
-    // const fetchDetails = async () => {
-    //   try {
-    //     if (company_id) {
-    //       console.log("sending id", company_id);
-    //       const response = await axios.get("/api/getCompanyDetails", {
-    //         params: { id: company_id },
-    //       });
-    //       console.log(response.data);
-    //       if (response.data) {
-    //         setCompanyData({
-    //           Email: user.email,
-    //           ...response.data,
-    //         });
-    //       }
-    //     }
-    //   } catch (err) {
-    //     console.log("Error fetching pre set form details", err);
-    //   }
-    // };
-    //fetchDetails();
+    const fetchDetails = async () => {
+      try {
+        if (company_id) {
+          console.log("sending id", company_id);
+          const response = await axios.get("/api/getCompanyDetails", {
+            params: { id: company_id },
+          });
+          console.log(response.data);
+          if (response.data) {
+            setFormData({
+              Email: user.email,
+              ...response.data.allData,
+            });
+            setAllDetails([response.data.allData]);
+            setTradingHours(response.data.tradingHours);
+          }
+        }
+      } catch (err) {
+        console.log("Error fetching pre set form details", err);
+      }
+    };
+    fetchDetails();
   }, [company_id]);
 
   const handleChange = (e, fieldName) => {
     const { value, type, checked, files } = e.target;
     const updatedValue = type === "checkbox" ? checked : value;
-  
+
     if (type === "file") {
       setFormData((prevData) => ({
         ...prevData,
-        [fieldName]: files[0], 
+        [fieldName]: files[0],
       }));
-      return; 
+      return;
     }
-  
+
     if (type === "checkbox") {
       if (fieldName === "KeyContact_check") {
-        if(updatedValue){
-             setFormData((prevData) => ({
-          ...prevData,
-          KeyContact_fname: prevData.Authorizing_fname,
-          KeyContact_lname: prevData.Authorizing_lname,
-          KeyContact_designation: prevData.Authorizing_designation,
-          KeyContact_email: prevData.Authorizing_email,
-          KeyContact_phone: prevData.Authorizing_phone,
-          KeyContact_proof_id: prevData.Authorizing_proof_id, 
-          KeyContact_history: prevData.Authorizing_history,
-        }));
-        }
-        else{
+        if (updatedValue) {
+          setFormData((prevData) => ({
+            ...prevData,
+            KeyContact_fname: prevData.Authorizing_fname,
+            KeyContact_lname: prevData.Authorizing_lname,
+            KeyContact_designation: prevData.Authorizing_designation,
+            KeyContact_email: prevData.Authorizing_email,
+            KeyContact_phone: prevData.Authorizing_phone,
+            KeyContact_proof_id: prevData.Authorizing_proof_id,
+            KeyContact_history: prevData.Authorizing_history,
+          }));
+        } else {
           setFormData((prevData) => ({
             ...prevData,
             KeyContact_fname: "",
             KeyContact_lname: "",
             KeyContact_designation: "",
-            KeyContact_email:"",
+            KeyContact_email: "",
             KeyContact_phone: "",
-            KeyContact_proof_id: "", 
+            KeyContact_proof_id: "",
             KeyContact_history: "",
           }));
         }
-     
       } else if (fieldName === "Level1_check") {
-        if(updatedValue){
-           setFormData((prevData) => ({
-          ...prevData,
-          Level1_fname: prevData.Authorizing_fname,
-          Level1_lname: prevData.Authorizing_lname,
-          Level1_designation: prevData.Authorizing_designation,
-          Level1_email: prevData.Authorizing_email,
-          Level1_phone: prevData.Authorizing_phone,
-          Level1_proof_id: prevData.Authorizing_proof_id, 
-          Level1_history: prevData.Authorizing_history,
-        }));
+        if (updatedValue) {
+          setFormData((prevData) => ({
+            ...prevData,
+            Level1_fname: prevData.Authorizing_fname,
+            Level1_lname: prevData.Authorizing_lname,
+            Level1_designation: prevData.Authorizing_designation,
+            Level1_email: prevData.Authorizing_email,
+            Level1_phone: prevData.Authorizing_phone,
+            Level1_proof_id: prevData.Authorizing_proof_id,
+            Level1_history: prevData.Authorizing_history,
+          }));
+        } else {
+          setFormData((prevData) => ({
+            ...prevData,
+            Level1_fname: "",
+            Level1_lname: "",
+            Level1_designation: "",
+            Level1_email: "",
+            Level1_phone: "",
+            Level1_proof_id: "",
+            Level1_history: "",
+          }));
         }
-       else{
-        setFormData((prevData) => ({
-          ...prevData,
-          Level1_fname:"",
-          Level1_lname: "",
-          Level1_designation: "",
-          Level1_email: "",
-          Level1_phone: "",
-          Level1_proof_id: "", 
-          Level1_history: "",
-        }));
-       }
       }
     }
-  
+
     setFormData((prevData) => ({
       ...prevData,
       [fieldName]: updatedValue,
     }));
-  
+
     console.log("Updated:", fieldName, updatedValue);
   };
-  
-  
-  useEffect(() => {
-     console.log("form data",formData);
-  },[formData]);
 
+  useEffect(() => {
+    console.log("form data", formData);
+  }, [formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    
+
     const formDataToSend = new FormData();
-  
+
     Object.entries(formData).forEach(([key, value]) => {
-      if ((key === "Company_Logo" || key === "KeyContact_proof_id" || 
-        key === "Authorizing_proof_id" || key === "Level1_proof_id" ) 
-        && value instanceof File) {
+      if (
+        (key === "Company_Logo" ||
+          key === "KeyContact_proof_id" ||
+          key === "Authorizing_proof_id" ||
+          key === "Level1_proof_id") &&
+        value instanceof File
+      ) {
         formDataToSend.append(key, value);
       } else if (value !== null && value !== undefined) {
         formDataToSend.append(key, value);
       }
     });
-  
+
     // Submit trading hours data
     tradingHours.forEach((tradingHour, index) => {
       const formKey = `tradingHours[${index}]`; // Use an index to differentiate each item in the array
       formDataToSend.append(formKey, JSON.stringify(tradingHour));
     });
-  
-    // uploadDocuments.forEach(async(document, index) => {
-    //   if (document.file) {
-    //     const formKey = `uploadDocuments[${index}]`; 
-    //     const documentData = new FormData();
-    //     documentData.append("document", document.file);
-    //     documentData.append("documentType", document.documentType);
-    //     documentData.append("otherDetails", document.otherDetails);
-  
-    //     try {
-    //       const response = await axios.post("/api/uploadDocument", documentData, {
-    //         headers: {
-    //           "Content-Type": "multipart/form-data",
-    //         },
-    //       });
-    //       console.log(`Document ${index + 1} uploaded successfully`, response.data);
-    //     } catch (err) {
-    //       console.error(`Error uploading document ${index + 1}:`, err.response?.data || err.message);
-    //     }
-    //   }
-    // });
-  
-    // Make API request for company data submission
+
+    uploadDocuments.forEach(async(document, index) => {
+      if (document.file) {
+        const formKey = `uploadDocuments[${index}]`;
+        const documentData = new FormData();
+        documentData.append("document", document.file);
+        documentData.append("documentType", document.documentType);
+        documentData.append("otherDetails", document.otherDetails);
+
+        try {
+          const response = await axios.post("/api/uploadDocument", documentData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          console.log(`Document ${index + 1} uploaded successfully`, response.data);
+        } catch (err) {
+          console.error(`Error uploading document ${index + 1}:`, err.response?.data || err.message);
+        }
+      }
+    });
+
     try {
       const response = await axios.post(
-        `/api/${company_id ? `updateCompany/${company_id}` : "submitCompanyForm"}`,
+        `/api/${
+          company_id ? `updateCompany/${company_id}` : "submitCompanyForm"
+        }`,
         formDataToSend,
         {
           headers: {
@@ -778,12 +784,15 @@ const CompanyForm = () => {
         }
       );
       console.log("Company data submitted successfully:", response.data);
-      navigate("/hrms/company-profile");
+      navigate("/hrms/company");
     } catch (err) {
-      console.error("Error submitting company data:", err.response?.data || err.message);
+      console.error(
+        "Error submitting company data:",
+        err.response?.data || err.message
+      );
     }
   };
-  
+
   return (
     <div className="p-12">
       <p className="text-[12px] text-gray-600">
@@ -809,116 +818,136 @@ const CompanyForm = () => {
               <hr className="my-6 border-t-1 border-gray-400" />
 
               {section.title === "Trading Hours" ? (
-  <div className="space-y-4">
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <label className="text-sm font-medium text-gray-600">Day</label>
-      <label className="text-sm font-medium text-gray-600">Status</label>
-      <label className="text-sm font-medium text-gray-600">Opening Time</label>
-      <label className="text-sm font-medium text-gray-600">Closing Time</label>
-    </div>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <label className="text-sm font-medium text-gray-600">
+                      Day
+                    </label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Status
+                    </label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Opening Time
+                    </label>
+                    <label className="text-sm font-medium text-gray-600">
+                      Closing Time
+                    </label>
+                  </div>
 
-    {tradingHours.map((row, rowIndex) => (
-      <div
-        key={rowIndex}
-        className="text-sm grid grid-cols-1 md:grid-cols-4 gap-4"
-      >
-        <input
-          type="text"
-          name={`day-${rowIndex}`}
-          value={row.day}
-          readOnly
-          className="text-gray-400 w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
-        />
+                  {tradingHours.map((row, rowIndex) => (
+                    <div
+                      key={rowIndex}
+                      className="text-sm grid grid-cols-1 md:grid-cols-4 gap-4"
+                    >
+                      <input
+                        type="text"
+                        name={`day-${rowIndex}`}
+                        value={row.day}
+                        readOnly
+                        className="text-gray-400 w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                      />
 
-        <select
-          name={`status-${rowIndex}`}
-          value={row.status || "Open"}
-          onChange={(e) =>
-            handleTradingHoursChange(rowIndex, "status", e.target.value)
-          }
-          className="w-full px-3 py-2 border rounded-md bg-white focus:border-tt"
-        >
-          <option value="Open">Open</option>
-          <option value="Closed">Closed</option>
-        </select>
+                      <select
+                        name={`status-${rowIndex}`}
+                        value={row.status || "Open"}
+                        onChange={(e) =>
+                          handleTradingHoursChange(
+                            rowIndex,
+                            "status",
+                            e.target.value
+                          )
+                        }
+                        className="w-full px-3 py-2 border rounded-md bg-white focus:border-tt"
+                      >
+                        <option value="Open">Open</option>
+                        <option value="Closed">Closed</option>
+                      </select>
 
-        <select
-          name={`openingTime-${rowIndex}`}
-          value={row.openingTime}
-          onChange={(e) =>
-            handleTradingHoursChange(rowIndex, "openingTime", e.target.value)
-          }
-          className={`${
-            row.status === "Closed" ? "bg-gray-200" : undefined
-          } w-full px-3 py-2 border rounded-md focus:border-tt`}
-          disabled={row.status === "Closed"}
-        >
-          <option value="1:00">1:00</option>
-          <option value="2:00">2:00</option>
-          <option value="3:00">3:00</option>
-          <option value="4:00">4:00</option>
-          <option value="5:00">5:00</option>
-          <option value="6:00">6:00</option>
-          <option value="7:00">7:00</option>
-          <option value="8:00">8:00</option>
-          <option value="9:00">9:00</option>
-          <option value="10:00">10:00</option>
-          <option value="11:00">11:00</option>
-          <option value="12:00">12:00</option>
-          <option value="13:00">13:00</option>
-          <option value="14:00">14:00</option>
-          <option value="15:00">15:00</option>
-          <option value="16:00">16:00</option>
-          <option value="17:00">17:00</option>
-          <option value="18:00">18:00</option>
-          <option value="19:00">19:00</option>
-          <option value="20:00">20:00</option>
-          <option value="21:00">21:00</option>
-          <option value="22:00">22:00</option>
-          <option value="23:00">23:00</option>
-          <option value="00:00">00:00</option>
-        </select>
+                      <select
+                        name={`openingTime-${rowIndex}`}
+                        value={row.openingTime}
+                        onChange={(e) =>
+                          handleTradingHoursChange(
+                            rowIndex,
+                            "openingTime",
+                            e.target.value
+                          )
+                        }
+                        className={`${
+                          row.status === "Closed" ? "bg-gray-200" : undefined
+                        } w-full px-3 py-2 border rounded-md focus:border-tt`}
+                        disabled={row.status === "Closed"}
+                      >
+                        <option value="1:00">1:00</option>
+                        <option value="2:00">2:00</option>
+                        <option value="3:00">3:00</option>
+                        <option value="4:00">4:00</option>
+                        <option value="5:00">5:00</option>
+                        <option value="6:00">6:00</option>
+                        <option value="7:00">7:00</option>
+                        <option value="8:00">8:00</option>
+                        <option value="9:00">9:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:00">20:00</option>
+                        <option value="21:00">21:00</option>
+                        <option value="22:00">22:00</option>
+                        <option value="23:00">23:00</option>
+                        <option value="00:00">00:00</option>
+                      </select>
 
-        <select
-          name={`closingTime-${rowIndex}`}
-          value={row.closingTime}
-          onChange={(e) =>
-            handleTradingHoursChange(rowIndex, "closingTime", e.target.value)
-          }
-          className={`${
-            row.status === "Closed" ? "bg-gray-200" : undefined
-          } w-full px-3 py-2 border rounded-md focus:border-tt`}
-          disabled={row.status === "Closed"}
-        >
-          <option value="1:00">1:00</option>
-          <option value="2:00">2:00</option>
-          <option value="3:00">3:00</option>
-          <option value="4:00">4:00</option>
-          <option value="5:00">5:00</option>
-          <option value="6:00">6:00</option>
-          <option value="7:00">7:00</option>
-          <option value="8:00">8:00</option>
-          <option value="9:00">9:00</option>
-          <option value="10:00">10:00</option>
-          <option value="11:00">11:00</option>
-          <option value="12:00">12:00</option>
-          <option value="13:00">13:00</option>
-          <option value="14:00">14:00</option>
-          <option value="15:00">15:00</option>
-          <option value="16:00">16:00</option>
-          <option value="17:00">17:00</option>
-          <option value="18:00">18:00</option>
-          <option value="19:00">19:00</option>
-          <option value="20:00">20:00</option>
-          <option value="21:00">21:00</option>
-          <option value="22:00">22:00</option>
-          <option value="23:00">23:00</option>
-          <option value="00:00">00:00</option>
-        </select>
-      </div>
-    ))}
-  </div>
-) : section.title === "Upload Documents" ? (
+                      <select
+                        name={`closingTime-${rowIndex}`}
+                        value={row.closingTime}
+                        onChange={(e) =>
+                          handleTradingHoursChange(
+                            rowIndex,
+                            "closingTime",
+                            e.target.value
+                          )
+                        }
+                        className={`${
+                          row.status === "Closed" ? "bg-gray-200" : undefined
+                        } w-full px-3 py-2 border rounded-md focus:border-tt`}
+                        disabled={row.status === "Closed"}
+                      >
+                        <option value="1:00">1:00</option>
+                        <option value="2:00">2:00</option>
+                        <option value="3:00">3:00</option>
+                        <option value="4:00">4:00</option>
+                        <option value="5:00">5:00</option>
+                        <option value="6:00">6:00</option>
+                        <option value="7:00">7:00</option>
+                        <option value="8:00">8:00</option>
+                        <option value="9:00">9:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="12:00">12:00</option>
+                        <option value="13:00">13:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                        <option value="17:00">17:00</option>
+                        <option value="18:00">18:00</option>
+                        <option value="19:00">19:00</option>
+                        <option value="20:00">20:00</option>
+                        <option value="21:00">21:00</option>
+                        <option value="22:00">22:00</option>
+                        <option value="23:00">23:00</option>
+                        <option value="00:00">00:00</option>
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              ) : section.title === "Upload Documents" ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-6 text-gray-600">
                     <label className="text-sm font-semibold">
@@ -929,58 +958,74 @@ const CompanyForm = () => {
                     </label>
                   </div>
 
-                  {Array.isArray(section.rows) && section.rows.map((row, rowIndex) => (
-                    <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <select
-                        name={`documentType-${rowIndex}`}
-                        value={row.documentType || ""}
-                        onChange={(e) =>
-                          handleUploadDocumentsChange(
-                            rowIndex,
-                            "documentType",
-                            e.target.value
-                          )
-                        }
-                        className="w-full px-2 py-1 border rounded-md text-[14px] focus:border-tt focus:border-b-2"
+                  {Array.isArray(section.rows) &&
+                    section.rows.map((row, rowIndex) => (
+                      <div
+                        key={rowIndex}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-6"
                       >
-                        <option value="">Select Document Type</option>
-                        {options.map((option, idx) => (
-                          <option key={idx} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-
-                      <input
-                        type="file"
-                        name={`file-${rowIndex}`}
-                        onChange={(e) =>
-                          handleUploadDocumentsChange(
-                            rowIndex,
-                            "file",
-                            e.target.files[0]
-                          )
-                        }
-                        className="w-full px-2 py-1 text-sm"
-                      />
-
-                      {row.documentType === "Others Document" && (
-                        <input
-                          type="text"
-                          placeholder="Specify document details"
-                          value={row.otherDetails || ""}
+                        <select
+                          name={`documentType-${rowIndex}`}
+                          value={row.documentType || ""}
                           onChange={(e) =>
                             handleUploadDocumentsChange(
                               rowIndex,
-                              "otherDetails",
+                              "documentType",
                               e.target.value
                             )
                           }
-                          className="col-span-2 px-2 py-1 border rounded-md mt-2"
-                        />
-                      )}
-                    </div>
-                  ))}
+                          className="w-full px-2 py-1 border rounded-md text-[14px] focus:border-tt focus:border-b-2"
+                        >
+                          <option value="">Select Document Type</option>
+                          {options.map((option, idx) => (
+                            <option key={idx} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+
+                        {row.sampleDocument && (
+                          <div className="flex flex-row gap-2">
+                            <button className="bg-blue-800 p-2 border rounded w-[140px] text-[10px]">
+                              <a
+                                href={row.sampleDocument}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white font-medium w-full text-center"
+                              >
+                                Sample Document
+                              </a>
+                            </button>
+
+                            <input
+                              type="file"
+                              name={`file-${rowIndex}`}
+                              onChange={(e) =>
+                                handleUploadDocumentsChange(
+                                  rowIndex,
+                                  "file",
+                                  e.target.files[0]
+                                )
+                              }
+                              className="w-full px-2 py-1 text-sm"
+                            />
+                          </div>
+                        )}
+                        {row.sampleDocument === null && <input
+                          type="file"
+                          name={`file-${rowIndex}`}
+                          onChange={(e) =>
+                            handleUploadDocumentsChange(
+                              rowIndex,
+                              "file",
+                              e.target.files[0]
+                            )
+                          }
+                          className="w-full px-2 py-1 text-sm"
+                        />}
+
+                      </div>
+                    ))}
                 </div>
               ) : (
                 <div
@@ -1019,7 +1064,7 @@ const CompanyForm = () => {
                         {field.required && (
                           <span className="text-red-500 font-bold">(*)</span>
                         )}
-                         {field.value === "Authorizing_proof_id" &&
+                        {field.value === "Authorizing_proof_id" &&
                           formData["Authorizing_proof_id"] && (
                             <img
                               src={formData["Authorizing_proof_id"]}
@@ -1027,7 +1072,7 @@ const CompanyForm = () => {
                               className="mt-2 w-12 h-12 rounded-md"
                             />
                           )}
-                           {field.value === "KeyContact_proof_id" &&
+                        {field.value === "KeyContact_proof_id" &&
                           formData["KeyContact_proof_id"] && (
                             <img
                               src={formData["KeyContact_proof_id"]}
@@ -1035,7 +1080,7 @@ const CompanyForm = () => {
                               className="mt-2 w-12 h-12 rounded-md"
                             />
                           )}
-                           {field.value === "Level1_proof_id" &&
+                        {field.value === "Level1_proof_id" &&
                           formData["Level1_proof_id"] && (
                             <img
                               src={formData["Level1_proof_id"]}
@@ -1043,17 +1088,12 @@ const CompanyForm = () => {
                               className="mt-2 w-12 h-12 rounded-md"
                             />
                           )}
-      
                       </div>
                       {field.type === "select" ? (
                         <select
                           name={field.value}
-                          value={
-                            formData[field.value] || ""
-                          }
-                          onChange={(e) =>
-                            handleChange(e, field.value)
-                          }
+                          value={formData[field.value] || ""}
+                          onChange={(e) => handleChange(e, field.value)}
                           className="w-full px-3 py-2 border rounded-md  focus:border-tt focus:border-b-2 bg-white"
                           required={field.required}
                         >
@@ -1069,13 +1109,8 @@ const CompanyForm = () => {
                             type="checkbox"
                             id={field.value}
                             name={field.value}
-                            checked={
-                              formData[field.value] ||
-                              false
-                            }
-                            onChange={(e) =>
-                              handleChange(e,field.value)
-                            }
+                            checked={formData[field.value] || false}
+                            onChange={(e) => handleChange(e, field.value)}
                             className="w-4 h-4  focus:border-tt focus:border-b-2"
                           />
                           <label
@@ -1090,11 +1125,11 @@ const CompanyForm = () => {
                           name={field.value}
                           type={field.type}
                           value={
-                            field.type === "file" ? undefined : formData[field.value] 
+                            field.type === "file"
+                              ? undefined
+                              : formData[field.value]
                           }
-                          onChange={(e) =>
-                            handleChange(e,field.value)
-                          }
+                          onChange={(e) => handleChange(e, field.value)}
                           className={`w-full text-gray-700 px-3 py-2 border rounded-md focus:border-tt focus:border-b-2 ${
                             field.readOnly ? "bg-gray-100" : ""
                           }`}

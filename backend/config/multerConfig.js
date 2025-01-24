@@ -1,22 +1,30 @@
 const fs = require("fs");
 const path = require("path");
-const multer = require('multer');
+const multer = require("multer");
 
-const uploadPath = path.join(__dirname, "../uploads"); 
+const uploadPath = path.join(__dirname, "../uploads");
 
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadPath); 
+  destination: function (req, file, cb) {
+    const companyName = req.body.Company_name;
+    if (!companyName) {
+      return cb(new Error("Company name is required"));
+    }
+    const dir = path.join(uploadPath, companyName);
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir); 
   },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const fileExtension = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${fileExtension}`);
-  },
+  filename: function (req, file, cb) {
+    const fileName = Date.now() + path.extname(file.originalname); 
+    cb(null, fileName);
+  }
 });
 
 const fileFilter = (req, file, cb) => {

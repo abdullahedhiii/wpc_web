@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useModuleContext } from '../contexts/ModuleContext';
+import { useCompanyContext } from '../contexts/CompanyContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { modules, setSelectedModule } = useModuleContext();
   const [isLoading, setIsLoading] = useState(true);
+  const {companyData} = useCompanyContext();
 
   useEffect(() => {
     if (Array.isArray(modules) && modules.length > 0) {

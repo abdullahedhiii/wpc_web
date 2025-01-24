@@ -5,9 +5,11 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { login } from "../redux/userSlice"; 
 import { useModuleContext } from "../contexts/ModuleContext";
+import { useCompanyContext } from "../contexts/CompanyContext";
 
 const Login = () => {
   const {fetchModules} = useModuleContext();
+  const {fetchOrganisation} = useCompanyContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [info, setInfo] = useState({
@@ -32,6 +34,7 @@ const Login = () => {
       const response = await axios.post("/api/login", info);
       dispatch(login(response.data.user));
       fetchModules();
+      fetchOrganisation(response.data.user.id);
       navigate("/employeeDashboard");
     } catch (err) {
       console.error("Login error:", err);

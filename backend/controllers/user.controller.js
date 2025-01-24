@@ -92,7 +92,7 @@ module.exports.getModules = async (req, res) => {
         {
           model: Dashboard,
           as: 'dashboard',
-          attributes: ['name', 'completed', 'color', 'icon', 'count', 'percentage'],
+          attributes: ['name', 'completed', 'color', 'icon', 'count', 'percentage','view_route'],
         },
         {
           model: SubModule,
@@ -123,6 +123,7 @@ module.exports.getModules = async (req, res) => {
           icon: d.icon || '',
           count: d.count || -1, 
           percentage: d.percentage || -1,
+          view_route:d.view_route
         })),
       subModules: module.subModules
         .sort((a, b) => a.id - b.id) 
@@ -143,7 +144,6 @@ module.exports.getModules = async (req, res) => {
     }));
 
     res.status(200).json(formattedModules);
-    console.log('sending modules back ', formattedModules);
   } catch (error) {
     console.error('Error fetching modules:', error);
     res.status(500).json({ error: 'Internal Server Error' });

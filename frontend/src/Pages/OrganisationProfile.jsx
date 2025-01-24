@@ -3,9 +3,11 @@ import DataTable from "../Components/DataTable";
 import { useSelector } from "react-redux"; 
 import axios from "axios"; 
 import { useNavigate } from "react-router-dom";
+import { useCompanyContext } from "../contexts/CompanyContext";
 
 const OrganisationProfile = () => {
-  const { user } = useSelector((state) => state.user); 
+  const {companyData} = useCompanyContext();
+  const {user} = useSelector((state) => state.user);
   const navigate = useNavigate();
   const columns = [
     "id",
@@ -18,31 +20,13 @@ const OrganisationProfile = () => {
     "Action",
   ];
 
-  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchOrganisation = async () => {
-      try {
-        const response = await axios.get('/api/getOrganisations', {
-          params: { admin_id: user.id },
-        });
-        console.log('api response organis' , response.data);
-        if (response.data && response.data.length > 0) {
-          setData([response.data]);
-        } else {
-          setData([]);
-        }
-      } catch (err) {
-        setData([]); 
-      }
-    };
+    if(companyData.length === 0){
+    navigate('/hrms/company-profile/edit-company');
+   }
+  }, [user]);
 
-    fetchOrganisation();
-  }, [user.id]);
-  
-  useEffect(() => {
-   console.log('in effect  ',data);
-  },[data]);
   return (
     <>
     <div className="p-6">
@@ -52,7 +36,7 @@ const OrganisationProfile = () => {
       <DataTable
         title="Organisation"
         fields={columns}
-        data={data}
+        data={companyData}
         showEntries
         searchable
         downloadable

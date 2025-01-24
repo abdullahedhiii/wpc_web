@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useModuleContext } from "../contexts/ModuleContext";
+import { useCompanyContext } from "../contexts/CompanyContext";
+import { useNavigate } from "react-router-dom";
 
 const CircularProgress = ({ current }) => {
   const [progress, setProgress] = useState(0);
-
+  const {companyData} = useCompanyContext();
+  const navigate = useNavigate();
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -38,12 +41,26 @@ const CircularProgress = ({ current }) => {
       <div className="mt-2 text-gray-600 text-center">
         {`${current.name} ${current.completed ? "(completed)" : ""}`}
       </div>
-      <div
+      <button
+       className="mt-2 w-10 h-10 rounded-full flex items-center justify-center"
+       style={{ backgroundColor: current.color }}
+       title="view"
+       onClick={() => {
+        current.name === 'Profile Status'
+          ? navigate(`/hrms/${current.view_route}/${companyData[0].id}`)
+          : navigate(`/hrms/${current.view_route}`);
+      }}
+      
+      >
+        <img src={current.icon} alt="icon" className="w-6 h-6" />
+
+
+      </button>
+      {/* <div
         className="mt-2 w-10 h-10 rounded-full flex items-center justify-center"
         style={{ backgroundColor: current.color }}
       >
-        <img src={current.icon} alt="icon" className="w-6 h-6" />
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -57,7 +74,7 @@ const StatisticsDashboard = ({ title }) => {
       <p className="p-14 text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl">
         Dashboard
       </p>
-      <div className="relative top-[-124px] m-24 border-t-4 border-background rounded-lg shadow-lg p-6">
+      <div className="relative top-[-124px] m-24 border-2 border-t-4 border-t-background rounded-lg shadow-lg p-6">
         <h2 className="text-blue-800 text-lg font-sm mb-6">{title}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {dashboard.map((item, index) => (

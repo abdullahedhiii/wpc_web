@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: -1,
         allowNull: false
       },
+      view_route:{
+        type : DataTypes.STRING,
+        allowNull:true,
+      }
     });
   
     // Define associations here

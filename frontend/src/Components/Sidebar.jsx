@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useSelector } from "react-redux";
+import { useCompanyContext } from "../contexts/CompanyContext";
 
 const Sidebar = ({ isOpen, setOpen }) => {
   const navigate = useNavigate();
   const { selectedModule, setSubFeature } = useModuleContext();
+  const {companyData} = useCompanyContext();
   const { user } = useSelector((state) => state.user);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
   
-  console.log(selectedModule);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -22,7 +23,13 @@ const Sidebar = ({ isOpen, setOpen }) => {
   const handleFeatureSelect = (feature) => {
     setSubFeature(feature);
     setOpenSubModuleIndex(null);
-    navigate(`/hrms/${feature.next_route}`);
+    console.log('in module select', companyData[0]);
+  
+    if (feature.name === "Organisation Profile" && !companyData[0].id) {
+      navigate(`/hrms/company-profile/edit-company`);
+    } else {
+      navigate(`/hrms/${feature.next_route}`);
+    }
   };
   
 
@@ -107,11 +114,11 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
 
                 {openSubModuleIndex === index && (
-                  <ul className="space-y-2 pl-8 pt-4 mt-2 text-sm text-gray-600">
+                  <ul className="space-y-2 w-full p-4 text-sm text-gray-600 ">
                     {subModule.features.map((feature, featureIndex) => (
                       <li
                         key={featureIndex}
-                        className="cursor-pointer hover:bg-gray-300 relative pl-6 leading-8"
+                        className="cursor-pointer hover:bg-gray-100 relative pl-6 leading-8"
                         onClick={() => handleFeatureSelect(feature)}
                       >
                         <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
