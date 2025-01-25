@@ -7,11 +7,11 @@ import { useCompanyContext } from "../contexts/CompanyContext";
 const Sidebar = ({ isOpen, setOpen }) => {
   const navigate = useNavigate();
   const { selectedModule, setSubFeature } = useModuleContext();
-  const {companyData} = useCompanyContext();
+  const { companyData } = useCompanyContext();
   const { user } = useSelector((state) => state.user);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
-  
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -23,15 +23,14 @@ const Sidebar = ({ isOpen, setOpen }) => {
   const handleFeatureSelect = (feature) => {
     setSubFeature(feature);
     setOpenSubModuleIndex(null);
-    console.log('in module select', companyData[0]);
-  
+    console.log("in module select", companyData[0]);
+
     if (feature.name === "Organisation Profile" && !companyData[0].id) {
       navigate(`/hrms/company-profile/edit-company`);
     } else {
       navigate(`/hrms/${feature.next_route}`);
     }
   };
-  
 
   return (
     <aside
@@ -47,14 +46,20 @@ const Sidebar = ({ isOpen, setOpen }) => {
       >
         <img src="/images/profile.png" className="w-10 h-10"></img>
         {isOpen && (
-          <div className={`text-gray-500 text-[14px] ${selectedModule.name === "Organisation Profile" ? "uppercase" : undefined}`}>
+          <div
+            className={`text-gray-500 text-[14px] ${
+              selectedModule.name === "Organisation Profile"
+                ? "uppercase"
+                : undefined
+            }`}
+          >
             {selectedModule.name === "Organisation Profile"
               ? user?.company_name || "Company Name"
               : selectedModule.name}
           </div>
         )}
       </div>
-  
+
       <hr
         className={`border-t border-gray-300 ${
           isOpen ? "mx-4" : "mx-auto w-10"
@@ -76,53 +81,57 @@ const Sidebar = ({ isOpen, setOpen }) => {
             onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
           >
             <i className={`fas fa-home ${isOpen ? "text-xl" : "text-3xl"}`}></i>
-            {isOpen && <span className="font-semibold text-[16px]">Dashboard</span>}
+            {isOpen && (
+              <span className="font-semibold text-[16px]">Dashboard</span>
+            )}
           </div>
           {isOpen && (
-            <i
-              className="fa-solid fa-caret-down text-[12px] transform transition-transform"
-            ></i>
+            <i className="fa-solid fa-caret-down text-[12px] transform transition-transform"></i>
           )}
         </button>
 
-        {isOpen  && (
+        {isOpen && (
           <div>
             {selectedModule.subModules.map((subModule, index) => (
               <div key={index} className="mb-4">
-              <div
-                className={`flex items-center justify-between text-gray-400 hover:bg-gray-100 hover:text-gray-700 ${openSubModuleIndex === index ? "bg-gray-100 shadow-sm text-gray-700" :undefined} rounded-lg  p-3 cursor-pointer`}
-              >
-                <div className="flex items-center space-x-3">
-                  <i className={`${subModule.icon} text-[18px]`}></i>
-                  <span className="text-[15px]">
-                    {subModule.name}
-                  </span>
-                </div>
-        
-                {subModule.features.length > 0 && (
-                  <i
-                    className={`fa-solid fa-caret-down text-[12px] text-gray-400 transform transition-transform duration-100 ease-in-out ${
-                      openSubModuleIndex === index ? "rotate-180" : ""
-                    }`}
-                    onClick={() => toggleSubModule(index)}
-                  ></i>
-                )}
-              </div>
+                <div
+                  className={`flex items-center justify-between text-gray-400 hover:bg-gray-100 hover:text-gray-700 ${
+                    openSubModuleIndex === index
+                      ? "bg-gray-100 shadow-sm text-gray-700"
+                      : undefined
+                  } rounded-lg  p-3 cursor-pointer`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <i className={`${subModule.icon} text-[18px]`}></i>
+                    <span className="text-[15px]">{subModule.name}</span>
+                  </div>
 
+                  {subModule.features.length > 0 && (
+                    <i
+                      className={`fa-solid fa-caret-down text-[12px] text-gray-400 transform transition-transform duration-100 ease-in-out ${
+                        openSubModuleIndex === index ? "rotate-180" : ""
+                      }`}
+                      onClick={() => toggleSubModule(index)}
+                    ></i>
+                  )}
+                </div>
 
                 {openSubModuleIndex === index && (
-                  <ul className="space-y-1 p-4 text-[14px] text-gray-500">
+                  <div className="space-y-1 p-3 text-[14px] text-gray-500">
                     {subModule.features.map((feature, featureIndex) => (
-                      <li
+                      <div
                         key={featureIndex}
-                        className="m-1 w-full cursor-pointer hover:bg-gray-100 relative pl-6 leading-8"
+                        className="flex items-center w-full cursor-pointer hover:bg-gray-100 relative rounded-lg p-2 leading-4"
                         onClick={() => handleFeatureSelect(feature)}
                       >
-                        <span className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-                        {feature.name}
-                      </li>
+                        <span className="absolute left-5 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
+
+                        <div className="flex items-center w-full space-x-2 pl-6">
+                          <span className="text-gray-700">{feature.name}</span>
+                        </div>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
             ))}
@@ -131,7 +140,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
         {!isOpen && (
           <div className="flex flex-col items-center space-y-4">
-          <i className="fa-solid fa-ellipsis font-extrabold text-3xl text-gray-500"></i>
+            <i className="fa-solid fa-ellipsis font-extrabold text-3xl text-gray-500"></i>
 
             {selectedModule.subModules.map((subModule, index) => (
               <button

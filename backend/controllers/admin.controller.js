@@ -1,9 +1,8 @@
-const {User,Organisation,TradingHour,Department,Designation,EmploymentType} = require('../config/sequelize');
+const {User,Organisation,TradingHour,Department,Designation,EmploymentType,PayGroup} = require('../config/sequelize');
 require('dotenv').config({ path: process.env.ENV_FILE || '.env' });
 
 module.exports.submitCompanyForm = async (req, res) => {
   try {
-    console.log(req.body);
     const {
       Company_admin_id,
       Company_name,
@@ -220,7 +219,6 @@ module.exports.submitCompanyForm = async (req, res) => {
   module.exports.getOrganisations = async (req, res) => {
     try {
       const { admin_id } = req.query; 
-      console.log('here to find organisation ' ,admin_id);
       const organisation = await Organisation.findOne({
         where: { admin_id },
         attributes: [
@@ -340,7 +338,6 @@ module.exports.submitCompanyForm = async (req, res) => {
 
   module.exports.addDepartment = async (req, res) => {
     const id = req.params.id;
-    console.log('Add/Update department hit', id, req.body);
 
     const { department_name, isUpdate, department_id } = req.body;
 
@@ -382,7 +379,6 @@ module.exports.submitCompanyForm = async (req, res) => {
 
 
 module.exports.getDepartments = async (req, res) => {
-  console.log(req.params.id, 'hit departments get');
   
   try {
     const departments = await Department.findAll({
@@ -405,11 +401,16 @@ module.exports.getDepartments = async (req, res) => {
   }
 };
 
-
 module.exports.addDesignation = async (req, res) => {
-  const id = req.params.id; 
-  console.log("Add/Update designation hit", id, req.body);
   const { designation_name, department_name, isUpdate, designation_id } = req.body;
+  console.log(
+    "here to update designations ",
+    designation_name,
+    department_name,
+    designation_id,
+    "department id ",
+    req.params.id
+  );
 
   try {
     if (isUpdate) {
@@ -423,19 +424,19 @@ module.exports.addDesignation = async (req, res) => {
         });
       }
 
-      const updatedDesignation = await designationToUpdate.update({
-        designation_name: designation_name,
-        department_id: id, 
-      });
+      designationToUpdate.designation_name = designation_name;
+      designationToUpdate.department_id = req.params.id; // Ensure department_id is updated here
+      console.log("designation updated ", designationToUpdate);
+      await designationToUpdate.save();
 
       return res.status(201).json({
         message: "Designation updated successfully",
-        designation: updatedDesignation,
+        designation: designationToUpdate,
       });
     } else {
       const newDesignation = await Designation.create({
         designation_name: designation_name,
-        department_id: id,
+        department_id: req.params.id, // Correctly assign department_id here
       });
 
       return res.status(201).json({
@@ -487,7 +488,6 @@ module.exports.addDesignation = async (req, res) => {
 
   module.exports.getDesignations = async (req, res) => {
     const companyId = req.params.id; 
-    console.log(companyId, "hit designation get");
   
     try {
       const designations = await Designation.findAll({
@@ -520,7 +520,6 @@ module.exports.addDesignation = async (req, res) => {
 
 module.exports.addEmployeeType = async(req,res) => {
   const id = req.params.id; //company id
-  console.log('Add/Update employee type hit', id, req.body);
 
   const { Employment_Type, isUpdate, type_id } = req.body;
 
@@ -561,7 +560,6 @@ module.exports.addEmployeeType = async(req,res) => {
 }
 
 module.exports.getEmployeeTypes = async (req,res) => {
-  console.log(req.params.id, 'hit employee type get');
   
   try {
     const types = await EmploymentType.findAll({
@@ -583,6 +581,73 @@ module.exports.getEmployeeTypes = async (req,res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
+
+module.exports.addPayGroup = async(req,res) => {
+  const id = req.params.id; //company id
+
+  const { paygroup,status, isUpdate, group_id } = req.body;
+  try {
+      if (isUpdate) {
+        const group = await PayGroup.findOne({
+          where: {
+              id: group_id,
+          }
+      });
+          if (group) {
+            console.log('updating group ',group);
+              group.paygroup = paygroup;
+              group.status = status;
+              await group.save();
+              console.log('pay group updatedd');
+              return res.status(201).json({
+                  message: 'group updated successfully',
+                  group,
+              });
+          } else {
+              return res.status(404).json({ message: 'pay group not found' });
+          }
+      } else {
+          const newGroup = await PayGroup.create({
+              paygroup,
+              status,
+              organisation_id: id,
+          });
+
+          return res.status(201).json({
+              message: 'Paygroup created successfully',
+              group: newGroup,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.getPayGroups = async(req,res) => {
+    try {
+      const paygroups = await PayGroup.findAll({
+        where: { organisation_id: req.params.id },
+      });
+  
+      const formattedData = paygroups.map((group, index) => {
+        return {
+          id: group.id,
+          "Sl. No.": index + 1,
+          "Pay Group": group.paygroup,
+          "Status" : group.status,
+          Action: "Edit", 
+        };
+      });
+  
+      res.status(200).json(formattedData);  
+    }
+    catch(err){
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 module.exports.uploadDocuments = (req,res) => {
    console.log('upload documents hittt ' ,id,req.file.filename);
 }

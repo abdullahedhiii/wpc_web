@@ -19,6 +19,17 @@ export const CompanyProvider = ({ children }) => {
   const [departmentData, setDepartmentData] = useState([]);
   const [designationData, setDesignationData] = useState([]);
   const [employeeTypes,setEmployeeTypes] = useState([]);
+  const [payGroups,setpayGroups] = useState([]);
+
+  const fetchPayGroups = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axios.get(`/api/getPayGroups/${id_to}`);
+      setpayGroups(response.data);
+    } catch (err) {
+      setpayGroups([]);
+    }
+  }
 
   const fetchTypes = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
@@ -89,6 +100,7 @@ export const CompanyProvider = ({ children }) => {
       fetchDepartments(response.data.id);
       fetchDesignations(response.data.id);
       fetchTypes(response.data.id);
+      fetchPayGroups(response.data.id);
     } catch (err) {
       console.log('errorr ',err);
       setCompanyData([]);
@@ -123,7 +135,10 @@ export const CompanyProvider = ({ children }) => {
         designationData,
         fetchDesignations,
         employeeTypes,
-        fetchTypes
+        fetchTypes,
+        payGroups,
+        setpayGroups,
+        fetchPayGroups
       }}
     >
       {children}

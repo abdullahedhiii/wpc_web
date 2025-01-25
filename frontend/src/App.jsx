@@ -31,6 +31,7 @@ import KeyContact from './Components/Organisation Profile/KeyContact';
 import DepartmentForm from './Components/Settings/DepartmentForm';
 import DesignationForm from './Components/Settings/DesignationForm';
 import EmploymentTypeForm from './Components/Settings/EmploymentTypeForm';
+import PayGroupForm from './Components/Settings/PayGroupForm';
 
 
 const MainLayout = () => {
@@ -200,6 +201,18 @@ const router = createBrowserRouter([
       {
         path : "settings/employee-type/:type_id",
         element: (<ProtectedRoute><EmploymentTypeForm/> </ProtectedRoute>)
+      },
+      {
+        path : "settings/vw-paygroup",
+        element: (<ProtectedRoute><PayGroup/></ProtectedRoute>)
+      },
+      {
+        path : "settings/paygroup",
+        element: (<ProtectedRoute><PayGroupForm/> </ProtectedRoute>)
+      },
+      {
+        path : "settings/paygroup/:group_id",
+        element: (<ProtectedRoute><PayGroupForm/> </ProtectedRoute>)
       }
     ],
   },

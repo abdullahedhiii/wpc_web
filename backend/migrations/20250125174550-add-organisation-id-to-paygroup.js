@@ -3,29 +3,33 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Designations', {
+    await queryInterface.createTable('PayGroups', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      department_id: {
+      organisation_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
-          model: 'Departments', 
+          model: 'Organisations', 
           key: 'id',
         },
         onDelete: 'CASCADE', 
       },
-      designation_name: {
+      paygroup: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      status:{
+        type: Sequelize.STRING,
+        allowNull:false
       }
     });
   },
 
   async down (queryInterface, Sequelize) {
-     await queryInterface.dropTable('Designations');
+     await queryInterface.dropTable('PayGroups');
   }
 }; 

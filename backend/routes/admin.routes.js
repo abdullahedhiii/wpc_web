@@ -6,7 +6,9 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   updateCompany,uploadDocuments,addDepartment,
   getDepartments,addEmployeeType,getEmployeeTypes,
   addDesignation,
-  getDesignations
+  getDesignations,
+  addPayGroup,
+  getPayGroups
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',upload.fields([
@@ -28,4 +30,8 @@ router.get('/getDesignations/:id',getDesignations);
 
 router.post('/addEmployeeType/:id',addEmployeeType);
 router.get('/getEmployeeTypes/:id',getEmployeeTypes);
+
+router.post('/addPayGroup/:id',addPayGroup);
+router.get('/getPayGroups/:id',getPayGroups);
+
 module.exports = router;

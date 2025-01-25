@@ -55,7 +55,7 @@ const DesignationForm = () => {
     const d_id = departmentData.find(
       (ele) => ele["Department Name"] === data.department_name
     );
-    console.log("found department is ", d_id);
+    console.log("found department is ", d_id,d_id.id);
     try {
       console.log("in submit designation ", d_id.id, data);
       const response = await axios.post(`/api/addDesignation/${d_id.id}`, DataTosend);
@@ -70,7 +70,7 @@ const DesignationForm = () => {
   };
 
   return (
-    <div className="p-16">
+    <div className="m-12 pt-12">
       <NewForm
         icon="far fa-building"
         title="New Designation"
