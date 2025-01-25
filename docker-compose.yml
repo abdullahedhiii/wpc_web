@@ -6,20 +6,31 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"  # Map React app (Nginx) to localhost:3000
+      - "5173:5173"  # Map React app (Nginx) to localhost:3000
+    environment:
+      - VITE_API_URL=http://backend:3300  # Set the backend API URL dynamically for the frontend
     depends_on:
-      - backend
+      - backend  # Ensure the backend service is up before starting the frontend
     networks:
       - app-network
+    volumes:
+      - ./frontend/.env:/app/.env  # Optional: Mount the .env file for frontend (if needed)
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"  # Map backend to localhost:5000
+      - "3300:3300"  # Map backend to localhost:3300
     environment:
       - NODE_ENV=production
+      - DB_HOST=host.docker.internal  # DB_HOST set to localhost as you're using local DB
+      - DB_PORT=5433
+      - DB_USER=abdullah_edhi
+      - DB_PASSWORD=edhi
+      - DB_NAME=wpc_database
+    volumes:
+      - ./backend/.env:/app/.env  # Optional: Mount the .env file for backend (if needed)
     networks:
       - app-network
 
