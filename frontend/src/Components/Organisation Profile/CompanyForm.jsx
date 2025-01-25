@@ -744,9 +744,8 @@ const CompanyForm = () => {
       }
     });
 
-    // Submit trading hours data
     tradingHours.forEach((tradingHour, index) => {
-      const formKey = `tradingHours[${index}]`; // Use an index to differentiate each item in the array
+      const formKey = `tradingHours[${index}]`; 
       formDataToSend.append(formKey, JSON.stringify(tradingHour));
     });
 

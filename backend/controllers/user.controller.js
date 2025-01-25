@@ -28,6 +28,11 @@ module.exports.Register = async (req, res) => {
       expiresIn: '1d',
     });
 
+    res.cookie('sessionToken', token, {
+      httpOnly: true,  
+      secure: false,  
+      maxAge: 24 * 60 * 60 * 1000,  
+    });
     return res.status(201).json({
       message: 'User registered successfully.',
       token,
@@ -85,14 +90,15 @@ module.exports.Login = async (req, res) => {
 module.exports.getModules = async (req, res) => {
   console.log('modules endpoint hittt');
   try {
-    // Fetch modules with related data
     const modules = await Module.findAll({
-      order: [['id', 'ASC']],
+      order: [['id', 'ASC']], 
       include: [
         {
           model: Dashboard,
           as: 'dashboard',
-          attributes: ['name', 'completed', 'color', 'icon', 'count', 'percentage','view_route'],
+          attributes: ['id','name', 'completed', 'color', 'icon', 'count', 'percentage','view_route'],
+          separate:true,
+          order: [['id', 'ASC']], 
         },
         {
           model: SubModule,
@@ -101,10 +107,14 @@ module.exports.getModules = async (req, res) => {
             {
               model: Feature,
               as: 'features',
-              attributes: ['name', 'next_route','plus_icon_route','action_route', 'icon'], // Fetch necessary fields for features
+              attributes: ['id','name', 'next_route','plus_icon_route','action_route', 'icon'], 
+              separate:true,
+              order: [['id', 'ASC']], 
             },
           ],
-          attributes: ['name', 'main_route','icon'], 
+          attributes: ['id','name', 'main_route','icon'], 
+          separate:true,
+          order: [['id', 'ASC']], 
         },
       ],
     });
@@ -114,34 +124,30 @@ module.exports.getModules = async (req, res) => {
       name: module.name,
       icon_image: module.icon_image,
       next_route: module.next_route,
-      dashboard: module.dashboard
-        .sort((a, b) => a.id - b.id)
-        .map((d) => ({
-          name: d.name,
-          completed: d.completed,
-          color: d.color,
-          icon: d.icon || '',
-          count: d.count || -1, 
-          percentage: d.percentage || -1,
-          view_route:d.view_route
+      button_title : module.button_title,
+      dashboard: module.dashboard.map((d) => ({
+        name: d.name,
+        completed: d.completed,
+        color: d.color,
+        icon: d.icon || '',
+        count: d.count || -1,
+        percentage: d.percentage || -1,
+        view_route: d.view_route,
+      })),
+      subModules: module.subModules.map((subModule) => ({
+        name: subModule.name,
+        main_route: subModule.main_route,
+        icon: subModule.icon,
+        features: subModule.features.map((feature) => ({
+          name: feature.name,
+          next_route: feature.next_route,
+          icon: feature.icon || '',
+          plus_icon_route: feature.plus_icon_route,
+          action_route: feature.action_route,
         })),
-      subModules: module.subModules
-        .sort((a, b) => a.id - b.id) 
-        .map((subModule) => ({
-          name: subModule.name,
-          main_route: subModule.main_route,
-          icon : subModule.icon,
-          features: subModule.features
-            .sort((a, b) => a.id - b.id) 
-            .map((feature) => ({
-              name: feature.name,
-              next_route: feature.next_route,
-              icon: feature.icon || '',
-              plus_icon_route: feature.plus_icon_route,
-              action_route: feature.action_route,
-            })),
-        })),
+      })),
     }));
+    
 
     res.status(200).json(formattedModules);
   } catch (error) {

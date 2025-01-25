@@ -10,9 +10,12 @@ const DataTable = ({
   searchable = true,
   downloadable = true,
   addMore,
+  icon,
+  isDashboard
 }) => {
   const { selectedFeature } = useModuleContext();
-  console.log("in data table ", data);
+
+
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
@@ -66,20 +69,20 @@ const DataTable = ({
   const filteredFields = fields.filter((field) => field !== "id");
 
   return (
-    <div className=" w-full p-4 border-t-4 border-tt bg-white rounded-lg shadow-md">
+    <div className=" w-full border-t-4 border-tt bg-white rounded-md shadow-md">
       {title && (
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-2">
-            {selectedFeature && (
-              <i className={`la ${selectedFeature.icon} text-2xl`}></i>
+        <div className="flex justify-between items-center mb-4 border-b-2 border-b-gray-200">
+          <div className="p-2 flex items-center space-x-2">
+            {!isDashboard && selectedFeature && (
+              <i className={`la ${selectedFeature.icon} pl-2 text-xl`}></i>
             )}
-            {!selectedFeature && <i className="la la-building text-2xl"></i>}
-            <h2 className="text-lg">{title}</h2>
+            {isDashboard && <i className={`${icon} text-xl`}></i>}
+            <h2 className="text-[18px] font-semibold text-blue-900">{title}</h2>
           </div>
           {downloadable && (
             <button
               title="Export Data"
-              className="bg-background text-white w-10 h-10 border rounded-full hover:text-blue-700"
+              className="p-2 bg-background text-white w-10 h-10 border rounded-full hover:text-blue-700"
             >
               <i className="la la-download text-2xl"></i>
             </button>
@@ -87,16 +90,17 @@ const DataTable = ({
           {addMore && (
             <button
               title="Export Data"
-              className="bg-background text-white w-10 h-10 border rounded-full hover:text-blue-700"
+              className="m-3 bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
+              onClick={() => navigate(`/hrms/${selectedFeature.plus_icon_route}`)}
             >
-              <i className="la la-plus text-2xl"></i>
+              <i className="la la-plus text-xl"></i>
             </button>
           )}
         </div>
       )}
 
       {(showEntries || searchable) && (
-        <div className="flex justify-between items-center mb-4">
+        <div className="px-8 flex justify-between items-center mb-4">
           {showEntries && (
             <div>
               <label htmlFor="entries" className="mr-2">
@@ -106,7 +110,7 @@ const DataTable = ({
                 id="entries"
                 value={numentries}
                 onChange={(e) => setNumentries(parseInt(e.target.value, 10))}
-                className="border rounded px-2 py-1"
+                className="border rounded px-4 py-1"
               >
                 <option value="5">5</option>
                 <option value="10">10</option>
@@ -134,7 +138,7 @@ const DataTable = ({
       )}
 
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-spacing-0.5 border-separate">
+        <table className="px-8 py-4 min-w-full table-auto border-spacing-0.5 border-separate">
           <thead>
             <tr className="bg-gray-100">
               {filteredFields.map((field, index) => (
@@ -164,7 +168,7 @@ const DataTable = ({
               displayedData.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className={rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  className={rowIndex % 2 !== 0 ? "bg-white hover:bg-gray-100" : "bg-gray-100 hover:bg-gray-200"}
                 >
                   {filteredFields.map((field, colIndex) => (
                     <td
@@ -218,7 +222,7 @@ const DataTable = ({
         </table>
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="px-8 py-2 flex justify-between items-center mt-2">
         <div>
           Showing {Math.min(filteredData.length, numentries)} of{" "}
           {filteredData.length} entries

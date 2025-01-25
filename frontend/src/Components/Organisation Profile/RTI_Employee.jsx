@@ -37,6 +37,8 @@ const RTIEmployee = () => {
         showEntries
         searchable
         downloadable
+        icon="la la-user"
+        isDashboard = {true}
       />
     </div>
   );

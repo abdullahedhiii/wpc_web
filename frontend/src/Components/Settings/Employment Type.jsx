@@ -1,35 +1,34 @@
+import { useEffect } from "react";
 import DataTable from "../DataTable";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 
 const EmploymentType = () => {
-    const columns = [
+  const {fetchTypes,employeeTypes} = useCompanyContext();  
+  const columns = [
         "Sl. No.",
-        "Employment Type ",
+        "Employment Type",
         "Action",
       ];
     
-      const data = [
-        {
-           "Sl. No." : 1,
-           "Employment Type" : "DDD",
-           "Action" : "Edit"
-        }
-      ]; 
+      useEffect(() => {
+          fetchTypes();
+      },[]);
     
       return (
-        <>
+        <div className="p-6">
           <p className="mt-10 text-gray-400 mb-4">
             Home / HCM Master<span className="text-tt"> / Employment Type</span>
           </p>
           <DataTable
             title="Employment Type"
             fields={columns}
-            data={data}
+            data={employeeTypes}
             showEntries
             searchable
             downloadable = {false}
             addMore = {true}
           />
-        </>
+        </div>
       );
 };
 

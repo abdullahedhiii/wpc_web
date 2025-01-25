@@ -1,34 +1,35 @@
+import { useEffect,useState } from "react";
 import DataTable from "../DataTable";
+import { useCompanyContext } from "../../contexts/CompanyContext";
+import axios from "axios";
 
 const Department = () => {
+    const {companyData,fetchDepartments,departmentData} = useCompanyContext();
     const columns = [
         "Sl. No.",
         "Department Name",
         "Action",
       ];
+    useEffect(() => {
+         fetchDepartments();
+    },[companyData])
     
-      const data = [
-        {
-           "Sl. No." : 1,
-           "Department Name" : "DDD",
-           "Action" : "Edit"
-        }
-      ]; 
-    
-      return (
+    return (
         <>
+          <div className="p-6">
           <p className="mt-10 text-gray-400 mb-4">
             Home / HCM Master<span className="text-tt"> / Department</span>
           </p>
           <DataTable
             title="Department"
             fields={columns}
-            data={data}
+            data={departmentData}
             showEntries
             searchable
             downloadable = {false}
             addMore = {true}
           />
+          </div>
         </>
       );
 };
