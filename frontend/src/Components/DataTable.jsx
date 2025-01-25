@@ -69,7 +69,7 @@ const DataTable = ({
   const filteredFields = fields.filter((field) => field !== "id");
 
   return (
-    <div className=" w-full border-t-4 border-tt bg-white rounded-md shadow-md">
+    <div className="x-2 border-t-4 border-tt bg-white rounded-md shadow-md">
       {title && (
         <div className="flex justify-between items-center mb-4 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
@@ -100,7 +100,7 @@ const DataTable = ({
       )}
 
       {(showEntries || searchable) && (
-        <div className="px-8 flex justify-between items-center mb-4">
+        <div className="px-8 flex justify-between items-center mb-2">
           {showEntries && (
             <div>
               <label htmlFor="entries" className="mr-2">

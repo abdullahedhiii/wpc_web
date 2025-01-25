@@ -53,7 +53,7 @@ const EmploymentTypeForm = () =>{
    ];
 
     return(
-        <div className="p-16">
+        <div className="m-12 pt-12">
                 <NewForm 
                    icon= "la la-user"
                    title="New Employment Type"

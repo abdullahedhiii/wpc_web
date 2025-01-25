@@ -1,29 +1,33 @@
 
 module.exports = (sequelize, DataTypes) => {
-    const Designation = sequelize.define("Designation", {
+    const PayGroup = sequelize.define("PayGroup", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      department_id: {
+      organisation_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
-          model: "Departments",
+          model: "Organisations",
           key: "id",
         },
         onDelete: 'CASCADE', 
       },
-      designation_name:{
+      paygroup:{
           type: DataTypes.STRING,
           allowNull:false,
       },
+      status:{
+          type: DataTypes.STRING,
+          allowNull:false
+      }
     },
     {
-      tableName: "Designations",
+      tableName: "PayGroups",
       timestamps: false,
     });
-    return Designation;
+    return PayGroup;
   };
   

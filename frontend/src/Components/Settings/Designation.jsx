@@ -17,8 +17,8 @@ const Designation = () => {
 
       return (
         <>
-        <div className="p-6">
-           <p className="mt-10 text-gray-400 mb-4">
+        <div className="m-12">
+           <p className="text-gray-400 mb-4 text-[12px]">
             Home / HCM Master<span className="text-tt"> / Designation</span>
           </p>
           <DataTable

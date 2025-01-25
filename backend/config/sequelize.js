@@ -32,6 +32,7 @@ const TradingHour = require('../models/TradingHour')(sequelize,DataTypes);
 const Department = require('../models/Department')(sequelize,DataTypes);
 const Designation = require('../models/Designation')(sequelize,DataTypes);
 const EmploymentType = require('../models/EmploymentType')(sequelize,DataTypes);
+const PayGroup = require('../models/PayGroup')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -54,4 +55,9 @@ Department.hasMany(Designation, { as: "designations", foreignKey: "department_id
 Organisation.hasMany(EmploymentType, {foreignKey: "organisation_id",as: "employmentTypes",});
 EmploymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-module.exports = { sequelize, User,Organisation, Module, Dashboard, SubModule, Feature,TradingHour,Department,Designation,EmploymentType};
+
+Organisation.hasMany(PayGroup, {foreignKey: "organisation_id",as: "paygroups",});
+PayGroup.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+
+module.exports = { sequelize, User,Organisation, Module, Dashboard, SubModule, Feature,TradingHour,Department,Designation,EmploymentType,PayGroup};

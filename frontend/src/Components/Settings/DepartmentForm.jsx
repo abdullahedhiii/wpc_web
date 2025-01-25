@@ -52,7 +52,7 @@ const DepartmentForm = () =>{
    ];
 
     return(
-        <div className="p-16">
+        <div className="m-12 pt-12">
                 <NewForm 
                    icon= "far fa-building"
                    title="New Department"

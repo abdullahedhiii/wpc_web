@@ -77,7 +77,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
             <div className="flex items-center">
               <button
                 onClick={handleSideBarClose}
-                className="text-tt hover:text-blue-800"
+                className="text-blue-700 hover:text-blue-800"
                 title="Toggle Sidebar"
               >
                 <i className="la la-bars text-3xl"></i>
@@ -95,7 +95,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
             <div className="flex items-center">
               <button
                 onClick={toggleMenu}
-                className="text-tt hover:text-blue-800"
+                className="text-blue-700 hover:text-blue-800"
                 title="Options"
               >
                 <i className="la la-ellipsis-v text-4xl"></i>
@@ -158,7 +158,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                   {isLogo ? (
                     <i className="ml-20 fas fa-bars font-extrabold text-xl"></i>
                   ) : (
-                    <i className="fa-solid fa-ellipsis-v  text-2xl text-tt ml-6"></i>
+                    <i className="fa-solid fa-ellipsis-v text-2xl  ml-6"></i>
                   )}
                 </button>
               )}
