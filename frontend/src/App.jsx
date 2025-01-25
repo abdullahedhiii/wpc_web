@@ -28,6 +28,9 @@ import Level1User from './Components/Organisation Profile/Level1User';
 import RTIEmployee from './Components/Organisation Profile/RTI_Employee';
 import AuthorizingOfficer from './Components/Organisation Profile/Authorizing_Officer';
 import KeyContact from './Components/Organisation Profile/KeyContact';
+import DepartmentForm from './Components/Settings/DepartmentForm';
+import DesignationForm from './Components/Settings/DesignationForm';
+import EmploymentTypeForm from './Components/Settings/EmploymentTypeForm';
 
 
 const MainLayout = () => {
@@ -157,6 +160,46 @@ const router = createBrowserRouter([
       {
         path : "company-key-contact",
         element : (<ProtectedRoute><KeyContact/> </ProtectedRoute>)
+      },
+      {
+        path : "settingsdashboard",
+        element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
+      },
+      {
+        path: "settings/vw-department",
+        element: (<ProtectedRoute><Department/></ProtectedRoute>)
+      },
+      {
+        path: "settings/add-new-department",
+        element : (<ProtectedRoute><DepartmentForm/></ProtectedRoute>)
+      },
+      {
+        path: "settings/add-new-department/:department_id",
+        element : (<ProtectedRoute><DepartmentForm/></ProtectedRoute>)
+      },
+      {
+        path: "settings/vw-designation",
+        element : (<ProtectedRoute><Designation/></ProtectedRoute>)
+      },
+      {
+        path : "settings/designation",
+        element: (<ProtectedRoute><DesignationForm/></ProtectedRoute>)
+      },
+      {
+        path : "settings/designation/:designation_id",
+        element: (<ProtectedRoute><DesignationForm/></ProtectedRoute>)
+      },
+      {
+        path : "settings/vw-employment-type",
+        element: (<ProtectedRoute><EmploymentType/></ProtectedRoute>)
+      },
+      {
+        path : "settings/employee-type",
+        element: (<ProtectedRoute><EmploymentTypeForm/> </ProtectedRoute>)
+      },
+      {
+        path : "settings/employee-type/:type_id",
+        element: (<ProtectedRoute><EmploymentTypeForm/> </ProtectedRoute>)
       }
     ],
   },

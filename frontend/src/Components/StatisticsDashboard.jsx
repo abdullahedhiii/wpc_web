@@ -68,14 +68,14 @@ const CircularProgress = ({ current }) => {
 const StatisticsDashboard = ({ title }) => {
   const { selectedModule } = useModuleContext();
   const dashboard = selectedModule.dashboard;
-
+  console.log('in statss ',dashboard);
   return (
     <>
       <p className="p-14 text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl">
         Dashboard
       </p>
-      <div className="relative top-[-124px] m-24 border-2 border-t-4 border-t-background rounded-lg shadow-lg p-6">
-        <h2 className="text-blue-800 text-lg font-sm mb-6">{title}</h2>
+      <div className="m-24 relative top-[-124px]  border-1 border-t-4 border-t-blue-800 rounded-lg shadow-2xl p-6">
+        <h2 className="text-blue-800 text-[15px] font-sm mb-6">{title}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {dashboard.map((item, index) => (
             <CircularProgress key={index} current={item} />

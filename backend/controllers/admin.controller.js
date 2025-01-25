@@ -1,5 +1,5 @@
-const {User,Organisation,TradingHour} = require('../config/sequelize');
-require('dotenv').config();
+const {User,Organisation,TradingHour,Department,Designation,EmploymentType} = require('../config/sequelize');
+require('dotenv').config({ path: process.env.ENV_FILE || '.env' });
 
 module.exports.submitCompanyForm = async (req, res) => {
   try {
@@ -338,6 +338,252 @@ module.exports.submitCompanyForm = async (req, res) => {
     }
   };
 
-module.exports.uploadDocuments = (req,res) => {
-   console.log('upload documents hittt' ,req.file.filename);
+  module.exports.addDepartment = async (req, res) => {
+    const id = req.params.id;
+    console.log('Add/Update department hit', id, req.body);
+
+    const { department_name, isUpdate, department_id } = req.body;
+
+    try {
+        if (isUpdate) {
+          const department = await Department.findOne({
+            where: {
+                id: department_id,
+            }
+        });
+            if (department) {
+              console.log('updating department ',department);
+                department.department_name = department_name;
+                await department.save();
+                console.log('department updatedd');
+                return res.status(201).json({
+                    message: 'Department updated successfully',
+                    department,
+                });
+            } else {
+                return res.status(404).json({ message: 'Department not found' });
+            }
+        } else {
+            const newDepartment = await Department.create({
+                department_name,
+                organisation_id: id,
+            });
+
+            return res.status(201).json({
+                message: 'Department created successfully',
+                department: newDepartment,
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+module.exports.getDepartments = async (req, res) => {
+  console.log(req.params.id, 'hit departments get');
+  
+  try {
+    const departments = await Department.findAll({
+      where: { organisation_id: req.params.id },
+    });
+
+    const formattedData = departments.map((department, index) => {
+      return {
+        id: department.id,
+        "Sl. No.": index + 1,
+        "Department Name": department.department_name,
+        Action: "Edit", 
+      };
+    });
+
+    res.status(200).json(formattedData);  
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+module.exports.addDesignation = async (req, res) => {
+  const id = req.params.id; 
+  console.log("Add/Update designation hit", id, req.body);
+  const { designation_name, department_name, isUpdate, designation_id } = req.body;
+
+  try {
+    if (isUpdate) {
+      const designationToUpdate = await Designation.findOne({
+        where: { id: designation_id },
+      });
+
+      if (!designationToUpdate) {
+        return res.status(404).json({
+          message: "Designation not found for update",
+        });
+      }
+
+      const updatedDesignation = await designationToUpdate.update({
+        designation_name: designation_name,
+        department_id: id, 
+      });
+
+      return res.status(201).json({
+        message: "Designation updated successfully",
+        designation: updatedDesignation,
+      });
+    } else {
+      const newDesignation = await Designation.create({
+        designation_name: designation_name,
+        department_id: id,
+      });
+
+      return res.status(201).json({
+        message: "Designation created successfully",
+        designation: newDesignation,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+  // try {
+  //     if (isUpdate) {
+  //       const department = await Department.findOne({
+  //         where: {
+  //             id: department_id,
+  //         }
+  //     });
+  //         if (department) {
+  //           console.log('updating department ',department);
+  //             department.department_name = department_name;
+  //             await department.save();
+  //             console.log('department updatedd');
+  //             return res.status(201).json({
+  //                 message: 'Department updated successfully',
+  //                 department,
+  //             });
+  //         } else {
+  //             return res.status(404).json({ message: 'Department not found' });
+  //         }
+  //     } else {
+  //         const newDepartment = await Department.create({
+  //             department_name,
+  //             organisation_id: id,
+  //         });
+
+  //         return res.status(201).json({
+  //             message: 'Department created successfully',
+  //             department: newDepartment,
+  //         });
+  //     }
+  // } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).json({ message: 'Internal server error' });
+  // }
+
+  module.exports.getDesignations = async (req, res) => {
+    const companyId = req.params.id; 
+    console.log(companyId, "hit designation get");
+  
+    try {
+      const designations = await Designation.findAll({
+        include: [
+          {
+            model: Department,
+            as: "department",
+            attributes: ["department_name", "organisation_id"], 
+            where: { organisation_id: companyId },
+          },
+        ],
+        order: [["id", "ASC"]], 
+      });
+      const formattedData = designations.map((designation, index) => {
+        return {
+          id: designation.id,
+          "Sl. No.": index + 1,
+          "Department Name": designation.department.department_name, 
+          "Designation": designation.designation_name,
+          Action: "Edit",
+        };
+      });
+  
+      res.status(200).json(formattedData);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+module.exports.addEmployeeType = async(req,res) => {
+  const id = req.params.id; //company id
+  console.log('Add/Update employee type hit', id, req.body);
+
+  const { Employment_Type, isUpdate, type_id } = req.body;
+
+  try {
+      if (isUpdate) {
+        const type = await EmploymentType.findOne({
+          where: {
+              id: type_id,
+          }
+      });
+          if (type) {
+            console.log('updating type ',type);
+              type.employment_type = Employment_Type;
+              await type.save();
+              console.log('employee type updatedd');
+              return res.status(201).json({
+                  message: 'type updated successfully',
+                  type,
+              });
+          } else {
+              return res.status(404).json({ message: 'Employee Type not found' });
+          }
+      } else {
+          const newType = await EmploymentType.create({
+              employment_type : Employment_Type,
+              organisation_id: id,
+          });
+
+          return res.status(201).json({
+              message: 'Employee type created successfully',
+              employeeType: newType,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
 }
+
+module.exports.getEmployeeTypes = async (req,res) => {
+  console.log(req.params.id, 'hit employee type get');
+  
+  try {
+    const types = await EmploymentType.findAll({
+      where: { organisation_id: req.params.id },
+    });
+
+    const formattedData = types.map((type, index) => {
+      return {
+        id: type.id,
+        "Sl. No.": index + 1,
+        "Employment Type": type.employment_type,
+        Action: "Edit", 
+      };
+    });
+
+    res.status(200).json(formattedData);  
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+module.exports.uploadDocuments = (req,res) => {
+   console.log('upload documents hittt ' ,id,req.file.filename);
+}
+

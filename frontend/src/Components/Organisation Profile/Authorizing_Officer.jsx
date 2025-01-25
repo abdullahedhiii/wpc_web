@@ -13,6 +13,7 @@ const AuthorizingOfficer = () => {
     "Email ID",
     "Do you have a history of criminal conviction/Bankrupcy",
     "Proof of Id",
+    
   ];
 
   const mappedData = authorizingDetails.map((detail, index) => ({
@@ -39,6 +40,9 @@ const AuthorizingOfficer = () => {
         showEntries
         searchable
         downloadable
+        icon="la la-user"
+        isDashboard = {true}
+
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../redux/userSlice";
+import { logout } from "../redux/UserSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 
@@ -80,7 +80,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                 className="text-tt hover:text-blue-800"
                 title="Toggle Sidebar"
               >
-                <i className="la la-bars text-4xl"></i>
+                <i className="la la-bars text-3xl"></i>
               </button>
             </div>
 
@@ -152,11 +152,11 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
               {isLoggedIn && location.pathname !== "/employeeDashboard" && (
                 <button
                   onClick={handleSideBarClose}
-                  className="text-tt hover:text-blue-800"
+                  className="text-blue-700 font-extrabold hover:text-blue-800"
                   title="Toggle Sidebar"
                 >
                   {isLogo ? (
-                    <i className="ml-20 fas fa-bars font-extrabold text-2xl"></i>
+                    <i className="ml-20 fas fa-bars font-extrabold text-xl"></i>
                   ) : (
                     <i className="fa-solid fa-ellipsis-v  text-2xl text-tt ml-6"></i>
                   )}
@@ -175,7 +175,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                 </button>
                 {selectedModule.name !== "Organisation Profile" && <button
                   onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
-                  title="HRMS"
+                  title={selectedModule.button_title}
                 >
                   <img
                     src="/images/dashboard.png"
