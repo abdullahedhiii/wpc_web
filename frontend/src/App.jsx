@@ -32,7 +32,7 @@ import DepartmentForm from './Components/Settings/DepartmentForm';
 import DesignationForm from './Components/Settings/DesignationForm';
 import EmploymentTypeForm from './Components/Settings/EmploymentTypeForm';
 import PayGroupForm from './Components/Settings/PayGroupForm';
-
+import AnnualPayForm from './Components/Settings/AnnualPayForm';
 
 const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -213,7 +213,19 @@ const router = createBrowserRouter([
       {
         path : "settings/paygroup/:group_id",
         element: (<ProtectedRoute><PayGroupForm/> </ProtectedRoute>)
-      }
+      },
+      {
+        path : "settings/vw-annualpay",
+        element: (<ProtectedRoute><AnnualPay/> </ProtectedRoute>)
+      },
+      {
+        path : "settings/annualpay",
+        element: (<ProtectedRoute><AnnualPayForm/></ProtectedRoute>)
+      },
+      {
+        path : "settings/annualpay/:annual_id",
+        element: (<ProtectedRoute><AnnualPayForm/></ProtectedRoute>)
+      },
     ],
   },
 ]);

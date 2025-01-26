@@ -71,21 +71,23 @@ const DataTable = ({
   return (
     <div className="x-2 border-t-4 border-tt bg-white rounded-md shadow-md">
       {title && (
-        <div className="flex justify-between items-center mb-4 border-b-2 border-b-gray-200">
+        <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
             {!isDashboard && selectedFeature && (
               <i className={`la ${selectedFeature.icon} pl-2 text-xl`}></i>
             )}
-            {isDashboard && <i className={`${icon} text-xl`}></i>}
-            <h2 className="text-[18px] font-semibold text-blue-900">{title}</h2>
+            {isDashboard && <i className={`${icon} text-[14px]`}></i>}
+            <h2 className="text-[14px] font-semibold text-blue-900">{title}</h2>
           </div>
           {downloadable && (
+            <div className="pr-2">
             <button
               title="Export Data"
-              className="p-2 bg-background text-white w-10 h-10 border rounded-full hover:text-blue-700"
+              className="bg-background text-white w-8 h-8 border rounded-full hover:text-blue-700"
             >
-              <i className="la la-download text-2xl"></i>
+              <i className="la la-download text-[20px]"></i>
             </button>
+            </div>
           )}
           {addMore && (
             <button

@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
       onMouseOver={!isOpen ? setOpen : undefined}
     >
       <div
-        className={`p-3 text-lg flex items-center ${
+        className={`p-3 pt-6 text-lg flex items-center ${
           isOpen ? "space-x-2" : "justify-center"
         }`}
       >
@@ -70,7 +70,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
           className={`flex items-center w-full ${
             isOpen
               ? "justify-between bg-blue-600 text-white rounded-lg py-3 px-4"
-              : "justify-center bg-white text-blue-500 py-3"
+              : "justify-center bg-blue-600 text-white rounded-lg h-12 w-20 "
           } mb-4`}
           onClick={toggleDropdown}
         >
@@ -80,7 +80,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
             }`}
             onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
           >
-            <i className={`fas fa-home ${isOpen ? "text-xl" : "text-3xl"}`}></i>
+            <i className={`fas fa-home ${isOpen ? "text-xl" : "text-[26px]"}`}></i>
             {isOpen && (
               <span className="font-semibold text-[16px]">Dashboard</span>
             )}
@@ -117,14 +117,14 @@ const Sidebar = ({ isOpen, setOpen }) => {
                 </div>
 
                 {openSubModuleIndex === index && (
-                  <div className="space-y-1 p-3 text-[14px] text-gray-500">
+                  <div className="space-y-3 p-3 text-[13px] text-gray-400">
                     {subModule.features.map((feature, featureIndex) => (
                       <div
                         key={featureIndex}
                         className="flex items-center w-full cursor-pointer hover:bg-gray-100 relative rounded-lg p-2 leading-4"
                         onClick={() => handleFeatureSelect(feature)}
                       >
-                        <span className="absolute left-5 top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
+                        <span className="absolute left-5 top-1/2 transform -translate-y-1/2 w-1 h-1 bg-gray-500 rounded-full"></span>
 
                         <div className="flex items-center w-full space-x-2 pl-6">
                           <span className="text-gray-700">{feature.name}</span>
