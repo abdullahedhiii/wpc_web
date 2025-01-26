@@ -10,7 +10,7 @@ const PayGroupForm = () => {
   const {companyData,payGroups} = useCompanyContext();
   const [data, setData] = useState({
     paygroup : "",
-    status : ""
+    status : "Active"
   });
 
   

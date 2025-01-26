@@ -1,4 +1,5 @@
-const {User,Organisation,TradingHour,Department,Designation,EmploymentType,PayGroup} = require('../config/sequelize');
+const {User,Organisation,TradingHour,Department,
+       Designation,EmploymentType,PayGroup,AnnualPay} = require('../config/sequelize');
 require('dotenv').config({ path: process.env.ENV_FILE || '.env' });
 
 module.exports.submitCompanyForm = async (req, res) => {
@@ -645,6 +646,79 @@ module.exports.getPayGroups = async(req,res) => {
     catch(err){
       console.error(err);
       res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports.addAnnualPay = async (req,res) => {
+  console.log('add annual pay hitt for group ',req.params.id ,'data ', req.body)
+  const {annual_pay,paygroup,isUpdate,annual_id} = req.body;
+  try{
+      if(isUpdate){
+        const annual = await AnnualPay.findOne({
+          where: {
+              id: annual_id,
+          }
+      });
+          if (annual) {
+            console.log('updating annual pay ',annual);
+              annual.annual_pay = annual_pay;
+              annual.paygroup_id = req.param.id;
+              await annual.save();
+              console.log('annual pay updatedd');
+              return res.status(201).json({
+                  message: 'annual pay updated successfully',
+                  annual,
+              });
+          } else {
+              return res.status(404).json({ message: 'annual pay group not found' });
+          }
+      }
+      else{
+        const newAnnualPay = await AnnualPay.create({
+           paygroup_id : req.params.id,
+           annual_pay : annual_pay
+      });
+
+      return res.status(201).json({
+          message: 'AnnualPay created successfully',
+          pay: newAnnualPay,
+      });
+      }
+  }
+  catch(err){
+    console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.getAnnualPays = async(req,res) =>{
+    const companyId = req.params.id; 
+    try {
+      const annualPays = await AnnualPay.findAll({
+        include: [
+          {
+            model: PayGroup,
+            as: "paygroups",
+            attributes: ["paygroup", "organisation_id"], 
+            where: { organisation_id: companyId },
+          },
+        ],
+        order: [["id", "ASC"]], 
+      });
+      const formattedData = annualPays.map((pay, index) => {
+        return {
+          id: pay.id,
+          "Sl. No.": index + 1,
+          "Pay Group" : pay.paygroup,
+          "Annual Pay": pay.annual_pay, 
+          Action: "Edit",
+        };
+      });
+  
+      res.status(200).json(formattedData);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
     }
 };
 

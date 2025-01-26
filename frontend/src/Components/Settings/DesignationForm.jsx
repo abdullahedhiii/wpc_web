@@ -7,12 +7,13 @@ import axios from "axios";
 const DesignationForm = () => {
   const { designation_id } = useParams(); 
   const navigate = useNavigate();
+  const { departmentData, designationData } = useCompanyContext();
+
   const [data, setData] = useState({
-    department_name: "",
+    department_name: departmentData[0]['Department Name'],
     designation_name: "",
   });
 
-  const { departmentData, designationData } = useCompanyContext();
   
   useEffect(() => {
     if (designation_id) {
