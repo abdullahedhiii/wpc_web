@@ -1,8 +1,15 @@
+import { useEffect } from "react";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 import DataTable from "../DataTable";
 
-const EmployeeBank = () => {
-  const columns = ["Sl. No.", "Bank Namw", "Action"];
-  const data = [];
+const BankMaster = () => {
+  const columns = ["Sl. No.", "Bank Name", "Action"];
+  const {orgBanks,fetchBanks} = useCompanyContext();
+  
+  useEffect(() => {
+      fetchBanks();
+  },[]);
+  
   return (
     <div className="m-16">
       <p className="text-[14px] text-gray-400 mb-4">
@@ -11,12 +18,15 @@ const EmployeeBank = () => {
       <DataTable
         title="Employee Bank"
         fields={columns}
-        data={data}
+        data={orgBanks}
         showEntries
         searchable
         downloadable={false}
         addMore={true}
+        buttonTitle = "Add New Bank"
       />
     </div>
   );
 };
+
+export default BankMaster;

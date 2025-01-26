@@ -27,6 +27,7 @@ const EmploymentType = () => {
             searchable
             downloadable = {false}
             addMore = {true}
+            buttonTitle = "Add new Employment Type"
           />
         </div>
       );

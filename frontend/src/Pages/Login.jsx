@@ -33,6 +33,7 @@ const Login = () => {
     try {
       const response = await axios.post("/api/login", info);
       dispatch(login(response.data.user));
+      console.log(' logging in ',response.data.user);
       fetchModules();
       fetchOrganisation(response.data.user.id);
       navigate("/employeeDashboard");

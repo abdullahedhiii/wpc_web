@@ -1,38 +1,41 @@
 import { useEffect,useState } from "react";
 import DataTable from "../DataTable";
 import { useCompanyContext } from "../../contexts/CompanyContext";
-import axios from "axios";
 
-const Department = () => {
-    const {companyData,fetchDepartments,departmentData} = useCompanyContext();
+const BankSortCode = () => {
     const columns = [
         "Sl. No.",
-        "Department Name",
+        "Bank Name",
+        "Bank Sort Code",
         "Action",
       ];
+    
+    const {bankSortCodes,fetchCodes} = useCompanyContext();
+    console.log('bank sort codes ',bankSortCodes);
     useEffect(() => {
-         fetchDepartments();
-    },[companyData])
+        fetchCodes();
+    },[]);
     
     return (
         <>
           <div className="m-12">
           <p className="text-gray-400 mb-4 text-[12px]">
-            Home / HCM Master<span className="text-tt"> / Department</span>
+            Home / HCM Master<span className="text-tt"> / Bank SortCode</span>
           </p>
           <DataTable
-            title="Department"
+            title="Employee Bank Sortcode"
             fields={columns}
-            data={departmentData}
+            data={bankSortCodes}
             showEntries
             searchable
             downloadable = {false}
             addMore = {true}
-            buttonTitle = "Add New Department"
+            buttonTitle = "Add New Bank Sortcode"
+
           />
           </div>
         </>
       );
 };
 
-export default Department;
+export default BankSortCode;

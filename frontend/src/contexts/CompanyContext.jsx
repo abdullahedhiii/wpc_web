@@ -21,11 +21,70 @@ export const CompanyProvider = ({ children }) => {
   const [employeeTypes,setEmployeeTypes] = useState([]);
   const [payGroups,setpayGroups] = useState([]);
   const [annualPays,setAnnualPays] = useState([]);
+  const [orgBanks,setorgBanks] = useState([]);
+  const [bankSortCodes,setCodes] = useState([]);
+  const [taxMasters,setTaxMasters] = useState([]);
+  const [paymentTypes,setTypes] = useState([]);
+  const [holidayData,setHolidays] = useState([]);
+
+  const fetchHolidays = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getHolidayTypes/${id_to}`);
+      //console.log(response.data , 'tax m codes');
+      setHolidays(response.data);
+    } catch (err) {
+      setHolidays([]);
+    }
+  };
+
+  const fetchPaymentTypes = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getPaymentTypes/${id_to}`);
+      //console.log(response.data , 'tax m codes');
+      setTypes(response.data);
+    } catch (err) {
+      setTypes([]);
+    }
+  };
+
+  const fetchTaxMasters = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getTaxMasters/${id_to}`);
+      //console.log(response.data , 'tax m codes');
+      setTaxMasters(response.data);
+    } catch (err) {
+      setTaxMasters([]);
+    }
+  };
+
+  const fetchCodes = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getBankCodes/${id_to}`);
+     // console.log(response.data , 'sort codes');
+      setCodes(response.data);
+    } catch (err) {
+      setCodes([]);
+    }
+  };
+
+  const fetchBanks = async(company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getCompanyBanks/${id_to}`);
+      setorgBanks(response.data);
+    } catch (err) {
+      setorgBanks([]);
+    }
+  }
 
   const fetchAnnualPays = async(company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axios.get(`/api/getAnnualPays/${id_to}`);
+      const response = await axiosInstance.get(`/api/getAnnualPays/${id_to}`);
       setAnnualPays(response.data);
     } catch (err) {
       setAnnualPays([]);
@@ -35,7 +94,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchPayGroups = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axios.get(`/api/getPayGroups/${id_to}`);
+      const response = await axiosInstance.get(`/api/getPayGroups/${id_to}`);
       setpayGroups(response.data);
     } catch (err) {
       setpayGroups([]);
@@ -45,7 +104,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchTypes = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axios.get(`/api/getEmployeeTypes/${id_to}`);
+      const response = await axiosInstance.get(`/api/getEmployeeTypes/${id_to}`);
       setEmployeeTypes(response.data);
     } catch (err) {
       setEmployeeTypes([]);
@@ -55,7 +114,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchDepartments = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axios.get(`/api/getDepartments/${id_to}`);
+      const response = await axiosInstance.get(`/api/getDepartments/${id_to}`);
       setDepartmentData(response.data);
     } catch (err) {
       setDepartmentData([]);
@@ -64,7 +123,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchDesignations = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axios.get(`/api/getDesignations/${id_to}`);
+      const response = await axiosInstance.get(`/api/getDesignations/${id_to}`);
     //  console.log(response.data);
       setDesignationData(response.data);
     } catch (err) {
@@ -76,7 +135,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchDetails = async (company_id) => {
     try {
       if (company_id) {
-        const response = await axios.get("/api/getCompanyDetails", {
+        const response = await axiosInstance.get("/api/getCompanyDetails", {
           params: { id: company_id },
         });
         if (response.data) {
@@ -113,6 +172,11 @@ export const CompanyProvider = ({ children }) => {
       fetchTypes(response.data.id);
       fetchPayGroups(response.data.id);
       fetchAnnualPays(response.data.id);
+      fetchBanks(response.data.id);
+      fetchCodes(response.data.id);
+      fetchTaxMasters(response.data.id);
+      fetchPaymentTypes(response.data.id);
+      fetchHolidays(response.data.id);
     } catch (err) {
       console.log('errorr ',err);
       setCompanyData([]);
@@ -153,6 +217,16 @@ export const CompanyProvider = ({ children }) => {
         fetchPayGroups,
         fetchAnnualPays,
         annualPays,
+        fetchBanks,
+        orgBanks,
+        fetchCodes,
+        bankSortCodes,
+        taxMasters,
+        fetchTaxMasters,
+        paymentTypes,
+        fetchPaymentTypes,
+        fetchHolidays,
+        holidayData
       }}
     >
       {children}

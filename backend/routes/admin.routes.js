@@ -10,7 +10,16 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   addPayGroup,
   getPayGroups,
   getAnnualPays,
-  addAnnualPay
+  addAnnualPay,
+  getCompanyBanks,
+  addCompanyBank,
+  getBankSortCodes,addBankSortCode,
+  getTaxMasters,
+  addTaxMaster,
+  getPaymentTypes,
+  addPaymentType,
+  getHolidayTypes,
+  addHolidayType
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',upload.fields([
@@ -39,4 +48,18 @@ router.get('/getPayGroups/:id',getPayGroups);
 router.get('/getAnnualPays/:id',getAnnualPays);
 router.post('/addAnnualPay/:id',addAnnualPay);
 
+router.get('/getCompanyBanks/:id',getCompanyBanks);
+router.post('/addCompanyBank/:id',addCompanyBank);
+
+router.get('/getBankCodes/:id',getBankSortCodes);
+router.post('/addBankSortCode/:id',addBankSortCode);
+
+router.get('/getTaxMasters/:id',getTaxMasters);
+router.post('/addTaxMaster/:id',addTaxMaster);
+
+router.get('/getPaymentTypes/:id',getPaymentTypes);
+router.post('/addPaymentType/:id',addPaymentType);
+
+router.get('/getHolidayTypes/:id',getHolidayTypes);
+router.post('/addHolidayType/:id',addHolidayType);
 module.exports = router;

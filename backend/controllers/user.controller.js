@@ -71,7 +71,7 @@ module.exports.Login = async (req, res) => {
       { expiresIn: '1h' } 
     );
 
-    res.cookie('token', token, {
+    res.cookie('access_token', token, {
       httpOnly: true, 
       secure: process.env.NODE_ENV === 'production', 
       maxAge: 3600000,
@@ -153,5 +153,39 @@ module.exports.getModules = async (req, res) => {
   } catch (error) {
     console.error('Error fetching modules:', error);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports.retrieveCookie = async (req, res) => {
+  const token = req.cookies.access_token; 
+  try {
+    if (!token) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err || !decoded.id) {
+        return res.status(403).json({ message: 'Token expired or invalid' }); 
+      }
+
+      try {
+        const user = await User.findOne({
+          where: { id: decoded.id, email: decoded.email },raw: true 
+        });
+        
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' }); 
+        }
+        const { password: _, ...userDetails } = user;
+        console.log('responsing with user ',userDetails);
+        return res.status(200).json(userDetails);
+      } catch (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ message: 'Internal server error' }); 
+      }
+    });
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    return res.status(500).json({ message: 'Internal server error' }); 
   }
 };

@@ -34,6 +34,11 @@ const Designation = require('../models/Designation')(sequelize,DataTypes);
 const EmploymentType = require('../models/EmploymentType')(sequelize,DataTypes);
 const PayGroup = require('../models/PayGroup')(sequelize,DataTypes);
 const AnnualPay = require('../models/AnnualPay')(sequelize,DataTypes);
+const Bank = require('../models/Bank')(sequelize,DataTypes);
+const BankSortCode = require('../models/BankSortCode')(sequelize,DataTypes);
+const TaxMaster = require('../models/TaxMaster')(sequelize,DataTypes);
+const PaymentType = require('../models/PaymentType')(sequelize,DataTypes);
+const HolidayType = require('../models/HolidayType')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -56,14 +61,30 @@ Department.hasMany(Designation, { as: "designations", foreignKey: "department_id
 Organisation.hasMany(EmploymentType, {foreignKey: "organisation_id",as: "employmentTypes",});
 EmploymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-
 Organisation.hasMany(PayGroup, {foreignKey: "organisation_id",as: "paygroups",});
 PayGroup.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
 PayGroup.hasMany(AnnualPay, {foreignKey: "paygroup_id",as: "annualpays",});
 AnnualPay.belongsTo(PayGroup, {foreignKey: "paygroup_id",as: "paygroups",});
 
+Organisation.hasMany(Bank, {foreignKey: "organisation_id",as: "banks",});
+Bank.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+Bank.hasMany(BankSortCode, {foreignKey: "bank_id",as: "banksortcodes",});
+BankSortCode.belongsTo(Bank, {foreignKey: "bank_id",as: "bank",});
+
+Organisation.hasMany(TaxMaster, {foreignKey: "organisation_id",as: "taxmasters",});
+TaxMaster.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+Organisation.hasMany(PaymentType, {foreignKey: "organisation_id",as: "paymenttypes",});
+PaymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+Organisation.hasMany(HolidayType, {foreignKey: "organisation_id",as: "holidaytypes",});
+HolidayType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
-                   Department,Designation,EmploymentType,PayGroup,AnnualPay};
+                   Department,Designation,EmploymentType,
+                   PayGroup,AnnualPay,Bank,BankSortCode,
+                   TaxMaster,PaymentType,HolidayType
+                  };

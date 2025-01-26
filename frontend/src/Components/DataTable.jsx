@@ -11,7 +11,8 @@ const DataTable = ({
   downloadable = true,
   addMore,
   icon,
-  isDashboard
+  isDashboard,
+  buttonTitle
 }) => {
   const { selectedFeature } = useModuleContext();
 
@@ -67,7 +68,7 @@ const DataTable = ({
   };
 
   const filteredFields = fields.filter((field) => field !== "id");
-
+  console.log('in data table ',selectedFeature);
   return (
     <div className="x-2 border-t-4 border-tt bg-white rounded-md shadow-md">
       {title && (
@@ -91,7 +92,7 @@ const DataTable = ({
           )}
           {addMore && (
             <button
-              title="Export Data"
+              title={buttonTitle}
               className="m-3 bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
               onClick={() => navigate(`/hrms/${selectedFeature.plus_icon_route}`)}
             >
@@ -177,8 +178,8 @@ const DataTable = ({
                       key={colIndex}
                       className="px-6 py-1 border text-sm text-gray-600"
                     >
-                      {field === "Action" ? (
-                        row["Action"] === "Edit" ? (
+                      {field === "Action" || field === "Edit" || field === "Delete" ? (
+                        row["Action"] === "Edit" || field === "Edit"  ? (
                           <img
                             src="/images/edit.png"
                             className="h-4 w-4 cursor-pointer"
@@ -187,12 +188,14 @@ const DataTable = ({
                                 `/hrms/${selectedFeature.action_route}/${row["id"]}`
                               )
                             }
+                            title="Edit"
                           />
-                        ) : row["Action"] === "Delete" ? (
-                          <li
-                            className="la la-trash text-2xl text-tt cursor-pointer"
-                            onClick={() => {}}
-                          ></li>
+                        ) : row["Action"] === "Delete" || field === "Delete" ? (
+                           <img 
+                           src="/images/delete.png"
+                            className="h-4 w-4 cursor-pointer"
+                            onClick={() =>{}}
+                            title="Delete"/>
                         ) : null
                       ) : row[field] &&
                         typeof row[field] === "string" &&

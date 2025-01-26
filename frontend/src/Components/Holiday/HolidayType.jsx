@@ -1,38 +1,38 @@
 import { useEffect,useState } from "react";
 import DataTable from "../DataTable";
 import { useCompanyContext } from "../../contexts/CompanyContext";
-import axios from "axios";
 
-const Department = () => {
-    const {companyData,fetchDepartments,departmentData} = useCompanyContext();
+const HolidayType = () => {
     const columns = [
         "Sl. No.",
-        "Department Name",
+        "Holiday Type",
         "Action",
       ];
+
+    const {holidayData,fetchHolidays} = useCompanyContext();
     useEffect(() => {
-         fetchDepartments();
-    },[companyData])
-    
+        fetchHolidays();
+    },[]); 
+
     return (
         <>
           <div className="m-12">
           <p className="text-gray-400 mb-4 text-[12px]">
-            Home / HCM Master<span className="text-tt"> / Department</span>
+            Home <span className="text-tt"> / Holiday Type</span>
           </p>
           <DataTable
-            title="Department"
+            title="Holiday Type"
             fields={columns}
-            data={departmentData}
+            data={holidayData}
             showEntries
             searchable
             downloadable = {false}
             addMore = {true}
-            buttonTitle = "Add New Department"
+            buttonTitle = "Add New Holiday Type"
           />
           </div>
         </>
       );
 };
 
-export default Department;
+export default HolidayType;
