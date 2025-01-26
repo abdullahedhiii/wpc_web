@@ -24,6 +24,7 @@ const AnnualPay = () => {
         searchable
         downloadable={false}
         addMore={true}
+        buttonTitle = "Add New Annual Pay"
       />
     </div>
   );

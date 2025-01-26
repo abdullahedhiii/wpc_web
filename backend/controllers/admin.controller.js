@@ -1,5 +1,8 @@
 const {User,Organisation,TradingHour,Department,
-       Designation,EmploymentType,PayGroup,AnnualPay} = require('../config/sequelize');
+       Designation,EmploymentType,PayGroup,AnnualPay,Bank,
+       BankSortCode,TaxMaster,PaymentType,
+       HolidayType} = require('../config/sequelize');
+const router = require('../routes/admin.routes');
 require('dotenv').config({ path: process.env.ENV_FILE || '.env' });
 
 module.exports.submitCompanyForm = async (req, res) => {
@@ -720,6 +723,340 @@ module.exports.getAnnualPays = async(req,res) =>{
       console.error(err);
       res.status(500).json({ message: "Internal server error" });
     }
+};
+
+module.exports.getCompanyBanks = async (req,res) => {
+  try {
+    const banks = await Bank.findAll({
+      where: { organisation_id: req.params.id },
+    });
+
+    const formattedData = banks.map((bank, index) => {
+      return {
+        id: bank.id,
+        "Sl. No.": index + 1,
+        "Bank Name": bank.bank_name,
+        Action: "Edit", 
+      };
+    });
+
+    res.status(200).json(formattedData);  
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.addCompanyBank = async(req,res) => {
+  const id = req.params.id; //company id
+
+  const { Bank_Name, isUpdate, bank_id } = req.body;
+  try {
+      if (isUpdate) {
+        const bank = await Bank.findOne({
+          where: {
+              id: bank_id,
+          }
+      });
+          if (bank) {
+            console.log('updating bank ',bank);
+              bank.bank_name = Bank_Name;
+              await bank.save();
+              console.log('bank updatedd');
+              return res.status(201).json({
+                  message: 'bank updated successfully',
+                  bank,
+              });
+          } else {
+              return res.status(404).json({ message: 'bank not found' });
+          }
+      } else {
+          const newBank = await Bank.create({
+              bank_name : Bank_Name,
+              organisation_id: id,
+          });
+
+          return res.status(201).json({
+              message: 'Bank created successfully',
+              bank: newBank,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.getBankSortCodes = async (req,res) => {
+  const organisation_id = req.params.id; 
+  console.log('trying to find ',organisation_id);
+  try {
+    const sortcodes = await BankSortCode.findAll({
+      include: [
+        {
+          model: Bank,
+          as: "bank",
+          attributes: ["bank_name", "id"], 
+          where: { organisation_id: organisation_id },
+        },
+      ],
+      order: [["id", "ASC"]], 
+    });
+    console.log(sortcodes,'result of query');
+    const formattedData = sortcodes.map((code, index) => {
+      return {
+        id: code.id,
+        "Sl. No.": index + 1,
+        "Bank Name" : code.bank.bank_name,
+        "Bank Sort Code": code.sort_code, 
+        Action: "Edit",
+      };
+    });
+
+    res.status(200).json(formattedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports.addBankSortCode = async(req,res) => {
+  const id = req.params.id; //bank id
+
+  const { bank_name, sort_code, sortcode_id,isUpdate } = req.body;
+  try {
+      if (isUpdate) {
+        const code = await BankSortCode.findOne({
+          where: {
+              id:sortcode_id,
+          }
+      });
+          if (code) {
+            console.log('updating code ',code);
+              code.bank_id = id;
+              code.sort_code = sort_code;
+              await code.save();
+              console.log('code updatedd');
+              return res.status(201).json({
+                  message: 'code updated successfully',
+                  code,
+              });
+          } else {
+              return res.status(404).json({ message: 'code not found' });
+          }
+      } else {
+          const newCode = await BankSortCode.create({
+              sort_code : sort_code,
+              bank_id: id,
+          });
+
+          return res.status(201).json({
+              message: 'Bank sort code created successfully',
+              code: newCode,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.getTaxMasters = async (req,res) => {
+  try {
+    const masters = await TaxMaster.findAll({
+      where: { organisation_id: req.params.id },
+    });
+
+    const formattedData = masters.map((master, index) => {
+      return {
+        id: master.id,
+        "Sl. No.": index + 1,
+        "Tax Code": master.tax_code,
+        "Percentage of Deduction" : master.percentage,
+        "Tax Reference": master.reference,
+        Action: "Edit", 
+      };
+    });
+
+    res.status(200).json(formattedData);  
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.addTaxMaster = async(req,res) =>{
+  const id = req.params.id; //company id
+
+  const { tax_code,percentage,reference,tax_id,isUpdate } = req.body;
+  try {
+      if (isUpdate) {
+        const master = await TaxMaster.findOne({
+          where: {
+              id: tax_id,
+          }
+      });
+          if (master) {
+            console.log('updating master ',master);
+              master.percentage = percentage;
+              master.tax_code = tax_code;
+              master.reference = reference;
+              await master.save();
+              console.log('master updatedd');
+              return res.status(201).json({
+                  message: 'master updated successfully',
+                  master,
+              });
+          } else {
+              return res.status(404).json({ message: 'master not found' });
+          }
+      } else {
+          const newMaster = await TaxMaster.create({
+              tax_code,
+              reference,
+              percentage,
+              organisation_id : id
+          });
+
+          return res.status(201).json({
+              message: 'master created successfully',
+              master: newMaster,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.getPaymentTypes = async(req,res) => {
+  try {
+    const types = await PaymentType.findAll({
+      where: { organisation_id: req.params.id },
+    });
+
+    const formattedData = types.map((type, index) => {
+      return {
+        id: type.id,
+        "Sl. No.": index + 1,
+        "Payment Type": type.payment_type,
+        "Minimum Working Hour" : type.min_hours,
+        "Rate": type.rate,
+        Action: "Edit", 
+      };
+    });
+
+    res.status(200).json(formattedData);  
+  }
+  catch(err){
+    console.error(err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.addPaymentType = async(req,res) => {
+  const id = req.params.id; //company id
+
+  const { payment_type,min_hours,rate,p_id,isUpdate } = req.body;
+  try {
+      if (isUpdate) {
+        const type = await PaymentType.findOne({
+          where: {
+              id: p_id,
+          }
+      });
+          if (type) {
+            console.log('updating type ',type);
+            type.min_hours = min_hours;
+            type.rate = rate;
+            type.payment_type = payment_type;
+              await type.save();
+              return res.status(201).json({
+                  message: 'payment type updated successfully',
+                  type,
+              });
+          } else {
+              return res.status(404).json({ message: 'master not found' });
+          }
+      } else {
+          const newPayment = await PaymentType.create({
+              min_hours,
+              rate,
+              payment_type,
+              organisation_id : id
+          });
+
+          return res.status(201).json({
+              message: 'new payment type created successfully',
+              type: newPayment,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.addHolidayType = async(req,res) => {
+  const id = req.params.id; //company id
+  const { holiday_type,h_id,isUpdate } = req.body;
+  try {
+      if (isUpdate) {
+        const type = await HolidayType.findOne({
+          where: {
+              id: h_id,
+          }
+      });
+          if (type) {
+            console.log('updating type ',type);
+            type.holiday_type = holiday_type;
+              await type.save();
+              return res.status(201).json({
+                  message: 'holiday type updated successfully',
+                  type,
+              });
+          } else {
+              return res.status(404).json({ message: 'holiday type not found' });
+          }
+      } else {
+          const newHoliday = await HolidayType.create({
+              holiday_type,
+              organisation_id : id
+          });
+
+          return res.status(201).json({
+              message: 'new holiday type created successfully',
+              type: newHoliday,
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports.getHolidayTypes = async(req,res) => {
+     try{
+      const types = await HolidayType.findAll({
+        where: { organisation_id: req.params.id },
+      });
+  
+      const formattedData = types.map((type, index) => {
+                return{
+                    id : type.id,
+                    "Sl. No." : index+1,
+                    "Holiday Type" : type.holiday_type,
+                    Action : "Edit"
+                }
+          })
+          res.status(200).json(formattedData);  
+        }
+      catch(err){
+          console.error(err);
+          res.status(500).json({ message: 'Internal server error' });
+      }
 };
 
 module.exports.uploadDocuments = (req,res) => {

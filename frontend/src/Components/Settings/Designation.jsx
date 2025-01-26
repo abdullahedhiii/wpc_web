@@ -29,6 +29,8 @@ const Designation = () => {
             searchable
             downloadable = {false}
             addMore = {true}
+            buttonTitle = "Add New Designation"
+
           />
         </div>      
         </>

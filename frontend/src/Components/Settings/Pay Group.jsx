@@ -23,6 +23,8 @@ const PayGroup = () => {
         searchable
         downloadable={false}
         addMore={true}
+        buttonTitle = "Add New PayGroup"
+
       />
     </div>
   );

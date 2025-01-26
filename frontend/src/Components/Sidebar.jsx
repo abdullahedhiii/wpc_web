@@ -108,7 +108,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
                   {subModule.features.length > 0 && (
                     <i
-                      className={`fa-solid fa-caret-down text-[12px] text-gray-400 transform transition-transform duration-100 ease-in-out ${
+                      className={`fa-solid fa-caret-down text-[12px] text-gray-400 transform transition-transform duration-900 ease-in-out ${
                         openSubModuleIndex === index ? "rotate-180" : ""
                       }`}
                       onClick={() => toggleSubModule(index)}
