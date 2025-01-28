@@ -44,6 +44,7 @@ const NewForm = ({ icon,title,fields,data, setData, onSubmit }) => {
             onChange={(e) => handleChange(e, field)}
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             accept={field.accept}
+            readOnly = {field.readOnly}
           />
         )
       default:
@@ -53,7 +54,9 @@ const NewForm = ({ icon,title,fields,data, setData, onSubmit }) => {
             name={field.name}
             value={data[field.name] || ""}
             onChange={(e) => handleChange(e, field)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-700 focus:border-b-2"
+            className={`w-full p-2 border border-gray-300 ${field.readOnly ? "bg-gray-200" : undefined} rounded-md focus:outline-none focus:border-blue-700 focus:border-b-2`}
+            readOnly = {field.readOnly}
+
           />
           
         )

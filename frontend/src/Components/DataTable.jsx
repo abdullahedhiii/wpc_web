@@ -197,6 +197,15 @@ const DataTable = ({
                             onClick={() =>{}}
                             title="Delete"/>
                         ) : null
+                      )  : field === "Visitor Link" && row[field] ? (
+                        <a
+                          href={row[field]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-500 underline ml-48 text-center"
+                        >
+                          {row[field]}
+                        </a>
                       ) : row[field] &&
                         typeof row[field] === "string" &&
                         row[field].startsWith("http") &&

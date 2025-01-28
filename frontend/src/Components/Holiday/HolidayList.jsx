@@ -1,4 +1,6 @@
 
+import { useEffect } from "react";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 import DataTable from "../DataTable";
 const HolidayList = () => {
     const columns = [
@@ -13,17 +15,11 @@ const HolidayList = () => {
         "Delete"
       ];
 
-    const data = [{
-        "Sl. No." : 1,
-         Year :2024,
-         Date : '25-12-2024 - 25-12-2024' ,
-        "No. of Days" :1,
-        "Holiday Description" : 'Christmas daya',
-        "Day of Week" : 'Wednesday',
-        "Holiday Type" : 'Christmas',
-        "Edit" : "Edit",
-        "Delete" : "Delete"
-    }];
+    const {holidayList,fetchHolidayList} = useCompanyContext();
+    
+    useEffect(() => {
+       fetchHolidayList();
+    },[]);
 
     return (
         <>
@@ -34,7 +30,7 @@ const HolidayList = () => {
           <DataTable
             title="Holiday List"
             fields={columns}
-            data={data}
+            data={holidayList}
             showEntries
             searchable
             downloadable = {false}

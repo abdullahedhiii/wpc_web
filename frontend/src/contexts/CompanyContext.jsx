@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../axiosInstance";
+import HolidayList from "../Components/Holiday/HolidayList";
 const CompanyContext = createContext();
 
 export const CompanyProvider = ({ children }) => {
@@ -18,14 +19,37 @@ export const CompanyProvider = ({ children }) => {
 
   const [departmentData, setDepartmentData] = useState([]);
   const [designationData, setDesignationData] = useState([]);
-  const [employeeTypes,setEmployeeTypes] = useState([]);
-  const [payGroups,setpayGroups] = useState([]);
-  const [annualPays,setAnnualPays] = useState([]);
-  const [orgBanks,setorgBanks] = useState([]);
-  const [bankSortCodes,setCodes] = useState([]);
-  const [taxMasters,setTaxMasters] = useState([]);
-  const [paymentTypes,setTypes] = useState([]);
-  const [holidayData,setHolidays] = useState([]);
+  const [employeeTypes, setEmployeeTypes] = useState([]);
+  const [payGroups, setpayGroups] = useState([]);
+  const [annualPays, setAnnualPays] = useState([]);
+  const [orgBanks, setorgBanks] = useState([]);
+  const [bankSortCodes, setCodes] = useState([]);
+  const [taxMasters, setTaxMasters] = useState([]);
+  const [paymentTypes, setTypes] = useState([]);
+  const [holidayData, setHolidays] = useState([]);
+  const [holidayList, setHolidayList] = useState([]);
+  const [visitors, setVisitors] = useState([]);
+
+  const fetchVisitors = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getVisitors/${id_to}`);
+      if (response.status === 200) {
+        setVisitors(response.data);
+      }
+    } catch (err) {}
+  };
+
+  const fetchHolidayList = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getHolidayList/${id_to}`);
+      //console.log(response.data , 'tax m codes');
+      setHolidayList(response.data);
+    } catch (err) {
+      setHolidayList([]);
+    }
+  };
 
   const fetchHolidays = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
@@ -64,14 +88,14 @@ export const CompanyProvider = ({ children }) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
       const response = await axiosInstance.get(`/api/getBankCodes/${id_to}`);
-     // console.log(response.data , 'sort codes');
+      // console.log(response.data , 'sort codes');
       setCodes(response.data);
     } catch (err) {
       setCodes([]);
     }
   };
 
-  const fetchBanks = async(company_id) => {
+  const fetchBanks = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
       const response = await axiosInstance.get(`/api/getCompanyBanks/${id_to}`);
@@ -79,9 +103,9 @@ export const CompanyProvider = ({ children }) => {
     } catch (err) {
       setorgBanks([]);
     }
-  }
+  };
 
-  const fetchAnnualPays = async(company_id) => {
+  const fetchAnnualPays = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
       const response = await axiosInstance.get(`/api/getAnnualPays/${id_to}`);
@@ -89,7 +113,7 @@ export const CompanyProvider = ({ children }) => {
     } catch (err) {
       setAnnualPays([]);
     }
-  }
+  };
 
   const fetchPayGroups = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
@@ -99,12 +123,14 @@ export const CompanyProvider = ({ children }) => {
     } catch (err) {
       setpayGroups([]);
     }
-  }
+  };
 
   const fetchTypes = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getEmployeeTypes/${id_to}`);
+      const response = await axiosInstance.get(
+        `/api/getEmployeeTypes/${id_to}`
+      );
       setEmployeeTypes(response.data);
     } catch (err) {
       setEmployeeTypes([]);
@@ -124,7 +150,7 @@ export const CompanyProvider = ({ children }) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
       const response = await axiosInstance.get(`/api/getDesignations/${id_to}`);
-    //  console.log(response.data);
+      //  console.log(response.data);
       setDesignationData(response.data);
     } catch (err) {
       console.error(err, "designation");
@@ -164,7 +190,7 @@ export const CompanyProvider = ({ children }) => {
       const response = await axiosInstance.get("/api/getOrganisations", {
         params: { admin_id },
       });
-  
+
       setCompanyData([response.data]);
       fetchDetails(response.data.id);
       fetchDepartments(response.data.id);
@@ -177,8 +203,10 @@ export const CompanyProvider = ({ children }) => {
       fetchTaxMasters(response.data.id);
       fetchPaymentTypes(response.data.id);
       fetchHolidays(response.data.id);
+      fetchHolidayList(response.data.id);
+      fetchVisitors(response.data.id);
     } catch (err) {
-      console.log('errorr ',err);
+      console.log("errorr ", err);
       setCompanyData([]);
     }
   };
@@ -226,7 +254,11 @@ export const CompanyProvider = ({ children }) => {
         paymentTypes,
         fetchPaymentTypes,
         fetchHolidays,
-        holidayData
+        holidayData,
+        fetchHolidayList,
+        holidayList,
+        visitors,
+        fetchVisitors
       }}
     >
       {children}
