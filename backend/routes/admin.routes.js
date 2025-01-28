@@ -19,7 +19,10 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   getPaymentTypes,
   addPaymentType,
   getHolidayTypes,
-  addHolidayType
+  addHolidayType,
+  getHolidayList,
+  addHoliday,
+  getVisitors
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',upload.fields([
@@ -62,4 +65,10 @@ router.post('/addPaymentType/:id',addPaymentType);
 
 router.get('/getHolidayTypes/:id',getHolidayTypes);
 router.post('/addHolidayType/:id',addHolidayType);
+
+router.get('/getHolidayList/:id',getHolidayList);
+router.post('/addHoliday/:id',addHoliday);
+
+router.get('/getVisitors/:id',getVisitors);
+
 module.exports = router;

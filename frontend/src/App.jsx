@@ -52,6 +52,10 @@ import axios from "axios";
 import HolidayType from "./Components/Holiday/HolidayType";
 import HolidayTypeForm from "./Components/Holiday/HolidayTypeForm";
 import HolidayList from "./Components/Holiday/HolidayList";
+import HolidayListForm from "./Components/Holiday/HolidayListForm";
+import RegVisitor from "./Components/Rota/Visitor/RegVisitor";
+import VisitorList from "./Components/Rota/Visitor/VisitorList";
+import VisitorForm from "./Components/Rota/Visitor/VisitorForm";
 
 const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -144,7 +148,16 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
     ],
+  },
+  {
+    path: "/visitor",
+    children :[
+    {
+      path : ':id',
+      element : <VisitorForm/>
+    },  ]
   },
   {
     path: "/hrms/",
@@ -499,6 +512,46 @@ const router = createBrowserRouter([
         element : (
           <ProtectedRoute>
             <HolidayList/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "holiday/add-holiday",
+        element : (
+          <ProtectedRoute>
+            <HolidayListForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "holiday/add-holiday/:ho_id",
+        element : (
+          <ProtectedRoute>
+            <HolidayListForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rotadashboard",
+        element : (
+          <ProtectedRoute>
+            <SubDashboard/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/visitor-link",
+        element : (
+          <ProtectedRoute>
+            <RegVisitor/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/visitor-regis",
+        element : (
+          <ProtectedRoute>
+            <VisitorList/>
           </ProtectedRoute>
         )
       },

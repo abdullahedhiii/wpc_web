@@ -39,6 +39,8 @@ const BankSortCode = require('../models/BankSortCode')(sequelize,DataTypes);
 const TaxMaster = require('../models/TaxMaster')(sequelize,DataTypes);
 const PaymentType = require('../models/PaymentType')(sequelize,DataTypes);
 const HolidayType = require('../models/HolidayType')(sequelize,DataTypes);
+const Holiday = require('../models/Holiday')(sequelize,DataTypes);
+const Visitor = require('../models/Visitor')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -82,9 +84,15 @@ PaymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisa
 Organisation.hasMany(HolidayType, {foreignKey: "organisation_id",as: "holidaytypes",});
 HolidayType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
+Organisation.hasMany(Holiday, {foreignKey: "organisation_id",as: "holidays",});
+Holiday.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+Organisation.hasMany(Visitor, {foreignKey: "organisation_id",as: "visitors",});
+Visitor.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
-                   TaxMaster,PaymentType,HolidayType
+                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor
                   };

@@ -5,6 +5,7 @@ const cors = require('cors');
 const { sequelize } = require('./config/sequelize');
 const userRoutes = require('./routes/user.routes');
 const adminRoutes = require('./routes/admin.routes');
+const visitorRoutes = require('./routes/visitor.route');
 
 const app = express();
 app.use(express.json());  
@@ -18,6 +19,7 @@ app.use(cookieParser());
 
 app.use('/',userRoutes);
 app.use('/',adminRoutes);
+app.use('/',visitorRoutes);
 app.use('/uploads', express.static('uploads'));
 
 sequelize.sync({ force: false }).then(() => {
