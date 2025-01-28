@@ -22,7 +22,12 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   addHolidayType,
   getHolidayList,
   addHoliday,
-  getVisitors
+  getVisitors,
+  getShifts,
+  addShift,
+  addLatePolicy,
+  getLatePolicies,
+  addOffDay
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',upload.fields([
@@ -33,8 +38,14 @@ router.post('/submitCompanyForm',upload.fields([
   ]), submitCompanyForm,submitCompanyForm);
 router.get('/getOrganisations',getOrganisations);
 router.get('/getCompanyDetails',getFormDetails);
-router.post('/updateCompany/:company_id', upload.single("Logo"), updateCompany);
-router.post('/uploadDocument',upload.single('document'),uploadDocuments);
+router.post('/updateCompany/:id', upload.fields([
+  { name: 'Company_Logo', maxCount: 1 },
+  { name: 'KeyContact_proof_id', maxCount: 1 },
+  { name: 'Authorizing_proof_id', maxCount: 1 },
+  { name: 'Level1_proof_id', maxCount: 1 }
+]), updateCompany);
+
+router.post('/uploadDocument/:id',upload.single('document'),uploadDocuments);
 
 router.post('/addDepartment/:id',addDepartment);
 router.get('/getDepartments/:id',getDepartments);
@@ -70,5 +81,14 @@ router.get('/getHolidayList/:id',getHolidayList);
 router.post('/addHoliday/:id',addHoliday);
 
 router.get('/getVisitors/:id',getVisitors);
+
+
+router.get('/getShifts/:id',getShifts);
+router.post('/addShift/:id',addShift);
+
+router.post('/setOffDays/:id',addOffDay);
+
+router.post('/addLatePolicy/:id',addLatePolicy);
+router.get('/getLatePolicies/:id',getLatePolicies);
 
 module.exports = router;

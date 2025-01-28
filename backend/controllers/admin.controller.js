@@ -14,8 +14,9 @@ const {
   HolidayType,
   Holiday,
   Visitor,
+  Shift,
+  LatePolicy,ShiftOffDay,OrgDocument
 } = require("../config/sequelize");
-const router = require("../routes/admin.routes");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 
 module.exports.submitCompanyForm = async (req, res) => {
@@ -92,16 +93,16 @@ module.exports.submitCompanyForm = async (req, res) => {
       : null;
 
     const companyLogoPath = companyLogo
-      ? `http://localhost:${process.env.PORT}/uploads/${companyLogo}`
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${companyLogo}`
       : null;
     const authorizingProofIdPath = authorizingProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${authorizingProofId}`
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${authorizingProofId}`
       : null;
     const keyContactProofIdPath = keyContactProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${keyContactProofId}`
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${keyContactProofId}`
       : null;
     const level1ProofIdPath = level1ProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${level1ProofId}`
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${level1ProofId}`
       : null;
 
     // Create Organisation
@@ -183,6 +184,198 @@ module.exports.submitCompanyForm = async (req, res) => {
     console.error("Error inserting data:", error);
     res.status(500).json({
       message: "Failed to create Organisation or Trading Hours.",
+      error: error.message,
+    });
+  }
+};
+
+module.exports.updateCompany = async (req, res) => {
+  console.log('in update ',req.params.id);
+  try {
+    const {
+      Company_admin_id,
+      Company_name,
+      Company_Type,
+      Company_RegNo,
+      Company_Contact,
+      Company_Email,
+      Company_OrganisationEmail,
+      Company_Website,
+      Company_Landline,
+      Company_TradingName,
+      Company_Period,
+      Company_Sector,
+      Company_NameChanged,
+      Company_Logo,
+      Company_Penalty,
+
+      Authorizing_fname,
+      Authorizing_lname,
+      Authorizing_designation,
+      Authorizing_email,
+      Authorizing_phone,
+      Authorizing_proof_id,
+      Authorizing_history,
+
+      KeyContact_check,
+      KeyContact_fname,
+      KeyContact_lname,
+      KeyContact_designation,
+      KeyContact_email,
+      KeyContact_phone,
+      KeyContact_proof_id,
+      KeyContact_history,
+
+      Level1_check,
+      Level1_fname,
+      Level1_lname,
+      Level1_designation,
+      Level1_email,
+      Level1_phone,
+      Level1_proof_id,
+      Level1_history,
+
+      Address_Postcode,
+      Address_Select,
+      Address_Line1,
+      Address_Line2,
+      Address_Line3,
+      Address_City_County,
+      Address_Country,
+      RTI_fname,
+      RTI_department,
+      RTI_job_type,
+      RTI_job_title,
+      RTI_Immigration_status,
+    } = req.body;
+
+    const tradingHours = req.body.tradingHours.map((item) => JSON.parse(item));
+
+    const companyLogo = req.files["Company_Logo"]
+      ? req.files["Company_Logo"][0].filename
+      : null;
+    const authorizingProofId = req.files["Authorizing_proof_id"]
+      ? req.files["Authorizing_proof_id"][0].filename
+      : null;
+    const keyContactProofId = req.files["KeyContact_proof_id"]
+      ? req.files["KeyContact_proof_id"][0].filename
+      : null;
+    const level1ProofId = req.files["Level1_proof_id"]
+      ? req.files["Level1_proof_id"][0].filename
+      : null;
+
+    const companyLogoPath = companyLogo
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${companyLogo}`
+      : undefined; // Will be undefined if not updated
+    const authorizingProofIdPath = authorizingProofId
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${authorizingProofId}`
+      : undefined; // Will be undefined if not updated
+    const keyContactProofIdPath = keyContactProofId
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${keyContactProofId}`
+      : undefined; // Will be undefined if not updated
+    const level1ProofIdPath = level1ProofId
+      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${level1ProofId}`
+      : undefined;
+
+    const existingCompany = await Organisation.findByPk(req.params.id);
+    if (!existingCompany) {
+      return res.status(404).json({
+        message: "Company not found.",
+      });
+    }
+
+    // Update Company record
+    const updatedCompany = await existingCompany.update({
+      admin_id: Company_admin_id,
+      Company_name,
+      Company_Type,
+      Company_RegNo,
+      Company_Contact,
+      Company_Email,
+      Company_OrganisationEmail,
+      Company_Website,
+      Company_Landline,
+      Company_TradingName,
+      Company_Period,
+      Company_Sector,
+      Company_NameChanged,
+      Company_Penalty,
+      Company_Logo: companyLogoPath || existingCompany.Company_Logo, // Keep the old value if no new file
+    });
+
+    // Update Proof Id fields if new files are provided
+    await existingCompany.update({
+      Authorizing_fname,
+      Authorizing_lname,
+      Authorizing_designation,
+      Authorizing_email,
+      Authorizing_phone,
+      Authorizing_proof_id: authorizingProofIdPath || existingCompany.Authorizing_proof_id,
+      Authorizing_history,
+
+      KeyContact_check,
+      KeyContact_fname,
+      KeyContact_lname,
+      KeyContact_designation,
+      KeyContact_email,
+      KeyContact_phone,
+      KeyContact_proof_id: keyContactProofIdPath || existingCompany.KeyContact_proof_id,
+      KeyContact_history,
+
+      Level1_check,
+      Level1_fname,
+      Level1_lname,
+      Level1_designation,
+      Level1_email,
+      Level1_phone,
+      Level1_proof_id: level1ProofIdPath || existingCompany.Level1_proof_id,
+      Level1_history,
+
+      Address_Postcode,
+      Address_Select,
+      Address_Line1,
+      Address_Line2,
+      Address_Line3,
+      Address_City_County,
+      Address_Country,
+      RTI_fname,
+      RTI_department,
+      RTI_job_type,
+      RTI_job_title,
+      RTI_Immigration_status,
+    });
+
+    // Update TradingHours if necessary
+    if (tradingHours && tradingHours.length > 0) {
+      // Delete existing trading hours
+      await TradingHour.destroy({
+        where: {
+          organisation_id: existingCompany.id,
+        },
+      });
+
+      // Insert new trading hours
+      const tradingHoursData = tradingHours.map((tradingHour) => ({
+        day: tradingHour.day,
+        status: tradingHour.status,
+        openingTime: tradingHour.openingTime,
+        closingTime: tradingHour.closingTime,
+        organisation_id: existingCompany.id, // Use the ID from the existing company
+      }));
+
+      await TradingHour.bulkCreate(tradingHoursData);
+    }
+
+    // Respond with success
+    res.status(200).json({
+      message: "Company information updated successfully.",
+      company: updatedCompany,
+      tradingHours: tradingHours || [],
+    });
+  } catch (error) {
+    console.error("Error updating data:", error);
+    res.status(500).json({
+      message: "Failed to update company information.",
       error: error.message,
     });
   }
@@ -314,10 +507,12 @@ module.exports.getFormDetails = async (req, res) => {
     const tradingHours = await TradingHour.findAll({
       where: { organisation_id: id },
     });
-
+    
+    const company_documents = await OrgDocument.findAll({where : {organisation_id :id}});
     const response = {
       allData: companyDetails,
       tradingHours,
+      company_documents
     };
 
     return res.status(200).json(response);
@@ -327,65 +522,7 @@ module.exports.getFormDetails = async (req, res) => {
   }
 };
 
-module.exports.updateCompany = async (req, res) => {
-  try {
-    const { company_id } = req.params;
-    const {
-      Name,
-      Type,
-      RegNo,
-      Contact,
-      Email,
-      OrganisationEmail,
-      Website,
-      Landline,
-      TradingName,
-      Period,
-      Sector,
-      NameChanged,
-      Penalty,
-      Logo,
-    } = req.body;
 
-    const updatedLogoPath = req.file
-      ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}`
-      : Logo;
-
-    const company = await Organisation.findByPk(company_id);
-
-    if (!company) {
-      return res.status(404).json({ error: "Company not found" });
-    }
-
-    const updatedCompany = await company.update({
-      Name,
-      Type,
-      RegNo,
-      Contact,
-      Email,
-      OrganisationEmail,
-      Website,
-      Landline,
-      TradingName,
-      Period,
-      Sector,
-      NameChanged,
-      Penalty,
-      Logo: updatedLogoPath,
-    });
-
-    return res.status(200).json({
-      message: "Company updated successfully",
-      company: updatedCompany,
-    });
-  } catch (error) {
-    console.error("Error updating company:", error.message);
-    return res.status(500).json({
-      error: "An error occurred while updating the company",
-      details: error.message,
-    });
-  }
-};
 
 module.exports.addDepartment = async (req, res) => {
   const id = req.params.id;
@@ -1206,6 +1343,243 @@ module.exports.getVisitors = async(req,res) => {
       }
 };
 
-module.exports.uploadDocuments = (req, res) => {
-  console.log("upload documents hittt ", id, req.file.filename);
+
+module.exports.addShift = async(req,res) => {
+    const organisation_id = req.param.id;
+    const {data,dep_id,des_id} =  req.body
+    try{
+         const newShift = await Shift.create({
+             department_id : dep_id,
+             designation_id : des_id,
+            work_in : data.work_in,
+            work_out : data.work_out,
+            break_start : data.break_start,
+            break_end : data.break_end,
+            description : data.description
+         });
+         return res.status(201).json({
+          message: "new shift created successfully",
+          shift : newShift
+        });
+      }
+    catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+module.exports.getShifts = async (req, res) => {
+  const orgId = req.params.id;
+
+  try {
+    const departments = await Department.findAll({
+      where: { organisation_id: orgId },
+      attributes: ["id", "department_name"],
+    });
+
+    if (!departments.length) {
+      return res.status(404).json({ message: "No departments found for this organization." });
+    }
+
+    const departmentIds = departments.map((dept) => dept.id);
+
+    const designations = await Designation.findAll({
+      where: { department_id: departmentIds },
+      attributes: ["id", "designation_name"],
+    });
+
+    if (!designations.length) {
+      return res.status(404).json({ message: "No designations found for these departments." });
+    }
+
+    const designationIds = designations.map((des) => des.id);
+
+    const shifts = await Shift.findAll({
+      where: { designation_id: designationIds },
+      include: [
+        {
+          model: Department,
+          as:'department',
+          attributes: ['department_name'],
+          
+        },
+        {
+          model: Designation,
+           as : 'designation',
+          attributes: ['designation_name'],
+         
+        },
+      ],
+    });
+
+    if (!shifts.length) {
+      return res.status(404).json({ message: "No shifts found for these designations." });
+    }
+
+    const shiftDetails = await Promise.all(shifts.map(async (shift, index) => {
+      const offDay = await ShiftOffDay.findOne({
+        where: { shift_code: shift.shift_code },
+      });
+     console.log(shift.department,shift.designation);
+      const shiftDetail = {
+        "Sl. No.": index + 1,
+        "Shift Code": shift.shift_code,
+        "Department": shift.department?.department_name, 
+        "Designation": shift.designation?.designation_name, 
+        "Shift Description": shift.description,
+        "Work In Time": shift.work_in,
+        "Work Out Time": shift.work_out,
+        "Break Time From": shift.break_start,
+        "Break Time To": shift.break_end,
+        "Action": '',
+        "Designation ID": shift.designation_id,
+        "Shift Name": shift.shift_code + '(' + shift.description + ')',
+        "Off Days": offDay ? {
+          Monday: offDay.monday,
+          Tuesday: offDay.tuesday,
+          Wednesday: offDay.wednesday,
+          Thursday: offDay.thursday,
+          Friday: offDay.friday,
+          Saturday: offDay.saturday,
+          Sunday: offDay.sunday,
+        } : {},
+      };
+
+      return shiftDetail;
+    }));
+
+    return res.status(200).json(shiftDetails);
+  } catch (error) {
+    console.error("Error fetching shifts:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+
+module.exports.addLatePolicy = async (req,res) => {
+   const {data,dep_id,des_id} = req.body;
+   try{
+     const newPolicy = await LatePolicy.create({
+         department_id : dep_id,
+         designation_id : des_id,
+         shift_code: data.shift_code,
+         days: data.days,
+         period: data.period,
+         salary_days : data.salary_days,
+     })
+    return res.status(201).json({
+      message: "new shift created successfully",
+      policy : newPolicy
+    });
+  }
+catch (error) {
+  console.error(error);
+  return res.status(500).json({ message: "Internal server error" });
+}
+};
+
+module.exports.getLatePolicies = async (req, res) => {
+  try {
+    const orgId = req.params.id;
+
+    const departments = await Department.findAll({ where: {organisation_id : orgId }});
+
+    const result = [];
+
+    for (const department of departments) {
+      const designations = await Designation.findAll({ where: { department_id: department.id }});
+
+      for (const designation of designations) {
+        const shifts = await Shift.findAll({where :{ designation_id: designation.id }});
+
+        for (const shift of shifts) {
+          const latePolicy = await LatePolicy.findOne({where :{
+            department_id: department.id,
+            designation_id: designation.id,
+            shift_code: shift.shift_code
+          }});
+
+          if (latePolicy) {
+            result.push({
+              id : LatePolicy.id,
+              "Department": department.department_name,
+              "Designation": designation.designation_name,
+              'Shift Code': shift.shift_code,
+              'Max Grace Period': latePolicy.period,
+              'No. of Days Allowed': latePolicy.days,
+              'No. of Day Salary Deducted': latePolicy.salary_days,
+              Action: ''
+            });
+          }
+        }
+      }
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
+module.exports.addOffDay = async(req,res) => {
+    const id = req.params.id ;
+    const {data}  = req.body;
+    console.log(req.body,data);
+    try{
+        const new_entry = await ShiftOffDay.create({
+            shift_code : data.shift_code,
+            monday : data.Monday,
+            tuesday : data.Tuesday,
+            wednesday: data.Wednesday,
+            thursday : data.Thursday,
+            friday : data.Friday,
+            saturday : data.Saturday,
+            sunday : data.Sunday
+        });
+        return res.status(201).json({
+          message: "new shift off day created successfully",
+          days : new_entry
+        });
+      }
+    catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+
+};
+
+module.exports.uploadDocuments = async (req, res) => {
+  try {
+    console.log(
+      "Upload documents hit: ",
+      req.file.filename,
+      req.body,
+      req.params.id
+    );
+
+    const { id } = req.params; 
+    const { documentType,Company_name } = req.body;
+    const organisation_id = id; 
+    const url = `http://localhost:${process.env.PORT}/uploads/${Company_name}/${req.file.filename}`;
+
+    // Create a new entry in OrgDocument
+    const newDocument = await OrgDocument.create({
+      document_type:documentType,
+      document_url: url,
+      organisation_id,
+    });
+
+    res.status(200).json({
+      message: "Document uploaded and entry created successfully",
+      document: newDocument,
+    });
+  } catch (error) {
+    console.error("Error uploading document:", error);
+    res.status(500).json({
+      message: "Error uploading document",
+      error: error.message,
+    });
+  }
 };

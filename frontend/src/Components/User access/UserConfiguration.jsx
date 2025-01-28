@@ -22,7 +22,7 @@ const UserConfiguration = () => {
       ]; 
     
       return (
-        <>
+        <div className="p-6">
           <p className="mt-10 text-gray-400 mb-4">
             Home <span className="text-tt"> / User Configuration</span>
           </p>
@@ -34,8 +34,9 @@ const UserConfiguration = () => {
             searchable
             downloadable = {false}
             addMore = {true}
+            buttonTitle="Add New User"
           />
-        </>
+        </div>
       );
 }
 

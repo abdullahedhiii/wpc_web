@@ -8,7 +8,9 @@ const CompanyForm = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const { company_id } = useParams();
-  const { setAllDetails } = useCompanyContext();
+  const { setAllDetails,fetchDetails,companyDocuments } = useCompanyContext();
+  console.log(companyDocuments);
+  
   const options = [
     "PAYEE And Account Reference Letter From HMRC",
     "Latest RTI from Accountant",
@@ -132,7 +134,7 @@ const CompanyForm = () => {
           label: "Your Logo",
           value: "Company_Logo",
           type: "file",
-          required: true,
+          required: company_id ? false : true,
           additionalElement: null,
         },
       ],
@@ -180,7 +182,7 @@ const CompanyForm = () => {
           label: "Proof Of Id",
           value: "Authorizing_proof_id",
           type: "file",
-          required: true,
+          required: company_id ? false : true,
           additionalElement: null,
         },
         {
@@ -242,7 +244,7 @@ const CompanyForm = () => {
           label: "Proof Of Id",
           value: "KeyContact_proof_id",
           type: "file",
-          required: true,
+          required: company_id ? false : true,
           additionalElement: null,
         },
         {
@@ -304,7 +306,7 @@ const CompanyForm = () => {
           label: "Proof Of Id",
           value: "Level1_proof_id",
           type: "file",
-          required: true,
+          required: company_id ? false : true,
           additionalElement: null,
         },
         {
@@ -547,13 +549,48 @@ const CompanyForm = () => {
   };
 
   const [uploadDocuments, setUploadDocuments] = useState(
-    Array.from({ length: 18 }, (_, i) => ({
-      documentType: "",
+    Array.from({ length: options.length }, (_, i) => ({
+      documentType: options[i],
       file: null,
-      otherDetails: "",
+      sampleDocument:
+        i === 0
+          ? "/sample_documents/PAYEE And Account Reference Letter From HMRC.pdf"
+          : i === 2
+          ? "/sample_documents/Employer Liability Insurance Certificate.pdf"
+          : i === 9
+          ? "/sample_documents/VAT Certificate (if registered).pdf"
+          : null,
+      uploadedBefore: false, // To track if the document was previously uploaded
+      previousDetails: null, // Stores details like URL of previously uploaded document
+      otherDetails: "", // Additional details for the document
     }))
   );
-
+  
+  
+  useEffect(() => {
+    if (companyDocuments?.length > 0) {
+      setUploadDocuments((prevDocuments) =>
+        prevDocuments.map((doc) => {
+          const previouslyUploaded = companyDocuments.find(
+            (uploadedDoc) => uploadedDoc.document_type === doc.documentType
+          );
+  
+          return previouslyUploaded
+            ? {
+                ...doc,
+                uploadedBefore: true,
+                previousDetails: {
+                  document_url: previouslyUploaded.document_url,
+                  document_type: previouslyUploaded.document_type,
+                },
+              }
+            : doc;
+        })
+      );
+    }
+  }, [companyDocuments]);
+  
+  
   const handleUploadDocumentsChange = (rowIndex, field, value) => {
     setUploadDocuments((prevDocuments) => {
       const updatedDocuments = [...prevDocuments];
@@ -727,9 +764,9 @@ const CompanyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-
+  
     const formDataToSend = new FormData();
-
+  
     Object.entries(formData).forEach(([key, value]) => {
       if (
         (key === "Company_Logo" ||
@@ -743,38 +780,18 @@ const CompanyForm = () => {
         formDataToSend.append(key, value);
       }
     });
-
+  
     tradingHours.forEach((tradingHour, index) => {
       const formKey = `tradingHours[${index}]`; 
       formDataToSend.append(formKey, JSON.stringify(tradingHour));
     });
-
-    uploadDocuments.forEach(async(document, index) => {
-      if (document.file) {
-        const formKey = `uploadDocuments[${index}]`;
-        const documentData = new FormData();
-        documentData.append("document", document.file);
-        documentData.append("documentType", document.documentType);
-        documentData.append("otherDetails", document.otherDetails);
-
-        try {
-          const response = await axios.post("/api/uploadDocument", documentData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          console.log(`Document ${index + 1} uploaded successfully`, response.data);
-        } catch (err) {
-          console.error(`Error uploading document ${index + 1}:`, err.response?.data || err.message);
-        }
-      }
-    });
-
+  
     try {
+      console.log('sending company data ', formDataToSend);
+  
+      // Submit company data first
       const response = await axios.post(
-        `/api/${
-          company_id ? `updateCompany/${company_id}` : "submitCompanyForm"
-        }`,
+        `/api/${company_id ? `updateCompany/${company_id}` : "submitCompanyForm"}`,
         formDataToSend,
         {
           headers: {
@@ -782,16 +799,43 @@ const CompanyForm = () => {
           },
         }
       );
+  
       console.log("Company data submitted successfully:", response.data);
-      navigate("/hrms/company");
+  
+      const newCompanyId = company_id ? company_id : response.data.organisation.id; 
+  
+      const documentUploads = uploadDocuments.map((document, index) => {
+        if (document.file) {
+          const documentData = new FormData();
+          console.log('Appending company name and document details',document);
+          documentData.append("Company_name", formData.Company_name);
+          documentData.append("document", document.file);
+          documentData.append("documentType", document.documentType);
+          documentData.append("otherDetails", document.otherDetails);
+          documentData.append("companyId", newCompanyId);  
+  
+          return axios.post(`/api/uploadDocument/${newCompanyId}`, documentData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
+            console.log(`Document ${index + 1} uploaded successfully`, response.data);
+          })
+          .catch((err) => {
+            console.error(`Error uploading document ${index + 1}:`, err.response?.data || err.message);
+          });
+        }
+      });
+  
+      await Promise.all(documentUploads);
+  //    fetchDetails();
     } catch (err) {
-      console.error(
-        "Error submitting company data:",
-        err.response?.data || err.message
-      );
+      console.error("Error submitting company data:", err.response?.data || err.message);
     }
   };
-
+  
+  
   return (
     <div className="p-12">
       <p className="text-[12px] text-gray-600">
@@ -949,29 +993,18 @@ const CompanyForm = () => {
               ) : section.title === "Upload Documents" ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-6 text-gray-600">
-                    <label className="text-sm font-semibold">
-                      Type of Document
-                    </label>
-                    <label className="text-sm font-semibold">
-                      Upload Document
-                    </label>
+                    <label className="text-sm font-semibold">Type of Document</label>
+                    <label className="text-sm font-semibold">Upload Document</label>
                   </div>
-
-                  {Array.isArray(section.rows) &&
-                    section.rows.map((row, rowIndex) => (
-                      <div
-                        key={rowIndex}
-                        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                      >
+              
+                  {Array.isArray(uploadDocuments) &&
+                    uploadDocuments.map((row, rowIndex) => (
+                      <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <select
                           name={`documentType-${rowIndex}`}
                           value={row.documentType || ""}
                           onChange={(e) =>
-                            handleUploadDocumentsChange(
-                              rowIndex,
-                              "documentType",
-                              e.target.value
-                            )
+                            handleUploadDocumentsChange(rowIndex, "documentType", e.target.value)
                           }
                           className="w-full px-2 py-1 border rounded-md text-[14px] focus:border-tt focus:border-b-2"
                         >
@@ -982,9 +1015,9 @@ const CompanyForm = () => {
                             </option>
                           ))}
                         </select>
-
-                        {row.sampleDocument && (
-                          <div className="flex flex-row gap-2">
+              
+                        <div className="flex flex-row gap-2 items-center">
+                          {row.sampleDocument && (
                             <button className="bg-blue-800 p-2 border rounded w-[140px] text-[10px]">
                               <a
                                 href={row.sampleDocument}
@@ -995,34 +1028,30 @@ const CompanyForm = () => {
                                 Sample Document
                               </a>
                             </button>
-
-                            <input
-                              type="file"
-                              name={`file-${rowIndex}`}
-                              onChange={(e) =>
-                                handleUploadDocumentsChange(
-                                  rowIndex,
-                                  "file",
-                                  e.target.files[0]
-                                )
-                              }
-                              className="w-full px-2 py-1 text-sm"
-                            />
-                          </div>
-                        )}
-                        {row.sampleDocument === null && <input
-                          type="file"
-                          name={`file-${rowIndex}`}
-                          onChange={(e) =>
-                            handleUploadDocumentsChange(
-                              rowIndex,
-                              "file",
-                              e.target.files[0]
-                            )
-                          }
-                          className="w-full px-2 py-1 text-sm"
-                        />}
-
+                          )}
+              
+                          <input
+                            type="file"
+                            name={`file-${rowIndex}`}
+                            onChange={(e) =>
+                              handleUploadDocumentsChange(rowIndex, "file", e.target.files[0])
+                            }
+                            className="w-full px-2 py-1 text-sm"
+                          />
+              
+                          {row.uploadedBefore && row.previousDetails?.document_url && (
+                            <button className="bg-green-600 p-2 border rounded text-[10px] text-white">
+                              <a
+                                href={row.previousDetails.document_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full text-center"
+                              >
+                                Download
+                              </a>
+                            </button>
+                          )}
+                        </div>
                       </div>
                     ))}
                 </div>
@@ -1144,7 +1173,7 @@ const CompanyForm = () => {
           ))}
 
           <button className="p-2 rounded-lg text-white bg-blue-900">
-            {company_id ? "Update" : "Submit"}
+            Submit
           </button>
         </form>
       </div>
