@@ -41,6 +41,10 @@ const PaymentType = require('../models/PaymentType')(sequelize,DataTypes);
 const HolidayType = require('../models/HolidayType')(sequelize,DataTypes);
 const Holiday = require('../models/Holiday')(sequelize,DataTypes);
 const Visitor = require('../models/Visitor')(sequelize,DataTypes);
+const Shift = require('../models/Shift')(sequelize,DataTypes);
+const LatePolicy = require('../models/LatePolicy')(sequelize,DataTypes);
+const ShiftOffDay = require('../models/ShiftOffDay')(sequelize,DataTypes);
+const OrgDocument = require('../models/OrgDocument')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -56,6 +60,9 @@ TradingHour.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisat
 
 Organisation.hasMany(Department, {foreignKey: "organisation_id",as: "departments",});
 Department.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+Organisation.hasMany(OrgDocument, {foreignKey: "organisation_id",as: "org_documents",});
+OrgDocument.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
 Designation.belongsTo(Department, { as: "department", foreignKey: "department_id" });
 Department.hasMany(Designation, { as: "designations", foreignKey: "department_id" });
@@ -89,10 +96,16 @@ Holiday.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation
 
 Organisation.hasMany(Visitor, {foreignKey: "organisation_id",as: "visitors",});
 Visitor.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+Shift.belongsTo(Department, { as: "department", foreignKey: "department_id" });
+Shift.belongsTo(Designation, { as: "designation", foreignKey: "designation_id" });
+
+Department.hasMany(Shift, { as: "shifts", foreignKey: "department_id" });
+
+Designation.hasMany(Shift, { as: "shifts", foreignKey: "designation_id" });
 
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
-                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor
+                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument
                   };

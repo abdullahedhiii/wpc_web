@@ -56,6 +56,16 @@ import HolidayListForm from "./Components/Holiday/HolidayListForm";
 import RegVisitor from "./Components/Rota/Visitor/RegVisitor";
 import VisitorList from "./Components/Rota/Visitor/VisitorList";
 import VisitorForm from "./Components/Rota/Visitor/VisitorForm";
+import ShiftManagement from "./Components/Rota/ShiftManagement/ShiftManagement";
+import ShiftManagementForm from "./Components/Rota/ShiftManagement/ShiftManagementForm";
+import LatePolicy from "./Components/Rota/ShiftManagement/LatePolicy";
+import LatePolicyForm from "./Components/Rota/ShiftManagement/LatePolicyForm";
+import OffDay from "./Components/Rota/ShiftManagement/OffDay";
+import OffDayForm from "./Components/Rota/ShiftManagement/OffDayForm";
+import EmployeePage from "./Components/Employee/EmployeePage";
+import NotFound from "./Components/NotFound";
+import UserConfiguration from "./Components/User access/UserConfiguration";
+import EmployeeForm from "./Components/Employee/AddEmployeeForm";
 
 const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -128,6 +138,10 @@ const SimpleLayout = () => {
 };
 
 const router = createBrowserRouter([
+  {
+      path : "*",
+      element : <NotFound/>
+  },
   {
     path: "/",
     element: <SimpleLayout />,
@@ -555,28 +569,100 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         )
       },
+      {
+        path : "rota/shift-management",
+        element : (
+          <ProtectedRoute>
+            <ShiftManagement/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/add-shift-management",
+        element : (
+          <ProtectedRoute>
+            <ShiftManagementForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/late-policy",
+        element:(
+          <ProtectedRoute>
+            <LatePolicy/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/add-late-policy",
+        element:(
+          <ProtectedRoute>
+            <LatePolicyForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/offday",
+        element:(
+          <ProtectedRoute>
+            <OffDay/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/add-offday",
+        element:(
+          <ProtectedRoute>
+            <OffDayForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "employeedashboard",
+        element:(
+          <ProtectedRoute>
+            <SubDashboard/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "employees",
+        element:(
+          <ProtectedRoute>
+            <EmployeePage/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "useraccessdashboard",
+        element : (
+          <ProtectedRoute>
+            <SubDashboard/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "role/vw-users",
+        element : (
+          <ProtectedRoute>
+            <UserConfiguration/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "addemployee",
+        element : (
+          <ProtectedRoute>
+            <EmployeeForm/>
+          </ProtectedRoute>
+        )
+      }
     ],
   },
 ]);
 
 function App() {
-  // const dispatch = useDispatch();
-  // const {user,isLoggedIn} = useSelector((state) => state.user);
-
-  // useEffect(() => {
-  //   if(!isLoggedIn){
-  //      axiosInstance
-  //     .get("/api/check-session")
-  //     .then((response) => {
-  //       dispatch(login(response.data));
-  //       console.log("redux ", user, 'api response ',response.data);
-  //       console.log('is logged in ',isLoggedIn);
-  //     })
-  //     .catch((err) => {
-  //        console.log('Not logged in or session expired', err);
-  //     });
-  //   }
-  // }, []);
+ 
 
   return <RouterProvider router={router} />;
 }

@@ -54,7 +54,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
             }`}
           >
             {selectedModule.name === "Organisation Profile"
-              ? user?.company_name || "Company Name"
+              ? companyData[0]['Organisation Name'] || "Company Name"
               : selectedModule.name}
           </div>
         )}
@@ -101,7 +101,9 @@ const Sidebar = ({ isOpen, setOpen }) => {
                       : undefined
                   } rounded-lg  p-3 cursor-pointer`}
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3" 
+                     onClick={() => subModule.features.length === 0 && navigate(`/hrms/${subModule.main_route}`)}
+                  >
                     <i className={`${subModule.icon} text-[18px]`}></i>
                     <span className="text-[15px]">{subModule.name}</span>
                   </div>

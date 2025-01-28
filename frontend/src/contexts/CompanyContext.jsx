@@ -29,6 +29,30 @@ export const CompanyProvider = ({ children }) => {
   const [holidayData, setHolidays] = useState([]);
   const [holidayList, setHolidayList] = useState([]);
   const [visitors, setVisitors] = useState([]);
+  const [shifts,setShifts] = useState([]);
+  const [latePolicies,setPolicies] = useState([]);
+  const [companyDocuments,setCompanyDocuments] = useState([]);
+
+  const fetchPolicies = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getLatePolicies/${id_to}`);
+      if (response.status === 200) {
+        setPolicies(response.data);
+      }
+    } catch (err) {}
+  };
+
+
+  const fetchShifts = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getShifts/${id_to}`);
+      if (response.status === 200) {
+        setShifts(response.data);
+      }
+    } catch (err) {}
+  };
 
   const fetchVisitors = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
@@ -178,6 +202,7 @@ export const CompanyProvider = ({ children }) => {
             filterByPrefix(response.data.allData, "Address_"),
           ]);
           setLevel1Details([filterByPrefix(response.data.allData, "Level1_")]);
+          setCompanyDocuments(response.data.company_documents);
         }
       }
     } catch (err) {
@@ -205,6 +230,8 @@ export const CompanyProvider = ({ children }) => {
       fetchHolidays(response.data.id);
       fetchHolidayList(response.data.id);
       fetchVisitors(response.data.id);
+      fetchShifts(response.data.id);
+      fetchPolicies(response.data.id);
     } catch (err) {
       console.log("errorr ", err);
       setCompanyData([]);
@@ -258,7 +285,11 @@ export const CompanyProvider = ({ children }) => {
         fetchHolidayList,
         holidayList,
         visitors,
-        fetchVisitors
+        fetchVisitors,
+        shifts,
+        fetchShifts,
+        latePolicies,
+        fetchPolicies,
       }}
     >
       {children}

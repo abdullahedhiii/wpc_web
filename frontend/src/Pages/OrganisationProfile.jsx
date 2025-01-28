@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useCompanyContext } from "../contexts/CompanyContext";
 
 const OrganisationProfile = () => {
-  const {companyData} = useCompanyContext();
+  const {companyData,fetchOrganisation} = useCompanyContext();
   const {user} = useSelector((state) => state.user);
   const navigate = useNavigate();
   const columns = [
@@ -20,7 +20,8 @@ const OrganisationProfile = () => {
     "Action",
   ];
 
-
+  
+  
   useEffect(() => {
     if(companyData.length === 0){
     navigate('/hrms/company-profile/edit-company');

@@ -12,10 +12,11 @@ const DataTable = ({
   addMore,
   icon,
   isDashboard,
-  buttonTitle
+  buttonTitle,
+  isMain
 }) => {
   const { selectedFeature } = useModuleContext();
-
+  console.log("in data table ", data);
 
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
@@ -68,33 +69,37 @@ const DataTable = ({
   };
 
   const filteredFields = fields.filter((field) => field !== "id");
-  console.log('in data table ',selectedFeature);
   return (
-    <div className="x-2 border-t-4 border-tt bg-white rounded-md shadow-md">
+    
+    <div className="x-2 border-t-4 border-tt bg-white rounded-md shadow-md ">
       {title && (
         <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
             {!isDashboard && selectedFeature && (
               <i className={`la ${selectedFeature.icon} pl-2 text-xl`}></i>
             )}
-            {isDashboard && <i className={`${icon} text-[14px]`}></i>}
+
+            {isDashboard && <i className={`pl-2 ${icon} text-[18px] text-blue-900`}></i>}
             <h2 className="text-[14px] font-semibold text-blue-900">{title}</h2>
           </div>
           {downloadable && (
             <div className="pr-2">
-            <button
-              title="Export Data"
-              className="bg-background text-white w-8 h-8 border rounded-full hover:text-blue-700"
-            >
-              <i className="la la-download text-[20px]"></i>
-            </button>
+              <button
+                title="Export Data"
+                className="bg-background text-white w-8 h-8 border rounded-full hover:text-blue-700"
+              >
+                <i className="la la-download text-[20px]"></i>
+              </button>
             </div>
           )}
           {addMore && (
             <button
               title={buttonTitle}
               className="m-3 bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
-              onClick={() => navigate(`/hrms/${selectedFeature.plus_icon_route}`)}
+              onClick={() =>
+               selectedFeature ? navigate(`/hrms/${selectedFeature.plus_icon_route}`)
+               : title === 'Employee' ? navigate("/hrms/addemployee") : undefined
+              }
             >
               <i className="la la-plus text-xl"></i>
             </button>
@@ -140,14 +145,14 @@ const DataTable = ({
         </div>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="px-8 py-4 min-w-full table-auto border-spacing-0.5 border-separate">
+      <div className="relative w-full overflow-x-auto">
+        <table className="px-8 w-full table-auto border-spacing-0.5 border-separate">
           <thead>
             <tr className="bg-gray-100">
               {filteredFields.map((field, index) => (
                 <th
                   key={index}
-                  className="relative px-4 py-1 text-left text-sm font-semibold text-white bg-background"
+                  className="relative px-4  py-1 text-left text-[12px] font-semibold text-white bg-background"
                 >
                   <div className="flex justify-between items-start">
                     {field}
@@ -171,15 +176,30 @@ const DataTable = ({
               displayedData.map((row, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className={rowIndex % 2 !== 0 ? "bg-white hover:bg-gray-100" : "bg-gray-100 hover:bg-gray-200"}
+                  className={
+                    rowIndex % 2 !== 0
+                      ? "bg-white hover:bg-gray-100"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }
                 >
                   {filteredFields.map((field, colIndex) => (
                     <td
-                      key={colIndex}
-                      className="px-6 py-1 border text-sm text-gray-600"
-                    >
-                      {field === "Action" || field === "Edit" || field === "Delete" ? (
-                        row["Action"] === "Edit" || field === "Edit"  ? (
+                    key={colIndex}
+                    className="px-6 py-1 border text-[10px] text-gray-600 break-words whitespace-normal max-w-[100px]"
+                  >
+                  
+                      {field === "Action" ||
+                      field === "Edit" ||
+                      field === "Delete" ? (
+                        Array.isArray(row["Action"]) ? (
+                          <select className="border rounded  py-1 bg-purple-600 text-white hover:bg-blue-700">
+                            {row["Action"].map((option, optionIndex) => (
+                              <option key={optionIndex} value={option} className="text-white">
+                                {option}
+                              </option>
+                            ))}
+                          </select>
+                        ) : row["Action"] === "Edit" || field === "Edit" ? (
                           <img
                             src="/images/edit.png"
                             className="h-4 w-4 cursor-pointer"
@@ -191,13 +211,14 @@ const DataTable = ({
                             title="Edit"
                           />
                         ) : row["Action"] === "Delete" || field === "Delete" ? (
-                           <img 
-                           src="/images/delete.png"
+                          <img
+                            src="/images/delete.png"
                             className="h-4 w-4 cursor-pointer"
-                            onClick={() =>{}}
-                            title="Delete"/>
+                            onClick={() => {}}
+                            title="Delete"
+                          />
                         ) : null
-                      )  : field === "Visitor Link" && row[field] ? (
+                      ) : field === "Visitor Link" && row[field] ? (
                         <a
                           href={row[field]}
                           target="_blank"
