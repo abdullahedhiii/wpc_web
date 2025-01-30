@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
+import axiosInstance from "../../../axiosInstance";
 
 const nationalityOptions = [
   "Afghanistan",
@@ -148,58 +149,74 @@ const nationalityOptions = [
   "Zimbabwe",
 ];
 
+const currency_options = [
+  "DZD", "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG",
+  "AZN", "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB",
+  "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP",
+  "CNY", "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD",
+  "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "FOK", "GBP", "GEL", "GGP",
+  "GHS", "GIP", "GMD", "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG",
+  "HUF", "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK", "JEP", "JMD",
+  "JOD", "JPY", "KES", "KGS", "KHR", "KID", "KMF", "KRW", "KWD", "KYD",
+  "KZT", "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA",
+  "MKD", "MMK", "MNT", "MOP", "MRU", "MUR", "MVR", "MWK", "MXN", "MYR",
+  "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD", "OMR", "PAB", "PEN",
+  "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF",
+  "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLE", "SLL", "SOS",
+  "SRD", "SSP", "STN", "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP",
+  "TRY", "TTD", "TVD", "TWD", "TZS", "UAH", "UGX", "USD", "UYU", "UZS",
+  "VES", "VND", "VUV", "WST", "XAF", "XCD", "XOF", "XPF", "YER", "ZAR",
+  "ZMW", "ZWL"
+];
+
 const EmployeeForm = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { departmentData, designationData, employeeTypes, authorizingDetails } =
-    useCompanyContext();
+  const { companyData,departmentData,annualPays, designationData, employeeTypes, authorizingDetails,
+    payGroups,paymentTypes,taxMasters,orgBanks} =useCompanyContext();
+  const [ employee_code, setCode ] = useState('');
+
+  useEffect(() => {
+    const fetch_next_id = async () => {
+      try {
+        const response = await axiosInstance.get('/api/getNextEmployeeCode');
+        setCode(response.data); 
+      } catch (err) {
+        console.error('Error fetching employee code:', err); 
+      }
+    };
+  
+    fetch_next_id();
+  }, []); 
+  
+   useEffect(() => {
+     if (employee_code) {
+      setFormData(prevState => ({
+      ...prevState,
+      personal_details: {
+        ...prevState.personal_details,
+        employee_code: employee_code, 
+      },
+    }));
+  }
+}, [employee_code]); 
 
   const [formData, setFormData] = useState({
-    personal_details: {
-      employee_code: "",
-      fname: "",
-      mname: "",
-      lname: "",
-      Gender: "Male",
-      dob: "",
-      nationality_no: "",
-      Nationality: "",
-      email: "",
-      contact_1: "",
+    personal_details: {  employee_code: '',  fname: "", mname: "",  lname: "",Gender: "Male",
+      dob: "", nationality_no: "",  Nationality: "", email: "", contact_1: "",
       contact_2: "",
     },
     service_details: {
-      department: "",
-      designation: "",
-      joining: "",
-      type: "",
-      confirmation: "",
-      start: "",
-      end_if: "",
-      location: "",
-      reportingauth: "",
-      leaveauth: "",
-      profile_pic : null,
+      department: "",designation: "",joining: "",type: "",
+      confirmation: "",start: "", end_if: "",location: "",reportingauth: "",
+      leaveauth: "",profile_picture : null,
     },
-    education_details: {
-      sl_no: "",
-      qualification: "",
-      subject: "",
-      institution_name: "",
-      awarding_body: "",
-      year_of_passing: "",
-      percentage: "",
-      grade_division: "",
-      transcript_document: null,
-      certificate_document: null,
-      add: "",
-    },
+    education_details: [{
+      sl_no: "", qualification: "", subject: "", institution_name: "", awarding_body: "",
+      year_of_passing: "", percentage: "", grade_division: "",
+      transcript_document: null,certificate_document: null,
+    }],
     job_details: {
-      title: "",
-      start: "",
-      end: "",
-      experience: 0,
-      description: "",
-    },
+      title: "",start: "",end: "",experience: 0,description: "",},
     key_responsibilities: [{ res: "" }],
     training_details: [{ title: "", start: "", end: "", description: "" }],
     kin_details : {
@@ -207,10 +224,59 @@ const EmployeeForm = () => {
     },
     certification : {title :'',start : '',end: '',license: ''},
     contact_info : {post_code: '',address : '',line1 : '',line2 : '',line3: '',city: '',country :'',proof: null},
+    other_documents: [{type : '',doc : null}],
     passport_details : {passport_no :0,nationality : '',place:'',issued_by:'',issue_date:'',expiry_date:'',review_date: '',picture:null,current: true,remarks:''},
-    visa : {visa_no :0,nationality : '',country:'',issued_by:'',issue_date:'',expiry_date:'',review_date: '',front:null,back:null,current: true,remarks:''}
-            
+    visa : {visa_no :0,nationality : '',country:'',issued_by:'',issue_date:'',expiry_date:'',review_date: '',front:null,back:null,current: true,remarks:''},
+    esus : {refernece : 0,nationality: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false}   , 
+    dbs : {type : '',reference: 0,nationality: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false},
+    national : {id : '',nationality: '',country: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false},    
+    other_details : [{name: '',reference: '',nationality : '',issued: '',expiry :'',review_date : '',document:null,current: false,remarks: ''}],
+    pay_details : {group : '',pay : '', wedges: '',payment_type : '',
+      basic_wedges : '',min_hours: 0,rate : 0,tax_code : '',tax_reference: '',
+      tax_percentage : 0,pay_mode : '',bank_name : '',branch_name : '',
+       account_no : '',sort_code : '',currency : ''},
+    pay_structure : {
+      payments: {
+        dearnessAllowance: false,
+        houseRentAllowance: false,
+        conveyanceAllowance: false,
+        performanceAllowance: false,
+        monthlyFixedAllowance: false,
+      },
+      deductions: {
+        niDeduction: false,
+        incomeTaxDeduction: false,
+        incomeTaxCess: false,
+        esi: false,
+        profTax: false,
+      },
+    }
   });
+  
+  const departmentOptions = departmentData.map((department) => department['Department Name']);
+  const typeOptions =  employeeTypes.map((type) => type['Employment Type']);
+  const payGroupoptions = payGroups.map((group) => group['Pay Group']);
+  const payment_type_options = paymentTypes.map((type) => type['Payment Type']);
+  const tax_options = taxMasters.map((opt) => opt['Tax Code']);
+  const bank_options = orgBanks.map((opt) => opt['Bank Name']);
+  const [filteredDesignations, setFilteredDesignations] = useState([]);
+  const [filteredPays,setFilteredPays] = useState([]);
+
+  useEffect(() => {
+    const filtered = designationData
+      .filter((designation) => designation['Department Name'] === formData.service_details.department)
+      .map((designation) => designation['Designation']);  
+  
+    setFilteredDesignations(filtered);
+  }, [formData.service_details.department, designationData]); 
+  
+  useEffect(() => {
+    const filtered = annualPays
+      .filter((pay) => pay['Pay Group'] === formData.pay_details.group)
+      .map((pp) => pp['Annual Pay']);  
+  
+      setFilteredPays(filtered);
+  }, [formData.pay_details.group, annualPays]); 
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -234,6 +300,20 @@ const EmployeeForm = () => {
       }));
     }
   };
+  
+  const handleStructureChange = (category, key) => {
+    setFormData((prev) => ({
+      ...prev,
+      pay_structure: {
+        ...prev.pay_structure,
+        [category]: {
+          ...prev.pay_structure[category],
+          [key]: !prev.pay_structure[category][key],
+        },
+      },
+    }));
+  };
+  
 
   const formSections = [
     {
@@ -256,16 +336,16 @@ const EmployeeForm = () => {
       page: 1,
       title: "Service Details",
       fields: [
-        { label: "Department", value: "service_details.department", type: "select", required: false, options: [] },
-        { label: "Designation", value: "service_details.designation", type: "select", required: false, options: [] },
+        { label: "Department", value: "service_details.department", type: "select", required: false, options: departmentOptions },
+        { label: "Designation", value: "service_details.designation", type: "select", required: false, options: filteredDesignations },
         { label: "Date of Joining", value: "service_details.joining", type: "date", required: false },
-        { label: "Employment Type", value: "service_details.type", type: "select", required: false, options: [] },
+        { label: "Employment Type", value: "service_details.type", type: "select", required: false, options: typeOptions },
         { label: "Date of Confirmation", value: "service_details.confirmation", type: "date", required: false },
         { label: "Contract Start Date", value: "service_details.start", type: "date", required: false },
         { label: "Contract End Date (If Applicable)", value: "service_details.end_if", type: "date", required: false },
         { label: "Job Location", value: "service_details.location", type: "text", required: false },
         { label: "Profile Picture", value: "service_details.profile_picture", type: "file", required: false },
-        { label: "Reporting Authority", value: "service_details.reportingauth", type: "select", required: false, options: [] },
+        { label: "Reporting Authority", value: "service_details.reportingauth", type: "select", required: false, options: [authorizingDetails[0]['Authorizing_fname'] + ' '+ authorizingDetails[0]['Authorizing_lname']] },
         { label: "Leave Sanction Authority", value: "service_details.leaveauth", type: "select", required: false, options: [] },
       ]      
     },
@@ -370,7 +450,7 @@ const EmployeeForm = () => {
           {label : 'Issued date',type : 'date',value : "visa.issue_date"},
           {label : 'Expirty date',type : 'date',value : "visa.expiry_date"},
           {label : 'Eligible Review Date',type : 'date',value : "visa.review_date",readOnly : true},
-          {label : 'Upload Front Side Picture',type :'file',value : "visa.picture"},
+          {label : 'Upload Front Side Picture',type :'file',value : "visa.front"},
           {label : 'Upload Back Side Picture',type :'file',value : "visa.back"},
           {label : 'Is this your current visa?',type :'radio',value : "visa.current"},
           {label : 'Remarks',type :'text',value : "visa.remarks"}
@@ -380,17 +460,46 @@ const EmployeeForm = () => {
     {
       page: 6,
       title: "EUSS/Time limit details",
-      fields: [],
+      fields: [
+        {label : 'Reference Number.',type : 'text',value : "esus.reference"},
+        {label : 'Nationality',type : 'select',value : "esus.nationality",options :nationalityOptions},
+        {label : 'Issued Date',type : 'date',value : "esus.issued"},
+        {label : 'Expiry Date',type : 'date',value : "esus.expiry"},
+        {label : 'Eligible Review Date',type : 'date',value : "esus.review_date",readOnly:true},
+        {label : 'Upload Document',type : 'file',value : "esus.document"},
+        {label : 'Is this your current status?',type : 'radio',value : "esus.current" },
+        {label : 'Remarks',type :'text',value : "esus.remarks"}
+      ],
     },
     {
       page: 6,
       title: "Disclosure and Barring Service (DBS) details",
-      fields: [],
+      fields: [
+        {label : 'DBS Type',type: 'select', value : 'dbs.type',options : ['Basic','Standard','Advanced']},
+        {label : 'Reference Number.',type : 'text',value : "dbs.reference"},
+        {label : 'Nationality',type : 'select',value : "dbs.nationality",options :nationalityOptions},
+        {label : 'Issued Date',type : 'date',value : "dbs.issued"},
+        {label : 'Expiry Date',type : 'date',value : "dbs.expiry"},
+        {label : 'Eligible Review Date',type : 'date',value : "dbs.review_date",readOnly:true},
+        {label : 'Upload Document',type : 'file',value : "dbs.document"},
+        {label : 'Is this your current status?',type : 'radio',value : "dbs.current" },
+        {label : 'Remarks',type :'text',value : "dbs.remarks"}
+      ],
     },
     {
       page: 6,
       title: "National Id details",
-      fields: [],
+      fields: [
+        {label : 'National id number.',type: 'text', value : 'national.id',},
+        {label : 'Nationality',type : 'text',value : "national.nationality",options : nationalityOptions},
+        {label : 'Country of Residence',type : 'select',value : "national.country",options :nationalityOptions},
+        {label : 'Issued Date',type : 'date',value : "national.issued"},
+        {label : 'Expiry Date',type : 'date',value : "national.expiry"},
+        {label : 'Eligible Review Date',type : 'date',value : "national.review_date",readOnly:true},
+        {label : 'Upload Document',type : 'file',value : "national.document"},
+        {label : 'Is this your current status?',type : 'radio',value : "national.current" },
+        {label : 'Remarks',type :'text',value : "national.remarks"}
+      ],
     },
     {
       page: 6,
@@ -400,7 +509,25 @@ const EmployeeForm = () => {
     {
       page: 7,
       title: "Pay Details",
-      fields: [],
+      fields: [
+        {label: 'Pay Group',type : 'select',value : "pay_details.group",options : payGroupoptions},
+        {label: 'Annual Pay',type : 'select',value : "pay_details.pay",options : filteredPays},
+        {label: 'Wedges pay mode',type : 'select',value : "pay_details.wedges",options : []},
+        {label: 'Payment Type',type : 'select',value : "pay_details.payment_type",options : payment_type_options},
+        {label: 'Basic/Daily Wedges',type : 'text',value : "pay_details.basic_wedges"},
+        {label: 'Min. Working Hour',type : 'text',value : "pay_details.min_hours"},
+        {label: 'Rate',type : 'text',value : "pay_details.rate"},
+        {label: 'Tax Code',type : 'select',value : "pay_details.tax_code",options :tax_options},
+        {label: 'Tax Reference',type : 'text',value : "pay_details.tax_reference"},
+        {label: 'Tax Percentage',type : 'text',value : "pay_details.tax_percentage"},
+        {label: 'Payment Mode',type : 'select',value : "pay_details.pay_mode",options : ['Bank','Cash']},
+        {label: 'Bank Name',type : 'select',value : "pay_details.bank_name",options : bank_options},
+        {label: 'Branch No',type : 'text',value : "pay_details.branch_name"},
+        {label: 'Account No',type : 'text',value : "pay_details.account_no"},
+        {label: 'Sort Code',type : 'text',value : "pay_details.sort_code"},
+        {label: 'Payment Currency',type : 'select',value : "pay_details.currency",options :currency_options},
+
+      ],
     },
     {
       page: 8,
@@ -441,7 +568,7 @@ const EmployeeForm = () => {
 
   const handleTrainingChange = (index, field, value) => {
     const updatedTraining = [...formData.training_details];
-    updatedTraining[index][field] = value; // Update the correct field
+    updatedTraining[index][field] = value; 
     setFormData((prevState) => ({
       ...prevState,
       training_details: updatedTraining,
@@ -467,13 +594,414 @@ const EmployeeForm = () => {
       training_details: updatedTraining,
     }));
   };
+  
+  const handleOtherDocumentChange = (index, field, value) => {
+    const updateDocuments = [...formData.other_documents];
+    updateDocuments[index][field] = value; 
+    setFormData((prevState) => ({
+      ...prevState,
+      other_documents: updateDocuments,
+    }));
+  };
+
+  const addOtherDocument = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      other_documents: [
+        ...prevState.other_documents,
+        { type : '',doc : null},
+      ],
+    }));
+  };
+
+  const removeOtherDocument = (index) => {
+    const updateDocument = formData.other_documents.filter(
+      (_, i) => i !== index
+    );
+    setFormData((prevState) => ({
+      ...prevState,
+      other_documents: updateDocument,
+    }));
+  };
+  
+  const handleOtherDetailsChange = (index, field, value) => {
+    const otherDetails = [...formData.other_details];
+    otherDetails[index][field] = value; 
+    setFormData((prevState) => ({
+      ...prevState,
+      other_details: otherDetails,
+    }));
+  };
+  
+  const addOtherDetails = () => {
+    setFormData((prevState) => ({
+      ...prevState,
+      other_details: [
+        ...prevState.other_details,
+        {name: '',reference: '',nationality : '',issued: '',expiry :'',review_date : '',document:null,current: false,remarks: ''}
+      ],
+    }));
+  };
+  
+  const removeOtherDetails = (index) => {
+    const updatedDetails = formData.other_details.filter(
+      (_, i) => i !== index
+    );
+    setFormData((prevState) => ({
+      ...prevState,
+      other_details: updatedDetails,
+    }));
+  };
 
   const currentSections = formSections.filter(
     (section) => section.page === currentPage
   );
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitted Form Data: ", formData);
+
+  const sendRequest = async (url, data) => {
+    try {
+      
+    } catch (error) {
+    
+    }
+  };
+  const handleSubmit = async () => {
+    try {
+      const personalDetailsFormData = new FormData();
+      for (const key in formData.personal_details) {
+        if (formData.personal_details[key]) {
+            personalDetailsFormData.append(key, formData.personal_details[key]);
+          }
+      }
+      personalDetailsFormData.append("Company_name", companyData[0]['Organisation Name']);
+      await axiosInstance.post(`/api/submit-personal-details/${employee_code}`, personalDetailsFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+  
+      const serviceDetailsFormData = new FormData();
+      for (const key in formData.service_details) {
+        if (formData.service_details[key]) {
+          if (key === "profile_picture" && formData.service_details[key]) {
+              serviceDetailsFormData.append("profile_picture", formData.service_details.profile_picture);
+          } else {
+            serviceDetailsFormData.append(key, formData.service_details[key]);
+          }
+        }
+      }
+      await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+    });
+  
+      formData.education_details.forEach(async (edu, index) => {
+        const educationFormData = new FormData();
+        for (const key in edu) {
+          if (edu[key]) {
+            if (key === "transcript_document" || key === "certificate_document") {
+              if (edu[key]) {
+                educationFormData.append(key, edu[key]);
+              }
+            } else {
+              educationFormData.append(key, edu[key]);
+            }
+          }
+        }      
+        await axiosInstance.post(`/api/submit-education-details/${companyData[0].id}.${employee_code}`, educationFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
+      });
+
+      const job_details_form_data = new FormData();
+      for (const key in formData.job_details) {
+        if (formData.job_details[key]) {
+          job_details_form_data.append(key, formData.job_details[key]);
+          }
+      }
+      job_details_form_data.append("Company_name", companyData[0]['Organisation Name']);
+      await axiosInstance.post(`/api/submit-job-details/${companyData[0].id}.${employee_code}`, job_details_form_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+      
+      formData.key_responsibilities.forEach(async(res, index) => {
+        const keyResponsibilities = new FormData();
+        for (const key in res) {
+          keyResponsibilities.append(key, res[key]);
+        }         keyResponsibilities.append("Company_name", companyData[0]['Organisation Name']);
+        await axiosInstance.post(`/api/submit-key-responsibilities/${companyData[0].id}.${employee_code}`, keyResponsibilities, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
+      });
+
+      formData.training_details.forEach(async(training, index) => {
+        const training_data = new FormData();
+        for (const key in training) {
+          training_data.append(key, training[key]);
+        }    
+        await axiosInstance.post(`/api/submit-training-data/${companyData[0].id}.${employee_code}`, training_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
+      });
+
+      const kin_data = new FormData();
+      for (const key in formData.kin_details) {
+        if (formData.kin_details[key]) {
+          kin_data.append(key, formData.kin_data[key]);
+          }
+      }
+      await axiosInstance.post(`/api/submit-kin-details/${companyData[0].id}.${employee_code}`, kin_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+      
+      const certification_data = new FormData();
+      for (const key in formData.certification) {
+        if (formData.certification[key]) {
+          certification_data.append(key, formData.certification[key]);
+          }
+      }    
+      await axiosInstance.post(`/api/submit-certifications/${companyData[0].id}.${employee_code}`, certification_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+      
+      const contact_data = new FormData();
+      for (const key in formData.contact_info) {
+        if (formData.contact_info[key]) {
+          contact_data.append(key, formData.contact_info[key]);
+          }
+      } 
+      await axiosInstance.post(`/api/submit-contact/${companyData[0].id}.${employee_code}`, contact_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      const pay_data = new FormData();
+      for (const key in formData.pay_details) {
+        if (formData.pay_details[key]) {
+          pay_data.append(key, formData.pay_details[key]);
+          }
+      }
+      await axiosInstance.post(`/api/submit-pay-details/${companyData[0].id}.${employee_code}`, pay_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+      
+      const pay_structure_data = new FormData();
+    
+      for (const paymentKey in formData.pay_structure.payments) {
+        if (formData.pay_structure.payments[paymentKey] !== undefined) {
+        pay_structure_data.append(`payments[${paymentKey}]`, formData.pay_structure.payments[paymentKey]);
+        }
+      }
+    
+      for (const deductionKey in formData.pay_structure.deductions) {
+        if (formData.pay_structure.deductions[deductionKey] !== undefined) {
+        pay_structure_data.append(`deductions[${deductionKey}]`, formData.pay_structure.deductions[deductionKey]);
+       }
+      }
+      await axiosInstance.post(`/api/submit-pay-structure/${companyData[0].id}.${employee_code}`, pay_structure_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      formData.other_details.forEach(async (other, index) => {
+        const otherData = new FormData();
+        for (const key in other) {
+          if (other[key]) {
+            if (key === "document") {
+              if (other[key]) {
+                otherData.append(key, other[key]);
+              }
+            } else {
+              otherData.append(key, other[key]);
+            }
+          }
+        }      otherData.append("Company_name", companyData[0]['Organisation Name']);
+
+        await axiosInstance.post(`/api/submit-other-data/${companyData[0].id}.${employee_code}`, otherData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
+      });
+
+
+      const national_data = new FormData();
+      for (const key in formData.national) {
+        if (formData.national[key]) {
+          if ( (key === "document") && formData.national[key]) {
+            national_data.append(key, formData.national[key]);
+          } else {
+            national_data.append(key, formData.national[key]);
+          }
+        }
+      }     
+      await axiosInstance.post(`/api/submit-national/${companyData[0].id}.${employee_code}`, national_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      const dbs_data = new FormData();
+      for (const key in formData.dbs) {
+        if (formData.dbs[key]) {
+          if ( (key === "document") && formData.dbs[key]) {
+            dbs_data.append(key, formData.dbs[key]);
+          } else {
+            dbs_data.append(key, formData.dbs[key]);
+          }
+        }
+      } 
+      await axiosInstance.post(`/api/submit-dbs/${companyData[0].id}.${employee_code}`, dbs_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      const esus_data = new FormData();
+      for (const key in formData.esus) {
+        if (formData.esus[key]) {
+          if ( (key === "document") && formData.esus[key]) {
+            esus_data.append(key, formData.esus[key]);
+          } else {
+            esus_data.append(key, formData.esus[key]);
+          }
+        }
+      }
+      await axiosInstance.post(`/api/submit-esus/${companyData[0].id}.${employee_code}`, esus_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      const visa_data = new FormData();
+      for (const key in formData.visa) {
+        if (formData.visa[key]) {
+          if ( (key === "front" || key === "back") && formData.visa[key]) {
+            console.log('appending',key,"to visa");
+            visa_data.append(key, formData.visa[key]);
+          } else {
+            visa_data.append(key, formData.visa[key]);
+          }
+        }
+      }
+      await axiosInstance.post(`/api/submit-visa/${companyData[0].id}.${employee_code}`, visa_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      const passport_data = new FormData();
+      for (const key in formData.passport_details) {
+        if (formData.passport_details[key]) {
+          if (key === "picture" && formData.passport_details[key]) {
+            passport_data.append(key, formData.passport_details[key]);
+          } else {
+            passport_data.append(key, formData.passport_details[key]);
+          }
+        }
+      }
+      await axiosInstance.post(`/api/submit-passport/${companyData[0].id}.${employee_code}`, passport_data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+    });
+
+      formData.other_documents.forEach(async (docc, index) => {
+        const other_doc = new FormData();
+        for (const key in docc) {
+          if (docc[key]) {
+            if (key === "doc") {
+              if (docc[key]) {
+                other_doc.append(key, docc[key]);
+              }
+            } else {
+              other_doc.append(key, docc[key]);
+            }
+          }
+        }
+        await axiosInstance.post(`/api/submit-otherdocument/${companyData[0].id}.${employee_code}`, other_doc, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
+      });
+      
+      
+      console.log('Data submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting form data:', error);
+    }
+  };
+  
+
+  
+   const handleEducationChange = (e, index) => {
+    const { name, value, type, files } = e.target;
+    const [section, field] = name.split(".");
+
+    if (type === "file") {
+      setFormData((prev) => {
+        const updatedEducationDetails = [...prev.education_details];
+        updatedEducationDetails[index][field] = files[0];
+        return {
+          ...prev,
+          education_details: updatedEducationDetails,
+        };
+      });
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        education_details: prev.education_details.map((item, idx) =>
+          idx === index
+            ? { ...item, [field]: value }
+            : item
+        ),
+      }));
+    }
+  };
+
+  const handleAddEducationDetail = () => {
+    setFormData((prev) => ({
+      ...prev,
+      education_details: [
+        ...prev.education_details,
+        {
+          sl_no: "",
+          qualification: "",
+          subject: "",
+          institution_name: "",
+          awarding_body: "",
+          year_of_passing: "",
+          percentage: "",
+          grade_division: "",
+          transcript_document: null,
+          certificate_document: null,
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveEducationDetail = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      education_details: prev.education_details.filter((_, i) => i !== index),
+    }));
   };
 
   return (
@@ -504,56 +1032,197 @@ const EmployeeForm = () => {
               <div
                 className={`${
                   section.title !== "Educational Details" &&
-                  section.title !== "Training Details"
+                  section.title !== "Training Details" &&
+                  section.title !== "Other Documents" && 
+                  section.title !== 'Other Details' && 
+                  section.title !== 'Pay Structure'
                     ? "grid grid-cols-1 md:grid-cols-3 gap-4"
                     : undefined
                 }`}
               >
                 {section.title === "Educational Details" ? (
                   <div className="w-full overflow-x-auto">
-                    <table className="min-w-full border border-gray-300">
-                      <thead className="bg-gray-200 text-gray-700">
-                        <tr>
-                          {section.fields.map((field, index) => (
-                            <th
-                              key={index}
-                              className="border px-4 py-2 text-sm text-left whitespace-nowrap"
+                  <table className="min-w-full border border-gray-300">
+                    <thead className="bg-gray-200 text-gray-700">
+                      <tr>
+                        {[
+                          "Sl No",
+                          "Qualification",
+                          "Subject",
+                          "Institution Name",
+                          "Awarding Body",
+                          "Year of Passing",
+                          "Percentage",
+                          "Grade/Division",
+                          "Transcript Document",
+                          "Certificate Document",
+                          "Actions",
+                        ].map((label, index) => (
+                          <th
+                            key={index}
+                            className="border px-4 py-2 text-sm text-left whitespace-nowrap"
+                          >
+                            {label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {formData.education_details.map((education, index) => (
+                        <tr key={index} className="bg-white">
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.sl_no}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].sl_no`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.qualification}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].qualification`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.subject}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].subject`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.institution_name}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].institution_name`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.awarding_body}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].awarding_body`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.year_of_passing}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].year_of_passing`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.percentage}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].percentage`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="text"
+                              className="w-full p-1 border rounded"
+                              value={education.grade_division}
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].grade_division`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="file"
+                              className="w-full p-1 border rounded"
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].transcript_document`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <input
+                              type="file"
+                              className="w-full p-1 border rounded"
+                              onChange={(e) => handleEducationChange(e, index)}
+                              name={`education_details[${index}].certificate_document`}
+                            />
+                          </td>
+                          <td className="border px-4 py-2">
+                            <button
+                              onClick={() => handleRemoveEducationDetail(index)}
+                              className="px-3 bg-red-300 text-white rounded"
                             >
-                              {field.label}
-                            </th>
-                          ))}
+                              Remove
+                            </button>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="bg-white">
-                          {section.fields.map((field, index) => {
-                            const fieldValue =
-                              formData[field.value.split(".")[0]][
-                                field.value.split(".")[1]
-                              ];
-                            return (
-                              <td className="border px-4 py-2">
-                                {field.type === "" ? (
-                                  <button className="px-3 bg-green-300 text-center">
-                                    <i className="text-white fas fa-plus"></i>
-                                  </button>
-                                ) : (
-                                  <input
-                                    type={field.type}
-                                    className="w-full p-1 border rounded"
-                                    onChange={handleChange}
-                                    value={field.type !== 'file' ? fieldValue || "" : undefined}
-                                    name={field.value}
-                                  />
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      </tbody>
-                    </table>
+                      ))}
+                    </tbody>
+                  </table>
+                  <button
+                    onClick={handleAddEducationDetail}
+                    className="mt-4 px-4 py-2 bg-green-300 text-white rounded"
+                  >
+                    Add More Education Details
+                  </button>
+                </div>
+                ) : section.title === 'Pay Structure' ? (
+                  <div className="max-w-4xl mx-auto p-4">
+                  <div>
+                    <div className="bg-blue-600 text-white text-lg font-semibold px-4 py-2">
+                      Payment (Taxable)
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+                      {Object.entries(formData.pay_structure.payments).map(([key, value]) => (
+                        <label key={key} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={() => handleStructureChange("payments", key)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-gray-700 capitalize">
+                            {key.replace(/([A-Z])/g, " $1")}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                ) : section.title === "Training Details" ? (
+            
+                  <div className="mt-4">
+                    <div className="bg-blue-600 text-white text-lg font-semibold px-4 py-2">
+                      Deduction
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+                      {Object.entries(formData.pay_structure.deductions).map(([key, value]) => (
+                        <label key={key} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={value}
+                            onChange={() => handleStructureChange("deductions", key)}
+                            className="w-4 h-4"
+                          />
+                          <span className="text-gray-700 capitalize">
+                            {key.replace(/([A-Z])/g, " $1")}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                ) :
+                 section.title === "Training Details" ? (
                   <div className="space-y-4">
                     {formData.training_details.map((training, index) => (
                       <div key={index} className="space-y-2 border p-4 rounded">
@@ -663,7 +1332,206 @@ const EmployeeForm = () => {
                       Add Training
                     </button>
                   </div>
-                ) : section.title === "Key Responsibilities" ? (
+                ) : section.title === 'Other Details' ? (
+                  <div className="space-y-4">
+    {formData.other_details.map((detail, index) => (
+      <div key={index} className="space-y-2 border p-4 rounded">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <label htmlFor={`name-${index}`} className="block text-[12px] text-gray-700">
+              Document Name
+            </label>
+            <input
+              type="text"
+              value={detail.name}
+              onChange={(e) => handleOtherDetailsChange(index, "name", e.target.value)}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor={`reference-${index}`} className="block text-[12px] text-gray-700">
+              Reference
+            </label>
+            <input
+              type="text"
+              value={detail.reference}
+              onChange={(e) => handleOtherDetailsChange(index, "reference", e.target.value)}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor={`nationality-${index}`} className="block text-[12px] text-gray-700">
+              Nationality
+            </label>
+            <input
+              type="text"
+              value={detail.nationality}
+              onChange={(e) => handleOtherDetailsChange(index, "nationality", e.target.value)}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor={`issued-${index}`} className="block text-[12px] text-gray-700">
+              Issued Date
+            </label>
+            <input
+              type="date"
+              value={detail.issued}
+              onChange={(e) => handleOtherDetailsChange(index, "issued", e.target.value)}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor={`expiry-${index}`} className="block text-[12px] text-gray-700">
+              Expiry Date
+            </label>
+            <input
+              type="date"
+              value={detail.expiry}
+              onChange={(e) => handleOtherDetailsChange(index, "expiry", e.target.value)}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor={`review_date-${index}`} className="block text-[12px] text-gray-700">
+              Review Date
+            </label>
+            <input
+              type="date"
+              value={detail.review_date}
+              onChange={(e) => handleOtherDetailsChange(index, "review_date", e.target.value)}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor={`document-${index}`} className="block text-[12px] text-gray-700">
+              Upload Document
+            </label>
+            <input
+              type="file"
+              onChange={(e) => handleOtherDetailsChange(index, "document", e.target.files[0])}
+              className="p-2 border rounded w-full"
+            />
+          </div>
+
+          <div className="space-y-2 flex items-center">
+            <input
+              type="checkbox"
+              checked={detail.current}
+              onChange={(e) => handleOtherDetailsChange(index, "current", e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor={`current-${index}`} className="text-[12px] text-gray-700">
+              Is this your current status?
+            </label>
+          </div>
+
+          <div className="space-y-2 col-span-full">
+            <label htmlFor={`remarks-${index}`} className="block text-[12px] text-gray-700">
+              Remarks
+            </label>
+            <textarea
+              value={detail.remarks}
+              onChange={(e) => handleOtherDetailsChange(index, "remarks", e.target.value)}
+              className="p-2 border rounded w-full"
+              rows={3}
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-2">
+          {formData.other_details.length > 1 && (
+            <button
+              type="button"
+              onClick={() => removeOtherDetails(index)}
+              className="bg-red-500 text-white px-3 py-1 rounded"
+            >
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
+    ))}
+
+    <button type="button" onClick={addOtherDetails} className="bg-green-500 text-white px-4 py-2 rounded">
+      Add Detail
+    </button>
+  </div>
+                ): section.title === 'Other Documents' ? (
+                  <div className="space-y-4">
+                  {formData.other_documents.map((document, index) => (
+                    <div key={index} className="space-y-2 border p-4 rounded">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <label
+                            htmlFor={document.type}
+                            className="block text-[12px] text-gray-700"
+                          >
+                            Type of Document
+                          </label>
+                          <input
+                            type="text"
+                            value={document.type}
+                            onChange={(e) =>
+                              handleOtherDocumentChange(
+                                index,
+                                "type",
+                                e.target.value
+                              )
+                            }
+                            className="p-2 border rounded"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label
+                            htmlFor={document.doc}
+                            className="block text-[12px] text-gray-700"
+                          >
+                            Upload Document
+                          </label>
+
+                          <input
+                            type="file"
+                            onChange={(e) =>
+                              handleOtherDocumentChange(
+                                index,
+                                "doc",
+                                e.target.files[0]
+                              )
+                            }
+                            className="p-2 border rounded"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end mt-2">
+                        {formData.other_documents.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeOtherDocument(index)}
+                            className="bg-red-500 text-white px-3 py-1 rounded"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={addOtherDocument}
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                  >
+                    Add Document
+                  </button>
+                </div>
+                ) :section.title === "Key Responsibilities" ? (
                   <div className="space-y-4">
                     {formData.key_responsibilities.map((resp, index) => (
                       <div key={index} className="flex items-center space-x-4">
@@ -793,7 +1661,7 @@ const EmployeeForm = () => {
               Back
             </button>
           )}
-          {currentPage < formSections.length ? (
+          {currentPage < 8 ? (
             <button
               className="px-4 py-2 text-white bg-blue-800 rounded"
               onClick={() => setCurrentPage(currentPage + 1)}
@@ -802,7 +1670,7 @@ const EmployeeForm = () => {
             </button>
           ) : (
             <button
-              className="px-4 py-2 text-white bg-green-300 rounded"
+              className="px-4 py-2 text-white bg-green-500 rounded"
               onClick={handleSubmit}
             >
               Submit

@@ -45,6 +45,22 @@ const Shift = require('../models/Shift')(sequelize,DataTypes);
 const LatePolicy = require('../models/LatePolicy')(sequelize,DataTypes);
 const ShiftOffDay = require('../models/ShiftOffDay')(sequelize,DataTypes);
 const OrgDocument = require('../models/OrgDocument')(sequelize,DataTypes);
+const Employee = require('../models/Employee')(sequelize,DataTypes);
+const PersonalDetail = require('../models/PersonalDetail')(sequelize,DataTypes);
+const EducationDetail = require('../models/EducationalDetails')(sequelize,DataTypes);
+const ServiceDetail = require('../models/ServiceDetail')(sequelize,DataTypes);
+const JobDetail = require('../models/JobDetail')(sequelize,DataTypes);
+const Certification = require('../models/Certification')(sequelize,DataTypes);
+const ContactInfo = require('../models/ContactInfo')(sequelize,DataTypes);
+const EmployeeOtherDetail = require('../models/EmployeeOtherDetail')(sequelize,DataTypes);
+const EmployeeOtherDocument= require('../models/EmployeeOtherDocument')(sequelize,DataTypes);
+const KeyResponsibility= require('../models/KeyResponsibility')(sequelize,DataTypes);
+const KinDetail= require('../models/KinDetail')(sequelize,DataTypes);
+const NationalDetail= require('../models/NationalDetail')(sequelize,DataTypes);
+const PassportDetail= require('../models/PassportDetails')(sequelize,DataTypes);
+const PayDetail= require('../models/PayDetail')(sequelize,DataTypes);
+const PayStructure= require('../models/PayStructure')(sequelize,DataTypes);
+
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -100,12 +116,32 @@ Shift.belongsTo(Department, { as: "department", foreignKey: "department_id" });
 Shift.belongsTo(Designation, { as: "designation", foreignKey: "designation_id" });
 
 Department.hasMany(Shift, { as: "shifts", foreignKey: "department_id" });
-
 Designation.hasMany(Shift, { as: "shifts", foreignKey: "designation_id" });
+
+Organisation.hasMany(Employee, {foreignKey: "organisation_id",as: "employees",});
+Employee.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+
+PersonalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+EducationDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ServiceDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+JobDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Certification.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ ContactInfo.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ EmployeeOtherDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ EmployeeOtherDocument.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ KeyResponsibility.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ KinDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ NationalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ PassportDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ PayDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ PayStructure.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
 
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
-                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument
+                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument,
+                   Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
+                   Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
+                   NationalDetail,PassportDetail,PayDetail,PayStructure
                   };

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 
 const DataTable = ({
-  title,
+  title = "Employee",
   fields,
   data,
   showEntries = true,

@@ -17,7 +17,7 @@ const EmployeePage = () => {
   ];
   
   const data = [
-  {  "Employee ID" : '',
+  {  "Employee ID" : 'dd',
     "Employee Name" : 'ddddddddddddddddddddd',
     "DOB" : 'ddddddddd',
     "Mobile" : 'dddddddddd',

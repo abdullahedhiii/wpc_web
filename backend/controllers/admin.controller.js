@@ -15,7 +15,8 @@ const {
   Holiday,
   Visitor,
   Shift,
-  LatePolicy,ShiftOffDay,OrgDocument
+  LatePolicy,ShiftOffDay,OrgDocument,
+  Employee
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 
@@ -897,6 +898,7 @@ module.exports.getAnnualPays = async (req, res) => {
         "Sl. No.": index + 1,
         "Pay Group": pay.paygroup,
         "Annual Pay": pay.annual_pay,
+        "Pay Group" : pay.paygroups.paygroup,
         Action: "Edit",
       };
     });
@@ -1583,3 +1585,20 @@ module.exports.uploadDocuments = async (req, res) => {
     });
   }
 };
+
+module.exports.get_next_id = async (req,res) =>{
+  const lastEmployee = await Employee.findOne({
+    order: [["employee_code", "DESC"]],
+    attributes: ["employee_code"],
+  });
+  let result;
+  if (lastEmployee) {
+    const lastCodeNumber = parseInt(lastEmployee.employee_code.split("-")[1], 10);
+    const nextCodeNumber = (lastCodeNumber + 1).toString().padStart(3, "0");
+    result = `MAR-${nextCodeNumber}`;
+  } else {
+    result = "MAR-001";
+  }
+  console.log('sending response ',result);
+  return res.status(200).json(result);
+}

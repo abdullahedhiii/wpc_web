@@ -9,7 +9,7 @@ const CompanyForm = () => {
   const { user } = useSelector((state) => state.user);
   const { company_id } = useParams();
   const { setAllDetails,fetchDetails,companyDocuments } = useCompanyContext();
-  console.log(companyDocuments);
+  
   
   const options = [
     "PAYEE And Account Reference Letter From HMRC",
