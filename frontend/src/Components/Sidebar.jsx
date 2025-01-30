@@ -11,7 +11,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
   const { user } = useSelector((state) => state.user);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
-
+ // console.log('in side bar ',selectedModule);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };

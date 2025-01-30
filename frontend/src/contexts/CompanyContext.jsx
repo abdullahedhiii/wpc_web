@@ -203,6 +203,7 @@ export const CompanyProvider = ({ children }) => {
           ]);
           setLevel1Details([filterByPrefix(response.data.allData, "Level1_")]);
           setCompanyDocuments(response.data.company_documents);
+          console.log('documents response ',response.data.company_documents);
         }
       }
     } catch (err) {
@@ -290,6 +291,7 @@ export const CompanyProvider = ({ children }) => {
         fetchShifts,
         latePolicies,
         fetchPolicies,
+        companyDocuments
       }}
     >
       {children}

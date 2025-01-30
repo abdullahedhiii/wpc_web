@@ -4,18 +4,25 @@ const multer = require("multer");
 
 const uploadPath = path.join(__dirname, "../uploads");
 
+const parseForm = (req, res, next) => {
+  multer().fields([])(req, res, (err) => {
+    if (err) return next(err);
+    next();
+  });
+};
+
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
 }
 
-const storage = multer.diskStorage({
+const orgStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     const companyName = req.body.Company_name;
     if (!companyName) {
       return cb(new Error("Company name is required"));
     }
-    const dir = path.join(uploadPath, companyName);
 
+    const dir = path.join(uploadPath, companyName); 
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -23,6 +30,27 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const fileName = Date.now() + path.extname(file.originalname); 
+    cb(null, fileName);
+  }
+});
+
+const empStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const det = req.params.id.split('.');  
+    const company_id = det[0],employeeCode = det[1];
+    console.log('trying to dp something with dara ',company_id,employeeCode)
+    if (!company_id || !employeeCode) {
+      return cb(new Error("Company name and employee code are required"));
+    }
+
+    const dir = path.join(uploadPath, company_id, employeeCode);  
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir); 
+  },
+  filename: function (req, file, cb) {
+    const fileName = Date.now() + path.extname(file.originalname);  
     cb(null, fileName);
   }
 });
@@ -40,12 +68,16 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 2 * 1024 * 1024, 
-  },
-  fileFilter,
+const orgUpload = multer({
+  storage: orgStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
+  fileFilter
 });
 
-module.exports = upload;
+const empUpload = multer({
+  storage: empStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
+  fileFilter
+});
+
+module.exports = { orgUpload, empUpload,parseForm};

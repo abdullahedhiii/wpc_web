@@ -1,5 +1,5 @@
 const express = require('express');
-const upload = require("../config/multerConfig");
+const {orgUpload} = require("../config/multerConfig");
 
 const router = express.Router();
 const {submitCompanyForm, getOrganisations, getFormDetails,
@@ -27,10 +27,11 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   addShift,
   addLatePolicy,
   getLatePolicies,
-  addOffDay
+  addOffDay,
+  get_next_id
 } = require('../controllers/admin.controller');
 
-router.post('/submitCompanyForm',upload.fields([
+router.post('/submitCompanyForm',orgUpload.fields([
     { name: 'Company_Logo', maxCount: 1 },
     { name: 'KeyContact_proof_id', maxCount: 1 },
     { name: 'Authorizing_proof_id', maxCount: 1 },
@@ -38,14 +39,15 @@ router.post('/submitCompanyForm',upload.fields([
   ]), submitCompanyForm,submitCompanyForm);
 router.get('/getOrganisations',getOrganisations);
 router.get('/getCompanyDetails',getFormDetails);
-router.post('/updateCompany/:id', upload.fields([
+
+router.post('/updateCompany/:id', orgUpload.fields([
   { name: 'Company_Logo', maxCount: 1 },
   { name: 'KeyContact_proof_id', maxCount: 1 },
   { name: 'Authorizing_proof_id', maxCount: 1 },
   { name: 'Level1_proof_id', maxCount: 1 }
 ]), updateCompany);
 
-router.post('/uploadDocument/:id',upload.single('document'),uploadDocuments);
+router.post('/uploadDocument/:id',orgUpload.single('document'),uploadDocuments);
 
 router.post('/addDepartment/:id',addDepartment);
 router.get('/getDepartments/:id',getDepartments);
@@ -91,4 +93,6 @@ router.post('/setOffDays/:id',addOffDay);
 router.post('/addLatePolicy/:id',addLatePolicy);
 router.get('/getLatePolicies/:id',getLatePolicies);
 
+
+router.get('/getNextEmployeeCode',get_next_id);
 module.exports = router;
