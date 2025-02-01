@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const JobDetails = sequelize.define(
-      "JobDetails",
+    const JobDetail = sequelize.define(
+      "JobDetail",
       {
         employee_code: {
           type: DataTypes.STRING,
@@ -20,6 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       { tableName: "JobDetails", timestamps: false }
     );
   
-    return JobDetails;
+    return JobDetail;
   };
   

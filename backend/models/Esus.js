@@ -1,7 +1,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     const EsusDetail = sequelize.define(
-      "EsusDetails",
+      "EsusDetail",
       {
         employee_code: {
           type: DataTypes.STRING,
@@ -12,13 +12,14 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
-        refernece: DataTypes.STRING,
+        reference: DataTypes.STRING,
         nationality: DataTypes.STRING,
         issued: DataTypes.DATEONLY,
         expiry: DataTypes.DATEONLY,
         review_date: DataTypes.DATEONLY,
         document: DataTypes.STRING,
         current: DataTypes.BOOLEAN,
+        remarks : DataTypes.STRING,
       },
       { tableName: "EsusDetails", timestamps: false }
     );

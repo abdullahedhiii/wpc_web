@@ -28,7 +28,11 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   addLatePolicy,
   getLatePolicies,
   addOffDay,
-  get_next_id
+  get_next_id,
+  getAllEmployees,
+  getEmployeePage,getEmployeeData,
+  getCOCData,
+  getCOCTable
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -93,6 +97,11 @@ router.post('/setOffDays/:id',addOffDay);
 router.post('/addLatePolicy/:id',addLatePolicy);
 router.get('/getLatePolicies/:id',getLatePolicies);
 
-
+router.get('/getEmployees/:id',getAllEmployees);
 router.get('/getNextEmployeeCode',get_next_id);
+router.get('/getEmployeePage/:id',getEmployeePage);
+router.get('/getEmployeeDetails/:id',getEmployeeData);
+
+router.get('/getCOCDetails/:id',getCOCData);
+router.get('/getCOCTable/:id',getCOCTable);
 module.exports = router;

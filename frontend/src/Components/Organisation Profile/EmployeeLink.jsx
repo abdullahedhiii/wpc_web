@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import DataTable from '../DataTable';
+import { useCompanyContext } from '../../contexts/CompanyContext';
 
 const EmployeeLink = () => {
+  const {employees,fetchEmployeesLink} = useCompanyContext();
   const columns = [
     "Sl. No.",
     "Organisation Name",
@@ -13,8 +15,9 @@ const EmployeeLink = () => {
     "Employee Link"
   ];
 
-  const data = []; 
-
+  useEffect(() => {
+    fetchEmployeesLink();
+  },[]);
   return (
     <>
     <div className="p-6">
@@ -24,7 +27,7 @@ const EmployeeLink = () => {
       <DataTable
         title="Employee Creation Link"
         fields={columns}
-        data={data}
+        data={employees}
         showEntries
         searchable
         downloadable

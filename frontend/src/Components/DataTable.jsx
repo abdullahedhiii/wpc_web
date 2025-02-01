@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
+import { useSidebarContext } from "../contexts/SidebarContext";
 
 const DataTable = ({
-  title = "Employee",
+  title,
   fields,
   data,
   showEntries = true,
@@ -13,11 +14,9 @@ const DataTable = ({
   icon,
   isDashboard,
   buttonTitle,
-  isMain
+  isMain,
 }) => {
   const { selectedFeature } = useModuleContext();
-  console.log("in data table ", data);
-
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,198 +68,218 @@ const DataTable = ({
   };
 
   const filteredFields = fields.filter((field) => field !== "id");
+  const { isSidebarOpen } = useSidebarContext();
+
   return (
-    
-    <div className="x-2 border-t-4 border-tt bg-white rounded-md shadow-md ">
+    <div
+      className={`${
+        isSidebarOpen ? "w-[1150px]" : "w-[1350px]"
+      } border-t-4 border-tt bg-white rounded-md shadow-md`}
+    >
       {title && (
         <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
             {!isDashboard && selectedFeature && (
               <i className={`la ${selectedFeature.icon} pl-2 text-xl`}></i>
             )}
-
-            {isDashboard && <i className={`pl-2 ${icon} text-[18px] text-blue-900`}></i>}
+            {isDashboard && (
+              <i className={`pl-2 ${icon} text-[18px] text-blue-900`}></i>
+            )}
             <h2 className="text-[14px] font-semibold text-blue-900">{title}</h2>
           </div>
-          {downloadable && (
-            <div className="pr-2">
+          <div className="flex items-center space-x-2 pr-4">
+            {downloadable && (
               <button
                 title="Export Data"
-                className="bg-background text-white w-8 h-8 border rounded-full hover:text-blue-700"
+                className="bg-background text-white w-7 h-7 border rounded-full hover:text-blue-700"
               >
                 <i className="la la-download text-[20px]"></i>
               </button>
-            </div>
-          )}
-          {addMore && (
-            <button
-              title={buttonTitle}
-              className="m-3 bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
-              onClick={() =>
-               selectedFeature ? navigate(`/hrms/${selectedFeature.plus_icon_route}`)
-               : title === 'Employee' ? navigate("/hrms/addemployee") : undefined
-              }
-            >
-              <i className="la la-plus text-xl"></i>
-            </button>
-          )}
-        </div>
-      )}
-
-      {(showEntries || searchable) && (
-        <div className="px-8 flex justify-between items-center mb-2">
-          {showEntries && (
-            <div>
-              <label htmlFor="entries" className="mr-2">
-                Show
-              </label>
-              <select
-                id="entries"
-                value={numentries}
-                onChange={(e) => setNumentries(parseInt(e.target.value, 10))}
-                className="border rounded px-4 py-1"
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-              </select>
-              <span className="ml-2">entries</span>
-            </div>
-          )}
-          {searchable && (
-            <div>
-              <label htmlFor="search" className="mr-2">
-                Search:
-              </label>
-              <input
-                id="search"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border rounded px-2 py-1"
-                placeholder="Search here..."
-              />
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="relative w-full overflow-x-auto">
-        <table className="px-8 w-full table-auto border-spacing-0.5 border-separate">
-          <thead>
-            <tr className="bg-gray-100">
-              {filteredFields.map((field, index) => (
-                <th
-                  key={index}
-                  className="relative px-4  py-1 text-left text-[12px] font-semibold text-white bg-background"
-                >
-                  <div className="flex justify-between items-start">
-                    {field}
-                    <div className="absolute text-xs top-0 right-0 space-y-1 pr-1">
-                      <i
-                        className="la la-arrow-up text-white block cursor-pointer"
-                        onClick={() => handleClickSort(field, "Ascending")}
-                      ></i>
-                      <i
-                        className="la la-arrow-down text-white block cursor-pointer"
-                        onClick={() => handleClickSort(field, "Descending")}
-                      ></i>
-                    </div>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {displayedData.length > 0 ? (
-              displayedData.map((row, rowIndex) => (
-                <tr
-                  key={rowIndex}
-                  className={
-                    rowIndex % 2 !== 0
-                      ? "bg-white hover:bg-gray-100"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }
-                >
-                  {filteredFields.map((field, colIndex) => (
-                    <td
-                    key={colIndex}
-                    className="px-6 py-1 border text-[10px] text-gray-600 break-words whitespace-normal max-w-[100px]"
-                  >
-                  
-                      {field === "Action" ||
-                      field === "Edit" ||
-                      field === "Delete" ? (
-                        Array.isArray(row["Action"]) ? (
-                          <select className="border rounded  py-1 bg-purple-600 text-white hover:bg-blue-700">
-                            {row["Action"].map((option, optionIndex) => (
-                              <option key={optionIndex} value={option} className="text-white">
-                                {option}
-                              </option>
-                            ))}
-                          </select>
-                        ) : row["Action"] === "Edit" || field === "Edit" ? (
-                          <img
-                            src="/images/edit.png"
-                            className="h-4 w-4 cursor-pointer"
-                            onClick={() =>
-                              navigate(
-                                `/hrms/${selectedFeature.action_route}/${row["id"]}`
-                              )
-                            }
-                            title="Edit"
-                          />
-                        ) : row["Action"] === "Delete" || field === "Delete" ? (
-                          <img
-                            src="/images/delete.png"
-                            className="h-4 w-4 cursor-pointer"
-                            onClick={() => {}}
-                            title="Delete"
-                          />
-                        ) : null
-                      ) : field === "Visitor Link" && row[field] ? (
-                        <a
-                          href={row[field]}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 underline ml-48 text-center"
-                        >
-                          {row[field]}
-                        </a>
-                      ) : row[field] &&
-                        typeof row[field] === "string" &&
-                        row[field].startsWith("http") &&
-                        /\.(jpg|jpeg|png|gif|svg)$/i.test(row[field]) ? (
-                        <img
-                          src={row[field]}
-                          alt="Dynamic Content"
-                          className="h-12 w-12 object-cover rounded"
-                        />
-                      ) : (
-                        row[field] || "-"
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={filteredFields.length}
-                  className="px-6 py-2 text-center text-gray-500 border"
-                >
-                  No data available in the table.
-                </td>
-              </tr>
             )}
-          </tbody>
-        </table>
-      </div>
+            {addMore && (
+              <button
+                title={buttonTitle}
+                className="bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
+                onClick={() => {
+                  if (selectedFeature && selectedFeature.plus_icon_route) {
+                    navigate(`/hrms/${selectedFeature.plus_icon_route}`);
+                  } else if (title === "Employee") {
+                    navigate("/hrms/addemployee");
+                  } else {
+                    console.error("No navigation route defined for this case.");
+                  }
+                }}
+              >
+                <i className="la la-plus text-xl"></i>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
-      <div className="px-8 py-2 flex justify-between items-center mt-2">
-        <div>
-          Showing {Math.min(filteredData.length, numentries)} of{" "}
-          {filteredData.length} entries
+      <div className="w-full overflow-x-auto p-6">
+        <div className="min-w-[768px]">
+          {(showEntries || searchable) && (
+            <div className="flex flex-wrap md:flex-nowrap justify-between items-center mb-2 gap-4">
+              {showEntries && (
+                <div className="flex items-center space-x-2">
+                  <label htmlFor="entries">Show</label>
+                  <select
+                    id="entries"
+                    value={numentries}
+                    onChange={(e) =>
+                      setNumentries(parseInt(e.target.value, 10))
+                    }
+                    className="border rounded px-4 py-1"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                  </select>
+                  <span>entries</span>
+                </div>
+              )}
+              {searchable && (
+                <div className="flex items-center space-x-2">
+                  <label htmlFor="search">Search:</label>
+                  <input
+                    id="search"
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="border rounded px-2 py-1"
+                    placeholder="Search here..."
+                  />
+                </div>
+              )}
+            </div>
+          )}
+
+          <table className="w-full table-auto border-spacing-0.5 border-separate">
+            <thead>
+              <tr className="bg-gray-100">
+                {filteredFields.map((field, index) => (
+                  <th
+                    key={index}
+                    className="relative px-4 py-2 text-left text-[13px] font-semibold text-white bg-background break-words whitespace-nowrap"
+                  >
+                    <div className="flex justify-between items-start">
+                      {field}
+                      <div className="absolute text-xs top-0 right-0 space-y-1 pr-1">
+                        <i
+                          className="la la-arrow-up text-white block cursor-pointer"
+                          onClick={() => handleClickSort(field, "Ascending")}
+                        ></i>
+                        <i
+                          className="la la-arrow-down text-white block cursor-pointer"
+                          onClick={() => handleClickSort(field, "Descending")}
+                        ></i>
+                      </div>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {displayedData.length > 0 ? (
+                displayedData.map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    className={
+                      rowIndex % 2 !== 0
+                        ? "bg-white hover:bg-gray-100"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }
+                  >
+                    {filteredFields.map((field, colIndex) => (
+                      <td
+                        key={colIndex}
+                        className="text-center px-2 py-1 border text-[13px] text-gray-600 max-w-[200px] "
+                      >
+                        {field === "Action" ||
+                        field === "Edit" ||
+                        field === "Delete" ? (
+                          Array.isArray(row["Action"]) ? (
+                            <select
+                              className="border rounded py-1 bg-purple-600 text-white hover:bg-blue-700"
+                              onChange={(e) =>
+                                navigate(`/hrms/${e.target.value}`)
+                              }
+                            >
+                              <option>Action</option>
+                              {row["Action"].map((option, optionIndex) => (
+                                <option key={optionIndex} value={option.route}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                          ) : row["Action"] === "Edit" || field === "Edit" ? (
+                            <img
+                              src="/images/edit.png"
+                              className="h-4 w-4 cursor-pointer"
+                              onClick={() =>
+                                navigate(
+                                  `/hrms/${selectedFeature.action_route}/${row["id"]}`
+                                )
+                              }
+                              title="Edit"
+                            />
+                          ) : row["Action"] === "Delete" ||
+                            field === "Delete" ? (
+                            <img
+                              src="/images/delete.png"
+                              className="h-4 w-4 cursor-pointer"
+                              onClick={() => {}}
+                              title="Delete"
+                            />
+                          ) : null
+                        ) : (field === "Visitor Link" ||
+                            field === "Employee Link") &&
+                          row[field] ? (
+                          <a
+                            href={row[field]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 underline text-center"
+                          >
+                            {row[field]}
+                          </a>
+                        ) : row[field] &&
+                          typeof row[field] === "string" &&
+                          row[field].startsWith("http") &&
+                          /\.(jpg|jpeg|png|gif|svg)$/i.test(row[field]) ? (
+                          <img
+                            src={row[field]}
+                            alt="Dynamic Content"
+                            className="h-12 w-12 object-cover rounded"
+                          />
+                        ) : (
+                          row[field] || "-"
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={filteredFields.length}
+                    className="px-6 py-2 text-center text-gray-500 border"
+                  >
+                    No data available in the table.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {/* Entries info section */}
+          <div className="px-8 py-2 flex justify-between items-center mt-2">
+            <div>
+              Showing {Math.min(filteredData.length, numentries)} of{" "}
+              {filteredData.length} entries
+            </div>
+          </div>
         </div>
       </div>
     </div>

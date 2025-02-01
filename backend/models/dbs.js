@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     const DBSDetail = sequelize.define(
-      "DBSDetails",
+      "DBSDetail",
       {
         employee_code: {
           type: DataTypes.STRING,
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
           onDelete: "CASCADE",
         },
         type : DataTypes.STRING,
-        refernece: DataTypes.STRING,
+        reference: DataTypes.STRING,
         nationality: DataTypes.STRING,
         issued: DataTypes.DATEONLY,
         expiry: DataTypes.DATEONLY,

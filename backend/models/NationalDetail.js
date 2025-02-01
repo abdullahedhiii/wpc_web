@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     const NationalDetail = sequelize.define(
-      "NationalDetails",
+      "NationalDetail",
       {
         employee_code: {
           type: DataTypes.STRING,

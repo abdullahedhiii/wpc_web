@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const ServiceDetail = sequelize.define(
-      "ServiceDetails",
+      "ServiceDetail",
       {
         employee_code: {
           type: DataTypes.STRING,

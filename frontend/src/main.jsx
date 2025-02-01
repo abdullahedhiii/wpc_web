@@ -7,15 +7,16 @@ import Store from './Store.js';
 
 import { ModuleProvider } from './contexts/ModuleContext.jsx';
 import { CompanyProvider } from './contexts/CompanyContext.jsx';
+import { SidebarProvider } from './contexts/SidebarContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <Provider store={Store}>
       <CompanyProvider>
         <ModuleProvider>
+        <SidebarProvider>
           <App />
+          </SidebarProvider>
         </ModuleProvider>
       </CompanyProvider>
     </Provider>
-  </StrictMode>
 );

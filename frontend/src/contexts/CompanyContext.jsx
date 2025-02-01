@@ -7,6 +7,7 @@ const CompanyContext = createContext();
 
 export const CompanyProvider = ({ children }) => {
   const { user } = useSelector((state) => state.user);
+  
   const [companyData, setCompanyData] = useState([]);
   const [allDetails, setAllDetails] = useState([]);
 
@@ -32,6 +33,19 @@ export const CompanyProvider = ({ children }) => {
   const [shifts,setShifts] = useState([]);
   const [latePolicies,setPolicies] = useState([]);
   const [companyDocuments,setCompanyDocuments] = useState([]);
+  const [employees,setEmployees] = useState([]); //this is for employee creation link page
+  
+  const fetchEmployeesLink = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getEmployees/${id_to}`);
+      if (response.status === 200) {
+        setEmployees(response.data);
+        console.log('emploeee response ',response.data);
+      }
+    } catch (err) {}
+  };
+
 
   const fetchPolicies = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
@@ -233,6 +247,7 @@ export const CompanyProvider = ({ children }) => {
       fetchVisitors(response.data.id);
       fetchShifts(response.data.id);
       fetchPolicies(response.data.id);
+      fetchEmployeesLink(response.data.id);
     } catch (err) {
       console.log("errorr ", err);
       setCompanyData([]);
@@ -291,7 +306,9 @@ export const CompanyProvider = ({ children }) => {
         fetchShifts,
         latePolicies,
         fetchPolicies,
-        companyDocuments
+        companyDocuments,
+        employees,
+        fetchEmployeesLink
       }}
     >
       {children}

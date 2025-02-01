@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const PersonalDetails = sequelize.define(
-      "PersonalDetails",
+    const PersonalDetail = sequelize.define(
+      "PersonalDetail",
       {
         employee_code: {
           type: DataTypes.STRING,
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         mname: DataTypes.STRING,
         lname: {type : DataTypes.STRING,allowNull : false},
         Gender: DataTypes.STRING,
-        dob: DataTypes.DATE,
+        dob: DataTypes.DATEONLY,
         nationality_no: DataTypes.STRING,
         Nationality: DataTypes.STRING,
         email:{type : DataTypes.STRING,allowNull : false},
@@ -25,6 +25,6 @@ module.exports = (sequelize, DataTypes) => {
       { tableName: "PersonalDetails", timestamps: false }
     );
   
-    return PersonalDetails;
+    return PersonalDetail;
   };
   

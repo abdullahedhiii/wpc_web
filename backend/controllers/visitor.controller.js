@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 require('dotenv').config();
 const {Visitor} = require('../config/sequelize');
+
 const encryptKey = (organisation_id) => {
   const algorithm = 'aes-256-cbc';
   const secretKey = process.env.SECRET_KEY;

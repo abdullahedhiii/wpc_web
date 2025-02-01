@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
+import { useParams } from "react-router-dom";
+import { useSidebarContext } from "../../contexts/SidebarContext";
 
 const nationalityOptions = [
   "Afghanistan",
@@ -170,11 +172,14 @@ const currency_options = [
 ];
 
 const EmployeeForm = () => {
+  const {id} = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const { companyData,departmentData,annualPays, designationData, employeeTypes, authorizingDetails,
-    payGroups,paymentTypes,taxMasters,orgBanks} =useCompanyContext();
+  payGroups,paymentTypes,taxMasters,orgBanks} =useCompanyContext();
   const [ employee_code, setCode ] = useState('');
+  const [isLoading,setLoading] = useState(false);
 
+  
   useEffect(() => {
     const fetch_next_id = async () => {
       try {
@@ -184,7 +189,7 @@ const EmployeeForm = () => {
         console.error('Error fetching employee code:', err); 
       }
     };
-  
+   if(!id && employee_code === '')
     fetch_next_id();
   }, []); 
   
@@ -201,7 +206,7 @@ const EmployeeForm = () => {
 }, [employee_code]); 
 
   const [formData, setFormData] = useState({
-    personal_details: {  employee_code: '',  fname: "", mname: "",  lname: "",Gender: "Male",
+    personal_details: {  employee_code: '',  fname: "", mname: "",  lname: "",Gender: "",
       dob: "", nationality_no: "",  Nationality: "", email: "", contact_1: "",
       contact_2: "",
     },
@@ -225,11 +230,11 @@ const EmployeeForm = () => {
     certification : {title :'',start : '',end: '',license: ''},
     contact_info : {post_code: '',address : '',line1 : '',line2 : '',line3: '',city: '',country :'',proof: null},
     other_documents: [{type : '',doc : null}],
-    passport_details : {passport_no :0,nationality : '',place:'',issued_by:'',issue_date:'',expiry_date:'',review_date: '',picture:null,current: true,remarks:''},
+    passport_details : {passport_no :'',nationality : '',place:'',issued_by:'',issue_date:'',expiry_date:'',review_date: '',picture:null,current: true,remarks:''},
     visa : {visa_no :0,nationality : '',country:'',issued_by:'',issue_date:'',expiry_date:'',review_date: '',front:null,back:null,current: true,remarks:''},
     esus : {refernece : 0,nationality: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false}   , 
     dbs : {type : '',reference: 0,nationality: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false},
-    national : {id : '',nationality: '',country: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false},    
+    national : {national_id : '',nationality: '',country: '',issued : '',expiry: '',review_date :'',remarks: '',document: null,current:false},    
     other_details : [{name: '',reference: '',nationality : '',issued: '',expiry :'',review_date : '',document:null,current: false,remarks: ''}],
     pay_details : {group : '',pay : '', wedges: '',payment_type : '',
       basic_wedges : '',min_hours: 0,rate : 0,tax_code : '',tax_reference: '',
@@ -253,6 +258,27 @@ const EmployeeForm = () => {
     }
   });
   
+  console.log(formData);
+  useEffect(() => {
+    const fetchFormInfo = async() => {
+        try{
+           const response  = await axiosInstance.get(`/api/getEmployeeDetails/${id}`);
+           console.log('employeee form response' ,response.data);
+            setFormData(response.data);
+       }
+        catch(err){
+         console.error("Error fetching employe data:", err);
+
+        }
+        finally{
+         setLoading(false); 
+        }
+    }
+    if(id){
+       fetchFormInfo();
+    }
+ },[id]);
+
   const departmentOptions = departmentData.map((department) => department['Department Name']);
   const typeOptions =  employeeTypes.map((type) => type['Employment Type']);
   const payGroupoptions = payGroups.map((group) => group['Pay Group']);
@@ -264,16 +290,16 @@ const EmployeeForm = () => {
 
   useEffect(() => {
     const filtered = designationData
-      .filter((designation) => designation['Department Name'] === formData.service_details.department)
+      .filter((designation) => designation['Department Name'] === formData.service_details?.department)
       .map((designation) => designation['Designation']);  
   
     setFilteredDesignations(filtered);
   }, [formData.service_details.department, designationData]); 
   
   useEffect(() => {
-    const filtered = annualPays
+    const filtered =  annualPays
       .filter((pay) => pay['Pay Group'] === formData.pay_details.group)
-      .map((pp) => pp['Annual Pay']);  
+      .map((pp) => pp['Annual Pay']) ;  
   
       setFilteredPays(filtered);
   }, [formData.pay_details.group, annualPays]); 
@@ -281,7 +307,6 @@ const EmployeeForm = () => {
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     const section = name.split(".")[0];
-    console.log("form data ", formData);
     if (type === "file") {
       setFormData((prevData) => ({
         ...prevData,
@@ -321,7 +346,7 @@ const EmployeeForm = () => {
       title: "Personal Details",
       fields: [{  label: "Employee Code", value: "personal_details.employee_code", type: "text",  required: true,  readOnly: true,},
         {label: "First Name",value: "personal_details.fname",type: "text", required: true,  },
-        {label: "Middle Name", value: "personal_details.mname",type: "text",required: true,  },
+        {label: "Middle Name", value: "personal_details.mname",type: "text",required: false,  },
         {label: "Last Name", value: "personal_details.lname", type: "text", required: true,  },
         {label: "Gender", value: "personal_details.Gender", type: "select", required: false,    options: ["Male", "Female"], },
         {label: "NI No.",value: "personal_details.nationality_no",   type: "text",   required: false,  },
@@ -371,7 +396,7 @@ const EmployeeForm = () => {
       title: "Job Details",
       fields: [{ label: "Job Title", type: 'text', value: "job_details.title" },
         { label: "Start Date", type: 'date', value: "job_details.start" },
-        { label: "End Date", type: 'text', value: "job_details.end" },
+        { label: "End Date", type: 'date', value: "job_details.end" },
         { label: "Year of Experience", type: 'text', value: "job_details.experience" },
         { label: "Job Description", type: 'textarea', value: "job_details.description" }],
     },
@@ -388,8 +413,9 @@ const EmployeeForm = () => {
     {
       page: 4,
       title: "Emergency / Next of Kin Contact Details",
-      fields: [{label : 'Name',type : 'text',value : "kin_details.name"},
-        {label : 'Relationship',type : 'select',value : "kin_details.relation",options :['Father','Mother','Wifi','Relative','Husband','Partner','Son','Daughter','Friend','Others']},
+      fields: [
+        {label : 'Name',type : 'text',value : "kin_details.name"},
+        {label : 'Relationship',type : 'select',value : "kin_details.relation",options :['Father','Mother','Wife','Relative','Husband','Partner','Son','Daughter','Friend','Others']},
         {label : 'Email',type : 'email',value : "kin_details.email"},
         {label : 'Emergency Contact No.',type : 'text',value : "kin_details.contact_no"},
         {label : 'Address',type : 'text',value : "kin_details.address"},
@@ -443,7 +469,7 @@ const EmployeeForm = () => {
       page: 6,
       title: "Visa/BRP Details",
         fields: [
-          {label : 'Visa/BRP No.',type : 'text',value : "visa.passport_no"},
+          {label : 'Visa/BRP No.',type : 'text',value : "visa.visa_no"},
           {label : 'Nationality',type : 'select',value : "visa.nationality",options :nationalityOptions},
           {label : 'Country of Residence',type : 'select',value : "visa.country",options :nationalityOptions},
           {label : 'Issued by',type : 'text',value : "visa.issued_by"},
@@ -490,7 +516,7 @@ const EmployeeForm = () => {
       page: 6,
       title: "National Id details",
       fields: [
-        {label : 'National id number.',type: 'text', value : 'national.id',},
+        {label : 'National id number.',type: 'text', value : 'national.national_id',},
         {label : 'Nationality',type : 'text',value : "national.nationality",options : nationalityOptions},
         {label : 'Country of Residence',type : 'select',value : "national.country",options :nationalityOptions},
         {label : 'Issued Date',type : 'date',value : "national.issued"},
@@ -657,13 +683,7 @@ const EmployeeForm = () => {
     (section) => section.page === currentPage
   );
 
-  const sendRequest = async (url, data) => {
-    try {
-      
-    } catch (error) {
-    
-    }
-  };
+
   const handleSubmit = async () => {
     try {
       const personalDetailsFormData = new FormData();
@@ -672,8 +692,7 @@ const EmployeeForm = () => {
             personalDetailsFormData.append(key, formData.personal_details[key]);
           }
       }
-      personalDetailsFormData.append("Company_name", companyData[0]['Organisation Name']);
-      await axiosInstance.post(`/api/submit-personal-details/${employee_code}`, personalDetailsFormData, {
+      await axiosInstance.post(`/api/submit-personal-details/${companyData[0].id}.${employee_code}`, personalDetailsFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -754,8 +773,9 @@ const EmployeeForm = () => {
 
       const kin_data = new FormData();
       for (const key in formData.kin_details) {
+        console.log(key,'kin data ',formData)
         if (formData.kin_details[key]) {
-          kin_data.append(key, formData.kin_data[key]);
+          kin_data.append(key, formData.kin_details[key]);
           }
       }
       await axiosInstance.post(`/api/submit-kin-details/${companyData[0].id}.${employee_code}`, kin_data, {
@@ -831,7 +851,7 @@ const EmployeeForm = () => {
               otherData.append(key, other[key]);
             }
           }
-        }      otherData.append("Company_name", companyData[0]['Organisation Name']);
+        }    
 
         await axiosInstance.post(`/api/submit-other-data/${companyData[0].id}.${employee_code}`, otherData, {
           headers: {
@@ -893,7 +913,6 @@ const EmployeeForm = () => {
       for (const key in formData.visa) {
         if (formData.visa[key]) {
           if ( (key === "front" || key === "back") && formData.visa[key]) {
-            console.log('appending',key,"to visa");
             visa_data.append(key, formData.visa[key]);
           } else {
             visa_data.append(key, formData.visa[key]);
@@ -1003,7 +1022,8 @@ const EmployeeForm = () => {
       education_details: prev.education_details.filter((_, i) => i !== index),
     }));
   };
-
+  
+  const {isSideBarOpen} = useSidebarContext();
   return (
     <div className="p-12">
       <p className="text-[12px] text-gray-600">
@@ -1012,7 +1032,7 @@ const EmployeeForm = () => {
         Employee
         <span className="mx-2 text-tt">/ Add New Employee</span>
       </p>
-      <div className="mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
+      <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"}`}>
         <div className="flex items-center gap-2 pl-2">
           <i className="fas fa-user text-lg text-blue-900"></i>
           <h1 className="text-blue-900 text-lg font-medium">
@@ -1020,7 +1040,9 @@ const EmployeeForm = () => {
           </h1>
         </div>
         <hr className="my-4 border-t-1 border-gray-200" />
-
+     { isLoading ? (
+        <p className="text-gray-500">Loading employee data...</p>
+      ) :
         <form className="p-4 space-y-6" onSubmit={handleSubmit}>
           {currentSections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
@@ -1588,7 +1610,7 @@ const EmployeeForm = () => {
                             required={field.required}
                             onChange={handleChange}
                             value={fieldValue || ""}
-                          >
+                          ><option></option>
                             {field.options?.map((option, optionIndex) => (
                               <option key={optionIndex} value={option}>
                                 {option}
@@ -1650,7 +1672,7 @@ const EmployeeForm = () => {
               </div>
             </div>
           ))}
-        </form>
+        </form>}
         <p className="flex justify-end font-semibold text-red-500 mb-2 ">(*) marked fields are mandatory fields</p>
         <div className={`flex ${currentPage > 1 ? "justify-between" : "justify-end"} items-center mb-2 mr-2 ml-2`}>
           {currentPage > 1 && (
@@ -1675,7 +1697,7 @@ const EmployeeForm = () => {
             >
               Submit
             </button>
-          )}
+          )} 
         </div>
       </div>
     </div>

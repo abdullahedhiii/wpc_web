@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const Employee = sequelize.define(
-      "Employees",
+      "Employee",
       {
         employee_code: {
           type: DataTypes.STRING,
@@ -16,10 +16,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
-        description: {
-          type: DataTypes.STRING,
-          allowNull: false,
-        },
+
       },
       {
         tableName: "Employees",

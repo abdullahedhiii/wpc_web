@@ -15,10 +15,33 @@ const {
   Holiday,
   Visitor,
   Shift,
-  LatePolicy,ShiftOffDay,OrgDocument,
-  Employee
+  LatePolicy,
+  ShiftOffDay,
+  OrgDocument,
+  Employee,
+  ServiceDetail,
+  JobDetail,
+  Employees,
+  PersonalDetail,
+  PassportDetail,
+  VisaDetail,
+  ContactInfo,
+  EducationDetail,
+  KeyResponsibility,
+  TrainingDetail,
+  KinDetail,
+  Certification,
+  EmployeeOtherDocument,
+  EsusDetail,
+  DBSDetail,
+  NationalDetail,
+  PayDetail,
+  EmployeeOtherDetail,
+  PayStructure,
+  COCOtherDetail,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
+const crypto = require("crypto");
 
 module.exports.submitCompanyForm = async (req, res) => {
   try {
@@ -191,7 +214,7 @@ module.exports.submitCompanyForm = async (req, res) => {
 };
 
 module.exports.updateCompany = async (req, res) => {
-  console.log('in update ',req.params.id);
+  console.log("in update ", req.params.id);
   try {
     const {
       Company_admin_id,
@@ -311,7 +334,8 @@ module.exports.updateCompany = async (req, res) => {
       Authorizing_designation,
       Authorizing_email,
       Authorizing_phone,
-      Authorizing_proof_id: authorizingProofIdPath || existingCompany.Authorizing_proof_id,
+      Authorizing_proof_id:
+        authorizingProofIdPath || existingCompany.Authorizing_proof_id,
       Authorizing_history,
 
       KeyContact_check,
@@ -320,7 +344,8 @@ module.exports.updateCompany = async (req, res) => {
       KeyContact_designation,
       KeyContact_email,
       KeyContact_phone,
-      KeyContact_proof_id: keyContactProofIdPath || existingCompany.KeyContact_proof_id,
+      KeyContact_proof_id:
+        keyContactProofIdPath || existingCompany.KeyContact_proof_id,
       KeyContact_history,
 
       Level1_check,
@@ -508,12 +533,14 @@ module.exports.getFormDetails = async (req, res) => {
     const tradingHours = await TradingHour.findAll({
       where: { organisation_id: id },
     });
-    
-    const company_documents = await OrgDocument.findAll({where : {organisation_id :id}});
+
+    const company_documents = await OrgDocument.findAll({
+      where: { organisation_id: id },
+    });
     const response = {
       allData: companyDetails,
       tradingHours,
-      company_documents
+      company_documents,
     };
 
     return res.status(200).json(response);
@@ -522,8 +549,6 @@ module.exports.getFormDetails = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-
-
 
 module.exports.addDepartment = async (req, res) => {
   const id = req.params.id;
@@ -538,10 +563,8 @@ module.exports.addDepartment = async (req, res) => {
         },
       });
       if (department) {
-        console.log("updating department ", department);
         department.department_name = department_name;
         await department.save();
-        console.log("department updatedd");
         return res.status(201).json({
           message: "Department updated successfully",
           department,
@@ -591,15 +614,6 @@ module.exports.getDepartments = async (req, res) => {
 module.exports.addDesignation = async (req, res) => {
   const { designation_name, department_name, isUpdate, designation_id } =
     req.body;
-  console.log(
-    "here to update designations ",
-    designation_name,
-    department_name,
-    designation_id,
-    "department id ",
-    req.params.id
-  );
-
   try {
     if (isUpdate) {
       const designationToUpdate = await Designation.findOne({
@@ -614,7 +628,6 @@ module.exports.addDesignation = async (req, res) => {
 
       designationToUpdate.designation_name = designation_name;
       designationToUpdate.department_id = req.params.id; // Ensure department_id is updated here
-      console.log("designation updated ", designationToUpdate);
       await designationToUpdate.save();
 
       return res.status(201).json({
@@ -718,10 +731,8 @@ module.exports.addEmployeeType = async (req, res) => {
         },
       });
       if (type) {
-        console.log("updating type ", type);
         type.employment_type = Employment_Type;
         await type.save();
-        console.log("employee type updatedd");
         return res.status(201).json({
           message: "type updated successfully",
           type,
@@ -780,11 +791,9 @@ module.exports.addPayGroup = async (req, res) => {
         },
       });
       if (group) {
-        console.log("updating group ", group);
         group.paygroup = paygroup;
         group.status = status;
         await group.save();
-        console.log("pay group updatedd");
         return res.status(201).json({
           message: "group updated successfully",
           group,
@@ -834,12 +843,6 @@ module.exports.getPayGroups = async (req, res) => {
 };
 
 module.exports.addAnnualPay = async (req, res) => {
-  console.log(
-    "add annual pay hitt for group ",
-    req.params.id,
-    "data ",
-    req.body
-  );
   const { annual_pay, paygroup, isUpdate, annual_id } = req.body;
   try {
     if (isUpdate) {
@@ -849,11 +852,9 @@ module.exports.addAnnualPay = async (req, res) => {
         },
       });
       if (annual) {
-        console.log("updating annual pay ", annual);
         annual.annual_pay = annual_pay;
         annual.paygroup_id = req.param.id;
         await annual.save();
-        console.log("annual pay updatedd");
         return res.status(201).json({
           message: "annual pay updated successfully",
           annual,
@@ -898,7 +899,7 @@ module.exports.getAnnualPays = async (req, res) => {
         "Sl. No.": index + 1,
         "Pay Group": pay.paygroup,
         "Annual Pay": pay.annual_pay,
-        "Pay Group" : pay.paygroups.paygroup,
+        "Pay Group": pay.paygroups.paygroup,
         Action: "Edit",
       };
     });
@@ -944,10 +945,8 @@ module.exports.addCompanyBank = async (req, res) => {
         },
       });
       if (bank) {
-        console.log("updating bank ", bank);
         bank.bank_name = Bank_Name;
         await bank.save();
-        console.log("bank updatedd");
         return res.status(201).json({
           message: "bank updated successfully",
           bank,
@@ -974,7 +973,6 @@ module.exports.addCompanyBank = async (req, res) => {
 
 module.exports.getBankSortCodes = async (req, res) => {
   const organisation_id = req.params.id;
-  console.log("trying to find ", organisation_id);
   try {
     const sortcodes = await BankSortCode.findAll({
       include: [
@@ -987,7 +985,6 @@ module.exports.getBankSortCodes = async (req, res) => {
       ],
       order: [["id", "ASC"]],
     });
-    console.log(sortcodes, "result of query");
     const formattedData = sortcodes.map((code, index) => {
       return {
         id: code.id,
@@ -1017,11 +1014,9 @@ module.exports.addBankSortCode = async (req, res) => {
         },
       });
       if (code) {
-        console.log("updating code ", code);
         code.bank_id = id;
         code.sort_code = sort_code;
         await code.save();
-        console.log("code updatedd");
         return res.status(201).json({
           message: "code updated successfully",
           code,
@@ -1082,12 +1077,10 @@ module.exports.addTaxMaster = async (req, res) => {
         },
       });
       if (master) {
-        console.log("updating master ", master);
         master.percentage = percentage;
         master.tax_code = tax_code;
         master.reference = reference;
         await master.save();
-        console.log("master updatedd");
         return res.status(201).json({
           message: "master updated successfully",
           master,
@@ -1150,7 +1143,6 @@ module.exports.addPaymentType = async (req, res) => {
         },
       });
       if (type) {
-        console.log("updating type ", type);
         type.min_hours = min_hours;
         type.rate = rate;
         type.payment_type = payment_type;
@@ -1192,7 +1184,6 @@ module.exports.addHolidayType = async (req, res) => {
         },
       });
       if (type) {
-        console.log("updating type ", type);
         type.holiday_type = holiday_type;
         await type.save();
         return res.status(201).json({
@@ -1256,8 +1247,7 @@ module.exports.addHoliday = async (req, res) => {
     if (isUpdate) {
       const holiday = await Holiday.findOne({ where: { id: ho_id } });
       if (holiday) {
-        holiday.year = year,
-        holiday.day = day;
+        (holiday.year = year), (holiday.day = day);
         holiday.start_date = start_date;
         holiday.end_date = end_date;
         holiday.holiday_type = holiday_type;
@@ -1303,7 +1293,7 @@ module.exports.getHolidayList = async (req, res) => {
         "Sl. No.": index + 1,
         Year: holiday.year,
         Date: holiday.start_date + " - " + holiday.end_date,
-        "No. of Days" : 1,
+        "No. of Days": 1,
         "Holiday Description": holiday.description,
         "Day of Week": holiday.day,
         "Holiday Type": holiday.holiday_type,
@@ -1318,56 +1308,53 @@ module.exports.getHolidayList = async (req, res) => {
   }
 };
 
-module.exports.getVisitors = async(req,res) => {
-    const id = req.params.id;
-    try{
-        const visitors = await Visitor.findAll({where : {organisation_id :id}});
-        const formattedData = visitors.map((visitor, index) => {
-          console.log('eacjh visitor ',visitor);
-          return {
-            id: visitor.id,
-            "Sl. No.": index + 1,
-            Name: visitor.name,
-            Designation: visitor.designation,
-            "Email ID" : visitor.email,
-            "Contact No": visitor.contact,
-            "Address": visitor.address,
-            "Description": visitor.description,
-             "Date" : visitor.date,
-             "Time" : visitor.time,
-             "Reference" : visitor.reference
-          };
-        });
-        res.status(200).json(formattedData);
-      } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Internal server error" });
-      }
+module.exports.getVisitors = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const visitors = await Visitor.findAll({ where: { organisation_id: id } });
+    const formattedData = visitors.map((visitor, index) => {
+      return {
+        id: visitor.id,
+        "Sl. No.": index + 1,
+        Name: visitor.name,
+        Designation: visitor.designation,
+        "Email ID": visitor.email,
+        "Contact No": visitor.contact,
+        Address: visitor.address,
+        Description: visitor.description,
+        Date: visitor.date,
+        Time: visitor.time,
+        Reference: visitor.reference,
+      };
+    });
+    res.status(200).json(formattedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
-
-module.exports.addShift = async(req,res) => {
-    const organisation_id = req.param.id;
-    const {data,dep_id,des_id} =  req.body
-    try{
-         const newShift = await Shift.create({
-             department_id : dep_id,
-             designation_id : des_id,
-            work_in : data.work_in,
-            work_out : data.work_out,
-            break_start : data.break_start,
-            break_end : data.break_end,
-            description : data.description
-         });
-         return res.status(201).json({
-          message: "new shift created successfully",
-          shift : newShift
-        });
-      }
-    catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
+module.exports.addShift = async (req, res) => {
+  const organisation_id = req.param.id;
+  const { data, dep_id, des_id } = req.body;
+  try {
+    const newShift = await Shift.create({
+      department_id: dep_id,
+      designation_id: des_id,
+      work_in: data.work_in,
+      work_out: data.work_out,
+      break_start: data.break_start,
+      break_end: data.break_end,
+      description: data.description,
+    });
+    return res.status(201).json({
+      message: "new shift created successfully",
+      shift: newShift,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 module.exports.getShifts = async (req, res) => {
@@ -1380,7 +1367,9 @@ module.exports.getShifts = async (req, res) => {
     });
 
     if (!departments.length) {
-      return res.status(404).json({ message: "No departments found for this organization." });
+      return res
+        .status(404)
+        .json({ message: "No departments found for this organization." });
     }
 
     const departmentIds = departments.map((dept) => dept.id);
@@ -1391,7 +1380,9 @@ module.exports.getShifts = async (req, res) => {
     });
 
     if (!designations.length) {
-      return res.status(404).json({ message: "No designations found for these departments." });
+      return res
+        .status(404)
+        .json({ message: "No designations found for these departments." });
     }
 
     const designationIds = designations.map((des) => des.id);
@@ -1401,116 +1392,127 @@ module.exports.getShifts = async (req, res) => {
       include: [
         {
           model: Department,
-          as:'department',
-          attributes: ['department_name'],
-          
+          as: "department",
+          attributes: ["department_name"],
         },
         {
           model: Designation,
-           as : 'designation',
-          attributes: ['designation_name'],
-         
+          as: "designation",
+          attributes: ["designation_name"],
         },
       ],
     });
 
     if (!shifts.length) {
-      return res.status(404).json({ message: "No shifts found for these designations." });
+      return res
+        .status(404)
+        .json({ message: "No shifts found for these designations." });
     }
 
-    const shiftDetails = await Promise.all(shifts.map(async (shift, index) => {
-      const offDay = await ShiftOffDay.findOne({
-        where: { shift_code: shift.shift_code },
-      });
-     console.log(shift.department,shift.designation);
-      const shiftDetail = {
-        "Sl. No.": index + 1,
-        "Shift Code": shift.shift_code,
-        "Department": shift.department?.department_name, 
-        "Designation": shift.designation?.designation_name, 
-        "Shift Description": shift.description,
-        "Work In Time": shift.work_in,
-        "Work Out Time": shift.work_out,
-        "Break Time From": shift.break_start,
-        "Break Time To": shift.break_end,
-        "Action": '',
-        "Designation ID": shift.designation_id,
-        "Shift Name": shift.shift_code + '(' + shift.description + ')',
-        "Off Days": offDay ? {
-          Monday: offDay.monday,
-          Tuesday: offDay.tuesday,
-          Wednesday: offDay.wednesday,
-          Thursday: offDay.thursday,
-          Friday: offDay.friday,
-          Saturday: offDay.saturday,
-          Sunday: offDay.sunday,
-        } : {},
-      };
+    const shiftDetails = await Promise.all(
+      shifts.map(async (shift, index) => {
+        const offDay = await ShiftOffDay.findOne({
+          where: { shift_code: shift.shift_code },
+        });
+        const shiftDetail = {
+          "Sl. No.": index + 1,
+          "Shift Code": shift.shift_code,
+          Department: shift.department?.department_name,
+          Designation: shift.designation?.designation_name,
+          "Shift Description": shift.description,
+          "Work In Time": shift.work_in,
+          "Work Out Time": shift.work_out,
+          "Break Time From": shift.break_start,
+          "Break Time To": shift.break_end,
+          Action: "",
+          "Designation ID": shift.designation_id,
+          "Shift Name": shift.shift_code + "(" + shift.description + ")",
+          "Off Days": offDay
+            ? {
+                Monday: offDay.monday,
+                Tuesday: offDay.tuesday,
+                Wednesday: offDay.wednesday,
+                Thursday: offDay.thursday,
+                Friday: offDay.friday,
+                Saturday: offDay.saturday,
+                Sunday: offDay.sunday,
+              }
+            : {},
+        };
 
-      return shiftDetail;
-    }));
+        return shiftDetail;
+      })
+    );
 
     return res.status(200).json(shiftDetails);
   } catch (error) {
     console.error("Error fetching shifts:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 };
 
-
-module.exports.addLatePolicy = async (req,res) => {
-   const {data,dep_id,des_id} = req.body;
-   try{
-     const newPolicy = await LatePolicy.create({
-         department_id : dep_id,
-         designation_id : des_id,
-         shift_code: data.shift_code,
-         days: data.days,
-         period: data.period,
-         salary_days : data.salary_days,
-     })
+module.exports.addLatePolicy = async (req, res) => {
+  const { data, dep_id, des_id } = req.body;
+  try {
+    const newPolicy = await LatePolicy.create({
+      department_id: dep_id,
+      designation_id: des_id,
+      shift_code: data.shift_code,
+      days: data.days,
+      period: data.period,
+      salary_days: data.salary_days,
+    });
     return res.status(201).json({
       message: "new shift created successfully",
-      policy : newPolicy
+      policy: newPolicy,
     });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-catch (error) {
-  console.error(error);
-  return res.status(500).json({ message: "Internal server error" });
-}
 };
 
 module.exports.getLatePolicies = async (req, res) => {
   try {
     const orgId = req.params.id;
 
-    const departments = await Department.findAll({ where: {organisation_id : orgId }});
+    const departments = await Department.findAll({
+      where: { organisation_id: orgId },
+    });
 
     const result = [];
 
     for (const department of departments) {
-      const designations = await Designation.findAll({ where: { department_id: department.id }});
+      const designations = await Designation.findAll({
+        where: { department_id: department.id },
+      });
 
       for (const designation of designations) {
-        const shifts = await Shift.findAll({where :{ designation_id: designation.id }});
+        const shifts = await Shift.findAll({
+          where: { designation_id: designation.id },
+        });
 
         for (const shift of shifts) {
-          const latePolicy = await LatePolicy.findOne({where :{
-            department_id: department.id,
-            designation_id: designation.id,
-            shift_code: shift.shift_code
-          }});
+          const latePolicy = await LatePolicy.findOne({
+            where: {
+              department_id: department.id,
+              designation_id: designation.id,
+              shift_code: shift.shift_code,
+            },
+          });
 
           if (latePolicy) {
             result.push({
-              id : LatePolicy.id,
-              "Department": department.department_name,
-              "Designation": designation.designation_name,
-              'Shift Code': shift.shift_code,
-              'Max Grace Period': latePolicy.period,
-              'No. of Days Allowed': latePolicy.days,
-              'No. of Day Salary Deducted': latePolicy.salary_days,
-              Action: ''
+              id: LatePolicy.id,
+              Department: department.department_name,
+              Designation: designation.designation_name,
+              "Shift Code": shift.shift_code,
+              "Max Grace Period": latePolicy.period,
+              "No. of Days Allowed": latePolicy.days,
+              "No. of Day Salary Deducted": latePolicy.salary_days,
+              Action: "",
             });
           }
         }
@@ -1520,55 +1522,44 @@ module.exports.getLatePolicies = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-
-module.exports.addOffDay = async(req,res) => {
-    const id = req.params.id ;
-    const {data}  = req.body;
-    console.log(req.body,data);
-    try{
-        const new_entry = await ShiftOffDay.create({
-            shift_code : data.shift_code,
-            monday : data.Monday,
-            tuesday : data.Tuesday,
-            wednesday: data.Wednesday,
-            thursday : data.Thursday,
-            friday : data.Friday,
-            saturday : data.Saturday,
-            sunday : data.Sunday
-        });
-        return res.status(201).json({
-          message: "new shift off day created successfully",
-          days : new_entry
-        });
-      }
-    catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-
+module.exports.addOffDay = async (req, res) => {
+  const id = req.params.id;
+  const { data } = req.body;
+  try {
+    const new_entry = await ShiftOffDay.create({
+      shift_code: data.shift_code,
+      monday: data.Monday,
+      tuesday: data.Tuesday,
+      wednesday: data.Wednesday,
+      thursday: data.Thursday,
+      friday: data.Friday,
+      saturday: data.Saturday,
+      sunday: data.Sunday,
+    });
+    return res.status(201).json({
+      message: "new shift off day created successfully",
+      days: new_entry,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 module.exports.uploadDocuments = async (req, res) => {
   try {
-    console.log(
-      "Upload documents hit: ",
-      req.file.filename,
-      req.body,
-      req.params.id
-    );
-
-    const { id } = req.params; 
-    const { documentType,Company_name } = req.body;
-    const organisation_id = id; 
+    const { id } = req.params;
+    const { documentType, Company_name } = req.body;
+    const organisation_id = id;
     const url = `http://localhost:${process.env.PORT}/uploads/${Company_name}/${req.file.filename}`;
 
     // Create a new entry in OrgDocument
     const newDocument = await OrgDocument.create({
-      document_type:documentType,
+      document_type: documentType,
       document_url: url,
       organisation_id,
     });
@@ -1586,19 +1577,505 @@ module.exports.uploadDocuments = async (req, res) => {
   }
 };
 
-module.exports.get_next_id = async (req,res) =>{
+module.exports.get_next_id = async (req, res) => {
   const lastEmployee = await Employee.findOne({
     order: [["employee_code", "DESC"]],
     attributes: ["employee_code"],
   });
   let result;
   if (lastEmployee) {
-    const lastCodeNumber = parseInt(lastEmployee.employee_code.split("-")[1], 10);
+    const lastCodeNumber = parseInt(
+      lastEmployee.employee_code.split("-")[1],
+      10
+    );
     const nextCodeNumber = (lastCodeNumber + 1).toString().padStart(3, "0");
     result = `MAR-${nextCodeNumber}`;
   } else {
     result = "MAR-001";
   }
-  console.log('sending response ',result);
   return res.status(200).json(result);
-}
+};
+
+const generateLink = (employee_code) => {
+  try {
+    const algorithm = "aes-256-cbc";
+    const secretKey = process.env.EMP_SECRET_KEY;
+
+    if (!secretKey || secretKey.length !== 64) {
+      console.log("key error it is");
+      throw new Error(
+        "Secret key must be 64 hex characters (32 bytes in length)"
+      );
+    }
+    console.log("trying to encrypttt");
+
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(
+      algorithm,
+      Buffer.from(secretKey, "hex"),
+      iv
+    );
+
+    let encrypted = cipher.update(employee_code, "utf8", "hex");
+    encrypted += cipher.final("hex");
+
+    return iv.toString("hex") + encrypted;
+  } catch (error) {
+    console.error("Encryption Error:", error.message);
+    return null;
+  }
+};
+
+module.exports.getAllEmployees = async (req, res) => {
+  console.log("get employees hit ", req.params.id);
+  const org_id = req.params.id;
+
+  try {
+    const emp = await Employee.findAll({
+      where: { organisation_id: org_id },
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: ["fname", "mname", "lname"],
+        },
+        {
+          model: JobDetail,
+          as: "jobdetails",
+          attributes: ["title"],
+        },
+        {
+          model: ServiceDetail,
+          as: "servicedetail",
+          attributes: ["type", "department"],
+        },
+        {
+          model: Organisation,
+          as: "organisation",
+          attributes: [
+            "Company_name",
+            "Address_Line1",
+            "Address_Line2",
+            "Address_Line3",
+            "Address_City_County",
+            "Address_Country",
+          ],
+        },
+      ],
+    });
+
+
+
+    const formattedResponse = emp.map((employee, index) => {
+      const employeeLink = generateLink(employee.employee_code);
+
+      return {
+        "Sl. No.": index + 1,
+        "Organisation Name": employee.organisation?.Company_name,
+        "Organisation Address": [
+          employee.organisation?.Address_Line1,
+          employee.organisation?.Address_Line2,
+          employee.organisation?.Address_Line3,
+          employee.organisation?.Address_City_County,
+          employee.organisation?.Address_Country,
+        ]
+          .filter(Boolean)
+          .join(", "), // Filter out null values
+        "Employee Name": [
+          employee.personaldetail.fname,
+          employee.personaldetail.mname,
+          employee.personaldetail.lname,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        Department: employee.servicedetail?.department,
+        "Job Type": employee.servicedetail?.type,
+        "Job Title": employee.jobdetails?.title,
+        "Employee Link": employeeLink
+          ? `http://localhost:5173/employeelink/${employeeLink}`
+          : "Encryption Error",
+      };
+    });
+
+    return res.status(200).json(formattedResponse);
+  } catch (err) {
+    console.error("Error fetching employees:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
+module.exports.getEmployeePage = async (req, res) => {
+  console.log("get employees hit ", req.params.id);
+  const org_id = req.params.id;
+
+  try {
+    const emp = await Employee.findAll({
+      where: { organisation_id: org_id },
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: [
+            "fname",
+            "mname",
+            "lname",
+            "dob",
+            "email",
+            "contact_1",
+            "Nationality",
+            "nationality_no",
+          ],
+        },
+        {
+          model: ServiceDetail,
+          as: "servicedetail",
+          attributes: ["designation"],
+        },
+        {
+          model: PassportDetail,
+          as: "passportdetail",
+          attributes: ["passport_no"],
+        },
+        {
+          model: VisaDetail,
+          as: "visadetail",
+          attributes: ["expiry_date", "current"],
+        },
+        {
+          model: ContactInfo,
+          as: "contact",
+          attributes: ["line1", "line2", "line3", "city", "country"],
+        },
+      ],
+    });
+
+    const formattedResponse = emp.map((employee, index) => {
+      console.log(employee);
+      return {
+        "Employee ID": employee.employee_code,
+        "Employee Name": [
+          employee.personaldetail.fname,
+          employee.personaldetail.mname,
+          employee.personaldetail.lname,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        DOB: employee.personaldetail.dob,
+        Mobile: employee.personaldetail.contact_1,
+        Email: employee.personaldetail.email,
+        Designation: employee.servicedetail.designation,
+        Nationality: employee.personaldetail?.Nationality,
+        "NI Number": employee.personaldetail.nationality_no,
+        "Visa Expired": employee.visadetail?.current
+          ? employee.visadetail?.expiry_date
+          : "expired",
+        "Passport No": employee.passportdetail?.passport_no,
+        Address: [
+          employee.contact?.line1,
+          employee.contact?.line2,
+          employee.contact?.line3,
+          employee.contact?.city,
+          employee.contact?.country,
+        ]
+          .filter(Boolean)
+          .join(", "),
+        Action: [
+          { label: "Edit", route: `addEmployee/${employee.employee_code}` },
+          { label: "Delete", route: `addEmployee/${employee.employee_code}` },
+        ],
+      };
+    });
+
+    return res.status(200).json(formattedResponse);
+  } catch (err) {
+    console.error("Error fetching employees:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
+module.exports.getEmployeeData = async (req, res) => {
+  const code = req.params.id;
+  try {
+    const personal_details = await PersonalDetail.findOne({
+      where: { employee_code: code },
+    });
+    const service_details = await ServiceDetail.findOne({
+      where: { employee_code: code },
+    });
+    const education_details = await EducationDetail.findAll({
+      where: { employee_code: code },
+    });
+    const job_details = await JobDetail.findAll({
+      where: { employee_code: code },
+    });
+    const key_responsibilities = await KeyResponsibility.findAll({
+      where: { employee_code: code },
+    });
+    const training_details = await TrainingDetail.findAll({
+      where: { employee_code: code },
+    });
+    const kin_details = await KinDetail.findOne({
+      where: { employee_code: code },
+    });
+    const certification = await Certification.findOne({
+      where: { employee_code: code },
+    });
+    const contact_info = await ContactInfo.findOne({
+      where: { employee_code: code },
+    });
+    const other_documents = await EmployeeOtherDocument.findAll({
+      where: { employee_code: code },
+    });
+    const passport_details = await PassportDetail.findOne({
+      where: { employee_code: code },
+    });
+    const esus = await EsusDetail.findOne({ where: { employee_code: code } });
+    const dbs = await DBSDetail.findOne({ where: { employee_code: code } });
+    const visa = await VisaDetail.findOne({ where: { employee_code: code } });
+    const national = await NationalDetail.findOne({
+      where: { employee_code: code },
+    });
+    const pay_details = await PayDetail.findOne({
+      where: { employee_code: code },
+    });
+    const other_details = await EmployeeOtherDetail.findAll({
+      where: { employee_code: code },
+    });
+    const pay_structure = await PayStructure.findOne({
+      where: { employee_code: code },
+    });
+
+    // Format pay_structure to match frontend state
+    const formatted_pay_structure = pay_structure
+      ? {
+          payments: {
+            dearnessAllowance: pay_structure.dearnessAllowance || false,
+            houseRentAllowance: pay_structure.houseRentAllowance || false,
+            conveyanceAllowance: pay_structure.conveyanceAllowance || false,
+            performanceAllowance: pay_structure.performanceAllowance || false,
+            monthlyFixedAllowance: pay_structure.monthlyFixedAllowance || false,
+          },
+          deductions: {
+            niDeduction: pay_structure.niDeduction || false,
+            incomeTaxDeduction: pay_structure.incomeTaxDeduction || false,
+            incomeTaxCess: pay_structure.incomeTaxCess || false,
+            esi: pay_structure.esi || false,
+            profTax: pay_structure.profTax || false,
+          },
+        }
+      : {
+          payments: {
+            dearnessAllowance: false,
+            houseRentAllowance: false,
+            conveyanceAllowance: false,
+            performanceAllowance: false,
+            monthlyFixedAllowance: false,
+          },
+          deductions: {
+            niDeduction: false,
+            incomeTaxDeduction: false,
+            incomeTaxCess: false,
+            esi: false,
+            profTax: false,
+          },
+        };
+
+    // Construct response object
+    const response = {
+      personal_details,
+      service_details,
+      education_details,
+      job_details,
+      key_responsibilities,
+      training_details,
+      kin_details,
+      certification,
+      contact_info,
+      other_documents,
+      passport_details,
+      esus,
+      dbs,
+      visa,
+      national,
+      pay_details,
+      other_details,
+      pay_structure: formatted_pay_structure,
+    };
+
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error("Error fetching employee data:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
+module.exports.getCOCData = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const employees = await Employee.findAll({
+      where: { organisation_id: id },
+      include: [
+        {
+          model: JobDetail,
+          as: "jobdetails",
+          attributes: ["title"],
+        },
+        {
+          model : PersonalDetail,
+          as : "personaldetail",
+          attributes : ['fname','lname','mname','contact_1','Nationality','nationality_no']
+        }
+      ],
+    });
+    // Fetch additional details for each employee
+    const employeesWithDetails = await Promise.all(
+      employees.map(async (emp) => {
+        const employee_code = emp.employee_code;
+        const employee ={
+           full_name : [emp.personaldetail.fname,emp.personaldetail.lname].filter(Boolean).join(' ') + '(' + employee_code + ')' ,
+           employee_code ,
+           name: [emp.personaldetail.fname,emp.personaldetail.mname,emp.personaldetail.lname].filter(Boolean).join(' '),
+           fname :emp.personaldetail.fname ,
+           lname:emp.personaldetail.lname,
+           mname: emp.personaldetail.mname,
+           title : emp.jobdetails.title,
+           contact_1 : emp.personaldetail.contact_1,
+           Nationality : emp.personaldetail.Nationality,
+           nationality_no: emp.personaldetail.nationality_no
+          };
+        const contact_info = await ContactInfo.findOne({where: { employee_code }});
+        const passport_details = await PassportDetail.findOne({where: { employee_code },});
+        const esus = await EsusDetail.findOne({ where: { employee_code } });
+        const dbs = await DBSDetail.findOne({ where: { employee_code } });
+        const visa = await VisaDetail.findOne({ where: { employee_code } });
+        const national = await NationalDetail.findOne({
+          where: { employee_code },
+        });
+        const other_details = await COCOtherDetail.findOne({
+          where: { employee_code },
+        });
+
+        return {
+          employee,
+          contact_info,
+          passport_details,
+          esus,
+          dbs,
+          visa,
+          national,
+          other_details,
+        };
+      })
+    );
+
+    return res.status(200).json(employeesWithDetails);
+  } catch (err) {
+    console.error("Error fetching employee COC data:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
+  }
+};
+
+module.exports.getCOCTable = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const data = await Employee.findAll({
+      where: { organisation_id: id },
+      include: [
+        {
+          model: COCOtherDetail,
+          as: 'cocdetails',
+          attributes: ['changeDate', 'remarks', 'awareContact', 'awareInterview'],
+        },
+        {
+          model: PersonalDetail,
+          as: 'personaldetail',
+          attributes: [
+            'Nationality',
+            'fname',
+            'lname',
+            'mname','contact_1'
+          ],
+        },
+        {
+            model : ContactInfo,
+            as : 'contact',
+            attributes : [
+              'line1',
+              'line2',
+              'line3',
+              'country',
+              'city',]
+        },
+        {
+          model: ServiceDetail,
+          as: 'servicedetail',
+          attributes: ['type'],
+        },
+        {
+          model: JobDetail,
+          as: 'jobdetails',
+          attributes: ['title'],
+        },
+        {
+          model: VisaDetail,
+          as: 'visadetail',
+          attributes: ['visa_no', 'expiry_date'],
+        },
+        {
+          model: PassportDetail,
+          as: 'passportdetail',
+          attributes: ['passport_no'],
+        },
+      ],
+    });
+
+    const formattedData = data.map((emp) => {
+      return {
+        'Updated Date': emp.cocdetails.changeDate,
+        'Employment Type': emp.servicedetail.type,
+        'Employee ID': emp.employee_code,
+        'Name Of Member Of The Staff': [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname]
+          .filter(Boolean)
+          .join(' '),
+        'Job Title': emp.jobdetails.title,
+        'Address': [
+          emp.contact.line1,
+          emp.contact.line2,
+          emp.contact.line3,
+          emp.contact.city,
+          emp.contact.country,
+        ]
+          .filter(Boolean)
+          .join(' '),
+        'Contact Number': emp.personaldetail.contact_1,
+        Nationality: emp.personaldetail.Nationality,
+        'BRP Number': emp.visadetail.visa_no,
+        'Visa Expired': emp.visadetail.expiry_date,
+        'Remarks/Restriction to work': emp.cocdetails.remarks,
+        'Passport No': emp.passportdetail.passport_no,
+        'ESUS Details': 'no',
+        'DBS Details': 'no',
+        'National Id Details': 'no',
+        'Other Documents': 'no',
+        'Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?':
+          emp.cocdetails.awareContact ? 'Yes' : 'No',
+        'Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?':
+          emp.cocdetails.awareInterview ? 'Yes' : 'No',
+        Action: '', // Add the necessary action if required
+      };
+    });
+
+    return res.status(200).json(formattedData);
+  } catch (err) {
+    console.log(err,'coc');
+    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+  }
+};

@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const VisaDetail = sequelize.define(
-      "VisaDetails",
+      "VisaDetail",
       {
         employee_code: {
           type: DataTypes.STRING,

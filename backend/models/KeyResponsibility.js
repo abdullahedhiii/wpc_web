@@ -1,7 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
     const KeyResponsibility = sequelize.define(
-      "KeyResponsibilities",
-      {
+      "KeyResponsibility",
+      {    id: {
+        type : DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement:true,
+      },
         employee_code: {
           type: DataTypes.STRING,
           allowNull: false,
@@ -13,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         responsibility : DataTypes.STRING,
       },
-      { tableName: "JobDetails", timestamps: false }
+      { tableName: "KeyResponsibilities", timestamps: false }
     );
   
     return KeyResponsibility;
