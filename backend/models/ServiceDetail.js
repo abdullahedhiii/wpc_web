@@ -11,6 +11,22 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
+        department_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "Departments",
+            key: "id",
+          },
+          onDelete: "CASCADE",
+        },
+        designation_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "Designations",
+            key: "id",
+          },
+          onDelete: "CASCADE",
+        },
         department: DataTypes.STRING,
         designation: DataTypes.STRING,
         joining: DataTypes.DATEONLY,

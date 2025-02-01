@@ -73,6 +73,7 @@ const COCOtherDetail = require('../models/COCOtherDetail')(sequelize,DataTypes);
 const PayDetail= require('../models/PayDetail')(sequelize,DataTypes);
 const PayStructure= require('../models/PayStructure')(sequelize,DataTypes);
 const TrainingDetail = require('../models/TrainingData')(sequelize,DataTypes);
+const Attendance = require('../models/Attendance')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -126,6 +127,8 @@ Organisation.hasMany(Visitor, {foreignKey: "organisation_id",as: "visitors",});
 Visitor.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 Shift.belongsTo(Department, { as: "department", foreignKey: "department_id" });
 Shift.belongsTo(Designation, { as: "designation", foreignKey: "designation_id" });
+
+Shift.hasOne(LatePolicy,{foreignKey:"shift_code",as : "latepolicy"});
 
 Department.hasMany(Shift, { as: "shifts", foreignKey: "department_id" });
 Designation.hasMany(Shift, { as: "shifts", foreignKey: "designation_id" });
@@ -184,12 +187,17 @@ Employee.hasOne(JobDetail, {foreignKey: "employee_code",as: "jobdetails",});
 Organisation.hasMany(Job,{foreignKey : 'organisation_id',as : 'jobs'});
 Job.belongsTo(Organisation,{foreignKey : 'organisation_id',as : 'organisation'});
 
+Employee.hasMany(Attendance, { foreignKey: "employee_code", as: "employeesAttendance" });
+Attendance.belongsTo(Employee, { foreignKey: "employee_code", as: "employee" });
+
+Attendance.belongsTo(PersonalDetail, { foreignKey: "employee_code", as: "employeePersonalDetail" });
+
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
-                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,
-                   
+                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
+                   ,
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail

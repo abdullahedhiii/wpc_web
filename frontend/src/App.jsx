@@ -70,6 +70,10 @@ import { useSidebarContext } from "./contexts/SidebarContext";
 import COCForm from "./Components/Employee/COCForm";
 import TextEditor from "./Components/Recruitment/TextEditor";
 import JobListForm from "./Components/Recruitment/JobListForm";
+import JobPosting from "./Components/Recruitment/JobPosting";
+import JobPostingForm from "./Components/Recruitment/JobPostingForm";
+import UploadAttendance from "./Components/Attendance/UploadAttendance";
+import GenerateAttendance from "./Components/Attendance/GenerateAttendance";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -710,7 +714,7 @@ const router = createBrowserRouter([
         path : "recruitmentdashboard",
         element : (
           <ProtectedRoute>
-            <StatisticsDashboard/>
+            <StatisticsDashboard title={"Recruitment Statistics"}/>
           </ProtectedRoute>
         )
       },
@@ -721,7 +725,37 @@ const router = createBrowserRouter([
       {
         path : "recruitment/add-job-list",
         element : (<ProtectedRoute><JobListForm/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/job-posting",
+        element : (<ProtectedRoute><JobPosting/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/add-job-post",
+        element : (<ProtectedRoute><JobPostingForm/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/add-job-post/:id",
+        element : (<ProtectedRoute><JobPostingForm/></ProtectedRoute>)
+      },
+      {
+        path : "leavedashboard",
+        element : (<ProtectedRoute><StatisticsDashboard title={"Leave Type"}/></ProtectedRoute>)
+      },
+      {
+        path : "attendancedashboard",
+        element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
+      },
+      {
+        path : "attendance/upload-data",
+        element : (<ProtectedRoute><UploadAttendance/></ProtectedRoute>)
+      },
+      {
+        path : "attendance/generate-data",
+        element : (<ProtectedRoute><GenerateAttendance/></ProtectedRoute>)
       }
+
+
 
     ],
   },

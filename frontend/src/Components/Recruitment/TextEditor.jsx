@@ -43,8 +43,7 @@ const TextEditor = ({ content, setContent }) => {
         formats={formats}
         theme="snow"
         style={{
-          minHeight: "150px", 
-          maxHeight: "500px", 
+          minHeight: "100px", 
           overflowY: "auto",  
           width: "100%",
         }}

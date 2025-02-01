@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 const CircularProgress = ({ current }) => {
   const [progress, setProgress] = useState(0);
+  
   const {companyData} = useCompanyContext();
   const navigate = useNavigate();
   useEffect(() => {
-    const interval = setInterval(() => {
+    if(current.percentage !== -1){
+        const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev < current.percentage) {
           return prev + 1;
@@ -19,7 +21,17 @@ const CircularProgress = ({ current }) => {
       });
     }, 10);
     return () => clearInterval(interval);
+    }
+  
   }, [current.percentage]);
+  
+  useEffect(() => {
+    console.log('checking percentage')
+     if(current.percentage === -1){
+      console.log('setting per')
+      setProgress(100);
+     }
+  },[current.percentage])
 
   return (
     <div className="flex flex-col items-center justify-center p-4">
@@ -41,6 +53,9 @@ const CircularProgress = ({ current }) => {
       <div className="mt-2 text-gray-600 text-center">
         {`${current.name} ${current.completed ? "(completed)" : ""}`}
       </div>
+      {
+        current.view_route && 
+     
       <button
        className="mt-2 w-10 h-10 rounded-full flex items-center justify-center"
        style={{ backgroundColor: current.color }}
@@ -55,7 +70,7 @@ const CircularProgress = ({ current }) => {
         <img src={current.icon} alt="icon" className="w-6 h-6" />
 
 
-      </button>
+      </button> }
       {/* <div
         className="mt-2 w-10 h-10 rounded-full flex items-center justify-center"
         style={{ backgroundColor: current.color }}
@@ -68,22 +83,25 @@ const CircularProgress = ({ current }) => {
 const StatisticsDashboard = ({ title }) => {
   const { selectedModule } = useModuleContext();
   const dashboard = selectedModule.dashboard;
-  console.log('in statss ',dashboard);
+  console.log("in stats ", dashboard);
+
   return (
-    <>
-      <p className="p-14 text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl">
+    <div className="relative">
+      <p className="text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl font-bold p-14">
         Dashboard
       </p>
-      <div className="m-24 relative top-[-124px]  border-1 border-t-4 border-t-blue-800 rounded-lg shadow-2xl p-6">
-        <h2 className="text-blue-800 text-[15px] font-sm mb-6">{title}</h2>
+
+      <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 border-1 border-t-4 border-t-blue-800 rounded-lg shadow-2xl p-6 bg-white w-[90%]">
+        <h2 className="text-blue-800 text-[15px] font-sm mb-6 font-bold">{title}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {dashboard.map((item, index) => (
             <CircularProgress key={index} current={item} />
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
+
 
 export default StatisticsDashboard;

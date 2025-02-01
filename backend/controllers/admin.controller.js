@@ -1455,6 +1455,7 @@ module.exports.getShifts = async (req, res) => {
 
 module.exports.addLatePolicy = async (req, res) => {
   const { data, dep_id, des_id } = req.body;
+  console.log('adding late policy ',data,dep_id,des_id);
   try {
     const newPolicy = await LatePolicy.create({
       department_id: dep_id,
@@ -1464,12 +1465,13 @@ module.exports.addLatePolicy = async (req, res) => {
       period: data.period,
       salary_days: data.salary_days,
     });
-    return res.status(201).json({
+    console.log('late polocy created ');
+    return res.status(200).json({
       message: "new shift created successfully",
       policy: newPolicy,
     });
   } catch (error) {
-    console.error(error);
+    console.error(error,'in laete policy');
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1647,7 +1649,7 @@ module.exports.getAllEmployees = async (req, res) => {
         {
           model: ServiceDetail,
           as: "servicedetail",
-          attributes: ["type", "department"],
+          attributes: ["type", "department","designation_id","department_id","designation"],
         },
         {
           model: Organisation,
@@ -1694,6 +1696,10 @@ module.exports.getAllEmployees = async (req, res) => {
         "Employee Link": employeeLink
           ? `http://localhost:5173/employeelink/${employeeLink}`
           : "Encryption Error",
+        Designation : employee.servicedetail?.designation,
+        Designation_id : employee.servicedetail?.designation_id,
+        Department_id : employee.servicedetail?.department_id,
+        employee_code : employee.employee_code
       };
     });
 
@@ -1765,7 +1771,7 @@ module.exports.getEmployeePage = async (req, res) => {
         DOB: employee.personaldetail.dob,
         Mobile: employee.personaldetail.contact_1,
         Email: employee.personaldetail.email,
-        Designation: employee.servicedetail.designation,
+        Designation: employee.servicedetail?.designation,
         Nationality: employee.personaldetail?.Nationality,
         "NI Number": employee.personaldetail.nationality_no,
         "Visa Expired": employee.visadetail?.current

@@ -55,28 +55,28 @@ const LatePolicyForm = () => {
             label: 'Select Department',
             type: 'select',
             name: 'department',
-            options: departmentData.map(department =>({
+            options: [{label: "",value: ""},...departmentData.map(department =>({
                 label: department['Department Name'],
                 value: department['Department Name']
-            }))
+            }))]
         },
         {
             label: 'Select Designation',
             type: 'select',
             name: 'designation',
-            options: filteredDesignations.map(des =>({
+            options: [{label : "",value: ""},...filteredDesignations.map(des =>({
                 label: des['Designation'],
                 value: des['Designation']
-            }))
+            }))]
         },
         {
             label: 'Shift Code',
             type: 'select',
             name: 'shift_code',
-            options: filteredShifts.map(shift => ({
+            options: [{label : "",value: ""},...filteredShifts.map(shift => ({
                 label: shift['Shift Code'] + '(' + shift['Shift Description'] + ')',
                 value: shift['Shift Code'],
-            }))
+            }))]
         },
         {
             label: 'Maximum Grace Period in Minutes',
@@ -123,14 +123,17 @@ const LatePolicyForm = () => {
         console.log('Late policy submit hit', data);
         const s_dep = departmentData.find((ele) => ele['Department Name'] === data.department);
         const s_des = designationData.find((ele) => ele['Department Name'] === data.department && ele['Designation'] === data.designation);
+        console.log(s_dep,s_des,data);
         try{
+            console.log('sedning request to add late policy');
             const response = await axiosInstance.post(`/api/addLatePolicy/${companyData[0].id}`,{data,dep_id : s_dep.id,des_id : s_des.id});
-            if(response.status === 201){
+            if(response.status === 200){
+                console.log('navigating /');
                 navigate('/hrms/rota/late-policy');
             }
         }
         catch(err){
-
+console.log(err);
         }
     };
 
