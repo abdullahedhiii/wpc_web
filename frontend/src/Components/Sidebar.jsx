@@ -65,12 +65,12 @@ const Sidebar = ({ isOpen, setOpen }) => {
           isOpen ? "mx-4" : "mx-auto w-10"
         } transition-all duration-300`}
       />
-      <div className={`mt-6 ${isOpen ? "px-4" : "px-2"}`}>
+      <div className={`mt-6 ${isOpen ? "px-4" : "px-3"}`}>
         <button
           className={`flex items-center w-full ${
             isOpen
               ? "justify-between bg-blue-600 text-white rounded-lg py-3 px-4"
-              : "justify-center bg-blue-600 text-white rounded-lg h-12 w-20 "
+              : "justify-center bg-blue-600 text-white rounded-lg py-3 "
           } mb-4`}
           onClick={toggleDropdown}
         >

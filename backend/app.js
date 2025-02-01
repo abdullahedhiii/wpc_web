@@ -8,6 +8,7 @@ const adminRoutes = require('./routes/admin.routes');
 const visitorRoutes = require('./routes/visitor.route');
 const employeeAdd = require('./routes/employee-submission.routes');
 const JobRoutes = require('./routes/job.routes');
+const AttendanceRoutes = require('./routes/attendance.routes');
 
 const app = express();
 app.use(express.json());  
@@ -24,6 +25,7 @@ app.use('/',adminRoutes);
 app.use('/',visitorRoutes);
 app.use('/',employeeAdd);
 app.use('/',JobRoutes);
+app.use('/',AttendanceRoutes);
 
 app.use('/uploads', express.static('uploads'));
 

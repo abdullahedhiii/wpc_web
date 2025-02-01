@@ -4,16 +4,18 @@ import DataTable from "../DataTable";
 import axiosInstance from "../../../axiosInstance";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 
-const JobList = () => {
-    const columns = ["Sl. No.", "SOC CODE", "Job Title", "Action"];
+const JobPosting = () => {
+    const columns = ["Sl. No.", "SOC Code", "Job Title", "Job Link","Vacancy","Job Location","Job Posted Date","Closing Date",
+        "Email","Phone No.","Status","Action", 
+    ];
     const [loading,setLoading] = useState(true);
-    const [jobsListed,setListed] = useState([]);
+    const [jobsPosted,setPosted] = useState([]);
     const {companyData} = useCompanyContext();
     useEffect(( ) => {
-           const fetchListed = async() => {
+           const fetchPosted = async() => {
                    try{
-                    const response = await axiosInstance.get(`/api/getJobsListed/${companyData[0].id}`);
-                    setListed(response.data);
+                    const response = await axiosInstance.get(`/api/getJobsPosted/${companyData[0].id}`);
+                    setPosted(response.data);
                    }
                    catch(err){
 
@@ -22,7 +24,7 @@ const JobList = () => {
                     setLoading(false);
                    }
            };
-           fetchListed();
+           fetchPosted();
     },[]);
   
     return (
@@ -31,17 +33,17 @@ const JobList = () => {
       ) : (
         <div className="m-16">
           <p className="text-[14px] text-gray-400 mb-4">
-            Home / HCM Master<span className="text-tt"> / Job List</span>
+            Home / HCM Master<span className="text-tt"> / Job Posted</span>
           </p>
           <DataTable
-            title="Job List"
+            title="Job Posted"
             fields={columns}
-            data={jobsListed}
+            data={jobsPosted}
             showEntries
             searchable
             downloadable={false}
             addMore={true}
-            buttonTitle="Add New Job List"
+            buttonTitle="Add New Job"
           />
         </div>
       )
@@ -49,4 +51,4 @@ const JobList = () => {
     
 };
 
-export default JobList;
+export default JobPosting;

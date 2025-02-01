@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { useSidebarContext } from "../../contexts/SidebarContext";
+import { useCompanyContext } from "../../contexts/CompanyContext";
+
 import TextEditor from "./TextEditor";
+import axiosInstance from "../../../axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const JobListForm = () => {
   const { isSideBarOpen } = useSidebarContext();
-
+  const {companyData} = useCompanyContext();
   const [content, setContent] = useState("");
 
   const formFields = [
@@ -40,7 +44,7 @@ const JobListForm = () => {
     socCode: "",
     department: "",
     jobTitle: "",
-    jobDescription: "",
+    status : "Listed"
   });
 
   const handleChange = (e) => {
@@ -51,9 +55,18 @@ const JobListForm = () => {
     }));
   };
    
+  const navigate = useNavigate();
   const handleJobPost = async(e) => {
     e.preventDefault();
     console.log(content,formData);
+    try{
+       const response = await axiosInstance.post(`/api/addJobListed/${companyData[0].id}`,{formData,content});
+       if(response.status === 200)
+          navigate('/hrms/recruitment/job-list');
+    }
+    catch(err){
+       console.log('error posting job list');
+    }
   }
 
   return (
@@ -77,7 +90,7 @@ const JobListForm = () => {
         <hr className="my-4 border-t-1 border-gray-200" />
 
         <div className="p-4 mt-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {formFields.map((field, index) => (
               <div key={index} className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">
@@ -100,7 +113,6 @@ const JobListForm = () => {
                   <input
                     type={field.type}
                     name={field.stateAttribute}
-                    placeholder={field.label}
                     value={formData[field.stateAttribute]}
                     onChange={handleChange}
                     className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"

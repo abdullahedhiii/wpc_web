@@ -4,12 +4,6 @@ const multer = require("multer");
 
 const uploadPath = path.join(__dirname, "../uploads");
 
-const parseForm = (req, res, next) => {
-  multer().fields([])(req, res, (err) => {
-    if (err) return next(err);
-    next();
-  });
-};
 
 if (!fs.existsSync(uploadPath)) {
   fs.mkdirSync(uploadPath, { recursive: true });
@@ -55,6 +49,25 @@ const empStorage = multer.diskStorage({
   }
 });
 
+const attendanceStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const company_id = req.params.id;
+    if (!company_id) {
+      return cb(new Error("Company id is required"));
+    }
+
+    const dir = path.join(uploadPath, "Attendance",company_id);  
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir); 
+  },
+  filename: function (req, file, cb) {
+    const fileName = Date.now() + path.extname(file.originalname);  
+    cb(null, fileName);
+  }
+});
+
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/jpeg", "image/png", "image/gif",  
@@ -80,4 +93,9 @@ const empUpload = multer({
   fileFilter
 });
 
-module.exports = { orgUpload, empUpload,parseForm};
+const attendanceUpload = multer({
+  storage: attendanceStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
+  fileFilter
+});
+module.exports = { orgUpload, empUpload,attendanceUpload};

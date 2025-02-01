@@ -71,11 +71,7 @@ const DataTable = ({
   const { isSidebarOpen } = useSidebarContext();
 
   return (
-    <div
-      className={`${
-        isSidebarOpen ? "w-[1150px]" : "w-[1350px]"
-      } border-t-4 border-tt bg-white rounded-md shadow-md`}
-    >
+    <div className={`${isSidebarOpen ? "w-[1150px]" : "w-[1350px]"} border-t-4 border-tt bg-white rounded-md shadow-md`}>
       {title && (
         <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
@@ -117,51 +113,49 @@ const DataTable = ({
         </div>
       )}
 
-      <div className="w-full overflow-x-auto p-6">
-        <div className="min-w-[768px]">
-          {(showEntries || searchable) && (
-            <div className="flex flex-wrap md:flex-nowrap justify-between items-center mb-2 gap-4">
-              {showEntries && (
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="entries">Show</label>
-                  <select
-                    id="entries"
-                    value={numentries}
-                    onChange={(e) =>
-                      setNumentries(parseInt(e.target.value, 10))
-                    }
-                    className="border rounded px-4 py-1"
-                  >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                  </select>
-                  <span>entries</span>
-                </div>
-              )}
-              {searchable && (
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="search">Search:</label>
-                  <input
-                    id="search"
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border rounded px-2 py-1"
-                    placeholder="Search here..."
-                  />
-                </div>
-              )}
-            </div>
-          )}
+<div className="w-full overflow-x-scroll p-6">
+  <div className="min-w-[768px] text-center">
+    {(showEntries || searchable) && (
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+        {showEntries && (
+          <div className="flex items-center space-x-2 w-full md:w-auto">
+            <label htmlFor="entries">Show</label>
+            <select
+              id="entries"
+              value={numentries}
+              onChange={(e) => setNumentries(parseInt(e.target.value, 10))}
+              className="border rounded px-4 py-1"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+            <span>entries</span>
+          </div>
+        )}
+        {searchable && (
+          <div className="flex items-center space-x-2  md:w-auto">
+            <label htmlFor="search">Search:</label>
+            <input
+              id="search"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="border rounded px-2 py-1 w-full md:w-auto"
+              placeholder="Search here..."
+            />
+          </div>
+        )}
+      </div>
+    )}
 
-          <table className="w-full table-auto border-spacing-0.5 border-separate">
+<table className="w-full min-w-full table-auto border-spacing-0.5 border-separate">
             <thead>
               <tr className="bg-gray-100">
                 {filteredFields.map((field, index) => (
                   <th
                     key={index}
-                    className="relative px-4 py-2 text-left text-[13px] font-semibold text-white bg-background break-words whitespace-nowrap"
+                    className="relative px-4 py-2 text-left text-[14px] font-semibold text-white bg-background break-words whitespace-nowrap"
                   >
                     <div className="flex justify-between items-start">
                       {field}
@@ -194,7 +188,7 @@ const DataTable = ({
                     {filteredFields.map((field, colIndex) => (
                       <td
                         key={colIndex}
-                        className="text-center px-2 py-1 border text-[13px] text-gray-600 max-w-[200px] "
+                        className="px-2 py-1 border text-[14px] text-gray-600 max-w-[200px] "
                       >
                         {field === "Action" ||
                         field === "Edit" ||
@@ -234,13 +228,13 @@ const DataTable = ({
                             />
                           ) : null
                         ) : (field === "Visitor Link" ||
-                            field === "Employee Link") &&
+                            field === "Employee Link" || field === 'Job Link') &&
                           row[field] ? (
                           <a
                             href={row[field]}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-500 underline text-center"
+                            className="text-blue-500 underline text-center break-words"
                           >
                             {row[field]}
                           </a>

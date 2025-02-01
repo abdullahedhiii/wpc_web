@@ -23,55 +23,73 @@ const {
 } = require("../config/sequelize");
 
 module.exports.addPersonalDetails = async (req, res) => {
-  console.log("personal hit ", req.params.id, req.body);
+  console.log("Personal details endpoint hit", req.params.id, req.body);
   try {
-    console.log("is error here ? ", req.params.id.split(".")[0]);
-    const newEmployee = await Employee.create({
-      organisation_id: parseInt(req.params.id.split(".")[0]),
-    });
-    console.log("is error here ?? ");
+    const [organisationId, employeeCode] = req.params.id.split(".");
 
-    const personal = await PersonalDetail.create({
-      employee_code: req.params.id.split(".")[1],
-      ...req.body,
+    // Check if the employee already exists
+    const [employee, created] = await Employee.findOrCreate({
+      where: { organisation_id: parseInt(organisationId), employee_code: employeeCode },
+      defaults: { organisation_id: parseInt(organisationId) },
     });
-    return res
-      .status(200)
-      .json({
-        mes: "personal detail added ",
-        code: req.params.id.split(".")[1],
-      });
+
+    if (!created) {
+      console.log("Employee already exists, updating personal details.");
+    }
+
+    // Upsert personal details
+    const [personalDetail, personalCreated] = await PersonalDetail.upsert(
+      {
+        employee_code: employeeCode,
+        ...req.body,
+      },
+      {
+        where: { employee_code: employeeCode },
+        returning: true, // This will return the updated or created instance
+      }
+    );
+
+    return res.status(200).json({
+      message: personalCreated ? "Personal details added" : "Personal details updated",
+      code: employeeCode,
+      personalDetail,
+    });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ mes: "internal server error ", error: err });
+    console.error("Error processing personal details:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 
 module.exports.addServiceDetails = async (req, res) => {
-  console.log("service hit checking key", req.params.id, req.body);
+  console.log("Service hit checking key", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `https://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     console.log("Generated file URL:", fileUrl);
 
-    const document = await ServiceDetail.create({
+    // Prepare the data to be inserted or updated
+    const serviceDetailsData = {
       employee_code: employeeCode,
       profile_pic: fileUrl,
       ...req.body,
-    });
+    };
 
-    console.log("Document added:", document);
-    return res.status(200).json({ message: "Service detail added", document });
+    // Perform the upsert operation
+    const [document, created] = await ServiceDetail.upsert(serviceDetailsData);
+
+    if (created) {
+      console.log("Document added:", document);
+      return res.status(200).json({ message: "Service detail added", document });
+    } else {
+      console.log("Document updated:", document);
+      return res.status(200).json({ message: "Service detail updated", document });
+    }
   } catch (err) {
-    console.error("Error adding document:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: err });
+    console.error("Error adding or updating document:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 
@@ -112,15 +130,30 @@ module.exports.addEducationalDetails = async (req, res) => {
 module.exports.addJobDetails = async (req, res) => {
   console.log("job hit ", req.params.id, req.body);
   try {
-    const job = await JobDetail.create({
-      employee_code: req.params.id.split(".")[1],
+    const [organisationId, employeeCode] = req.params.id.split(".");
+
+    // Prepare the data to be inserted or updated
+    const jobData = {
+      employee_code: employeeCode,
       ...req.body,
-    });
-    return res.status(200).json("job detail added ");
+    };
+
+    // Perform the upsert operation
+    const [job, created] = await JobDetail.upsert(jobData);
+
+    if (created) {
+      console.log("Job detail added:", job);
+      return res.status(200).json("Job detail added");
+    } else {
+      console.log("Job detail updated:", job);
+      return res.status(200).json("Job detail updated");
+    }
   } catch (err) {
-    return res.status(500).json("internal server error ");
+    console.error("Error processing job details:", err);
+    return res.status(500).json("Internal server error");
   }
 };
+
 
 module.exports.addKeyResponsibility = async (req, res) => {
   console.log("key hit ", req.params.id, req.body);
@@ -151,28 +184,40 @@ module.exports.addTrainingData = async (req, res) => {
 };
 
 module.exports.addKinData = async (req, res) => {
-  console.log("kim hit ", req.params.id, req.body);
+  console.log("Kin hit:", req.params.id, req.body);
   try {
-    const train = await KinDetail.create({
-      employee_code: req.params.id.split(".")[1],
+    const employeeCode = req.params.id.split(".")[1];
+
+    const [kin, kinCreated] = await KinDetail.upsert({
+      employee_code: employeeCode,
       ...req.body,
     });
-    return res.status(200).json("training detail added ");
+
+    return res.status(200).json({
+      message: kinCreated ? "Kin detail added" : "Kin detail updated",
+    });
   } catch (err) {
-    return res.status(500).json("internal server error ");
+    console.error("Error adding/updating kin details:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 
+
 module.exports.addCertification = async (req, res) => {
-  console.log("cert hit ", req.params.id, req.body);
+  console.log("Cert hit", req.params.id, req.body);
   try {
-    const train = await Certification.create({
-      employee_code: req.params.id.split(".")[1],
+    const employeeCode = req.params.id.split(".")[1];
+
+    const [certification, certificationCreated] = await Certification.upsert({
+      employee_code: employeeCode,
       ...req.body,
     });
-    return res.status(200).json("certification detail added ");
+
+    console.log(`${certificationCreated ? "Certification detail added" : "Certification detail updated"}`);
+    return res.status(200).json(`${certificationCreated ? "Certification detail added" : "Certification detail updated"}`);
   } catch (err) {
-    return res.status(500).json("internal server error ");
+    console.error("Error adding/updating certification details:", err);
+    return res.status(500).json("Internal server error");
   }
 };
 
@@ -222,31 +267,47 @@ module.exports.addContact = async (req, res) => {
   };
   
 
-module.exports.addPayDetails = async (req, res) => {
-  console.log("pay hit ", req.params.id, req.body);
+  module.exports.addPayDetails = async (req, res) => {
+    console.log("pay hit ", req.params.id, req.body);
+    try {
+      const [organisationId, employeeCode] = req.params.id.split(".");
+      const [payDetail, created] = await PayDetail.upsert({
+        employee_code: employeeCode,
+        ...req.body,
+      });
+  
+      if (created) {
+        return res.status(200).json("Pay detail added");
+      } else {
+        return res.status(200).json("Pay detail updated");
+      }
+    } catch (err) {
+      console.error("Error processing pay details:", err);
+      return res.status(500).json("Internal server error");
+    }
+  };
+  
+
+module.exports.addPayStructure = async (req, res) => {
+  console.log("structure hit ", req.params.id, req.body);
   try {
-    const train = await PayDetail.create({
-      employee_code: req.params.id.split(".")[1],
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const [payStructure, created] = await PayStructure.upsert({
+      employee_code: employeeCode,
       ...req.body,
     });
-    return res.status(200).json("pay detail added ");
+
+    if (created) {
+      return res.status(200).json("Pay structure added");
+    } else {
+      return res.status(200).json("Pay structure updated");
+    }
   } catch (err) {
-    return res.status(500).json("internal server error ");
+    console.error("Error processing pay structure:", err);
+    return res.status(500).json("Internal server error");
   }
 };
 
-module.exports.addPayStructure = async (req, res) => {
-  console.log("struc hit ", req.params.id, req.body);
-  try {
-    const train = await PayStructure.create({
-      employee_code: req.params.id.split(".")[1],
-      ...req.body,
-    });
-    return res.status(200).json("structure detail added ");
-  } catch (err) {
-    return res.status(500).json("internal server error ");
-  }
-};
 
 module.exports.addPassport = async (req, res) => {
   console.log("passport hit", req.params.id, req.body);
