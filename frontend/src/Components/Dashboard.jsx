@@ -17,7 +17,7 @@ const Dashboard = () => {
 
   const handleModuleSelect = (module) => {
     setSelectedModule(module);
-    navigate(`/hrms/${module.next_route}`);
+    module.name === 'Payroll' ? navigate(from) : navigate(`/hrms/${module.next_route}`);
   };
 
   if (isLoading) {

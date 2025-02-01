@@ -17,6 +17,7 @@ import Dashboard from "./Components/Dashboard";
 import "line-awesome/dist/line-awesome/css/line-awesome.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+import JobList from "./Components/Recruitment/JobList";
 import ProtectedRoute from "./ProtectedRoute";
 import OrganisationProfile from "./Pages/OrganisationProfile";
 import Sidebar from "./Components/Sidebar";
@@ -47,8 +48,6 @@ import TaxMaster from "./Components/Settings/TaxMaster";
 import TaxMasterForm from "./Components/Settings/TaxMasterForm";
 import PaymentType from "./Components/Settings/PaymentType";
 import PaymentTypeForm from "./Components/Settings/PaymentTypeForm";
-import axiosInstance from "../axiosInstance";
-import axios from "axios";
 import HolidayType from "./Components/Holiday/HolidayType";
 import HolidayTypeForm from "./Components/Holiday/HolidayTypeForm";
 import HolidayList from "./Components/Holiday/HolidayList";
@@ -66,9 +65,14 @@ import EmployeePage from "./Components/Employee/EmployeePage";
 import NotFound from "./Components/NotFound";
 import UserConfiguration from "./Components/User access/UserConfiguration";
 import EmployeeForm from "./Components/Employee/AddEmployeeForm";
+import ChangeOfCircumstances from "./Components/Employee/ChangeOfCircumstances";
+import { useSidebarContext } from "./contexts/SidebarContext";
+import COCForm from "./Components/Employee/COCForm";
+import TextEditor from "./Components/Recruitment/TextEditor";
+import JobListForm from "./Components/Recruitment/JobListForm";
 
 const MainLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
   const [logoVisible, setLogoVisible] = useState(true);
 
   const handleResize = () => {
@@ -656,7 +660,69 @@ const router = createBrowserRouter([
             <EmployeeForm/>
           </ProtectedRoute>
         )
+      },
+      {
+        path : "addemployee/:id",
+        element : (
+          <ProtectedRoute>
+            <EmployeeForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "employee/change-of-circumstances-add",
+        element : (
+          <ProtectedRoute>
+            <ChangeOfCircumstances/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "employee/change-of-circumstances-add-new",
+        element : (
+          <ProtectedRoute>
+            <COCForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "employee/change-of-circumstances",
+        element : (
+          <ProtectedRoute></ProtectedRoute>
+        )
+      },
+      {
+        path : "leaveapprovedashboard",
+        element : (
+          <ProtectedRoute>
+            <SubDashboard/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "billingorganizationdashboard",
+        element : (
+          <ProtectedRoute>
+            <SubDashboard/>
+          </ProtectedRoute>
+        )
+      }, {
+        path : "recruitmentdashboard",
+        element : (
+          <ProtectedRoute>
+            <StatisticsDashboard/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "recruitment/job-list",
+        element : (<ProtectedRoute><JobList/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/add-job-list",
+        element : (<ProtectedRoute><JobListForm/></ProtectedRoute>)
       }
+
     ],
   },
 ]);

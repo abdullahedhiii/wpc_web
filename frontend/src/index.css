@@ -3,21 +3,23 @@
 @tailwind utilities;
  
 ::-webkit-scrollbar {
-    width: 6px; 
-    height: 6px; 
+    width: 10px; 
+    height: 10px; 
   }
   
   ::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: #ffffff;
     border-radius: 10px; 
   }
   
   ::-webkit-scrollbar-thumb {
-    background: #fffdfd;
+    background: #a7a3a3;
     border-radius: 10px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: #c8bfbf;
+    background: #8e8787;
   }
-  
+ 
+  @import url("https://cdn.jsdelivr.net/npm/quill@1.3.6/dist/quill.snow.css");
+

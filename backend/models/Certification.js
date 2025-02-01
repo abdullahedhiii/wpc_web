@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const Certification = sequelize.define(
-      "Certifications",
+      "Certification",
       {
         employee_code: {
           type: DataTypes.STRING,

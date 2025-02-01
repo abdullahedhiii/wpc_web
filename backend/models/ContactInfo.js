@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         country: DataTypes.STRING,
         proof: DataTypes.STRING,
       },
-      { tableName: "ContactInfo", timestamps: false }
+      { tableName: "ContactInfos", timestamps: false }
     );
   
     return ContactInfo;

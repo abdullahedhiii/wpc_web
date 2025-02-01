@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         esi: DataTypes.BOOLEAN,
         profTax: DataTypes.BOOLEAN,
       },
-      { tableName: "PayStructure", timestamps: false }
+      { tableName: "PayStructures", timestamps: false }
     );
   
     return PayStructure;

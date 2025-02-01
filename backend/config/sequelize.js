@@ -58,9 +58,13 @@ const KeyResponsibility= require('../models/KeyResponsibility')(sequelize,DataTy
 const KinDetail= require('../models/KinDetail')(sequelize,DataTypes);
 const NationalDetail= require('../models/NationalDetail')(sequelize,DataTypes);
 const PassportDetail= require('../models/PassportDetails')(sequelize,DataTypes);
+const VisaDetail= require('../models/Visa')(sequelize,DataTypes);
+const DBSDetail= require('../models/dbs')(sequelize,DataTypes);
+const EsusDetail= require('../models/esus')(sequelize,DataTypes);
+const COCOtherDetail = require('../models/COCOtherDetail')(sequelize,DataTypes);
 const PayDetail= require('../models/PayDetail')(sequelize,DataTypes);
 const PayStructure= require('../models/PayStructure')(sequelize,DataTypes);
-
+const TrainingDetail = require('../models/TrainingData')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -122,19 +126,52 @@ Organisation.hasMany(Employee, {foreignKey: "organisation_id",as: "employees",})
 Employee.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
 PersonalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Employee.hasOne(PersonalDetail, {foreignKey: "employee_code",as: "personaldetail",});
+
 EducationDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Employee.hasMany(EducationDetail, {foreignKey: "employee_code",as: "educationaldetails",});
+
 ServiceDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
-JobDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Employee.hasOne(ServiceDetail, {foreignKey: "employee_code",as: "servicedetail",});
+
 Certification.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Employee.hasOne(Certification, {foreignKey: "employee_code",as: "certification",});
+
  ContactInfo.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ Employee.hasOne(ContactInfo, {foreignKey: "employee_code",as: "contact",});
+
  EmployeeOtherDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
  EmployeeOtherDocument.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
  KeyResponsibility.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
  KinDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ 
  NationalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ Employee.hasOne(NationalDetail,{foreignKey:"employee_code",as : 'nationaldetail'});
+
+ COCOtherDetail.belongsTo(Employee,{foreignKey :"employee_code",as : "employee"})
+ Employee.hasOne(COCOtherDetail,{foreignKey:"employee_code",as : 'cocdetails'});
+
  PassportDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ Employee.hasOne(PassportDetail, {foreignKey: "employee_code",as: "passportdetail",});
+
  PayDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ 
  PayStructure.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ 
+ TrainingDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+
+ VisaDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ Employee.hasOne(VisaDetail, {foreignKey: "employee_code",as: "visadetail",});
+
+ EsusDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ Employee.hasOne(EsusDetail, {foreignKey: "employee_code",as: "esusdetail",});
+
+ DBSDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+ Employee.hasOne(DBSDetail, {foreignKey: "employee_code",as: "dbsdetail",});
+
+JobDetail.belongsTo(Employee,{foreignKey:"employee_code",as:"employee"});
+Employee.hasOne(JobDetail, {foreignKey: "employee_code",as: "jobdetails",});
+
 
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
@@ -143,5 +180,5 @@ module.exports = { sequelize, User,Organisation, Module,
                    TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument,
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
-                   NationalDetail,PassportDetail,PayDetail,PayStructure
+                   NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail
                   };

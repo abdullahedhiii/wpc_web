@@ -1,92 +1,568 @@
+const {
+  Employee,
+  PersonalDetail,
+  NationalDetail,
+  ServiceDetail,
+  EducationDetail,
+  JobDetail,
+  KeyResponsibility,
+  Detail,
+  KinDetail,
+  Certification,
+  ContactInfo,
+  PayDetail,
+  PayStructure,
+  PassportDetail,
+  VisaDetail,
+  EsusDetail,
+  DBSDetail,
+  EmployeeOtherDetail,
+  EmployeeOtherDocument,
+  TrainingDetail,
+  COCOtherDetail,
+} = require("../config/sequelize");
 
-module.exports.addPersonalDetails = async (req,res) => {
-   console.log('personal hit ',req.params.id,req.body);
-   return res.status(200).json('hello');
-}
+module.exports.addPersonalDetails = async (req, res) => {
+  console.log("personal hit ", req.params.id, req.body);
+  try {
+    console.log("is error here ? ", req.params.id.split(".")[0]);
+    const newEmployee = await Employee.create({
+      organisation_id: parseInt(req.params.id.split(".")[0]),
+    });
+    console.log("is error here ?? ");
 
+    const personal = await PersonalDetail.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res
+      .status(200)
+      .json({
+        mes: "personal detail added ",
+        code: req.params.id.split(".")[1],
+      });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ mes: "internal server error ", error: err });
+  }
+};
 
-module.exports.addServiceDetails = async (req,res) => {
-    console.log('sevice hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
+module.exports.addServiceDetails = async (req, res) => {
+  console.log("service hit checking key", req.params.id, req.body);
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
 
-}
+    console.log("Generated file URL:", fileUrl);
 
-module.exports.addEducationalDetails = async (req,res) => {
-    console.log('educational hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+    const document = await ServiceDetail.create({
+      employee_code: employeeCode,
+      profile_pic: fileUrl,
+      ...req.body,
+    });
 
-module.exports.addJobDetails = async (req,res) => {
-    console.log('job hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+    console.log("Document added:", document);
+    return res.status(200).json({ message: "Service detail added", document });
+  } catch (err) {
+    console.error("Error adding document:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
 
-module.exports.addKeyResponsibility = async (req,res) => {
-    console.log('key hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addEducationalDetails = async (req, res) => {
+  console.log("educational hit ", req.params.id, req.body);
+  try {
+    const file1 = req.file ? req.files.transcript_document[0].filename : null;
+    const file2 = req.file ? req.files.certificate_document[0].filename : null;
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const f1 = file1
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${file1}`
+      : null;
+    const f2 = file2
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${file2}`
+      : null;
+    const document = await EducationDetail.create({
+      employee_code: employeeCode,
+      transcript_document: f1,
+      certificate_document: f2,
+      ...req.body,
+    });
 
-module.exports.addTrainingData = async (req,res) => {
-    console.log('tra hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+    return res
+      .status(200)
+      .json({ message: "educational details added", document });
+  } catch (err) {
+    console.error("Error adding document:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
 
-module.exports.addKinData = async (req,res) => {
-    console.log('kim hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addJobDetails = async (req, res) => {
+  console.log("job hit ", req.params.id, req.body);
+  try {
+    const job = await JobDetail.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("job detail added ");
+  } catch (err) {
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addCertification = async (req,res) => {
-    console.log('cert hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addKeyResponsibility = async (req, res) => {
+  console.log("key hit ", req.params.id, req.body);
+  try {
+    const key = await KeyResponsibility.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("key detail added ");
+  } catch (err) {
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addContact = async (req,res) => {
-    console.log('conta hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addTrainingData = async (req, res) => {
+  console.log("tra hit ", req.params.id, req.body);
+  try {
+    console.log("error here ? ");
+    const train = await TrainingDetail.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("training detail added ");
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addPayDetails = async (req,res) => {
-    console.log('pay hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addKinData = async (req, res) => {
+  console.log("kim hit ", req.params.id, req.body);
+  try {
+    const train = await KinDetail.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("training detail added ");
+  } catch (err) {
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addPayStructure = async (req,res) => {
-    console.log('struc hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addCertification = async (req, res) => {
+  console.log("cert hit ", req.params.id, req.body);
+  try {
+    const train = await Certification.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("certification detail added ");
+  } catch (err) {
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addPassport = async (req,res) => {
-    console.log('passport hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addContact = async (req, res) => {
+    console.log("contact hit", req.params.id, req.body);
+    try {
+      const [organisationId, employeeCode] = req.params.id.split(".");
+      const fileUrl = req.file
+        ? `https://localhost:${
+            process.env.PORT || 3000
+          }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+        : null;
+  
+      console.log("Generated file URL:", fileUrl);
+  
+      // Check if contact info already exists for the given employee code
+      const existingContact = await ContactInfo.findOne({
+        where: { employee_code: employeeCode },
+      });
+  
+      let document;
+  
+      if (existingContact) {
+        // If the contact exists, update it
+        document = await existingContact.update({
+          proof: fileUrl || existingContact.proof, // Update file URL if a new file is provided
+          ...req.body, // Update other fields with the provided data
+        });
+  
+        return res.status(200).json({ message: "Contact details updated", document });
+      } else {
+        // If the contact doesn't exist, create a new one
+        document = await ContactInfo.create({
+          employee_code: employeeCode,
+          proof: fileUrl,
+          ...req.body,
+        });
+  
+        return res.status(200).json({ message: "Contact detail added", document });
+      }
+    } catch (err) {
+      console.error("Error adding/updating document:", err);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: err });
+    }
+  };
+  
 
-module.exports.addVisa = async (req,res) => {
-    console.log('visa hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addPayDetails = async (req, res) => {
+  console.log("pay hit ", req.params.id, req.body);
+  try {
+    const train = await PayDetail.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("pay detail added ");
+  } catch (err) {
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addEsus = async (req,res) => {
-    console.log('esus hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addPayStructure = async (req, res) => {
+  console.log("struc hit ", req.params.id, req.body);
+  try {
+    const train = await PayStructure.create({
+      employee_code: req.params.id.split(".")[1],
+      ...req.body,
+    });
+    return res.status(200).json("structure detail added ");
+  } catch (err) {
+    return res.status(500).json("internal server error ");
+  }
+};
 
-module.exports.addDBS = async (req,res) => {
-    console.log('dbs hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+module.exports.addPassport = async (req, res) => {
+  console.log("passport hit", req.params.id, req.body);
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : undefined;
 
-module.exports.add_other_details = async (req,res) => {
-    console.log('other hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+    // Check if a PassportDetail record already exists
+    let document = await PassportDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
 
-module.exports.national_data = async (req,res) => {
-    console.log('na hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
-}
+    if (document) {
+      await document.update({
+        ...req.body,
+        picture: fileUrl || document.picture, // Preserve old picture if no new file is uploaded
+      });
+      return res
+        .status(200)
+        .json({ message: "Passport detail updated", document });
+    } else {
+      // Create new record
+      document = await PassportDetail.create({
+        employee_code: employeeCode,
+        picture: fileUrl,
+        ...req.body,
+      });
+      return res
+        .status(201)
+        .json({ message: "Passport detail added", document });
+    }
+  } catch (err) {
+    console.error("Error adding/updating passport detail:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
 
-module.exports.add_other_document = async(req,res) => {
-    console.log('other dod hit ',req.params.id,req.body);
-    return res.status(200).json('hello');
+module.exports.addVisa = async (req, res) => {
+  console.log("Visa hit", req.params.id, req.body);
+  console.log("Received Files:", req.files); // Debugging line
+
+  try {
+    const frontFileName = req.files?.front?.[0]?.filename || null;
+    const backFileName = req.files?.back?.[0]?.filename || null;
+    const [organisationId, employeeCode] = req.params.id.split(".");
+
+    const frontUrl = frontFileName
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${frontFileName}`
+      : null;
+
+    const backUrl = backFileName
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${backFileName}`
+      : null;
+
+    // Ensure employeeCode exists
+    if (!employeeCode) {
+      return res.status(400).json({ message: "Invalid Employee Code" });
+    }
+
+    // Check if a VisaDetail record already exists
+    let document = await VisaDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
+
+    if (document) {
+      await document.update({
+        ...req.body,
+        front: frontUrl || document.front, // Preserve old front if no new file is uploaded
+        back: backUrl || document.back, // Preserve old back if no new file is uploaded
+      });
+      return res
+        .status(200)
+        .json({ message: "Visa details updated", document });
+    } else {
+      // Create new record
+      document = await VisaDetail.create({
+        employee_code: employeeCode,
+        front: frontUrl,
+        back: backUrl,
+        ...req.body,
+      });
+      return res.status(201).json({ message: "Visa details added", document });
+    }
+  } catch (err) {
+    console.error("Error adding/updating Visa details:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
+
+module.exports.addEsus = async (req, res) => {
+  console.log("esus hit", req.params.id, req.body);
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
+
+    let document = await EsusDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
+    console.log('trying to update esus? ',document);
+    if (document) {
+      await document.update({
+        ...req.body,
+        document: fileUrl || document.document, 
+      }); 
+
+      return res.status(200).json({ message: "Esus detail updated", document });
+    } else {
+      // Create new record
+      document = await EsusDetail.create({
+        employee_code: employeeCode,
+        document: fileUrl,
+        ...req.body,
+      });
+      return res.status(201).json({ message: "Esus detail added", document });
+    }
+  } catch (err) {
+    console.error("Error adding/updating Esus detail:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
+
+module.exports.addDBS = async (req, res) => {
+  console.log("DBS hit:", req.params.id, req.body);
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
+
+    // Check if an entry already exists for the employee
+    let existingRecord = await DBSDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
+
+    if (existingRecord) {
+        const {employee_code,otherDetails} = req.body;
+      await existingRecord.update({
+        document: fileUrl || existingRecord.document, // Preserve old file if no new file is uploaded
+        ...req.body,
+      });
+      return res
+        .status(200)
+        .json({ message: "DBS detail updated", document: existingRecord });
+    } else {
+      // Create new record
+      const newDocument = await DBSDetail.create({
+        employee_code: employeeCode,
+        document: fileUrl,
+        ...req.body,
+      });
+      return res
+        .status(201)
+        .json({ message: "DBS detail added", document: newDocument });
+    }
+  } catch (err) {
+    console.error("Error handling DBS detail:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
+
+module.exports.add_other_details = async (req, res) => {
+  console.log("other hit ", req.params.id, req.body);
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
+
+    const document = await EmployeeOtherDetail.create({
+      employee_code: employeeCode,
+      document: fileUrl,
+      ...req.body,
+    });
+
+    return res.status(200).json({ message: "other detail added", document });
+  } catch (err) {
+    console.error("Error adding document:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
+
+module.exports.national_data = async (req, res) => {
+  console.log("National document hit", req.params.id, req.body);
+
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
+
+    if (!employeeCode) {
+      return res.status(400).json({ message: "Invalid Employee Code" });
+    }
+
+    // Check if a national detail record already exists
+    let document = await NationalDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
+
+    if (document) {
+        //const {employee_code,otherDetails} = req.body;
+      await document.update({
+        ...req.body,
+        document: fileUrl || document.document, // Preserve old document if no new file is uploaded
+      });
+
+      return res
+        .status(200)
+        .json({ message: "National details updated", document });
+    } else {
+      // Create new record
+      document = await NationalDetail.create({
+        employee_code: employeeCode,
+        document: fileUrl,
+        ...req.body,
+      });
+
+      return res
+        .status(201)
+        .json({ message: "National details added", document });
+    }
+  } catch (err) {
+    console.error("Error adding/updating national details:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
+
+module.exports.add_other_document = async (req, res) => {
+  console.log("other doc hit", req.params.id, req.body);
+
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const fileUrl = req.file
+      ? `https://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
+
+    const document = await EmployeeOtherDocument.create({
+      employee_code: employeeCode,
+      doc_url: fileUrl,
+      ...req.body,
+    });
+
+    return res
+      .status(200)
+      .json({ message: "other document detail added", document });
+  } catch (err) {
+    console.error("Error adding document:", err);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err });
+  }
+};
+
+module.exports.addOtherCocDetail = async(req,res)=>{
+    console.log("other coc document hit", req.params.id, req.body);
+
+    try {
+      const [organisationId, employeeCode] = req.params.id.split(".");
+      let document = await COCOtherDetail.findOne({
+        where: { employee_code: employeeCode },
+      });
+     console.log('was document found ? ',document,req.body);
+      if (document) {
+        await document.update({
+            ...req.body,
+        });
+         
+        return res
+          .status(200)
+          .json({ message: "COC other details updated", document });
+      } else {
+        document = await COCOtherDetail.create({
+          employee_code : employeeCode,
+          ...req.body,
+        });
+  
+        return res
+          .status(201)
+          .json({ message: "coc other details added", document });
+      }
+    } catch (err) {
+      console.error("Error adding/updating cocother  details:", err);
+      return res
+        .status(500)
+        .json({ message: "Internal server error", error: err.message });
+    }
 }

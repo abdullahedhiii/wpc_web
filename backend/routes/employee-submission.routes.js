@@ -3,7 +3,8 @@ const { addPersonalDetails, addServiceDetails, addEducationalDetails,
     addJobDetails, addKeyResponsibility,
     addTrainingData,addKinData,addCertification,
     addContact, addPayDetails,addPayStructure,
-    add_other_details, national_data, addDBS,  addEsus,addVisa,  addPassport, add_other_document
+    add_other_details, national_data, addDBS,  addEsus,addVisa,  addPassport, add_other_document,
+    addOtherCocDetail
 } = require('../controllers/employee-submission.controller');
 
 const {empUpload,parseForm} = require('../config/multerConfig');
@@ -35,5 +36,5 @@ router.post('/submit-visa/:id',empUpload.fields([
 ]),addVisa);
 router.post('/submit-passport/:id',empUpload.single('document'),addPassport);
 router.post('/submit-otherdocument/:id',empUpload.single('doc'),add_other_document);
-
+router.post('/submit-other-coc-details/:id',addOtherCocDetail);
 module.exports = router;
