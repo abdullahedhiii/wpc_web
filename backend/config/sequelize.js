@@ -45,6 +45,14 @@ const Shift = require('../models/Shift')(sequelize,DataTypes);
 const LatePolicy = require('../models/LatePolicy')(sequelize,DataTypes);
 const ShiftOffDay = require('../models/ShiftOffDay')(sequelize,DataTypes);
 const OrgDocument = require('../models/OrgDocument')(sequelize,DataTypes);
+const Job = require('../models/Job')(sequelize,DataTypes);
+
+
+
+
+
+
+
 const Employee = require('../models/Employee')(sequelize,DataTypes);
 const PersonalDetail = require('../models/PersonalDetail')(sequelize,DataTypes);
 const EducationDetail = require('../models/EducationalDetails')(sequelize,DataTypes);
@@ -173,11 +181,15 @@ JobDetail.belongsTo(Employee,{foreignKey:"employee_code",as:"employee"});
 Employee.hasOne(JobDetail, {foreignKey: "employee_code",as: "jobdetails",});
 
 
+Organisation.hasMany(Job,{foreignKey : 'organisation_id',as : 'jobs'});
+Job.belongsTo(Organisation,{foreignKey : 'organisation_id',as : 'organisation'});
+
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
-                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument,
+                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,
+                   
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail
