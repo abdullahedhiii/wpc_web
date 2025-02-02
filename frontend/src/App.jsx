@@ -7,8 +7,7 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "./redux/UserSlice";
+
 
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
@@ -68,12 +67,13 @@ import EmployeeForm from "./Components/Employee/AddEmployeeForm";
 import ChangeOfCircumstances from "./Components/Employee/ChangeOfCircumstances";
 import { useSidebarContext } from "./contexts/SidebarContext";
 import COCForm from "./Components/Employee/COCForm";
-import TextEditor from "./Components/Recruitment/TextEditor";
 import JobListForm from "./Components/Recruitment/JobListForm";
 import JobPosting from "./Components/Recruitment/JobPosting";
 import JobPostingForm from "./Components/Recruitment/JobPostingForm";
 import UploadAttendance from "./Components/Attendance/UploadAttendance";
 import GenerateAttendance from "./Components/Attendance/GenerateAttendance";
+import DailyAttendance from "./Components/Attendance/DailyAttendance";
+import AttendanceHistory from "./Components/Attendance/AttendanceHistory";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -753,8 +753,15 @@ const router = createBrowserRouter([
       {
         path : "attendance/generate-data",
         element : (<ProtectedRoute><GenerateAttendance/></ProtectedRoute>)
+      },
+      {
+        path : "attendance/daily-attendance",
+        element : (<ProtectedRoute><DailyAttendance/></ProtectedRoute>)
+      },
+      {
+        path : "attendance/attendance-report",
+        element : (<ProtectedRoute><AttendanceHistory/></ProtectedRoute>)
       }
-
 
 
     ],
