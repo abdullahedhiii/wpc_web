@@ -30,7 +30,7 @@ const SubDashboard = () => {
               </div>
               <div className="mt-4 flex justify-between items-center">
                 <span className="font-medium">{feature.name}</span>
-                <img
+                { feature.view_route && <img
                   src="/images/login.png"
                   className="w-6 h-6 cursor-pointer"
                   
@@ -44,7 +44,7 @@ const SubDashboard = () => {
                       navigate(`/hrms/${feature.view_route}`);
                     }
                   }}
-                />
+                />}
               </div>
             </div>
           ))}

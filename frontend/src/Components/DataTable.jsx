@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useSidebarContext } from "../contexts/SidebarContext";
@@ -70,8 +70,38 @@ const DataTable = ({
   const filteredFields = fields.filter((field) => field !== "id");
   const { isSidebarOpen } = useSidebarContext();
 
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [dataToshow, setDataToShow] = useState([]);
+
+  useEffect(() => {
+    if (sortedData.length > 0) {
+      const total = Math.ceil(sortedData.length / numentries);
+      setTotalPages(total);
+    }
+  }, [sortedData,numentries]);
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * numentries;
+    const endIndex = startIndex + numentries;
+    const currentData = sortedData.slice(startIndex, endIndex);
+    setDataToShow(currentData);
+  }, [currentPage, sortedData,numentries]);
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
   return (
-    <div className={`${isSidebarOpen ? "w-[1150px]" : "w-[1350px]"} border-t-4 border-tt bg-white rounded-md shadow-md`}>
+    <div
+      className={`${
+        isSidebarOpen ? "w-[1150px]" : "w-[1350px]"
+      } border-t-4 border-tt bg-white rounded-md shadow-md`}
+    >
       {title && (
         <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
@@ -113,43 +143,46 @@ const DataTable = ({
         </div>
       )}
 
-<div className="w-full overflow-x-scroll p-6">
-  <div className="min-w-[768px] text-center">
-    {(showEntries || searchable) && (
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
-        {showEntries && (
-          <div className="flex items-center space-x-2 w-full md:w-auto">
-            <label htmlFor="entries">Show</label>
-            <select
-              id="entries"
-              value={numentries}
-              onChange={(e) => setNumentries(parseInt(e.target.value, 10))}
-              className="border rounded px-4 py-1"
-            >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="20">20</option>
-            </select>
-            <span>entries</span>
-          </div>
-        )}
-        {searchable && (
-          <div className="flex items-center space-x-2  md:w-auto">
-            <label htmlFor="search">Search:</label>
-            <input
-              id="search"
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="border rounded px-2 py-1 w-full md:w-auto"
-              placeholder="Search here..."
-            />
-          </div>
-        )}
-      </div>
-    )}
+      <div className="w-full overflow-x-scroll p-6">
+        <div className="min-w-[768px] text-center">
+          {(showEntries || searchable) && (
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
+              {showEntries && (
+                <div className="flex items-center space-x-2 w-full md:w-auto">
+                  <label htmlFor="entries">Show</label>
+                  <select
+                    id="entries"
+                    value={numentries}
+                    onChange={(e) =>{
+                      setNumentries(parseInt(e.target.value, 10))
+                      setCurrentPage(1)}
+                    }
+                    className="border rounded px-4 py-1"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                  </select>
+                  <span>entries</span>
+                </div>
+              )}
+              {searchable && (
+                <div className="flex items-center space-x-2  md:w-auto">
+                  <label htmlFor="search">Search:</label>
+                  <input
+                    id="search"
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="border rounded px-2 py-1 w-full md:w-auto"
+                    placeholder="Search here..."
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
-<table className="w-full min-w-full table-auto border-spacing-0.5 border-separate">
+          <table className="w-full min-w-full table-auto border-spacing-0.5 border-separate">
             <thead>
               <tr className="bg-gray-100">
                 {filteredFields.map((field, index) => (
@@ -175,8 +208,8 @@ const DataTable = ({
               </tr>
             </thead>
             <tbody>
-              {displayedData.length > 0 ? (
-                displayedData.map((row, rowIndex) => (
+              {dataToshow.length > 0 ? (
+                dataToshow.map((row, rowIndex) => (
                   <tr
                     key={rowIndex}
                     className={
@@ -228,7 +261,8 @@ const DataTable = ({
                             />
                           ) : null
                         ) : (field === "Visitor Link" ||
-                            field === "Employee Link" || field === 'Job Link') &&
+                            field === "Employee Link" ||
+                            field === "Job Link") &&
                           row[field] ? (
                           <a
                             href={row[field]}
@@ -272,6 +306,33 @@ const DataTable = ({
             <div>
               Showing {Math.min(filteredData.length, numentries)} of{" "}
               {filteredData.length} entries
+            </div>
+            <div className="flex space-x-3">
+              <button
+                className={`border border-1 rounded-full px-4 py-2 ${
+                  currentPage === 1 ? "bg-white text-gray-600" : "bg-tt text-white"
+                }`}
+                onClick={handlePrevPage}
+              >
+                Previous
+              </button>
+              <button
+                className={`border border-1 rounded-full px-4 py-2 ${
+                  currentPage === 1 ? "hidden" : "bg-tt text-white"
+                }`}
+              >
+                {currentPage}
+              </button>
+              <button
+                className={`border border-1 rounded-full px-4 py-2 ${
+                  currentPage === totalPages
+                    ? "bg-white text-gray-600"
+                    : "bg-tt text-white"
+                }`}
+                onClick={handleNextPage}
+              >
+                Next
+              </button>
             </div>
           </div>
         </div>

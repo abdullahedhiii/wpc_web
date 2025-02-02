@@ -1,7 +1,8 @@
 const fs = require("fs");
 const csvParser = require("csv-parser");
-const { Attendance, Shift, LatePolicy,Employee,PersonalDetail } = require("../config/sequelize"); // Import models
+const { Attendance, Shift, LatePolicy,Employee,PersonalDetail, ServiceDetail } = require("../config/sequelize"); // Import models
 const { Sequelize, DataTypes, Op } = require('sequelize');
+const moment = require("moment");
 
 function parseTimeString(timeString) {
     const dateTimeString = `1970-01-01 ${timeString}`;
@@ -12,6 +13,22 @@ function parseTimeString(timeString) {
     }
     return date.getTime();
   }
+function parseDateString(dateString) {
+    const parts = dateString.split("-");
+    if (parts.length !== 3) {
+      console.error(`Invalid date format: ${dateString}`);
+      return null;
+    }
+    
+    const [day, month, year] = parts.map(Number); 
+    if (!day || !month || !year) {
+      console.error(`Invalid date values: ${dateString}`);
+      return null;
+    }
+  
+    const formattedDate = `${year}-${month.toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+    return formattedDate;
+}
   
   module.exports.submitCSV = async (req, res) => {
     try {
@@ -35,10 +52,11 @@ function parseTimeString(timeString) {
             "Date": date, 
             "Clock in": clock_in, 
             "Clock out": clock_out,
-            "Clock out location": clock_out_location
+            "Clock out location": clock_out_location,
+            "Clock in location" : clock_in_location
           } = row;
   
-          if (!employee_code || !shift_code || !date || !clock_in || !clock_out || !clock_out_location) {
+          if (!employee_code || !shift_code || !date || !clock_in || !clock_out ) {
             console.warn(`Skipping invalid row: ${JSON.stringify(row)}`);
             continue;
           }
@@ -61,7 +79,12 @@ function parseTimeString(timeString) {
             console.warn(`Skipping row, shift not found: ${shift_code}`);
             continue;
           }
-  
+          const parsedDate = parseDateString(date);
+          if (!parsedDate) {
+            console.warn(`Skipping row due to invalid date format: ${JSON.stringify(row)}`);
+            continue;
+          }
+          
           const workInTime = new Date(`1970-01-01T${shift.work_in}`);
           const workOutTime = new Date(`1970-01-01T${shift.work_out}`);
           const requiredDutyHours = (workOutTime - workInTime) / (1000 * 60 * 60);
@@ -77,10 +100,11 @@ function parseTimeString(timeString) {
             organisation_id,
             employee_code,
             shift_code,
-            date,
+            date: parsedDate,
             clock_in,
             clock_out,
-            clock_out_location,
+            "clock_out_location" : clock_out_location || "N/A",
+            "clock_in_location" : clock_in_location || "N/A" ,
             status,
             duty_hours: Math.round(duty_hours),
             grace_period_exceeded : grace_period_exceeded ? 'Yes' : 'No'
@@ -174,6 +198,110 @@ function parseTimeString(timeString) {
     } catch (err) {
       console.error("Error fetching attendance", err);
       return res.status(500).json({ error: "Server error", errm: err });
+    }
+  };
+  
+
+  module.exports.getDailyAttendance = async (req, res) => {
+    const { data } = req.query;
+    console.log("dataa ", data);
+    console.log(new Date(data.date));
+    try {
+      const record = await Attendance.findOne({
+        where: {
+          employee_code: data.employeeCode,
+          date: data.date, // Ensure data.date is a string in 'YYYY-MM-DD' format
+        },
+      });
+      
+  
+      const personal = await PersonalDetail.findOne({
+        where: { employee_code: data.employeeCode },
+      });
+  
+      const service = await ServiceDetail.findOne({
+        where: { employee_code: data.employeeCode },
+      });
+      let formattedResponse;
+      if(!record) {
+          formattedResponse = []
+      }
+      else{ formattedResponse = [
+        {
+          "Sl No.": 1,
+          Department: service?.department,
+          Designation: service?.designation,
+          "Employee Code": data.employeeCode,
+          "Employee Name": [personal?.fname, personal?.mname, personal?.lname]
+            .filter(Boolean)
+            .join(" "),
+          Date: data.date,
+          "Clock In": record?.clock_in || "N/A",
+          "Clock In Location": record?.clock_in_location || "N/A",
+          "Clock Out": record?.clock_out || "N/A",
+          "Clock Out Location": record?.clock_out_location || "N/A",
+          "Duty Hours": record?.duty_hours || "N/A",
+          Action: "Edit",
+        },
+      ];}
+  
+      console.log("Formatted Response: ", formattedResponse);
+      return res.status(200).json(formattedResponse);
+    } catch (err) {
+      console.error("Error fetching attendance", err);
+      return res.status(500).json({ error: "Server error", details: err.message });
+    }
+  };
+  
+  module.exports.getAttendanceHistory = async (req, res) => {
+    const { employeeCode, fromDate, toDate } = req.query.data;
+    console.log("Received Data:", req.query);
+  
+    try {
+      const records = await Attendance.findAll({
+        where: {
+          employee_code: employeeCode,
+          date: {
+            [Op.between]: [fromDate, toDate], 
+          },
+        },
+      });
+  
+      const personal = await PersonalDetail.findOne({
+        where: { employee_code: employeeCode },
+      });
+  
+      const service = await ServiceDetail.findOne({
+        where: { employee_code: employeeCode },
+      });
+  
+      let formattedResponse = [];
+  
+      if (records.length === 0) {
+        formattedResponse = [];
+      } else {
+        formattedResponse = records.map((record, index) => ({
+          "Sl No.": index + 1,
+          Department: service?.department || "N/A",
+          Designation: service?.designation || "N/A",
+          "Employee Code": employeeCode,
+          "Employee Name": [personal?.fname, personal?.mname, personal?.lname]
+            .filter(Boolean)
+            .join(" "),
+          Date: record.date,
+          "Clock In": record?.clock_in || "N/A",
+          "Clock In Location": record?.clock_in_location || "N/A",
+          "Clock Out": record?.clock_out || "N/A",
+          "Clock Out Location": record?.clock_out_location || "N/A",
+          "Duty Hours": record?.duty_hours || "N/A",
+        }));
+      }
+  
+      console.log("Formatted Response: ", formattedResponse);
+      return res.status(200).json(formattedResponse);
+    } catch (err) {
+      console.error("Error fetching attendance", err);
+      return res.status(500).json({ error: "Server error", details: err.message });
     }
   };
   

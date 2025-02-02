@@ -1,13 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
+import { useSidebarContext } from "../../contexts/SidebarContext";
 
 const GenerateAttendance = () => {
-  const { companyData, departmentData, designationData, shifts, employees } = useCompanyContext();
+  const { companyData, departmentData, designationData, shifts, employees } =
+    useCompanyContext();
   const [attendance, setAttendance] = useState([]);
 
   const departmentOptions = useMemo(() => {
-    return departmentData.map((ele) => ({ name: ele['Department Name'] }));
+    return departmentData.map((ele) => ({ name: ele["Department Name"] }));
   }, [departmentData]);
 
   const [designationOptions, setDesignationOptions] = useState([]);
@@ -24,9 +26,12 @@ const GenerateAttendance = () => {
 
   useEffect(() => {
     if (formData.department) {
-      const filteredDesignations = designationData.filter(
-        (designation) => designation['Department Name'] === formData.department
-      ).map((ele) => ({ name: ele['Designation'] }));
+      const filteredDesignations = designationData
+        .filter(
+          (designation) =>
+            designation["Department Name"] === formData.department
+        )
+        .map((ele) => ({ name: ele["Designation"] }));
       setDesignationOptions(filteredDesignations);
     }
   }, [formData.department]);
@@ -47,7 +52,7 @@ const GenerateAttendance = () => {
             ele.Department === formData.department &&
             ele.Designation === formData.designation
         )
-        .map((ele) => ({ name: ele['Shift Code'] }));
+        .map((ele) => ({ name: ele["Shift Code"] }));
       setShiftOptions(filteredShifts);
 
       const filteredEmployees = employees
@@ -62,15 +67,53 @@ const GenerateAttendance = () => {
   }, [formData.department, formData.designation, shifts]);
 
   const handleGenerate = async () => {
-    try {
-      const response = await axiosInstance.get(`/api/getAttendance/${companyData[0].id}`, { params: { data: formData } });
-      console.log('response of attendance ', response.data);
-      setAttendance(response.data);
+    if(!formData.department || !formData.designation || !formData.employeeCode || !formData.fromDate || !formData.shift || !formData.toDate){
+        window.alert('all fields are required');
+        return;
     }
-    catch (err) {
-      console.log('error fetching attendance');
+    try {
+      console.log("sendingg ", formData);
+      const response = await axiosInstance.get(
+        `/api/getAttendance/${companyData[0].id}`,
+        { params: { data: formData } }
+      );
+      console.log("response of attendance ", response.data);
+      setAttendance(response.data);
+    } catch (err) {
+      console.log("error fetching attendance");
     }
   };
+  
+  const [totalPages,setTotalPages] = useState(0);
+  const [currentPage,setCurrentPage] = useState(1);
+  const [dataToshow,setDataToShow] = useState([]);
+  const per_page = 10;
+
+  useEffect(() => {
+       if(attendance.length > 0){
+           const total = Math.ceil(attendance.length / per_page);
+           setTotalPages(total);
+           console.log('total pages ',total)
+       }
+  },[attendance]);
+  
+
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * per_page;
+    const endIndex = startIndex + per_page;
+    const currentData = attendance.slice(startIndex, endIndex);
+    setDataToShow(currentData);
+  }, [currentPage, attendance]);
+
+  const handleNextPage = () => {
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages));
+  };
+
+  const handlePrevPage = () => {
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
+  };
+
+  const {isSideBarOpen} = useSidebarContext();
 
   return (
     <div className="p-12">
@@ -80,19 +123,22 @@ const GenerateAttendance = () => {
         Employee
         <span className="mx-2 text-tt">/ Generate Attendance</span>
       </p>
-      <div className="mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
+      <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Form Fields */}
           <div>
-            <label className="block text-[12px] font-medium text-gray-700">Department</label>
+            <label className="block text-[12px] font-medium text-gray-700">
+              Department
+            </label>
             <select
               name="department"
               value={formData.department}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400  rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
               required
             >
-              <option value=""></option>
+              <option value="" disabled>
+                Select Department
+              </option>
               {departmentOptions.map((dept) => (
                 <option key={dept.id} value={dept.name}>
                   {dept.name}
@@ -102,7 +148,9 @@ const GenerateAttendance = () => {
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-gray-700">Designation</label>
+            <label className="block text-[12px] font-medium text-gray-700">
+              Designation
+            </label>
             <select
               name="designation"
               value={formData.designation}
@@ -110,7 +158,9 @@ const GenerateAttendance = () => {
               className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
               required
             >
-              <option value=""></option>
+              <option value="" disabled>
+                Select a designation
+              </option>
               {designationOptions.map((desig) => (
                 <option key={desig.id} value={desig.name}>
                   {desig.name}
@@ -120,7 +170,9 @@ const GenerateAttendance = () => {
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-gray-700">Employee Code</label>
+            <label className="block text-[12px] font-medium text-gray-700">
+              Employee Code
+            </label>
             <select
               name="employeeCode"
               value={formData.employeeCode}
@@ -128,7 +180,7 @@ const GenerateAttendance = () => {
               className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
               required
             >
-              <option value=""></option>
+              <option value="" disabled></option>
               {employeeCodes.map((dd) => (
                 <option key={dd.id} value={dd.name}>
                   {dd.name}
@@ -138,7 +190,9 @@ const GenerateAttendance = () => {
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-gray-700">From Date</label>
+            <label className="block text-[12px] font-medium text-gray-700">
+              From Date
+            </label>
             <input
               type="date"
               name="fromDate"
@@ -150,7 +204,9 @@ const GenerateAttendance = () => {
           </div>
 
           <div>
-            <label className="block text-[12px] font-medium text-gray-700">To Date</label>
+            <label className="block text-[12px] font-medium text-gray-700">
+              To Date
+            </label>
             <input
               type="date"
               name="toDate"
@@ -162,7 +218,9 @@ const GenerateAttendance = () => {
           </div>
 
           <div>
-            <label className="text-[12px] block font-medium text-gray-700">Shift</label>
+            <label className="text-[12px] block font-medium text-gray-700">
+              Shift
+            </label>
             <select
               name="shift"
               value={formData.shift}
@@ -170,7 +228,7 @@ const GenerateAttendance = () => {
               className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
               required
             >
-              <option value=""></option>
+              <option value="" disabled></option>
               {shiftOptions.map((shift) => (
                 <option key={shift.id} value={shift.name}>
                   {shift.name}
@@ -187,7 +245,7 @@ const GenerateAttendance = () => {
         </button>
       </div>
 
-      <div className="mt-8 border-t-4 border-blue-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
+      <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
         <div className="flex items-center gap-2 pl-2">
           <i className="fas fa-cog text-lg text-blue-900"></i>
           <h1 className="text-blue-900 text-[15px] font-medium">
@@ -210,27 +268,43 @@ const GenerateAttendance = () => {
               </tr>
             </thead>
             <tbody>
-              {attendance.length > 0 ? (
-                attendance.map((attend, index) => (
+              {dataToshow.length > 0 ? (
+                dataToshow.map((attend, index) => (
                   <tr key={index} className="text-[12px] text-gray-800">
                     <td className="px-4 py-2">{index + 1}</td>
-                    <td className="px-4 py-2">{attend['Employee Code']}</td>
-                    <td className="px-4 py-2">{attend['Employee Name']}</td>
-                    <td className="px-4 py-2">{attend['Date']}</td>
-                    <td className="px-4 py-2">{attend['Clock In']}</td>
-                    <td className="px-4 py-2">{attend['Clock In Location']}</td>
-                    <td className="px-4 py-2">{attend['Clock Out']}</td>
-                    <td className="px-4 py-2">{attend['Clock Out Location']}</td>
-                    <td className="px-4 py-2">{attend['Duty hours']}</td>
+                    <td className="px-4 py-2">{attend["Employee Code"]}</td>
+                    <td className="px-4 py-2">{attend["Employee Name"]}</td>
+                    <td className="px-4 py-2">{attend["Date"]}</td>
+                    <td className="px-4 py-2">{attend["Clock In"]}</td>
+                    <td className="px-4 py-2">{attend["Clock In Location"]}</td>
+                    <td className="px-4 py-2">{attend["Clock Out"]}</td>
+                    <td className="px-4 py-2">
+                      {attend["Clock Out Location"]}
+                    </td>
+                    <td className="px-4 py-2">{attend["Duty hours"]}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="9" className="px-4 py-2 text-center text-gray-500">No data available</td>
+                  <td
+                    colSpan="9"
+                    className="px-4 py-2 text-center text-gray-500"
+                  >
+                    No data available
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
+          <div className="mt-4 flex justify-end space-x-3 text-white text-[12px]">
+                <button className={`w-10 h-10 rounded-full ${ currentPage === 1 ? "bg-gray-400 text-gray-600" :"bg-tt" }`} 
+                onClick={handlePrevPage}>prev</button>
+                <button className="w-10 h-10 rounded-full  bg-tt">{currentPage}</button>
+                <button className={`w-10 h-10 rounded-full ${ currentPage === totalPages ? "bg-gray-400 text-gray-600" : "bg-tt"}`}
+                     onClick={handleNextPage}
+                >next</button>
+
+          </div>
         </div>
       </div>
     </div>

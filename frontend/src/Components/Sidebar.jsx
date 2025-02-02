@@ -105,7 +105,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                      onClick={() => subModule.features.length === 0 && navigate(`/hrms/${subModule.main_route}`)}
                   >
                     <i className={`${subModule.icon} text-[18px]`}></i>
-                    <span className="text-[15px]">{subModule.name}</span>
+                    <span className="text-[14px]">{subModule.name}</span>
                   </div>
 
                   {subModule.features.length > 0 && (

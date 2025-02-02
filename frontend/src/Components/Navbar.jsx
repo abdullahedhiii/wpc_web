@@ -68,9 +68,9 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
       </nav>
     );
   }
-
+// ${isMobile && menuOpen ? "h-24" :"h-16"}
   return (
-    <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-16">
+    <nav className={`relative top-0 left-0 w-full bg-white shadow-md z-50 `}>
       <div className="h-full flex items-center px-4">
         {isMobile ? (
           <>
@@ -110,7 +110,11 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                         className="block text-gray-800 hover:bg-gray-200 p-2 rounded-md w-full text-left"
                         title="Main Dashboard"
                       >
-                        <i className="la la-home"></i> Dashboard
+                        <img
+                    src="/images/home.png"
+                    alt="Dashboard Icon"
+                    className="inline w-5 h-5"
+                  />{"  "}Home
                       </button>
                       <button
                         onClick={() =>
@@ -131,7 +135,11 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                         className="block text-gray-800 hover:bg-gray-200 p-2 rounded-md w-full text-left"
                         title="Logout"
                       >
-                        <i className="la la-key"></i> Logout
+                        <img
+                    src="/images/logout.png"
+                    alt="logout Icon"
+                    className="inline w-5 h-5"
+                  />{"  "}Logout
                       </button>
                     </>
                   )}
@@ -171,7 +179,11 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                   className="text-tt"
                   title="Main Dashboard"
                 >
-                  <i className="la la-home text-2xl"></i>
+                  <img
+                    src="/images/home.png"
+                    alt="home Icon"
+                    className="w-5 h-5"
+                  />
                 </button>
                 {selectedModule.name !== "Organisation Profile" && <button
                   onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
@@ -184,7 +196,11 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                   />
                 </button>}
                 <button onClick={handleLogout} title="Logout">
-                  <i className="la la-key text-2xl text-tt"></i>
+                <img
+                    src="/images/logout.png"
+                    alt="logout Icon"
+                    className="w-5 h-5"
+                  />
                 </button>
               </div>
             ) : undefined}
