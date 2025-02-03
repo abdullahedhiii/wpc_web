@@ -27,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
+        employment_type_id : {
+          type : DataTypes.INTEGER,
+          references : {
+            model : "EmploymentTypes",
+            key : "id",
+          },
+        },
         department: DataTypes.STRING,
         designation: DataTypes.STRING,
         joining: DataTypes.DATEONLY,

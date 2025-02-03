@@ -2,6 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useCompanyContext } from "../contexts/CompanyContext";
 import { useNavigate } from "react-router-dom";
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+
+const TotalLeaveChart = ({data}) => {
+  return (
+    <div className="bg-white shadow-lg rounded-lg ">
+      <ResponsiveContainer width="100%" height={220}>
+        <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="Holiday" stroke="#FFA500" strokeWidth={2} dot={{ r: 5 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
+
 
 const CircularProgress = ({ current }) => {
   const [progress, setProgress] = useState(0);
@@ -84,6 +102,7 @@ const StatisticsDashboard = ({ title }) => {
   const { selectedModule } = useModuleContext();
   const dashboard = selectedModule.dashboard;
   console.log("in stats ", dashboard);
+  const data = [{ name: "Total H", Holiday: 5 }];
 
   return (
     <div className="relative">
@@ -91,17 +110,25 @@ const StatisticsDashboard = ({ title }) => {
         Dashboard
       </p>
 
-      <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 border-1 border-t-4 border-t-blue-800 rounded-lg shadow-2xl p-6 bg-white w-[90%]">
-        <h2 className="text-blue-800 text-[15px] font-sm mb-6 font-bold">{title}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 rounded-sm shadow-2xl p-6 bg-white w-[90%]">
+        <h2 className="text-blue-800 text-[15px] font-sm mb-6 font-semibold">{title}</h2>
+        <div className={`grid gap-4 ${dashboard.length === 1 ? "grid-cols-1 place-items-center" : "md:grid-cols-3"}`}>
           {dashboard.map((item, index) => (
             <CircularProgress key={index} current={item} />
           ))}
         </div>
       </div>
+
+      {title === "Leave Type" && (
+        <div className="relative mt-[280px] rounded-sm shadow-2xl p-6 bg-white w-[90%] border-t-4 border-blue-700 mx-auto">
+          <h2 className="text-blue-800 text-[15px] font-sm mb-4 font-semibold">Annual Total Leave</h2>
+          <TotalLeaveChart data={data} />
+        </div>
+      )}
     </div>
   );
 };
+
 
 
 export default StatisticsDashboard;

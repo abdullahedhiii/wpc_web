@@ -138,7 +138,7 @@ console.log(err);
     };
 
     return (
-        <div className="m-12 pt-12">
+        <div className="m-8 pt-12">
             <NewForm
                 icon="fa fa-refresh"
                 title="Late Policy Details"

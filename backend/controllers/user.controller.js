@@ -1,4 +1,4 @@
-const {User,Module,SubModule,Feature,Dashboard} = require('../config/sequelize');
+const {User,Module,SubModule,Feature,Dashboard, Organisation} = require('../config/sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
@@ -64,13 +64,15 @@ module.exports.Login = async (req, res) => {
     }
 
     const { password: _, ...userDetails } = existingUser;
-
+    
+    const org = await Organisation.findOne({where : {admin_id : userDetails.id}})
+    console.log(org, '??',org.Company_Logo);
     const token = jwt.sign(
       { id: userDetails.id, email: userDetails.email },
       process.env.JWT_SECRET, 
       { expiresIn: '1h' } 
     );
-
+    
     res.cookie('access_token', token, {
       httpOnly: true, 
       secure: process.env.NODE_ENV === 'production', 
@@ -78,7 +80,7 @@ module.exports.Login = async (req, res) => {
     });
 
     return res.status(200).json({
-      user: userDetails, 
+      user: {...userDetails, profile_image : org?.Company_Logo || null,}, 
       token,
     });
   } catch (error) {

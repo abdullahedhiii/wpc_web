@@ -46,8 +46,8 @@ const LatePolicy = require('../models/LatePolicy')(sequelize,DataTypes);
 const ShiftOffDay = require('../models/ShiftOffDay')(sequelize,DataTypes);
 const OrgDocument = require('../models/OrgDocument')(sequelize,DataTypes);
 const Job = require('../models/Job')(sequelize,DataTypes);
-
-
+const LeaveType = require('../models/LeaveType')(sequelize,DataTypes);
+const LeaveRule = require('../models/LeaveRule')(sequelize,DataTypes);
 
 
 
@@ -86,6 +86,18 @@ Feature.belongsTo(SubModule, { as: 'submodule', foreignKey: 'submodule_id' });
 
 Organisation.hasMany(TradingHour, { as: 'tradingHours', foreignKey: 'organisation_id' });
 TradingHour.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+
+Organisation.hasMany(LeaveType, { as: 'leavetypes', foreignKey: 'organisation_id' });
+LeaveType.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+
+Organisation.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'organisation_id' });
+LeaveRule.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+
+LeaveType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
+LeaveRule.belongsTo(LeaveType, { as: 'leavetype', foreignKey: 'id' });
+
+EmploymentType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
+LeaveRule.belongsTo(EmploymentType, { as: 'employeetypes', foreignKey: 'id' });
 
 Organisation.hasMany(Department, {foreignKey: "organisation_id",as: "departments",});
 Department.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
@@ -197,7 +209,7 @@ module.exports = { sequelize, User,Organisation, Module,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
                    TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
-                   ,
+                   ,LeaveType,LeaveRule,
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail

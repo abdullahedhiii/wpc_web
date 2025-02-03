@@ -62,7 +62,7 @@ const PaymentTypeForm = () => {
     };
     
     return(
-        <div className="m-12 pt-12">
+        <div className="m-8 pt-12">
         <NewForm
           icon = {null}
           title="Add Payment Type"

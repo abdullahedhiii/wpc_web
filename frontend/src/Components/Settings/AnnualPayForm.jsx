@@ -65,7 +65,7 @@ const AnnualPayForm = () => {
   };
 
   return (
-    <div className="m-12 pt-12">
+    <div className="m-8 pt-12">
       <NewForm
         icon="fas fa-money-bill-wave"
         title="Annual Pay"

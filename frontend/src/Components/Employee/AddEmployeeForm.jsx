@@ -741,6 +741,14 @@ useEffect(() => {
           }
         }
       }
+      const department_id = departmentData.find((ele) => ele['Department Name'] === formData.service_details.department).id;
+      const designation_id = designationData.find((ele) => ele['Designation'] === formData.service_details.designation).id;
+      const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
+      console.log(formData.service_details,department_id,designation_id,employment_type_id);
+      // serviceDetailsFormData.append("department_id",department_id);
+      // serviceDetailsFormData.append("designation_id",designation_id);
+      serviceDetailsFormData.append("employment_type_id",employment_type_id);
+
       await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
         headers: {
           "Content-Type": "multipart/form-data",
