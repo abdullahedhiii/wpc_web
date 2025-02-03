@@ -44,7 +44,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
         </div>
       </nav>
     );
-  } else if (location.pathname === "/employeeDashboard") {
+  } else if (isLoggedIn && location.pathname === "/employeeDashboard") {
     return (
       <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-28">
         <div className="h-auto flex items-center justify-between px-4">
@@ -54,7 +54,8 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
             className="w-44 h-auto transition-all duration-200"
           />
 
-          <div className="flex items-center space-x-4 mr-10">
+          <div className="flex items-center space-x-2 mr-10">
+            <img src={user.profile_image} className="h-24 w-24 rounded-full"/>
             <div className="text-left">
               <p className="font-bold text-2xl">{user.first_name + " " + user.last_name}</p>
               <p className="text-gray-600 text-xl">{user.email}</p>
@@ -70,7 +71,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
   }
 // ${isMobile && menuOpen ? "h-24" :"h-16"}
   return (
-    <nav className={`relative top-0 left-0 w-full bg-white shadow-md z-50 `}>
+    <nav className={`relative top-0 left-0 w-full bg-white shadow-md z-50 h-16`}>
       <div className="h-full flex items-center px-4">
         {isMobile ? (
           <>

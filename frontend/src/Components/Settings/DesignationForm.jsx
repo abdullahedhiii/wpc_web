@@ -71,7 +71,7 @@ const DesignationForm = () => {
   };
 
   return (
-    <div className="m-12 pt-12">
+    <div className="m-8 pt-12">
       <NewForm
         icon="far fa-building"
         title="New Designation"

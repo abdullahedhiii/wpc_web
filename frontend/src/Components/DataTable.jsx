@@ -99,17 +99,17 @@ const DataTable = ({
   return (
     <div
       className={`${
-        isSidebarOpen ? "w-[1150px]" : "w-[1350px]"
+        isSidebarOpen ? "w-[1180px]" : "w-[1360px]"
       } border-t-4 border-tt bg-white rounded-md shadow-md`}
     >
       {title && (
         <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
           <div className="p-2 flex items-center space-x-2">
             {!isDashboard && selectedFeature && (
-              <i className={`la ${selectedFeature.icon} pl-2 text-xl`}></i>
+              <i className={`la ${selectedFeature.icon} pl-2 text-[14px] text-blue-900`}></i>
             )}
             {isDashboard && (
-              <i className={`pl-2 ${icon} text-[18px] text-blue-900`}></i>
+              <i className={`pl-2 ${icon} text-[14px]  text-blue-900`}></i>
             )}
             <h2 className="text-[14px] font-semibold text-blue-900">{title}</h2>
           </div>
@@ -129,10 +129,8 @@ const DataTable = ({
                 onClick={() => {
                   if (selectedFeature && selectedFeature.plus_icon_route) {
                     navigate(`/hrms/${selectedFeature.plus_icon_route}`);
-                  } else if (title === "Employee") {
-                    navigate("/hrms/addemployee");
                   } else {
-                    console.error("No navigation route defined for this case.");
+                    navigate("/hrms/addemployee");
                   }
                 }}
               >
@@ -143,8 +141,8 @@ const DataTable = ({
         </div>
       )}
 
-      <div className="w-full overflow-x-scroll p-6">
-        <div className="min-w-[768px] text-center">
+<div className="w-full overflow-x-auto p-8">
+  <div className="w-full">
           {(showEntries || searchable) && (
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
               {showEntries && (
@@ -182,8 +180,9 @@ const DataTable = ({
             </div>
           )}
 
-          <table className="w-full min-w-full table-auto border-spacing-0.5 border-separate">
-            <thead>
+<div className="w-full overflow-x-auto">
+<table className="w-full table-auto border-spacing-0.5 border-separate">     
+  <thead>       
               <tr className="bg-gray-100">
                 {filteredFields.map((field, index) => (
                   <th
@@ -300,10 +299,9 @@ const DataTable = ({
               )}
             </tbody>
           </table>
-
-          {/* Entries info section */}
-          <div className="px-8 py-2 flex justify-between items-center mt-2">
-            <div>
+</div>
+          <div className="pt-2 flex flex-col md:flex-row justify-between items-start md:items-center mb-2 mt-2">
+            <div >
               Showing {Math.min(filteredData.length, numentries)} of{" "}
               {filteredData.length} entries
             </div>

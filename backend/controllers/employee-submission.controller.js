@@ -27,7 +27,6 @@ module.exports.addPersonalDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
 
-    // Check if the employee already exists
     const [employee, created] = await Employee.findOrCreate({
       where: { organisation_id: parseInt(organisationId), employee_code: employeeCode },
       defaults: { organisation_id: parseInt(organisationId) },
@@ -37,7 +36,6 @@ module.exports.addPersonalDetails = async (req, res) => {
       console.log("Employee already exists, updating personal details.");
     }
 
-    // Upsert personal details
     const [personalDetail, personalCreated] = await PersonalDetail.upsert(
       {
         employee_code: employeeCode,
@@ -45,7 +43,7 @@ module.exports.addPersonalDetails = async (req, res) => {
       },
       {
         where: { employee_code: employeeCode },
-        returning: true, // This will return the updated or created instance
+        returning: true, 
       }
     );
 

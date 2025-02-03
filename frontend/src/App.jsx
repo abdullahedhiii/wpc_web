@@ -74,17 +74,25 @@ import UploadAttendance from "./Components/Attendance/UploadAttendance";
 import GenerateAttendance from "./Components/Attendance/GenerateAttendance";
 import DailyAttendance from "./Components/Attendance/DailyAttendance";
 import AttendanceHistory from "./Components/Attendance/AttendanceHistory";
+import LeaveType from "./Components/LeaveManagement/LeaveType";
+import LeaveTypeForm from "./Components/LeaveManagement/LeaveTypeForm";
+import LeaveRule from "./Components/LeaveManagement/LeaveRule";
+import LeaveRuleForm from "./Components/LeaveManagement/LeaveRuleForm";
+import Footer from "./Components/Footer";
+import COCView from "./Components/Employee/COCView";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
   const [logoVisible, setLogoVisible] = useState(true);
-
+  const [isMobile,setMobile] = useState(false);
   const handleResize = () => {
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
       setLogoVisible(true);
+      setMobile(true)
     } else {
       setIsSidebarOpen(true);
+      setMobile(false)
     }
   };
 
@@ -98,7 +106,11 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="fixed top-0 left-0 right-0 z-50">
+      <div
+        className={`fixed top-0 left-0 right-0 z-50 ${
+          isSidebarOpen && isMobile ? "pl-64" : "pl-0"
+        }`}
+      >
         <Navbar
           isOpen={isSidebarOpen}
           isLogo={logoVisible}
@@ -106,13 +118,14 @@ const MainLayout = () => {
           closeLogo={setLogoVisible}
         />
       </div>
-
-      <div className="flex pt-12">
+  
+      <div className="flex flex-1 pt-12">
         <div
-          className={`fixed left-0 top-16 bottom-0 z-40 bg-white shadow-lg overflow-y-auto
-          transition-all duration-300`}
+          className={`${
+            isSidebarOpen && isMobile ? "fixed top-0 left-0 bottom-0" : "top-16"
+          } z-40 bg-white shadow-lg overflow-y-auto transition-all duration-300`}
         >
-          {(window.innerWidth >= 1024 || isSidebarOpen) && (
+          {(!isMobile || isSidebarOpen) && (
             <Sidebar
               isOpen={isSidebarOpen}
               setOpen={() => {
@@ -122,18 +135,22 @@ const MainLayout = () => {
             />
           )}
         </div>
-
+  
         <div
-          className={`flex-1 transition-all duration-300
-          ${isSidebarOpen ? "ml-64" : innerWidth > 1024 ? "ml-20" : undefined}`}
+          className={`flex flex-col flex-grow transition-all duration-300 ${
+            isSidebarOpen ? "ml-64" : innerWidth > 1024 ? "ml-20" : "ml-0"
+          }`}
         >
-          <main>
+          <main className="flex-grow">
             <Outlet />
           </main>
+  
+          <Footer />
         </div>
       </div>
     </div>
   );
+  
 };
 
 const SimpleLayout = () => {
@@ -690,12 +707,6 @@ const router = createBrowserRouter([
         )
       },
       {
-        path : "employee/change-of-circumstances",
-        element : (
-          <ProtectedRoute></ProtectedRoute>
-        )
-      },
-      {
         path : "leaveapprovedashboard",
         element : (
           <ProtectedRoute>
@@ -761,9 +772,35 @@ const router = createBrowserRouter([
       {
         path : "attendance/attendance-report",
         element : (<ProtectedRoute><AttendanceHistory/></ProtectedRoute>)
+      },
+      {
+        path : "leave-management/leave-type-listing",
+        element : (<ProtectedRoute><LeaveType/></ProtectedRoute>)
+      },
+      {
+        path: "leave-management/new-leave-type",
+        element : (<ProtectedRoute><LeaveTypeForm/></ProtectedRoute>)
+      },
+      {
+        path: "leave-management/leave-type-listing/:leave_id",
+        element : (<ProtectedRoute><LeaveTypeForm/></ProtectedRoute>)
+      },
+      {
+        path : "leave-management/leave-rule-listing",
+        element : (<ProtectedRoute><LeaveRule/></ProtectedRoute>)
+      },
+      {
+        path : "leave-management/save-leave-rule",
+        element  : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
+      },
+      {
+        path : "leave-management/view-leave-rule/:rule_id",
+        element : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
+      },
+      {
+        path : "employee/change-of-circumstances",
+        element : (<ProtectedRoute><COCView/></ProtectedRoute>)
       }
-
-
     ],
   },
 ]);

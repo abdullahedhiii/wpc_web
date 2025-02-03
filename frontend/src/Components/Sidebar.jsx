@@ -40,7 +40,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
       onMouseOver={!isOpen ? setOpen : undefined}
     >
       <div
-        className={`p-3 pt-6 text-lg flex items-center ${
+        className={`p-3 pt-10 text-lg flex items-center ${
           isOpen ? "space-x-2" : "justify-center"
         }`}
       >
@@ -70,9 +70,8 @@ const Sidebar = ({ isOpen, setOpen }) => {
           className={`flex items-center w-full ${
             isOpen
               ? "justify-between bg-blue-600 text-white rounded-lg py-3 px-4"
-              : "justify-center bg-blue-600 text-white rounded-lg py-3 "
+              : "justify-center bg-blue-600 text-white rounded-[10px] h-12 "
           } mb-4`}
-          onClick={toggleDropdown}
         >
           <div
             className={`flex items-center ${
@@ -80,7 +79,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
             }`}
             onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
           >
-            <i className={`fas fa-home ${isOpen ? "text-xl" : "text-[26px]"}`}></i>
+            <i className={`fas fa-home ${isOpen ? "text-xl" : "text-[22px]"}`}></i>
             {isOpen && (
               <span className="font-semibold text-[16px]">Dashboard</span>
             )}
@@ -95,16 +94,18 @@ const Sidebar = ({ isOpen, setOpen }) => {
             {selectedModule.subModules.map((subModule, index) => (
               <div key={index} className="mb-4">
                 <div
-                  className={`flex items-center justify-between text-gray-400 hover:bg-gray-100 hover:text-gray-700 ${
+                  className={`flex items-center justify-between text-gray-400 hover:bg-gray-100 hover:text-gray-700 hover:font-semidbold${
                     openSubModuleIndex === index
-                      ? "bg-gray-100 shadow-sm text-gray-700"
+                      ? "bg-gray-100 shadow-sm text-gray-700 font-semibold"
                       : undefined
                   } rounded-lg  p-3 cursor-pointer`}
+                  onClick={() => toggleSubModule(index)}
+
                 >
                   <div className="flex items-center space-x-3" 
                      onClick={() => subModule.features.length === 0 && navigate(`/hrms/${subModule.main_route}`)}
                   >
-                    <i className={`${subModule.icon} text-[18px]`}></i>
+                    <i className={`${subModule.icon} text-xl`}></i>
                     <span className="text-[14px]">{subModule.name}</span>
                   </div>
 
@@ -141,17 +142,17 @@ const Sidebar = ({ isOpen, setOpen }) => {
         )}
 
         {!isOpen && (
-          <div className="flex flex-col items-center space-y-4">
-            <i className="fa-solid fa-ellipsis font-extrabold text-3xl text-gray-500"></i>
+          <div className="flex flex-col items-center space-y-2">
+            <i className="fa-solid fa-ellipsis font-extrabold text-[24px] text-gray-400"></i>
 
             {selectedModule.subModules.map((subModule, index) => (
               <button
                 key={index}
-                className="p-2 text-gray-500 hover:text-blue-500"
+                className="p-1 text-gray-400 hover:text-blue-500"
                 onClick={() => navigate(`/hrms/${subModule.main_route}`)}
               >
                 <i
-                  className={`la ${subModule.icon || "la-th-large"} text-2xl`}
+                  className={`la ${subModule.icon || "la-th-large"} text-[20px]`}
                 ></i>
               </button>
             ))}

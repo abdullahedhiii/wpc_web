@@ -1,3 +1,4 @@
+const { type } = require("os");
 const {
   User,
   Organisation,
@@ -39,6 +40,8 @@ const {
   EmployeeOtherDetail,
   PayStructure,
   COCOtherDetail,
+  LeaveType,
+  LeaveRule,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
@@ -1649,7 +1652,7 @@ module.exports.getAllEmployees = async (req, res) => {
         {
           model: ServiceDetail,
           as: "servicedetail",
-          attributes: ["type", "department","designation_id","department_id","designation"],
+          attributes: ["type", "department","designation_id","department_id","designation","employment_type_id"],
         },
         {
           model: Organisation,
@@ -1699,6 +1702,7 @@ module.exports.getAllEmployees = async (req, res) => {
         Designation : employee.servicedetail?.designation,
         Designation_id : employee.servicedetail?.designation_id,
         Department_id : employee.servicedetail?.department_id,
+        employment_type_id : employee.servicedetail?.employment_type_id,
         employee_code : employee.employee_code
       };
     });
@@ -1923,7 +1927,9 @@ module.exports.getEmployeeData = async (req, res) => {
 
 module.exports.getCOCData = async (req, res) => {
   const id = req.params.id;
+  console.log('coc data hit  ',id);
   try {
+    console.log('executing this ? ');
     const employees = await Employee.findAll({
       where: { organisation_id: id },
       include: [
@@ -1939,18 +1945,18 @@ module.exports.getCOCData = async (req, res) => {
         }
       ],
     });
-    // Fetch additional details for each employee
+    console.log('error here??????')
     const employeesWithDetails = await Promise.all(
       employees.map(async (emp) => {
         const employee_code = emp.employee_code;
         const employee ={
            full_name : [emp.personaldetail.fname,emp.personaldetail.lname].filter(Boolean).join(' ') + '(' + employee_code + ')' ,
            employee_code ,
-           name: [emp.personaldetail.fname,emp.personaldetail.mname,emp.personaldetail.lname].filter(Boolean).join(' '),
-           fname :emp.personaldetail.fname ,
-           lname:emp.personaldetail.lname,
-           mname: emp.personaldetail.mname,
-           title : emp.jobdetails.title,
+           name: [emp.personaldetail?.fname,emp.personaldetail?.mname,emp.personaldetail?.lname].filter(Boolean).join(' '),
+           fname :emp.personaldetail?.fname ,
+           lname:emp.personaldetail?.lname,
+           mname: emp.personaldetail?.mname,
+           title : emp.jobdetails?.title,
            contact_1 : emp.personaldetail.contact_1,
            Nationality : emp.personaldetail.Nationality,
            nationality_no: emp.personaldetail.nationality_no
@@ -1982,7 +1988,7 @@ module.exports.getCOCData = async (req, res) => {
 
     return res.status(200).json(employeesWithDetails);
   } catch (err) {
-    console.error("Error fetching employee COC data:", err);
+    console.error("???????????????????Error fetching employee COC data:", err);
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2045,36 +2051,36 @@ module.exports.getCOCTable = async (req, res) => {
 
     const formattedData = data.map((emp) => {
       return {
-        'Updated Date': emp.cocdetails.changeDate,
-        'Employment Type': emp.servicedetail.type,
+        'Updated Date': emp.cocdetails?.changeDate,
+        'Employment Type': emp.servicedetail?.type,
         'Employee ID': emp.employee_code,
         'Name Of Member Of The Staff': [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname]
           .filter(Boolean)
           .join(' '),
-        'Job Title': emp.jobdetails.title,
+        'Job Title': emp.jobdetails?.title,
         'Address': [
-          emp.contact.line1,
-          emp.contact.line2,
-          emp.contact.line3,
-          emp.contact.city,
-          emp.contact.country,
+          emp.contact?.line1,
+          emp.contact?.line2,
+          emp.contact?.line3,
+          emp.contact?.city,
+          emp.contact?.country,
         ]
           .filter(Boolean)
           .join(' '),
         'Contact Number': emp.personaldetail.contact_1,
         Nationality: emp.personaldetail.Nationality,
-        'BRP Number': emp.visadetail.visa_no,
-        'Visa Expired': emp.visadetail.expiry_date,
-        'Remarks/Restriction to work': emp.cocdetails.remarks,
-        'Passport No': emp.passportdetail.passport_no,
+        'BRP Number': emp.visadetail?.visa_no,
+        'Visa Expired': emp.visadetail?.expiry_date,
+        'Remarks/Restriction to work': emp.cocdetails?.remarks,
+        'Passport No': emp.passportdetail?.passport_no,
         'ESUS Details': 'no',
         'DBS Details': 'no',
         'National Id Details': 'no',
         'Other Documents': 'no',
         'Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?':
-          emp.cocdetails.awareContact ? 'Yes' : 'No',
+          emp.cocdetails?.awareContact ? 'Yes' : 'No',
         'Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?':
-          emp.cocdetails.awareInterview ? 'Yes' : 'No',
+          emp.cocdetails?.awareInterview ? 'Yes' : 'No',
         Action: '', // Add the necessary action if required
       };
     });
@@ -2085,3 +2091,153 @@ module.exports.getCOCTable = async (req, res) => {
     return res.status(500).json({ message: 'Internal Server Error', error: err.message });
   }
 };
+
+module.exports.addLeaveType = async(req,res) => {
+  const id = req.params.id;
+
+  const { leave_type, isUpdate, remarks,sort_code,leave_type_id } = req.body;
+
+  try {
+    if (isUpdate) {
+      const type = await LeaveType.findOne({
+        where: {
+          id: leave_type_id,
+          organisation_id : id
+        },
+      });
+      if (type) {
+        type.leave_type = leave_type;
+        type.remarks = remarks || "N/A"
+        type.sort_code = sort_code
+        await type.save();
+        return res.status(201).json({
+          message: "leave type updated successfully",
+          type,
+        });
+      } else {
+        return res.status(404).json({ message: "leave type not found" });
+      }
+    } else {
+      const newLeave = await LeaveType.create({
+        organisation_id: id,
+        leave_type,sort_code,remarks
+      });
+
+      return res.status(201).json({
+        message: "type created successfully",
+        leave: newLeave,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports.getLeaveTypes = async (req,res) => {
+     const id = req.params.id;
+     try{
+        const leaveTypes = await LeaveType.findAll({
+        where : {organisation_id : id}
+     });
+       const formattedResponse = leaveTypes.map((leave,index) => {
+          return {
+             "id" : leave.id,
+             "Sl. No." : index+1,
+             "Leave Type" : leave.leave_type,
+             "Remarks" : leave.remarks || "N/A",
+             "Leave Type Sort Code" : leave.sort_code,
+             "Action" : "Edit"
+          }
+       })
+       return res.status(200).json(formattedResponse);
+     }
+     catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports.addLeaveRule = async(req,res) => {
+  const id = req.params.id;
+
+  const {rule_id,isUpdate,leave_type_id,employment_type_id,employee_type,leave_type,max,from,to} = req.body;
+
+  try {
+    if (isUpdate) {
+      const type = await LeaveRule.findOne({
+        where: {
+          id: rule_id,
+          organisation_id : id
+        },
+      });
+      if (type) {
+        type.employee_type = employee_type;
+        type.leave_type = leave_type 
+        type.max = max
+        type.from = from
+        type.to = to
+        type.leave_type_id = leave_type_id
+        type.employment_type_id = employment_type_id
+        await type.save();
+        return res.status(201).json({
+          message: "leave rule updated successfully",
+          type,
+        });
+      } else {
+        return res.status(404).json({ message: "leave rule not found" });
+      }
+    } else {
+      const newRule = await LeaveRule.create({
+        organisation_id: id,
+        leave_type_id,employment_type_id,employee_type,leave_type,max,from,to
+            });
+
+      return res.status(201).json({
+        message: "new rule created successfully",
+        leave: newRule,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+module.exports.getLeaveRules = async (req,res) => {
+  const id = req.params.id;
+  try{
+     const rules = await LeaveRule.findAll({
+     where : {organisation_id : id},
+     include : [
+         {
+          model : LeaveType,
+          as : 'leavetype',
+          attributes : ['leave_type']
+         },
+         {
+          model : EmploymentType,
+          as : 'employeetypes',
+          attributes : ['employment_type']
+         }
+     ]
+  });
+    const formattedResponse = rules.map((rule,index) => {
+       return {
+          "id" : rule.id,
+          "Sl. No." : index+1,
+          "Employee Type" : rule.employeetypes.employment_type,
+          "Leave Type" : rule.leavetype.leave_type,
+          "Max. No." : rule.max,
+          "Effective From" : rule.from,
+           "Effective To": rule.to,
+          "Action" : "Edit"
+       }
+    })
+    return res.status(200).json(formattedResponse);
+  }
+  catch (error) {
+   console.error(error);
+   return res.status(500).json({ message: "Internal server error" });
+ }
+}

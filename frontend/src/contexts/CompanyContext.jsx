@@ -34,14 +34,34 @@ export const CompanyProvider = ({ children }) => {
   const [latePolicies,setPolicies] = useState([]);
   const [companyDocuments,setCompanyDocuments] = useState([]);
   const [employees,setEmployees] = useState([]); //this is for employee creation link page
-  
+  const [leaveTypes,setLeaveTypes] = useState([]);
+  const [leaveRules,setLeaveRules] = useState([]);
+
+  const fetchLeaveRules = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getLeaveRules/${id_to}`);
+      if (response.status === 200) {
+        setLeaveRules(response.data);
+      }
+    } catch (err) {}
+  }
+
+  const fetchLeaveTypes = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getLeaveTypes/${id_to}`);
+      if (response.status === 200) {
+        setLeaveTypes(response.data);
+      }
+    } catch (err) {}
+  }
   const fetchEmployeesLink = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
       const response = await axiosInstance.get(`/api/getEmployees/${id_to}`);
       if (response.status === 200) {
         setEmployees(response.data);
-        console.log('emploeee response ',response.data);
       }
     } catch (err) {}
   };
@@ -217,7 +237,6 @@ export const CompanyProvider = ({ children }) => {
           ]);
           setLevel1Details([filterByPrefix(response.data.allData, "Level1_")]);
           setCompanyDocuments(response.data.company_documents);
-          console.log('documents response ',response.data.company_documents);
         }
       }
     } catch (err) {
@@ -248,6 +267,9 @@ export const CompanyProvider = ({ children }) => {
       fetchShifts(response.data.id);
       fetchPolicies(response.data.id);
       fetchEmployeesLink(response.data.id);
+      fetchLeaveTypes(response.data.id);
+      fetchLeaveRules(response.data.id);
+
     } catch (err) {
       console.log("errorr ", err);
       setCompanyData([]);
@@ -308,7 +330,9 @@ export const CompanyProvider = ({ children }) => {
         fetchPolicies,
         companyDocuments,
         employees,
-        fetchEmployeesLink
+        fetchEmployeesLink,
+        fetchLeaveTypes,
+        leaveTypes,leaveRules,fetchLeaveRules
       }}
     >
       {children}
