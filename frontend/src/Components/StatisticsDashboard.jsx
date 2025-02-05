@@ -46,7 +46,6 @@ const CircularProgress = ({ current }) => {
   useEffect(() => {
     console.log('checking percentage')
      if(current.percentage === -1){
-      console.log('setting per')
       setProgress(100);
      }
   },[current.percentage])
@@ -101,7 +100,6 @@ const CircularProgress = ({ current }) => {
 const StatisticsDashboard = ({ title }) => {
   const { selectedModule } = useModuleContext();
   const dashboard = selectedModule.dashboard;
-  console.log("in stats ", dashboard);
   const data = [{ name: "Total H", Holiday: 5 }];
 
   return (

@@ -189,7 +189,7 @@ const EmployeeForm = () => {
         console.error('Error fetching employee code:', err); 
       }
     };
-   if(!id && employee_code === '')
+   if(!id && employee_code === ''){}
     fetch_next_id();
   }, []); 
   
@@ -265,6 +265,7 @@ const EmployeeForm = () => {
            const response  = await axiosInstance.get(`/api/getEmployeeDetails/${id}`);
            console.log('employeee form response' ,response.data);
             setFormData(response.data);
+            setCode(response.data.personal_details.employee_code);
        }
         catch(err){
          console.error("Error fetching employe data:", err);
@@ -719,6 +720,7 @@ useEffect(() => {
 
   const handleSubmit = async () => {
     try {
+      console.log(formData.training_details,employee_code);
     //   const personalDetailsFormData = new FormData();
     //   for (const key in formData.personal_details) {
     //     if (formData.personal_details[key]) {
@@ -731,49 +733,49 @@ useEffect(() => {
     //     },
     // });
   
-      const serviceDetailsFormData = new FormData();
-      for (const key in formData.service_details) {
-        if (formData.service_details[key]) {
-          if (key === "profile_picture" && formData.service_details[key]) {
-              serviceDetailsFormData.append("profile_picture", formData.service_details.profile_picture);
-          } else {
-            serviceDetailsFormData.append(key, formData.service_details[key]);
-          }
-        }
-      }
-      const department_id = departmentData.find((ele) => ele['Department Name'] === formData.service_details.department).id;
-      const designation_id = designationData.find((ele) => ele['Designation'] === formData.service_details.designation).id;
-      const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
-      console.log(formData.service_details,department_id,designation_id,employment_type_id);
-      // serviceDetailsFormData.append("department_id",department_id);
-      // serviceDetailsFormData.append("designation_id",designation_id);
-      serviceDetailsFormData.append("employment_type_id",employment_type_id);
-
-      await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-    });
-  
-    //   formData.education_details.forEach(async (edu, index) => {
-    //     const educationFormData = new FormData();
-    //     for (const key in edu) {
-    //       if (edu[key]) {
-    //         if (key === "transcript_document" || key === "certificate_document") {
-    //           if (edu[key]) {
-    //             educationFormData.append(key, edu[key]);
-    //           }
-    //         } else {
-    //           educationFormData.append(key, edu[key]);
-    //         }
+    //   const serviceDetailsFormData = new FormData();
+    //   for (const key in formData.service_details) {
+    //     if (formData.service_details[key]) {
+    //       if (key === "profile_picture" && formData.service_details[key]) {
+    //           serviceDetailsFormData.append("profile_picture", formData.service_details.profile_picture);
+    //       } else {
+    //         serviceDetailsFormData.append(key, formData.service_details[key]);
     //       }
-    //     }      
-    //     await axiosInstance.post(`/api/submit-education-details/${companyData[0].id}.${employee_code}`, educationFormData, {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //       },
-    //   });
-    //   });
+    //     }
+    //   }
+    //   const department_id = departmentData.find((ele) => ele['Department Name'] === formData.service_details.department).id;
+    //   const designation_id = designationData.find((ele) => ele['Designation'] === formData.service_details.designation).id;
+    //   const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
+    //   console.log(formData.service_details,department_id,designation_id,employment_type_id);
+    //   // serviceDetailsFormData.append("department_id",department_id);
+    //   // serviceDetailsFormData.append("designation_id",designation_id);
+    //   serviceDetailsFormData.append("employment_type_id",employment_type_id);
+
+    //   await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    // });
+  
+      formData.education_details.forEach(async (edu, index) => {
+        const educationFormData = new FormData();
+        for (const key in edu) {
+          if (edu[key]) {
+            if (key === "transcript_document" || key === "certificate_document") {
+              if (edu[key]) {
+                educationFormData.append(key, edu[key]);
+              }
+            } else {
+              educationFormData.append(key, edu[key]);
+            }
+          }
+        }      
+        await axiosInstance.post(`/api/submit-education-details/${companyData[0].id}.${employee_code}`, educationFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
+      });
 
     //   const job_details_form_data = new FormData();
     //   for (const key in formData.job_details) {
@@ -800,42 +802,15 @@ useEffect(() => {
     //   });
     //   });
 
-    //   formData.training_details.forEach(async(training, index) => {
-    //     const training_data = new FormData();
-    //     for (const key in training) {
-    //       training_data.append(key, training[key]);
-    //     }    
-    //     await axiosInstance.post(`/api/submit-training-data/${companyData[0].id}.${employee_code}`, training_data, {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //       },
-    //   });
-    //   });
+      // formData.training_details.forEach(async(training, index) => {
+      //   console.log('sending request 1',employee_code);
+      //   const tt = training.employee_code ? training : {...training,employee_code :employee_code}
+      //   console.log(tt);
+      //   await axiosInstance.post(`/api/submit-training-data/${companyData[0].id}.${employee_code}`,tt) 
+      // });
 
-    //   const kin_data = new FormData();
-    //   for (const key in formData.kin_details) {
-    //     console.log(key,'kin data ',formData)
-    //     if (formData.kin_details[key]) {
-    //       kin_data.append(key, formData.kin_details[key]);
-    //       }
-    //   }
-    //   await axiosInstance.post(`/api/submit-kin-details/${companyData[0].id}.${employee_code}`, kin_data, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    // });
-      
-    //   const certification_data = new FormData();
-    //   for (const key in formData.certification) {
-    //     if (formData.certification[key]) {
-    //       certification_data.append(key, formData.certification[key]);
-    //       }
-    //   }    
-    //   await axiosInstance.post(`/api/submit-certifications/${companyData[0].id}.${employee_code}`, certification_data, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    // });
+      // await axiosInstance.post(`/api/submit-kin-details/${companyData[0].id}.${employee_code}`, formData.kin_details);
+      // await axiosInstance.post(`/api/submit-certifications/${companyData[0].id}.${employee_code}`, formData.certification)
       
     //   const contact_data = new FormData();
     //   for (const key in formData.contact_info) {
@@ -849,36 +824,9 @@ useEffect(() => {
     //     },
     // });
 
-    //   const pay_data = new FormData();
-    //   for (const key in formData.pay_details) {
-    //     if (formData.pay_details[key]) {
-    //       pay_data.append(key, formData.pay_details[key]);
-    //       }
-    //   }
-    //   await axiosInstance.post(`/api/submit-pay-details/${companyData[0].id}.${employee_code}`, pay_data, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    // });
+    // await axiosInstance.post(`/api/submit-pay-details/${companyData[0].id}.${employee_code}`, formData.pay_details)
       
-    //   const pay_structure_data = new FormData();
-    
-    //   for (const paymentKey in formData.pay_structure.payments) {
-    //     if (formData.pay_structure.payments[paymentKey] !== undefined) {
-    //     pay_structure_data.append(`payments[${paymentKey}]`, formData.pay_structure.payments[paymentKey]);
-    //     }
-    //   }
-    
-    //   for (const deductionKey in formData.pay_structure.deductions) {
-    //     if (formData.pay_structure.deductions[deductionKey] !== undefined) {
-    //     pay_structure_data.append(`deductions[${deductionKey}]`, formData.pay_structure.deductions[deductionKey]);
-    //    }
-    //   }
-    //   await axiosInstance.post(`/api/submit-pay-structure/${companyData[0].id}.${employee_code}`, pay_structure_data, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    // });
+    // await axiosInstance.post(`/api/submit-pay-structure/${companyData[0].id}.${employee_code}`, formData.pay_structure)
 
     //   formData.other_details.forEach(async (other, index) => {
     //     const otherData = new FormData();

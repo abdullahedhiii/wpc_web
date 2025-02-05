@@ -42,6 +42,7 @@ const {
   COCOtherDetail,
   LeaveType,
   LeaveRule,
+  LeaveAllocation,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
@@ -2092,6 +2093,105 @@ module.exports.getCOCTable = async (req, res) => {
   }
 };
 
+module.exports.getCOCEmployee = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const emp = await Employee.findOne({
+      where: { 
+        organisation_id: id,
+        employee_code : req.query.data
+      },
+      include: [
+        {
+          model: COCOtherDetail,
+          as: 'cocdetails',
+          attributes: ['changeDate', 'remarks', 'awareContact', 'awareInterview'],
+        },
+        {
+          model: PersonalDetail,
+          as: 'personaldetail',
+          attributes: [
+            'Nationality',
+            'fname',
+            'lname',
+            'mname','contact_1'
+          ],
+        },
+        {
+            model : ContactInfo,
+            as : 'contact',
+            attributes : [
+              'line1',
+              'line2',
+              'line3',
+              'country',
+              'city',]
+        },
+        {
+          model: ServiceDetail,
+          as: 'servicedetail',
+          attributes: ['type'],
+        },
+        {
+          model: JobDetail,
+          as: 'jobdetails',
+          attributes: ['title'],
+        },
+        {
+          model: VisaDetail,
+          as: 'visadetail',
+          attributes: ['visa_no', 'expiry_date'],
+        },
+        {
+          model: PassportDetail,
+          as: 'passportdetail',
+          attributes: ['passport_no'],
+        },
+      ],
+    });
+
+    const formattedData = {
+        'Updated Date': emp.cocdetails?.changeDate,
+        'Employment Type': emp.servicedetail?.type,
+        'Employee ID': emp.employee_code,
+        'Name Of Member Of The Staff': [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname]
+          .filter(Boolean)
+          .join(' '),
+        'Job Title': emp.jobdetails?.title,
+        'Address': [
+          emp.contact?.line1,
+          emp.contact?.line2,
+          emp.contact?.line3,
+          emp.contact?.city,
+          emp.contact?.country,
+        ]
+          .filter(Boolean)
+          .join(' '),
+        'Contact Number': emp.personaldetail.contact_1,
+        Nationality: emp.personaldetail.Nationality,
+        'BRP Number': emp.visadetail?.visa_no,
+        'Visa Expired': emp.visadetail?.expiry_date,
+        'Remarks/Restriction to work': emp.cocdetails?.remarks,
+        'Passport No': emp.passportdetail?.passport_no,
+        'ESUS Details': 'no',
+        'DBS Details': 'no',
+        'National Id Details': 'no',
+        'Other Documents': 'no',
+        'Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?':
+          emp.cocdetails?.awareContact ? 'Yes' : 'No',
+        'Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?':
+          emp.cocdetails?.awareInterview ? 'Yes' : 'No',
+        "Annual Reminder Date": '', 
+    };
+
+    return res.status(200).json([formattedData]);
+  } catch (err) {
+    console.log(err,'coc');
+    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+  }
+};
+
+
 module.exports.addLeaveType = async(req,res) => {
   const id = req.params.id;
 
@@ -2161,7 +2261,7 @@ module.exports.getLeaveTypes = async (req,res) => {
 module.exports.addLeaveRule = async(req,res) => {
   const id = req.params.id;
 
-  const {rule_id,isUpdate,leave_type_id,employment_type_id,employee_type,leave_type,max,from,to} = req.body;
+  const {rule_id,isUpdate,leave_type_id,employment_type_id,leave_type,max,from,to} = req.body;
 
   try {
     if (isUpdate) {
@@ -2172,7 +2272,6 @@ module.exports.addLeaveRule = async(req,res) => {
         },
       });
       if (type) {
-        type.employee_type = employee_type;
         type.leave_type = leave_type 
         type.max = max
         type.from = from
@@ -2190,7 +2289,7 @@ module.exports.addLeaveRule = async(req,res) => {
     } else {
       const newRule = await LeaveRule.create({
         organisation_id: id,
-        leave_type_id,employment_type_id,employee_type,leave_type,max,from,to
+        leave_type_id,employment_type_id,leave_type,max,from,to
             });
 
       return res.status(201).json({
@@ -2204,40 +2303,199 @@ module.exports.addLeaveRule = async(req,res) => {
   }
 }
 
-module.exports.getLeaveRules = async (req,res) => {
+module.exports.getLeaveRules = async (req, res) => {
   const id = req.params.id;
-  try{
-     const rules = await LeaveRule.findAll({
-     where : {organisation_id : id},
-     include : [
-         {
-          model : LeaveType,
-          as : 'leavetype',
-          attributes : ['leave_type']
-         },
-         {
-          model : EmploymentType,
-          as : 'employeetypes',
-          attributes : ['employment_type']
-         }
-     ]
-  });
-    const formattedResponse = rules.map((rule,index) => {
-       return {
-          "id" : rule.id,
-          "Sl. No." : index+1,
-          "Employee Type" : rule.employeetypes.employment_type,
-          "Leave Type" : rule.leavetype.leave_type,
-          "Max. No." : rule.max,
-          "Effective From" : rule.from,
-           "Effective To": rule.to,
-          "Action" : "Edit"
-       }
-    })
+  try {
+    const rules = await LeaveRule.findAll({
+      where: { organisation_id: id },
+      include: [
+        {
+          model: LeaveType,
+          as: 'leavetype',
+          attributes: ['leave_type'],
+        },
+      ],
+    });
+
+    // Use Promise.all to wait for all promises inside map to resolve
+    const formattedResponse = await Promise.all(
+      rules.map(async (rule, index) => {
+        const employeetypes = await EmploymentType.findOne({
+          where: { id: rule.employment_type_id },
+        });
+
+        return {
+          id: rule.id,
+          "Sl. No.": index + 1,
+          "Employee Type": employeetypes?.employment_type,  // Use optional chaining to avoid null errors
+          "Leave Type": rule.leavetype.leave_type,
+          "Max. No.": rule.max,
+          "Effective From": rule.from,
+          "Effective To": rule.to,
+          Action: "Edit",
+        };
+      })
+    );
+
     return res.status(200).json(formattedResponse);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-  catch (error) {
-   console.error(error);
-   return res.status(500).json({ message: "Internal server error" });
- }
-}
+};
+
+module.exports.allocateLeave = async (req, res) => {
+  const id = req.params.id;
+  try {
+      const leave_rule = await LeaveRule.findOne({
+          where: { organisation_id: id, employment_type_id: req.body.employment_type_id }
+      });
+
+      if (!leave_rule) {
+          return res.status(404).json({ message: "Leave rule not found" });
+      }
+
+      const leave_type = await LeaveType.findOne({
+          where: { id: leave_rule.id }
+      });
+
+      if (!leave_type) {
+          return res.status(404).json({ message: "Leave type not found" });
+      }
+      const [a,b] = req.body.year.split('/') ;
+
+      const [new_leave, created] = await LeaveAllocation.upsert({
+          employee_code: req.body.employee_code,
+          employment_type_id: req.body.employment_type_id,
+          leave_type_id: leave_rule.id,
+          year: b ? b : req.body.year,
+          leave_in_hand: req.body.leave_in_hand ?? leave_rule.max, // Only update leave_in_hand
+      }, {
+          returning: true, // Returns the newly created or updated row
+          conflictFields: ['employee_code', 'year','leave_type_id'], // Ensures upsert is based on employee_code & year
+      });
+
+      // Construct response
+      const response = {
+          'Select': '-',
+          'Employment Type': req.body.employment_type,
+          'Employee Code': req.body.employee_code,
+          'Leave Name': leave_type?.leave_type,
+          'Maximum No.': leave_rule.max,
+          'Leave in hand': new_leave.leave_in_hand,
+          'Effective Year': req.body.year
+      };
+
+      return res.status(created ? 201 : 200).json(response);
+  } catch (error) {
+      console.error("Error in allocateLeave:", error);
+      return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+module.exports.getLeaveAllocated = async(req,res) => {
+    const allocation_id = req.params.id;
+    try{
+       const leave_allocated = await LeaveAllocation.findOne({
+        where : {id : allocation_id}
+       });
+       const leave_type = await LeaveType.findOne({
+        where : {id : leave_allocated.leave_type_id},
+        include : [
+          {
+            model : LeaveRule,
+            as : 'leaverules',
+            attributes :['max']
+          }
+        ]
+       });
+       const employee_type = await EmploymentType.findOne({where : {id : leave_allocated.employment_type_id}})
+       const data = {
+           leave_type : leave_type.leave_type,
+           employee_code : leave_allocated.employee_code,
+           max : leave_type.leaverules[0].max,
+           employee_type: employee_type.employment_type,
+           leave_in_hand : leave_allocated.leave_in_hand,
+           year : '01/'+leave_allocated.year,
+           employment_type_id : leave_allocated.employment_type_id,
+       };
+       return res.status(200).json(data);
+    }
+    catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+module.exports.getLeavesAllocated = async (req, res) => {
+  const id = req.params.id;
+  console.log('id in leaves:', id);
+
+  try {
+      const employees = await Employee.findAll({
+          where: { organisation_id: id },
+          include: [
+              {
+                  model: PersonalDetail, 
+                  as: 'personaldetail',
+                  attributes: ['fname', 'mname', 'lname']
+              }
+          ]
+      });
+
+      const records = [];
+      let index = 1;
+
+      for (const employee of employees) {
+          const employee_code = employee.employee_code;
+
+          // Fetch all leave allocations for the employee for all years
+          const leave_allocations = await LeaveAllocation.findAll({
+              where: { employee_code: employee_code }
+          });
+
+          console.log(leave_allocations);
+
+          for (const leave_allocated of leave_allocations) {
+              const leave_type = await LeaveType.findOne({
+                  where: { id: leave_allocated.leave_type_id },
+                  include: [
+                      {
+                          model: LeaveRule,
+                          as: 'leaverules',
+                          attributes: ['max']
+                      }
+                  ]
+              });
+
+              console.log(leave_type?.leaverules);
+
+              const employee_type = await EmploymentType.findOne({
+                  where: { id: leave_allocated.employment_type_id }
+              });
+
+              records.push({
+                   id : leave_allocated.id,
+                  "Sl. No.": index++,
+                  "Employee Type": employee_type?.employment_type || 'N/A',
+                  "Employee Code": employee_code,
+                  "Leave Type": leave_type?.leave_type || 'N/A',
+                  "Employee Name": [employee.personaldetail.fname, employee.personaldetail.mname, employee.personaldetail.lname]
+                      .filter(Boolean)
+                      .join(' '),
+                  "Max. No Of Leave": leave_type?.leaverules?.[0]?.max || 0, // Fixed accessing `.max`
+                  "Leave In Hand": leave_allocated.leave_in_hand,
+                  "Effective Year": '01/' + leave_allocated.year,
+                  "Action": "Edit",
+                  employment_type_id : leave_allocated.employment_type_id
+              });
+          }
+      }
+
+      return res.status(200).json(records);
+  } catch (err) {
+      console.error("Error fetching leaves allocated:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
+};

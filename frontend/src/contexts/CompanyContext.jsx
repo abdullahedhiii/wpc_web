@@ -36,6 +36,17 @@ export const CompanyProvider = ({ children }) => {
   const [employees,setEmployees] = useState([]); //this is for employee creation link page
   const [leaveTypes,setLeaveTypes] = useState([]);
   const [leaveRules,setLeaveRules] = useState([]);
+  const [leavesAllocated,setAllocated] = useState([]);
+
+  const fetchLeavesAllocated = async (company_id) => {
+    const id_to = company_id ? company_id : companyData[0].id;
+    try {
+      const response = await axiosInstance.get(`/api/getLeavesAllocated/${id_to}`);
+      if (response.status === 200) {
+        setAllocated(response.data);
+      }
+    } catch (err) {}
+  }
 
   const fetchLeaveRules = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
@@ -43,6 +54,8 @@ export const CompanyProvider = ({ children }) => {
       const response = await axiosInstance.get(`/api/getLeaveRules/${id_to}`);
       if (response.status === 200) {
         setLeaveRules(response.data);
+        console.log(response.data);
+
       }
     } catch (err) {}
   }
@@ -269,6 +282,7 @@ export const CompanyProvider = ({ children }) => {
       fetchEmployeesLink(response.data.id);
       fetchLeaveTypes(response.data.id);
       fetchLeaveRules(response.data.id);
+      fetchLeavesAllocated(response.data.id);
 
     } catch (err) {
       console.log("errorr ", err);
@@ -332,7 +346,7 @@ export const CompanyProvider = ({ children }) => {
         employees,
         fetchEmployeesLink,
         fetchLeaveTypes,
-        leaveTypes,leaveRules,fetchLeaveRules
+        leaveTypes,leaveRules,fetchLeaveRules,leavesAllocated,fetchLeavesAllocated
       }}
     >
       {children}
