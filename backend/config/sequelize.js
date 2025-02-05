@@ -48,8 +48,8 @@ const OrgDocument = require('../models/OrgDocument')(sequelize,DataTypes);
 const Job = require('../models/Job')(sequelize,DataTypes);
 const LeaveType = require('../models/LeaveType')(sequelize,DataTypes);
 const LeaveRule = require('../models/LeaveRule')(sequelize,DataTypes);
-
-
+const LeaveAllocation = require('../models/LeaveAllocation')(sequelize,DataTypes);
+const Candidate = require('../models/Candidate')(sequelize,DataTypes);
 
 
 
@@ -96,8 +96,9 @@ LeaveRule.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisatio
 LeaveType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
 LeaveRule.belongsTo(LeaveType, { as: 'leavetype', foreignKey: 'id' });
 
-EmploymentType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
+EmploymentType.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'id' });
 LeaveRule.belongsTo(EmploymentType, { as: 'employeetypes', foreignKey: 'id' });
+
 
 Organisation.hasMany(Department, {foreignKey: "organisation_id",as: "departments",});
 Department.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
@@ -150,6 +151,11 @@ Employee.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisatio
 
 PersonalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
 Employee.hasOne(PersonalDetail, {foreignKey: "employee_code",as: "personaldetail",});
+
+
+LeaveAllocation.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Employee.hasMany(LeaveAllocation, {foreignKey: "employee_code",as: "leavesallocated",});
+
 
 EducationDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
 Employee.hasMany(EducationDetail, {foreignKey: "employee_code",as: "educationaldetails",});
@@ -204,12 +210,15 @@ Attendance.belongsTo(Employee, { foreignKey: "employee_code", as: "employee" });
 
 Attendance.belongsTo(PersonalDetail, { foreignKey: "employee_code", as: "employeePersonalDetail" });
 
+Job.hasMany(Candidate,{as : 'candidates',foreignKey : 'id'});
+Candidate.belongsTo(Job,{as : 'job',foreignKey:'id'});
+
 module.exports = { sequelize, User,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
                    TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
-                   ,LeaveType,LeaveRule,
+                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail

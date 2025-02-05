@@ -20,7 +20,7 @@ const DataTable = ({
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortField] = useState({ field: "", order: "" });
+  const [sortBy, setSortField] = useState({ field: "", order: "Ascending" });
 
   const filteredData = useMemo(() => {
     return data.filter(
@@ -129,6 +129,7 @@ const DataTable = ({
                 onClick={() => {
                   if (selectedFeature && selectedFeature.plus_icon_route) {
                     navigate(`/hrms/${selectedFeature.plus_icon_route}`);
+                    
                   } else {
                     navigate("/hrms/addemployee");
                   }
@@ -187,17 +188,17 @@ const DataTable = ({
                 {filteredFields.map((field, index) => (
                   <th
                     key={index}
-                    className="relative px-4 py-2 text-left text-[14px] font-semibold text-white bg-background break-words whitespace-nowrap"
+                    className="relative px-3 py-1 text-left text-[14px] font-semibold text-white bg-blue-500  break-words whitespace-nowrap"
                   >
                     <div className="flex justify-between items-start">
                       {field}
-                      <div className="absolute text-xs top-0 right-0 space-y-1 pr-1">
+                      <div className="absolute text-xs top-0 right-[-4px] space-y-1 pr-1">
                         <i
-                          className="la la-arrow-up text-white block cursor-pointer"
+                          className={`la la-arrow-up ${sortBy.order === 'Ascending' ? 'text-white' : 'text-gray-100'} block cursor-pointer`}
                           onClick={() => handleClickSort(field, "Ascending")}
                         ></i>
                         <i
-                          className="la la-arrow-down text-white block cursor-pointer"
+                          className={`la la-arrow-down ${sortBy.order === 'Descending' ? 'text-white' : 'text-gray-100'} block cursor-pointer`}
                           onClick={() => handleClickSort(field, "Descending")}
                         ></i>
                       </div>

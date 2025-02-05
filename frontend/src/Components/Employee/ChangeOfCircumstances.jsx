@@ -55,7 +55,7 @@ const ChangeOfCircumstances = () => {
             loading ? <p>loading dataa</p>
             :   <div className="m-12">
           <p className="text-gray-400 mb-4 text-[12px]">
-            Home <span className="text-tt"> / Change of Circumstances</span>
+            Home <span className="text-[12px] text-tt"> / Change of Circumstances</span>
           </p>
           <DataTable
             title="Change of Circumstances"

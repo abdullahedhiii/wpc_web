@@ -80,6 +80,19 @@ import LeaveRule from "./Components/LeaveManagement/LeaveRule";
 import LeaveRuleForm from "./Components/LeaveManagement/LeaveRuleForm";
 import Footer from "./Components/Footer";
 import COCView from "./Components/Employee/COCView";
+import LeaveAllocation from "./Components/LeaveManagement/LeaveAllocation";
+import LeaveAllocationForm from "./Components/LeaveManagement/LeaveAllocationForm";
+import EditLeaveAllocation from "./Components/LeaveManagement/EditLeaveAllocation";
+import LeaveBalance from "./Components/LeaveManagement/LeaveBalance";
+import JobForm from "./Components/Recruitment/Application/JobForm";
+import JobApplied from "./Components/Recruitment/JobApplied";
+import Candidate from "./Components/Recruitment/Candidate";
+import ShortListed from "./Components/Recruitment/ShortListed";
+import InterviewList from "./Components/Recruitment/InterviewList";
+import HiredList from "./Components/Recruitment/HiredList";
+import Search from "./Components/Recruitment/Search";
+import StatusSearch from "./Components/Recruitment/StatusSearch";
+import RejectedList from "./Components/Recruitment/RejectedList";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -196,7 +209,18 @@ const router = createBrowserRouter([
     {
       path : ':id',
       element : <VisitorForm/>
-    },  ]
+    },  
+  ]
+  },
+  {
+    path: "/careers",
+    children: [
+      {
+        path : ':id',
+        element : <JobForm/>
+      }
+
+    ],
   },
   {
     path: "/hrms/",
@@ -800,7 +824,59 @@ const router = createBrowserRouter([
       {
         path : "employee/change-of-circumstances",
         element : (<ProtectedRoute><COCView/></ProtectedRoute>)
-      }
+      },
+      {
+        path : "leave-management/leave-allocation-listing",
+        element : (<ProtectedRoute><LeaveAllocation/></ProtectedRoute>)
+      },
+      {
+        path : 'leave-management/save-leave-allocation',
+        element : (<ProtectedRoute><LeaveAllocationForm/></ProtectedRoute>)
+      },
+      {
+        path : 'leave-management/leave-allocation-dtl/:allocation_id',
+        element: (<ProtectedRoute><EditLeaveAllocation/></ProtectedRoute>)
+      },
+      {
+        path :"leave-management/leave-balance",
+        element:(<ProtectedRoute><LeaveBalance/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/candidate",
+        element: (<ProtectedRoute><JobApplied/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/candidate/view-details/:candidate_id",
+        element : (<ProtectedRoute><Candidate/></ProtectedRoute>)
+      },
+      {
+        path: "recruitment/short-listing",
+        element: (<ProtectedRoute><ShortListed/></ProtectedRoute>)
+      },
+      {
+        path: "recruitment/interview",
+        element: (<ProtectedRoute><InterviewList/></ProtectedRoute>)
+      },
+      {
+        path: "recruitment/hired",
+        element: (<ProtectedRoute><HiredList/></ProtectedRoute>)
+      },
+      {
+        path: "recruitment/search",
+        element: (<ProtectedRoute><Search/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/status-search",
+        element : (<ProtectedRoute><StatusSearch/></ProtectedRoute>)
+      },
+      {
+        path : "recruitment/rejected",
+        element : (<ProtectedRoute><RejectedList/></ProtectedRoute>)
+      },
+
+
+
+
     ],
   },
 ]);

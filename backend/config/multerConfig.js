@@ -68,6 +68,25 @@ const attendanceStorage = multer.diskStorage({
   }
 });
 
+const candidateStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const [organisation_id,job_id,email]= req.params.id.split('.');
+    if (!job_id) {
+      return cb(new Error("job id is required"));
+    }
+
+    const dir = path.join(uploadPath,organisation_id,'JobCandidates',job_id,email);  
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir); 
+  },
+  filename: function (req, file, cb) {
+    const fileName = Date.now() + path.extname(file.originalname);  
+    cb(null, fileName);
+  }
+});
+
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/jpeg", "image/png", "image/gif",  
@@ -98,4 +117,10 @@ const attendanceUpload = multer({
   limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
   fileFilter
 });
-module.exports = { orgUpload, empUpload,attendanceUpload};
+
+const CandidateUpload = multer({
+  storage: candidateStorage,
+  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
+  fileFilter
+})
+module.exports = { orgUpload, empUpload,attendanceUpload,CandidateUpload};

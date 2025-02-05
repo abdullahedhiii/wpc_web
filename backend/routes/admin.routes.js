@@ -36,7 +36,11 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   addLeaveType,
   getLeaveTypes,
   getLeaveRules,
-  addLeaveRule
+  addLeaveRule,
+  getCOCEmployee,
+  allocateLeave,
+  getLeaveAllocated,
+  getLeavesAllocated
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -108,10 +112,15 @@ router.get('/getEmployeeDetails/:id',getEmployeeData);
 
 router.get('/getCOCDetails/:id',getCOCData);
 router.get('/getCOCTable/:id',getCOCTable);
+router.get('/getSpecificCOC/:id',getCOCEmployee);
 
 router.post('/addLeaveType/:id',addLeaveType)
 router.get('/getLeaveTypes/:id',getLeaveTypes)
 
 router.get('/getLeaveRules/:id',getLeaveRules);
-router.post('/addLeaveRule/:id',addLeaveRule)
+router.post('/addLeaveRule/:id',addLeaveRule);
+
+router.post(`/allocateLeave/:id`,allocateLeave);
+router.get('/getLeaveAllocation/:id',getLeaveAllocated);
+router.get('/getLeavesAllocated/:id',getLeavesAllocated);
 module.exports = router;

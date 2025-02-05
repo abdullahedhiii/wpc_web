@@ -28,9 +28,7 @@ const JobPosting = () => {
     },[]);
   
     return (
-      loading ? (
-        <p>Loading data...</p>
-      ) : (
+  
         <div className="m-16">
           <p className="text-[14px] text-gray-400 mb-4">
             Home / HCM Master<span className="text-tt"> / Job Posted</span>
@@ -46,7 +44,7 @@ const JobPosting = () => {
             buttonTitle="Add New Job"
           />
         </div>
-      )
+      
     );
     
 };

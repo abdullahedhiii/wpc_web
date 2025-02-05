@@ -63,7 +63,7 @@ module.exports.addServiceDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     console.log("Generated file URL:", fileUrl);
@@ -98,12 +98,12 @@ module.exports.addEducationalDetails = async (req, res) => {
     const file2 = req.file ? req.files.certificate_document[0].filename : null;
     const [organisationId, employeeCode] = req.params.id.split(".");
     const f1 = file1
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${file1}`
       : null;
     const f2 = file2
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${file2}`
       : null;
@@ -167,16 +167,17 @@ module.exports.addKeyResponsibility = async (req, res) => {
 };
 
 module.exports.addTrainingData = async (req, res) => {
-  console.log("tra hit ", req.params.id, req.body);
+  console.log("traing hit ", req.params.id, req.body);
   try {
     console.log("error here ? ");
-    const train = await TrainingDetail.create({
+    const train = await TrainingDetail.upsert({
       employee_code: req.params.id.split(".")[1],
       ...req.body,
     });
     return res.status(200).json("training detail added ");
   } catch (err) {
     console.log(err);
+    console.log('errorrr',err);
     return res.status(500).json("internal server error ");
   }
 };
@@ -224,7 +225,7 @@ module.exports.addContact = async (req, res) => {
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
       const fileUrl = req.file
-        ? `https://localhost:${
+        ? `http://localhost:${
             process.env.PORT || 3000
           }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
         : null;
@@ -312,7 +313,7 @@ module.exports.addPassport = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : undefined;
@@ -359,13 +360,13 @@ module.exports.addVisa = async (req, res) => {
     const [organisationId, employeeCode] = req.params.id.split(".");
 
     const frontUrl = frontFileName
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${frontFileName}`
       : null;
 
     const backUrl = backFileName
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${backFileName}`
       : null;
@@ -412,7 +413,7 @@ module.exports.addEsus = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
@@ -450,7 +451,7 @@ module.exports.addDBS = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
@@ -493,7 +494,7 @@ module.exports.add_other_details = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
@@ -519,7 +520,7 @@ module.exports.national_data = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
@@ -569,7 +570,7 @@ module.exports.add_other_document = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `https://localhost:${
+      ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;

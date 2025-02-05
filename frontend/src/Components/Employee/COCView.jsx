@@ -2,12 +2,35 @@ import { useEffect, useState } from "react";
 import DataTable from "../DataTable";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { useCompanyContext } from "../../contexts/CompanyContext";
+import axiosInstance from "../../../axiosInstance";
 
 const COCView = () => {
     const {isSideBarOpen} = useSidebarContext();
-    const {employeeTypes,employees} = useCompanyContext();
+    const {employeeTypes,employees,companyData} = useCompanyContext();
     const [filteredEmployees,setFiltered] = useState([])
     const [formData,setFormData] = useState({employee_code : '',employment_type: ''});
+    const [data,setData] = useState([]);
+    const columns = [
+        "Updated Date",
+        "Employment Type",
+        "Employee ID",
+        "Name Of Member Of The Staff",
+        "Job Title",
+        "Address",
+        "Contact Number",
+        "Nationality",
+        "BRP Number",
+        "Visa Expired",
+        "Remarks/Restriction to work",
+        "Passport No",
+        "ESUS Details",
+        "DBS Details",
+        "National Id Details",
+        "Other Documents",
+        "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?",
+        "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?",
+        "Annual Reminder Date"
+      ];
 
     useEffect(() => {
       if(formData.employment_type){  
@@ -18,7 +41,7 @@ const COCView = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        console.log('here to change ',name,value)
+        setData([])
         setFormData((prev) => ({
           ...prev,
           [name]: value,
@@ -26,7 +49,14 @@ const COCView = () => {
       };
     
     const handleGenerate = async () => {
-
+        const data = formData.employee_code;
+        try{
+            const response = await axiosInstance.get(`/api/getSpecificCOC/${companyData[0].id}`,{params : {data}});
+            setData(response.data);
+        }
+        catch(err){
+            console.log('Error fetching employee COC',err);
+        }
     }
     return (
         <div className="p-12">
@@ -49,7 +79,7 @@ const COCView = () => {
               className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
               required
             >
-                <option>select</option>
+                <option>Select</option>
               {employeeTypes.map((type) => (
                 <option key={type.id} value={type['Employment Type']}>
                   {type['Employment Type']}
@@ -94,8 +124,8 @@ const COCView = () => {
       <div className="mt-8">
         <DataTable 
           title="Change Of Circumstances(View)"
-          fields={[]}
-          data={[]}
+          fields={columns}
+          data={data}
           showEntries
           searchable
           downloadable = {false}

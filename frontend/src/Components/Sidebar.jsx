@@ -99,7 +99,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                       ? "bg-gray-100 shadow-sm text-gray-700 font-semibold"
                       : undefined
                   } rounded-lg  p-3 cursor-pointer`}
-                  onClick={() => toggleSubModule(index)}
+                  onClick={() => subModule.features.length > 0 ? toggleSubModule(index) : undefined}
 
                 >
                   <div className="flex items-center space-x-3" 
