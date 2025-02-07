@@ -93,6 +93,7 @@ import HiredList from "./Components/Recruitment/HiredList";
 import Search from "./Components/Recruitment/Search";
 import StatusSearch from "./Components/Recruitment/StatusSearch";
 import RejectedList from "./Components/Recruitment/RejectedList";
+import OrganisationReport from "./Components/Documents/OrganisationReport";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -873,10 +874,30 @@ const router = createBrowserRouter([
         path : "recruitment/rejected",
         element : (<ProtectedRoute><RejectedList/></ProtectedRoute>)
       },
-
-
-
-
+      {
+        path : "documentsdashboard",
+        element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
+      },
+      {
+        path : "document/staff-report",
+        element : (<ProtectedRoute></ProtectedRoute>)
+      },
+      {
+        path : "document/employees-left",
+        element : (<ProtectedRoute></ProtectedRoute>)
+      },
+      {
+        path : "document/employee-report",
+        element : (<ProtectedRoute></ProtectedRoute>)
+      },
+      {
+        path : "document/employee-archive-report",
+        element : (<ProtectedRoute></ProtectedRoute>)
+      },
+      {
+        path : "document/organisation-report",
+        element : (<ProtectedRoute><OrganisationReport/></ProtectedRoute>)
+      },
     ],
   },
 ]);

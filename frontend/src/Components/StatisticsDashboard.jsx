@@ -104,7 +104,7 @@ const StatisticsDashboard = ({ title }) => {
 
   return (
     <div className="relative">
-      <p className="text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl font-bold p-14">
+      <p className="text-white bg-gradient-to-r from-purple-700 to-purple-500 text-2xl font-bold p-14">
         Dashboard
       </p>
 
