@@ -49,9 +49,6 @@ const EmployeePage = () => {
         Home /<span className="text-tt px-3"> Employee</span>
       </p>
 
-      {loading ? (
-        <p className="text-gray-500">Loading employees...</p>
-      ) : (
         <DataTable
           title="Employee"
           fields={columns}
@@ -64,7 +61,6 @@ const EmployeePage = () => {
           buttonTitle="Add New Employee"
           isDashboard={true}
         />
-      )}
     </div>
   );
 };

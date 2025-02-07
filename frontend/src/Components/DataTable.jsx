@@ -188,7 +188,7 @@ const DataTable = ({
                 {filteredFields.map((field, index) => (
                   <th
                     key={index}
-                    className="relative px-3 py-1 text-left text-[14px] font-semibold text-white bg-blue-500  break-words whitespace-nowrap"
+                    className="relative px-3 py-1 text-left text-[14px] font-semibold text-white bg-blue-400  break-words whitespace-nowrap"
                   >
                     <div className="flex justify-between items-start">
                       {field}
@@ -228,7 +228,7 @@ const DataTable = ({
                         field === "Delete" ? (
                           Array.isArray(row["Action"]) ? (
                             <select
-                              className="border rounded py-1 bg-purple-600 text-white hover:bg-blue-700"
+                              className="border rounded py-1 bg-blue-600 text-white hover:bg-blue-700"
                               onChange={(e) =>
                                 navigate(`/hrms/${e.target.value}`)
                               }

@@ -2499,3 +2499,17 @@ module.exports.getLeavesAllocated = async (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+module.exports.getOrgDocuments = async(req,res) => {
+     const id = req.params.id;
+
+     try{
+         const documents = await OrgDocument.findAll({where : {organisation_id : id}});
+         return res.status(200).json(documents);
+     }
+     catch (err) {
+      console.error("Error fetching documents:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
+}

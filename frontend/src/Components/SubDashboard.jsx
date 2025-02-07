@@ -5,13 +5,31 @@ import { FaArrowRight } from "react-icons/fa";
 
 const SubDashboard = () => {
   const { selectedModule } = useModuleContext();
+  const location = useLocation();
   const navigate = useNavigate();
   const dashboard = selectedModule.dashboard;
+  const isDocuments = location.pathname.includes('documentsdashboard') ? true : false;
+  console.log(location,isDocuments);
   return (
     <>
-      <p className="p-12 text-white bg-gradient-to-r from-blue-700 to-blue-900 text-2xl">
-        Dashboard
-      </p>
+    <div className={`text-white bg-gradient-to-r from-blue-700 to-blue-500 ${isDocuments ? "flex justify-between items-center" : ""}`}>
+  <p className="p-12 text-2xl">Dashboard</p>
+  {isDocuments && (
+    <div className="flex space-x-3 mr-4 ">
+      <button className="border border-white bg-blue-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
+        <a href="/sample_documents/staffreport.pdf" target="_blank">Blank Staff Report</a>
+        </button>
+      <button className="border border-white bg-blue-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
+      <a href="/sample_documents/contract.pdf" target="_blank">Blank Contract</a>
+      </button>
+      <button className="border border-white bg-blue-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
+      <a href="/sample_documents/employeereport.pdf" target="_blank">Blank Employee Report</a>
+        </button>
+    </div>
+  )}
+</div>
+
+     
       <div className="min-h-screen bg-white p-6">
         <div className="relative top-[-86px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-12">
           {dashboard.map((feature, index) => (

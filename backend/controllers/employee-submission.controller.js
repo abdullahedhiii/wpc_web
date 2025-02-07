@@ -92,38 +92,47 @@ module.exports.addServiceDetails = async (req, res) => {
 };
 
 module.exports.addEducationalDetails = async (req, res) => {
-  console.log("educational hit ", req.params.id, req.body);
+  console.log("Educational hit ", req.params.id, req.body);
+
   try {
-    const file1 = req.file ? req.files.transcript_document[0].filename : null;
-    const file2 = req.file ? req.files.certificate_document[0].filename : null;
+    const file1 = req.files?.transcript_document ? req.files.transcript_document[0].filename : null;
+    const file2 = req.files?.certificate_document ? req.files.certificate_document[0].filename : null;
     const [organisationId, employeeCode] = req.params.id.split(".");
+
     const f1 = file1
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${file1}`
+      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${file1}`
       : null;
+
     const f2 = file2
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${file2}`
+      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${file2}`
       : null;
-    const document = await EducationDetail.create({
+
+    // Check if an ID is provided to determine whether to update or create
+    const { id, ...otherDetails } = req.body;
+
+    // Prepare the data for upsert (insert or update)
+    const educationalDetails = {
+      id: id || null, // If ID exists, use it for updating; otherwise, create new
       employee_code: employeeCode,
       transcript_document: f1,
       certificate_document: f2,
-      ...req.body,
-    });
+      ...otherDetails,
+    };
 
-    return res
-      .status(200)
-      .json({ message: "educational details added", document });
+    // Perform the upsert
+    const [document, created] = await EducationDetail.upsert(educationalDetails);
+
+    const message = created
+      ? "Educational details added successfully."
+      : "Educational details updated successfully.";
+
+    return res.status(200).json({ message, document });
   } catch (err) {
-    console.error("Error adding document:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: err });
+    console.error("Error adding or updating document:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
+
 
 module.exports.addJobDetails = async (req, res) => {
   console.log("job hit ", req.params.id, req.body);
@@ -154,17 +163,34 @@ module.exports.addJobDetails = async (req, res) => {
 
 
 module.exports.addKeyResponsibility = async (req, res) => {
-  console.log("key hit ", req.params.id, req.body);
+  console.log("Key responsibility hit ", req.params.id, req.body);
+
   try {
-    const key = await KeyResponsibility.create({
-      employee_code: req.params.id.split(".")[1],
-      ...req.body,
-    });
-    return res.status(200).json("key detail added ");
+    const employeeCode = req.params.id.split(".")[1];
+
+    const { id, ...otherDetails } = req.body;
+
+    // Prepare the responsibility data
+    const keyResponsibilityData = {
+      id: id || null, // If ID exists, use it for updating; otherwise, create new
+      employee_code: employeeCode,
+      ...otherDetails,
+    };
+
+    // Perform upsert (insert or update)
+    const [keyResponsibility, created] = await KeyResponsibility.upsert(keyResponsibilityData);
+
+    const message = created
+      ? "Key responsibility added successfully."
+      : "Key responsibility updated successfully.";
+
+    return res.status(200).json({ message, keyResponsibility });
   } catch (err) {
-    return res.status(500).json("internal server error ");
+    console.error("Error adding or updating key responsibility:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
+
 
 module.exports.addTrainingData = async (req, res) => {
   console.log("traing hit ", req.params.id, req.body);
@@ -287,26 +313,34 @@ module.exports.addContact = async (req, res) => {
   };
   
 
-module.exports.addPayStructure = async (req, res) => {
-  console.log("structure hit ", req.params.id, req.body);
-  try {
-    const [organisationId, employeeCode] = req.params.id.split(".");
-    const [payStructure, created] = await PayStructure.upsert({
-      employee_code: employeeCode,
-      ...req.body,
-    });
-
-    if (created) {
-      return res.status(200).json("Pay structure added");
-    } else {
-      return res.status(200).json("Pay structure updated");
+  module.exports.addPayStructure = async (req, res) => {
+    console.log("structure hit ", req.params.id, req.body);
+    try {
+      const [organisationId, employeeCode] = req.params.id.split(".");
+  
+      // Check if pay structure already exists
+      const existingPayStructure = await PayStructure.findOne({
+        where: { employee_code: employeeCode },
+      });
+  
+      if (existingPayStructure) {
+        // Update existing record
+        await existingPayStructure.update(req.body);
+        return res.status(200).json("Pay structure updated successfully");
+      } else {
+        // Create new record
+        await PayStructure.create({
+          employee_code: employeeCode,
+          ...req.body,
+        });
+        return res.status(201).json("Pay structure added successfully");
+      }
+    } catch (err) {
+      console.error("Error processing pay structure:", err);
+      return res.status(500).json("Internal server error");
     }
-  } catch (err) {
-    console.error("Error processing pay structure:", err);
-    return res.status(500).json("Internal server error");
-  }
-};
-
+  };
+  
 
 module.exports.addPassport = async (req, res) => {
   console.log("passport hit", req.params.id, req.body);
