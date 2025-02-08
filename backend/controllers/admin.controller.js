@@ -43,6 +43,10 @@ const {
   LeaveType,
   LeaveRule,
   LeaveAllocation,
+  UserRole,
+  Module,
+  SubModule,
+  Feature,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
@@ -2513,3 +2517,133 @@ module.exports.getOrgDocuments = async(req,res) => {
       return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+module.exports.createUser = async (req,res) => {
+  console.log('USer creation endpoint hit');
+  console.log(req.body);
+  try{
+  const existingUser = await User.findOne({ where: { email:req.body.email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists.' });
+  }
+  const newUser = await User.create({
+    ...req.body,
+    organisation_id : req.params.id,
+  }); 
+  return res.status(201).json({ message: 'User registered successfully.',newUser});
+  } 
+  catch (error) {
+    console.error('Error in user creation:', error);
+    return res.status(500).json({ error: 'An error occurred. Please try again later.' });
+  }
+
+};
+
+module.exports.updateUser = async (req,res) => {
+
+};
+
+
+// const columns = [
+//   "Sl. No.",
+//   "Employee Code ",
+//   "Name",
+//   "Email",
+//   "Password",
+//   "Action"
+// ];
+
+module.exports.getUserData = async (req,res) => {
+    const id = req.params.id;
+    try{
+       const user = await User.findOne({where : {id : id}});
+       const response = {id : user.id,employee_code : user.employee_code, email : user.email,password : '***', employee_name : user.employee_name};
+       return res.status(200).json(response);
+    }
+    catch(err){
+      return res.status(500).json({message : 'Internal Server Error'});
+    }
+};
+
+module.exports.getUsers = async (req,res) => {
+     const id = req.params.id;
+     try{
+          const users = await User.findAll({where : {organisation_id : id}});
+          const formattedResponse = await Promise.all(
+            users.map(async (user, index) => {
+              const details = await PersonalDetail.findOne({where: {employee_code : user.employee_code }})
+                return{
+                    id : user.id,
+                    "Sl. No." : index+1,
+                    "Employee Code" : user.employee_code,
+                    "Name" : [details.fname,details.mname,details.lname].filter(Boolean).join(' '),
+                    "Email" : user.email,
+                    "Password" : "****",
+                    "Action" :"Edit"
+                }
+            }));
+            return res.status(200).json(formattedResponse);
+
+     }
+     catch(err){
+         return res.status(500).json({error : 'Internal server error'});
+     }
+}
+module.exports.grantRights = async (req,res) => {
+    console.log(req.body);
+    try{
+        await UserRole.create({
+          user_id : req.body.email,
+          sub_module_id : req.body.module,
+          feature_id : req.body.feature,
+          right : req.body.right
+        });
+        return res.status(200).json({message : 'User role created'});
+
+    }
+    catch(err){
+      console.log(err);
+      return res.status(500).json({error : 'Internal server error'});
+  }
+};
+
+module.exports.getUserRoles = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const data = await User.findAll({
+      where: { organisation_id: id },
+      include: [
+        {
+          model: UserRole,
+          as: 'roles',
+          include: [
+            {
+              model: Feature,
+              as: 'feature',
+            },
+            {
+              model: SubModule,
+              as: 'submodule',
+            }
+          ],
+        },
+      ],
+    });
+
+    const formattedResponse = data.flatMap((user, index) =>
+      user.roles.map((role) => ({
+        "Sl. No.": index + 1,  
+        "User Id": user.email,
+        "Module Name": role.submodule ? role.submodule.name : "N/A",
+        "Menu": role.feature ? role.feature.name : "N/A",
+        "Rights": role.right,
+        "Action": "Delete", 
+      }))
+    );
+
+    return res.status(200).json(formattedResponse);
+  } catch (err) {
+    console.error("Error fetching user roles:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};

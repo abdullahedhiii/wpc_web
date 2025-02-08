@@ -204,7 +204,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: "Users",
+          model: "Admins",
           key: "id",
         },
       },
@@ -215,7 +215,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Organisation.belongsTo(sequelize.models.User, {
+  Organisation.belongsTo(sequelize.models.Admin, {
     foreignKey: "admin_id",
     as: "admin",
   });

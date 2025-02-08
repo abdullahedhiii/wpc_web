@@ -23,7 +23,6 @@ const Sidebar = ({ isOpen, setOpen }) => {
   const handleFeatureSelect = (feature) => {
     setSubFeature(feature);
     setOpenSubModuleIndex(null);
-    console.log("in module select", companyData[0]);
 
     if (feature.name === "Organisation Profile" && !companyData[0].id) {
       navigate(`/hrms/company-profile/edit-company`);
@@ -122,7 +121,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                 {openSubModuleIndex === index && (
                   <div className="space-y-3 p-3 text-[13px] text-gray-400">
                     {subModule.features.map((feature, featureIndex) => (
-                      <div
+                      feature.can_access ? (<div
                         key={featureIndex}
                         className="flex items-center w-full cursor-pointer hover:bg-gray-100 relative rounded-lg p-2 leading-4"
                         onClick={() => handleFeatureSelect(feature)}
@@ -132,7 +131,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                         <div className="flex items-center w-full space-x-2 pl-6">
                           <span className="text-gray-700">{feature.name}</span>
                         </div>
-                      </div>
+                      </div>) : null
                     ))}
                   </div>
                 )}

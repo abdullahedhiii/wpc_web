@@ -9,7 +9,6 @@ const SubDashboard = () => {
   const navigate = useNavigate();
   const dashboard = selectedModule.dashboard;
   const isDocuments = location.pathname.includes('documentsdashboard') ? true : false;
-  console.log(location,isDocuments);
   return (
     <>
     <div className={`text-white bg-gradient-to-r from-blue-700 to-blue-500 ${isDocuments ? "flex justify-between items-center" : ""}`}>

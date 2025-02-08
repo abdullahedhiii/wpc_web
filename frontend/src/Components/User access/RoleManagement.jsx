@@ -1,29 +1,36 @@
+import { useEffect, useState } from "react";
 import DataTable from "../DataTable";
+import axiosInstance from "../../../axiosInstance";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 
 const RoleManagement = () => {
     const columns = [
         "Sl. No.",
-        "User Id ",
+        "User Id",
         "Module Name",
         "Menu",
         "Rights",
         "Action"
       ];
-    
-      const data = [
-        {
-          "Sl. No." : 1,
-        "User Id ": 123,
-        "Module Name" : 'Employee',
-        "Menu" : 'Employee Master',
-        "Rights" : "Add",
-        "Action" : "Delete",
-        }
-      ]; 
-    
+      const {companyData} = useCompanyContext();
+      const [data,setData] = useState([]);
+      const fetchRoles = async () => {
+          try{
+                const response  = await axiosInstance.get(`/api/getUserRoles/${companyData[0].id}`);
+                setData(response.data);
+          }
+          catch(err){
+
+          }
+      };
+      
+      useEffect(() => {
+           fetchRoles();
+      },[]);
+
       return (
-        <>
-          <p className="mt-10 text-gray-400 mb-4">
+        <div className="m-12">
+          <p className="text-gray-400 mb-4 text-[12px]">
             Home <span className="text-tt"> / User Configuration</span>
           </p>
           <DataTable
@@ -35,7 +42,7 @@ const RoleManagement = () => {
             downloadable = {false}
             addMore = {true}
           />
-        </>
+        </div>
       );
 }
 

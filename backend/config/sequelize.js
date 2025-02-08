@@ -22,7 +22,7 @@ sequelize
   });
 
 // Import models
-const User = require('../models/User')(sequelize, DataTypes);
+const Admin = require('../models/Admin')(sequelize, DataTypes);
 const Module = require('../models/Module')(sequelize, DataTypes);
 const Dashboard = require('../models/Dashboard')(sequelize, DataTypes);
 const Feature = require('../models/Feature')(sequelize, DataTypes);
@@ -50,8 +50,8 @@ const LeaveType = require('../models/LeaveType')(sequelize,DataTypes);
 const LeaveRule = require('../models/LeaveRule')(sequelize,DataTypes);
 const LeaveAllocation = require('../models/LeaveAllocation')(sequelize,DataTypes);
 const Candidate = require('../models/Candidate')(sequelize,DataTypes);
-
-
+const User = require('../models/User')(sequelize,DataTypes);
+const UserRole = require('../models/UserRoles')(sequelize,DataTypes);
 
 const Employee = require('../models/Employee')(sequelize,DataTypes);
 const PersonalDetail = require('../models/PersonalDetail')(sequelize,DataTypes);
@@ -86,6 +86,16 @@ Feature.belongsTo(SubModule, { as: 'submodule', foreignKey: 'submodule_id' });
 
 Organisation.hasMany(TradingHour, { as: 'tradingHours', foreignKey: 'organisation_id' });
 TradingHour.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+
+User.hasMany(UserRole, { as: "roles", foreignKey: "user_id" });
+UserRole.belongsTo(User, { as: "user", foreignKey: "user_id" });
+
+Feature.hasMany(UserRole, { as: "roles", foreignKey: "feature_id" });
+UserRole.belongsTo(Feature, { as: "feature", foreignKey: "feature_id" });
+
+SubModule.hasMany(UserRole, { as: "roles", foreignKey: "sub_module_id" });
+UserRole.belongsTo(SubModule, { as: "submodule", foreignKey: "sub_module_id" });
+
 
 Organisation.hasMany(LeaveType, { as: 'leavetypes', foreignKey: 'organisation_id' });
 LeaveType.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
@@ -213,12 +223,12 @@ Attendance.belongsTo(PersonalDetail, { foreignKey: "employee_code", as: "employe
 Job.hasMany(Candidate,{as : 'candidates',foreignKey : 'id'});
 Candidate.belongsTo(Job,{as : 'job',foreignKey:'id'});
 
-module.exports = { sequelize, User,Organisation, Module,
+module.exports = { sequelize, Admin,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
                    TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
-                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,
+                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,User,UserRole,
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail

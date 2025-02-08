@@ -9,24 +9,23 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      company_name: {
-        type: DataTypes.STRING,
+      organisation_id :{
+        type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: "Organisations",
+          key: "id",
+        },
       },
-      first_name: {
+      employee_code:{
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      last_name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        references: {
+          model: "Employees",
+          key: "employee_code",
+        },
       },
       email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      phone_number: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,

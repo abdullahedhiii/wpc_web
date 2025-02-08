@@ -41,7 +41,12 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   allocateLeave,
   getLeaveAllocated,
   getLeavesAllocated,
-  getOrgDocuments
+  getOrgDocuments,
+  createUser,
+  grantRights,
+  getUsers,
+  getUserData,
+  getUserRoles
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -126,4 +131,10 @@ router.get('/getLeaveAllocation/:id',getLeaveAllocated);
 router.get('/getLeavesAllocated/:id',getLeavesAllocated);
 
 router.get('/getOrganisationDocuments/:id',getOrgDocuments);
+
+router.post('/createUser/:id',createUser);
+router.post('/grantRights',grantRights);
+router.get('/getUsers/:id',getUsers);
+router.get('/getUserData/:id',getUserData);
+router.get('/getUserRoles/:id',getUserRoles);
 module.exports = router;
