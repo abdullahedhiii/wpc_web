@@ -1410,8 +1410,7 @@ const EmployeeForm = () => {
             }
           }
         }
-        // const department_id = departmentData.find((ele) => ele['Department Name'] === formData.service_details.department).id;
-        // const designation_id = designationData.find((ele) => ele['Designation'] === formData.service_details.designation).id;
+     
         const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
 
         // serviceDetailsFormData.append("department_id",department_id);

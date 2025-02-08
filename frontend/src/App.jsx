@@ -16,6 +16,7 @@ import Dashboard from "./Components/Dashboard";
 import "line-awesome/dist/line-awesome/css/line-awesome.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+import RoleManagement from "./Components/User access/RoleManagement";
 import JobList from "./Components/Recruitment/JobList";
 import ProtectedRoute from "./ProtectedRoute";
 import OrganisationProfile from "./Pages/OrganisationProfile";
@@ -94,6 +95,8 @@ import Search from "./Components/Recruitment/Search";
 import StatusSearch from "./Components/Recruitment/StatusSearch";
 import RejectedList from "./Components/Recruitment/RejectedList";
 import OrganisationReport from "./Components/Documents/OrganisationReport";
+import UserForm from "./Components/User access/UserForm";
+import UserRoleForm from "./Components/User access/UserRoleForm";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -698,6 +701,22 @@ const router = createBrowserRouter([
             <UserConfiguration/>
           </ProtectedRoute>
         )
+      },
+      {
+        path : 'role/vw-user-config',
+        element : (<ProtectedRoute><UserForm/></ProtectedRoute>)
+      },
+      {
+        path : 'role/vw-user-config/:id',
+        element : (<ProtectedRoute><UserForm/></ProtectedRoute>)
+      },
+      {
+        path : 'role/view-users-role',
+        element : (<ProtectedRoute> <RoleManagement/> </ProtectedRoute>)
+      },
+      {
+        path : `role/user-role`,
+        element : (<ProtectedRoute><UserRoleForm/></ProtectedRoute>)
       },
       {
         path : "addemployee",

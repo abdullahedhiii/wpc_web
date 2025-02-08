@@ -1,29 +1,38 @@
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../axiosInstance";
 import DataTable from "../DataTable";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 
 const UserConfiguration = () => {
+    const {companyData} = useCompanyContext();
     const columns = [
         "Sl. No.",
-        "Employee Code ",
+        "Employee Code",
         "Name",
         "Email",
         "Password",
         "Action"
       ];
     
-      const data = [
-        {
-          "Sl. No." : 1,
-        "Employee Code ": 'ABC',
-        "Name" : 'A edhi',
-        "Email" : 'sssksk@gmail.com',
-        "Password" : 123,
-        "Action" : "Edit",
-        }
-      ]; 
-    
+      const [data,setData] = useState([]);
+
+      const fetchUsers = async () => {
+          try{
+               const response  = await axiosInstance.get(`/api/getUsers/${companyData[0].id}`);
+               setData(response.data);
+          }
+          catch(err){
+
+          }
+      }
+      
+      useEffect(() => {
+           fetchUsers();
+      },[]);
+
       return (
-        <div className="p-6">
-          <p className="mt-10 text-gray-400 mb-4">
+        <div className="m-12">
+          <p className="text-gray-400 mb-4 text-[12px]">
             Home <span className="text-tt"> / User Configuration</span>
           </p>
           <DataTable

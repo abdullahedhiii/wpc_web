@@ -54,7 +54,6 @@ export const CompanyProvider = ({ children }) => {
       const response = await axiosInstance.get(`/api/getLeaveRules/${id_to}`);
       if (response.status === 200) {
         setLeaveRules(response.data);
-        console.log(response.data);
 
       }
     } catch (err) {}
@@ -257,12 +256,12 @@ export const CompanyProvider = ({ children }) => {
     }
   };
 
-  const fetchOrganisation = async (admin_id) => {
-    try {
+  const fetchOrganisation = async (admin_id,isAdmin) => {
+    try {   
+      if(isAdmin){
       const response = await axiosInstance.get("/api/getOrganisations", {
         params: { admin_id },
       });
-
       setCompanyData([response.data]);
       fetchDetails(response.data.id);
       fetchDepartments(response.data.id);
@@ -283,7 +282,8 @@ export const CompanyProvider = ({ children }) => {
       fetchLeaveTypes(response.data.id);
       fetchLeaveRules(response.data.id);
       fetchLeavesAllocated(response.data.id);
-
+   
+    }
     } catch (err) {
       console.log("errorr ", err);
       setCompanyData([]);

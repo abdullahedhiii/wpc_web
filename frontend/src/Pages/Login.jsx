@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -34,8 +34,8 @@ const Login = () => {
       const response = await axios.post("/api/login", info);
       dispatch(login(response.data.user));
       console.log(' logging in ',response.data.user);
-      fetchModules();
-      fetchOrganisation(response.data.user.id);
+      fetchModules(response.data.user.id,response.data.user.isAdmin);
+      fetchOrganisation(response.data.user.id,response.data.user.isAdmin);
       navigate("/employeeDashboard");
     } catch (err) {
       console.error("Login error:", err);
@@ -46,7 +46,10 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
+  
+  useEffect(() => {
 
+  },)
   return (
     <div className="min-h-screen bg-pinkbg pt-16 md:pt-14">
       <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-3 px-4 md:px-12">

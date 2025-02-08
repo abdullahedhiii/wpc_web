@@ -1,4 +1,4 @@
-const {User,Module,SubModule,Feature,Dashboard, Organisation} = require('../config/sequelize');
+const {User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole} = require('../config/sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
@@ -10,12 +10,12 @@ module.exports.Register = async (req, res) => {
 
     const { companyName,firstName, lastName, email, contactNumber,password } = req.body;
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await Admin.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const newUser = await User.create({
+    const newUser = await Admin.create({
         company_name: companyName,
         first_name: firstName,
         last_name: lastName,
@@ -24,21 +24,8 @@ module.exports.Register = async (req, res) => {
         password,
       });
 
-    const token = jwt.sign({ id: newUser.id, email: newUser.email }, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
-
-    res.cookie('sessionToken', token, {
-      httpOnly: true,  
-      secure: false,  
-      maxAge: 24 * 60 * 60 * 1000,  
-    });
     return res.status(201).json({
       message: 'User registered successfully.',
-      token,
-      user: {
-        id: newUser.id,
-      },
     });
   } catch (error) {
     console.error('Error in Register:', error);
@@ -50,11 +37,17 @@ module.exports.Login = async (req, res) => {
   console.log('Login endpoint hit', req.body);
   try {
     const { email, password } = req.body;
-
-    const existingUser = await User.findOne({ where: { email }, raw: true });
-    if (!existingUser) {
-      console.log('Error: email not found');
-      return res.status(400).json({ error: 'No user with this email found' });
+    let existingUser ,isAdmin;
+    existingUser = await Admin.findOne({ where: { email }, raw: true });
+    if (existingUser) isAdmin = true;
+    else{
+      existingUser = await User.findOne({ where: { email }, raw: true });
+      if(existingUser) isAdmin = false;
+    }
+    
+    if(!existingUser){
+      console.log('Error: email error');
+      return res.status(400).json({ error: 'Email not found, try again' });
     }
 
     const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
@@ -64,9 +57,30 @@ module.exports.Login = async (req, res) => {
     }
 
     const { password: _, ...userDetails } = existingUser;
-    
-    const org = await Organisation.findOne({where : {admin_id : userDetails.id}})
-    console.log(org, '??',org.Company_Logo);
+    let org,employee;
+    if(isAdmin) org = await Organisation.findOne({where : {admin_id : userDetails.id}})
+    else{
+       employee = await Employee.findOne({where : {employee_code : existingUser.employee_code},
+            include : [
+              {
+                 model : Organisation,
+                 as : 'organisation',
+                 attributes : ['Company_name']
+              },
+              {
+                model : PersonalDetail,
+                as : 'personaldetail',
+                attributes : ['fname','mname','lname','contact_1']
+              },
+              {
+                model : ServiceDetail,
+                as : 'servicedetail',
+                attributes : ['profile_pic']
+              },
+
+            ]
+      })
+    }
     const token = jwt.sign(
       { id: userDetails.id, email: userDetails.email },
       process.env.JWT_SECRET, 
@@ -74,13 +88,23 @@ module.exports.Login = async (req, res) => {
     );
     
     res.cookie('access_token', token, {
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production', 
-      maxAge: 3600000,
+      httpOnly: true,  
+      secure: false,  
+      maxAge: 24 * 60 * 60 * 1000,  
     });
-
+    const response  = isAdmin ? {...userDetails, profile_image : org?.Company_Logo || null,isAdmin} :
+    {
+           company_name : employee.organisation.company_name,
+           email : userDetails.email,
+           phone_number : employee.personaldetail.contact_1,
+           first_name : [employee.personaldetail.fname,employee.personaldetail.mname].filter(Boolean).join(' '),
+           id : userDetails.id,
+           last_name : employee.personaldetail.lname || '',
+           profile_image : employee.servicedetail.profile_pic || null,
+           isAdmin
+    };
     return res.status(200).json({
-      user: {...userDetails, profile_image : org?.Company_Logo || null,}, 
+      user: response, 
       token,
     });
   } catch (error) {
@@ -90,71 +114,138 @@ module.exports.Login = async (req, res) => {
 };
 
 module.exports.getModules = async (req, res) => {
-  console.log('modules endpoint hittt');
+  console.log("Modules endpoint hit");
+  const { isAdmin } = req.query;
+  const userId = req.params.id;
+
   try {
+    // Fetch all modules with related subModules and features
     const modules = await Module.findAll({
-      order: [['id', 'ASC']], 
+      order: [["id", "ASC"]],
       include: [
         {
           model: Dashboard,
-          as: 'dashboard',
-          attributes: ['id','name', 'completed', 'color', 'icon', 'count', 'percentage','view_route'],
-          separate:true,
-          order: [['id', 'ASC']], 
+          as: "dashboard",
+          attributes: [
+            "id",
+            "name",
+            "completed",
+            "color",
+            "icon",
+            "count",
+            "percentage",
+            "view_route",
+          ],
+          separate: true,
+          order: [["id", "ASC"]],
         },
         {
           model: SubModule,
-          as: 'subModules',
+          as: "subModules",
           include: [
             {
               model: Feature,
-              as: 'features',
-              attributes: ['id','name', 'next_route','plus_icon_route','action_route', 'icon'], 
-              separate:true,
-              order: [['id', 'ASC']], 
+              as: "features",
+              attributes: [
+                "id",
+                "name",
+                "next_route",
+                "plus_icon_route",
+                "action_route",
+                "icon",
+              ],
+              separate: true,
+              order: [["id", "ASC"]],
             },
           ],
-          attributes: ['id','name', 'main_route','icon'], 
-          separate:true,
-          order: [['id', 'ASC']], 
+          attributes: ["id", "name", "main_route", "icon"],
+          separate: true,
+          order: [["id", "ASC"]],
         },
       ],
     });
 
-    const formattedModules = modules.map((module) => ({
-      id: module.id,
-      name: module.name,
-      icon_image: module.icon_image,
-      next_route: module.next_route,
-      button_title : module.button_title,
-      dashboard: module.dashboard.map((d) => ({
-        name: d.name,
-        completed: d.completed,
-        color: d.color,
-        icon: d.icon || '',
-        count: d.count || -1,
-        percentage: d.percentage || -1,
-        view_route: d.view_route,
-      })),
-      subModules: module.subModules.map((subModule) => ({
-        name: subModule.name,
-        main_route: subModule.main_route,
-        icon: subModule.icon,
-        features: subModule.features.map((feature) => ({
-          name: feature.name,
-          next_route: feature.next_route,
-          icon: feature.icon || '',
-          plus_icon_route: feature.plus_icon_route,
-          action_route: feature.action_route,
-        })),
-      })),
-    }));
-    
+    // If admin, return full data
+    if (isAdmin === 'true' ) {
+      console.log('returningg ',isAdmin)
+      return res.status(200).json(
+        modules.map((module) => ({
+          id: module.id,
+          name: module.name,
+          icon_image: module.icon_image,
+          next_route: module.next_route,
+          button_title: module.button_title,
+          dashboard: module.dashboard.map((d) => ({
+            name: d.name,
+            completed: d.completed,
+            color: d.color,
+            icon: d.icon || "",
+            count: d.count || -1,
+            percentage: d.percentage || -1,
+            view_route: d.view_route,
+            id: d.id,
+          })),
+          subModules: module.subModules.map((subModule) => ({
+            id: subModule.id,
+            name: subModule.name,
+            main_route: subModule.main_route,
+            icon: subModule.icon,
+            features: subModule.features.map((feature) => ({
+              name: feature.name,
+              next_route: feature.next_route,
+              icon: feature.icon || "",
+              plus_icon_route: feature.plus_icon_route,
+              action_route: feature.action_route,
+              id: feature.id,
+            })),
+          })),
+        }))
+      );
+    }
 
+    // Fetch user roles to check access
+    const userRoles = await UserRole.findAll({
+      where: { user_id: userId },
+      attributes: ["sub_module_id", "feature_id"],
+    });
+    console.log('errorsss??')
+
+    const userFeatureAccess = new Set(userRoles.map((role) => role.feature_id));
+    const userSubModuleAccess = new Set(
+      userRoles.map((role) => role.sub_module_id)
+    );
+    console.log('errosr??')
+
+    const formattedModules = modules.map((module) => {
+      let moduleHasAccess = false;
+      console.log('error??')
+      const subModules = module.subModules.map((subModule) => {
+        let subModuleHasAccess = false;
+
+        const features = subModule.features.map((feature) => {
+          const can_access = userFeatureAccess.has(feature.id);
+          if (can_access) subModuleHasAccess = true;
+          return { ...feature.get(), can_access };
+        });
+
+        if (!subModuleHasAccess) {
+          subModuleHasAccess = userSubModuleAccess.has(subModule.id);
+        }
+        if (subModuleHasAccess) moduleHasAccess = true;
+
+        return { ...subModule.get(), features, can_access: subModuleHasAccess };
+      });
+
+      return {
+        ...module.get(),
+        subModules,
+        can_access: moduleHasAccess,
+      };
+    });
     res.status(200).json(formattedModules);
   } catch (error) {
-    console.error('Error fetching modules:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching modules:", error);
+    res.status(500).json({ error: "Internal Server Error",err : error });
   }
 };
 
