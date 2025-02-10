@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useSidebarContext } from "../contexts/SidebarContext";
+import { useSelector } from "react-redux";
 
 const DataTable = ({
   title,
@@ -14,14 +15,16 @@ const DataTable = ({
   icon,
   isDashboard,
   buttonTitle,
-  isMain,
+  addEmployeeWise = false,
+  buttonEmployee,
+  employeePath
 }) => {
   const { selectedFeature } = useModuleContext();
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortField] = useState({ field: "", order: "Ascending" });
-
+  const {user} = useSelector((state) => state.user);
   const filteredData = useMemo(() => {
     return data.filter(
       (row) =>
@@ -113,16 +116,25 @@ const DataTable = ({
             )}
             <h2 className="text-[14px] font-semibold text-blue-900">{title}</h2>
           </div>
-          <div className="flex items-center space-x-2 pr-4">
+          <div className="flex items-center space-x-2 pr-6">
             {downloadable && (
-              <button
-                title="Export Data"
-                className="bg-background text-white w-7 h-7 border rounded-full hover:text-blue-700"
-              >
-                <i className="la la-download text-[20px]"></i>
-              </button>
+             
+                <img src="/images/dnld.png" 
+                className="h-6 w-6 cursor-pointer"
+              />              
+  
             )}
             {addMore && (
+              <div className="flex space-x-4">
+                {
+                  addEmployeeWise && 
+                  <img 
+                    src="/images/user-image.png"
+                    className="h-6 w-6 cursor-pointer"
+                    title={buttonEmployee}
+                    onClick={() => navigate(`/hrms/${employeePath}`)}
+                  />
+                }
               <button
                 title={buttonTitle}
                 className="bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
@@ -134,9 +146,12 @@ const DataTable = ({
                     navigate("/hrms/addemployee");
                   }
                 }}
+                disabled = {user.isAdmin ? false : !selectedFeature.can_add}
+
               >
                 <i className="la la-plus text-xl"></i>
               </button>
+              </div>
             )}
           </div>
         </div>
@@ -249,6 +264,7 @@ const DataTable = ({
                                   `/hrms/${selectedFeature.action_route}/${row["id"]}`
                                 )
                               }
+                              disabled = {user.isAdmin ? false : !selectedFeature.can_edit}
                               title="Edit"
                             />
                           ) : row["Action"] === "Delete" ||
@@ -258,6 +274,8 @@ const DataTable = ({
                               className="h-4 w-4 cursor-pointer"
                               onClick={() => {}}
                               title="Delete"
+                              disabled = {user.isAdmin ? false : !selectedFeature.can_edit}
+
                             />
                           ) : null
                         ) : (field === "Visitor Link" ||

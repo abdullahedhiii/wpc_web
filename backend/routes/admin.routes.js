@@ -46,7 +46,11 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   grantRights,
   getUsers,
   getUserData,
-  getUserRoles
+  getUserRoles,
+  getJobOpen,
+  addForm,
+  assignDuty,
+  getDuties
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -55,7 +59,7 @@ router.post('/submitCompanyForm',orgUpload.fields([
     { name: 'Authorizing_proof_id', maxCount: 1 },
     { name: 'Level1_proof_id', maxCount: 1 }
   ]), submitCompanyForm,submitCompanyForm);
-router.get('/getOrganisations',getOrganisations);
+router.get('/getOrganisation/:id',getOrganisations);
 router.get('/getCompanyDetails',getFormDetails);
 
 router.post('/updateCompany/:id', orgUpload.fields([
@@ -137,4 +141,9 @@ router.post('/grantRights',grantRights);
 router.get('/getUsers/:id',getUsers);
 router.get('/getUserData/:id',getUserData);
 router.get('/getUserRoles/:id',getUserRoles);
+
+router.get('/getJobsOpen/:id',getJobOpen);
+router.post('/addForm',addForm);
+router.post('/assignDuty',assignDuty);
+router.get('/getDutiesAssigned',getDuties);
 module.exports = router;

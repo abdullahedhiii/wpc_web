@@ -8,8 +8,15 @@ const DailyAttendance = () => {
     const {isSideBarOpen} = useSidebarContext();
     const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date','Clock In','Clock In Location','Clock Out','Clock Out Location','Duty Hours','Action'];
     const [attendance,setAttendance] = useState([]);
-    const {companyData,employees,departmentData,designationData} = useCompanyContext();
-     const [formData,setFormData] = useState({
+    const {companyData,employees,departmentData,designationData,fetchEmployeesLink,fetchDepartments,fetchDesignations} = useCompanyContext();
+    
+    useEffect(() => {
+       fetchDepartments();
+       fetchDesignations();
+       fetchEmployeesLink();
+    },[]);
+    
+    const [formData,setFormData] = useState({
         department : '',
         designation : '',
         date: '',

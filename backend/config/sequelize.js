@@ -52,6 +52,7 @@ const LeaveAllocation = require('../models/LeaveAllocation')(sequelize,DataTypes
 const Candidate = require('../models/Candidate')(sequelize,DataTypes);
 const User = require('../models/User')(sequelize,DataTypes);
 const UserRole = require('../models/UserRoles')(sequelize,DataTypes);
+const InterviewForm = require('../models/InterviewForm')(sequelize,DataTypes);
 
 const Employee = require('../models/Employee')(sequelize,DataTypes);
 const PersonalDetail = require('../models/PersonalDetail')(sequelize,DataTypes);
@@ -74,6 +75,7 @@ const PayDetail= require('../models/PayDetail')(sequelize,DataTypes);
 const PayStructure= require('../models/PayStructure')(sequelize,DataTypes);
 const TrainingDetail = require('../models/TrainingData')(sequelize,DataTypes);
 const Attendance = require('../models/Attendance')(sequelize,DataTypes);
+const Duty = require('../models/Duty')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -153,6 +155,18 @@ Shift.belongsTo(Designation, { as: "designation", foreignKey: "designation_id" }
 
 Shift.hasOne(LatePolicy,{foreignKey:"shift_code",as : "latepolicy"});
 
+// Employee.hasMany(Duty,{as : 'employee',foreignKey : 'employee_code'});
+// Duty.belongsTo(Employee,{as : 'employee',foreignKey : 'employee_code'});
+
+
+PersonalDetail.hasMany(Duty,{as : 'personaldetails',foreignKey : 'employee_code'});
+Duty.belongsTo(PersonalDetail,{as : 'personaldetails',foreignKey : 'employee_code'});
+ServiceDetail.hasMany(Duty,{as : 'servicedetails',foreignKey : 'employee_code'});
+Duty.belongsTo(ServiceDetail,{as : 'servicedetails',foreignKey : 'employee_code'});
+
+PersonalDetail.belongsTo(ServiceDetail,{as : 'personaldetailss',foreignKey : 'employee_code'});
+ServiceDetail.hasMany(PersonalDetail,{as : 'personaldetailss',foreignKey : 'employee_code'});
+
 Department.hasMany(Shift, { as: "shifts", foreignKey: "department_id" });
 Designation.hasMany(Shift, { as: "shifts", foreignKey: "designation_id" });
 
@@ -223,13 +237,16 @@ Attendance.belongsTo(PersonalDetail, { foreignKey: "employee_code", as: "employe
 Job.hasMany(Candidate,{as : 'candidates',foreignKey : 'id'});
 Candidate.belongsTo(Job,{as : 'job',foreignKey:'id'});
 
+Job.hasOne(InterviewForm,{as : 'form',foreignKey : 'job_id'});
+InterviewForm.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
+
 module.exports = { sequelize, Admin,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
                    TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
-                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,User,UserRole,
-                   Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
+                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,User,UserRole,Duty,
+                   Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,InterviewForm,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail
                   };

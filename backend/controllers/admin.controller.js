@@ -1,4 +1,6 @@
 const { type } = require("os");
+const { Op } = require("sequelize"); // Import Sequelize operators
+const {Sequelize} = require('sequelize')
 const {
   User,
   Organisation,
@@ -47,6 +49,9 @@ const {
   Module,
   SubModule,
   Feature,
+  Job,
+  InterviewForm,
+  Duty,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
@@ -470,9 +475,8 @@ module.exports.updateCompany = async (req, res) => {
 
 module.exports.getOrganisations = async (req, res) => {
   try {
-    const { admin_id } = req.query;
     const organisation = await Organisation.findOne({
-      where: { admin_id },
+      where: { admin_id : req.params.id},
       attributes: [
         "id",
         "Company_name",
@@ -703,15 +707,17 @@ module.exports.getDesignations = async (req, res) => {
         {
           model: Department,
           as: "department",
-          attributes: ["department_name", "organisation_id"],
+          attributes: ["department_name", "organisation_id","id"],
           where: { organisation_id: companyId },
         },
       ],
       order: [["id", "ASC"]],
     });
     const formattedData = designations.map((designation, index) => {
+      console.log(designation.department.id);
       return {
         id: designation.id,
+        department_id : designation.department.id,
         "Sl. No.": index + 1,
         "Department Name": designation.department.department_name,
         Designation: designation.designation_name,
@@ -1401,12 +1407,12 @@ module.exports.getShifts = async (req, res) => {
         {
           model: Department,
           as: "department",
-          attributes: ["department_name"],
+          attributes: ["department_name","id"],
         },
         {
           model: Designation,
           as: "designation",
-          attributes: ["designation_name"],
+          attributes: ["designation_name","id"],
         },
       ],
     });
@@ -1434,6 +1440,7 @@ module.exports.getShifts = async (req, res) => {
           "Break Time To": shift.break_end,
           Action: "",
           "Designation ID": shift.designation_id,
+          "Department_id" : shift.department.id,
           "Shift Name": shift.shift_code + "(" + shift.description + ")",
           "Off Days": offDay
             ? {
@@ -2645,5 +2652,152 @@ module.exports.getUserRoles = async (req, res) => {
   } catch (err) {
     console.error("Error fetching user roles:", err);
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+module.exports.getJobOpen = async (req, res) => {
+  try {
+      const { id } = req.params; // Assuming organisation_id is passed in request params
+      const today = new Date(); // Get today's date
+
+      const jobs = await Job.findAll({
+          where: {
+              [Op.and]: [
+                  { organisation_id: id },
+                  { jobClosingDate: { [Op.gt]: today } } // Check if closing date is greater than today
+              ]
+          }
+      });
+
+      res.status(200).json({ message: "Jobs retrieved successfully", jobs });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+
+module.exports.addForm = async(req,res) => {
+   try{
+       await InterviewForm.create({
+           job_id : req.body.position,
+           ...req.body
+       });
+       res.status(200).json({ message: "form added"});
+
+   }
+   catch(err){
+    console.error(err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
+   }
+}
+
+module.exports.assignDuty = async(req,res) => {
+    try{
+      await Duty.create({
+        ...req.body
+    });
+    res.status(200).json({ message: "form added"});
+    }
+    catch(err){
+      console.error(err);
+      res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+}
+module.exports.getDuties = async (req, res) => {
+  try {
+    const { department_id, designation_id, fromDate, toDate, employee_code } = req.query;
+    
+    const employee_detail = employee_code ? await ServiceDetail.findOne({
+      where : {employee_code : employee_code}
+    }) : null;
+
+    console.log("Request Params:", { department_id, designation_id, fromDate, toDate, employee_code });
+
+    const dutyWhereClause = {
+      fromDate: { [Op.gte]: fromDate },
+      toDate: { [Op.lte]: toDate },
+      department_id,
+      designation_id,
+    };
+
+    if (employee_code) dutyWhereClause.employee_code = employee_code;
+
+    console.log("Duty Query:", dutyWhereClause);
+    let duties;
+    duties = await Duty.findAll({ where: dutyWhereClause });
+    console.log("Duties Retrieved:", duties);
+    if(employee_code && duties.length === 0){
+      console.log('employee code hut duties null')    
+      duties = await Duty.findAll({
+            where : {
+              fromDate: { [Op.gte]: fromDate },
+              toDate: { [Op.lte]: toDate },
+              department_id : employee_detail.department_id,
+              designation_id: employee_detail.designation_id,
+            }
+          });
+          console.log(duties);
+    }
+
+    const shift = await Shift.findOne({
+      where: { department_id, designation_id },
+      include: [
+        { model: Department, as: "department", attributes: ["id", "department_name"] },
+        { model: Designation, as: "designation", attributes: ["id", "designation_name"] },
+      ],
+    });
+
+    console.log("Shift Retrieved:", shift);
+
+    const employeeWhereClause = employee_code ? { employee_code } : {  };
+    console.log(employeeWhereClause);
+    const employeeRecords = await Employee.findAll({
+      where: employeeWhereClause,
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: ["fname", "mname", "lname", "employee_code"],
+        },
+        {
+          model: ServiceDetail,
+          as: "servicedetail",
+          where: { department_id, designation_id },
+        },
+      ],
+    });
+
+    console.log("Employee Records Retrieved:", employeeRecords);
+
+
+    // Step 4: Format Duties Per Employee
+    const formattedDuties = duties.map((duty) => {
+      const employeeDetails =
+        employeeRecords.find((emp) => emp.personaldetail?.employee_code === duty.employee_code) ||
+        employeeRecords[0] || {}; // If no match, use first available employee
+
+      return {
+        Department: shift?.department?.department_name || "N/A",
+        Designation: shift?.designation?.designation_name || "N/A",
+        "Employee Name": [employeeDetails.personaldetail?.fname, employeeDetails.personaldetail?.mname, employeeDetails.personaldetail?.lname]
+          .filter(Boolean)
+          .join(" ") || "N/A",
+        EmployeeCode: employeeDetails.personaldetail?.employee_code || "N/A",
+        "Shift Code": shift?.shift_code || "N/A",
+        "Work In Time": shift?.work_in || "N/A",
+        "Work Out Time": shift?.work_out || "N/A",
+        "Break Time From": shift?.break_start || "N/A",
+        "Break Time To": shift?.break_end || "N/A",
+        "From Date": duty.fromDate || "N/A",
+        "To Date": duty.toDate || "N/A",
+      };
+    });
+
+    // Step 5: Send response
+    return res.status(200).json(formattedDuties);
+  } catch (err) {
+    console.error("Error:", err);
+    return res.status(500).json({ message: "Internal server error", error: err.message });
   }
 };

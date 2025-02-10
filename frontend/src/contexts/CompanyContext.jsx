@@ -256,12 +256,11 @@ export const CompanyProvider = ({ children }) => {
     }
   };
 
-  const fetchOrganisation = async (admin_id,isAdmin) => {
+  const fetchOrganisation = async (id,isAdmin) => {
     try {   
       if(isAdmin){
-      const response = await axiosInstance.get("/api/getOrganisations", {
-        params: { admin_id },
-      });
+        console.log(id);
+      const response = await axiosInstance.get(`/api/getOrganisation/${id}`);
       setCompanyData([response.data]);
       fetchDetails(response.data.id);
       fetchDepartments(response.data.id);
@@ -283,6 +282,11 @@ export const CompanyProvider = ({ children }) => {
       fetchLeaveRules(response.data.id);
       fetchLeavesAllocated(response.data.id);
    
+    }
+    else{
+      const response = await axiosInstance.get(`/api/getUserOrganisation/${id}`);
+      console.log('not admins ',response.data);
+      setCompanyData([response.data])
     }
     } catch (err) {
       console.log("errorr ", err);

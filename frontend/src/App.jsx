@@ -97,6 +97,10 @@ import RejectedList from "./Components/Recruitment/RejectedList";
 import OrganisationReport from "./Components/Documents/OrganisationReport";
 import UserForm from "./Components/User access/UserForm";
 import UserRoleForm from "./Components/User access/UserRoleForm";
+import InterviewForm from "./Components/Mock Interview/InterviewForm";
+import AddInterviewForm from "./Components/Mock Interview/AddInterviewForm";
+import DutyRoster from "./Components/Rota/ShiftManagement/DutyRoster";
+import DutyRosterForm from "./Components/Rota/ShiftManagement/DutyRosterForm";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -917,6 +921,26 @@ const router = createBrowserRouter([
         path : "document/organisation-report",
         element : (<ProtectedRoute><OrganisationReport/></ProtectedRoute>)
       },
+      {
+        path : "recruitment/interview-forms",
+        element : (<ProtectedRoute><InterviewForm/></ProtectedRoute>)
+      },
+      {
+        path : 'recruitment/add-interview-form',
+        element : (<ProtectedRoute><AddInterviewForm/></ProtectedRoute>)
+      },
+      {
+        path : 'rota/add-duty-roster',
+        element: (<ProtectedRoute><DutyRoster/></ProtectedRoute>)
+      },
+      {
+        path : 'rota/add-department-duty',
+        element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
+      },
+      {
+        path : 'rota/add-employee-duty',
+        element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
+      }
     ],
   },
 ]);
