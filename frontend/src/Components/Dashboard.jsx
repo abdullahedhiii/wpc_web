@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useModuleContext } from '../contexts/ModuleContext';
 import { useCompanyContext } from '../contexts/CompanyContext';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { modules, setSelectedModule } = useModuleContext();
   const [isLoading, setIsLoading] = useState(true);
   const {companyData} = useCompanyContext();
-
+  const {user} = useSelector((state) => state.user);
   useEffect(() => {
     if (Array.isArray(modules) && modules.length > 0) {
       setIsLoading(false);
@@ -36,7 +37,7 @@ const Dashboard = () => {
           key={module.id}
           className="bg-background text-white shadow-md flex flex-col items-center justify-center p-10"
           onClick={() => handleModuleSelect(module)}
-          disabled={!module.can_access}        
+          disabled={user.isAdmin ? false : !module.can_access}        
           >
           <i className={`la ${module.icon} text-4xl mb-4`}></i>
           <img src= {module.icon_image} className='mb-4 h-12 w-12'/>

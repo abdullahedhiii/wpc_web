@@ -202,50 +202,68 @@ module.exports.getModules = async (req, res) => {
         }))
       );
     }
-
-    // Fetch user roles to check access
     const userRoles = await UserRole.findAll({
       where: { user_id: userId },
-      attributes: ["sub_module_id", "feature_id"],
+      attributes: ["sub_module_id", "feature_id", "right"],
     });
-    console.log('errorsss??')
-
-    const userFeatureAccess = new Set(userRoles.map((role) => role.feature_id));
-    const userSubModuleAccess = new Set(
-      userRoles.map((role) => role.sub_module_id)
-    );
-    console.log('errosr??')
-
+    
+    const userFeatureAccess = new Map();
+    const userSubModuleAccess = new Set();
+    
+    // Populate access maps
+    userRoles.forEach(({ sub_module_id, feature_id, right }) => {
+      const featureId = String(feature_id); // Ensure consistent data type
+    
+      if (!userFeatureAccess.has(featureId)) {
+        userFeatureAccess.set(featureId, { can_add: false, can_edit: false });
+      }
+    
+      if (right === "add") userFeatureAccess.get(featureId).can_add = true;
+      if (right === "edit") userFeatureAccess.get(featureId).can_edit = true;
+    
+      userSubModuleAccess.add(sub_module_id);
+    });
+    
+    console.log("User Feature Access Map:", userFeatureAccess);
+    
     const formattedModules = modules.map((module) => {
       let moduleHasAccess = false;
-      console.log('error??')
+    
       const subModules = module.subModules.map((subModule) => {
         let subModuleHasAccess = false;
-
+    
         const features = subModule.features.map((feature) => {
-          const can_access = userFeatureAccess.has(feature.id);
+          const featureId = String(feature.id); // Ensure consistent lookup
+          const featureAccess = userFeatureAccess.get(featureId) || { can_add: false, can_edit: false };
+          const can_access = !!userFeatureAccess.has(featureId);
+    
           if (can_access) subModuleHasAccess = true;
-          return { ...feature.get(), can_access };
+    
+        //  console.log("Feature:", feature.id, "Access:", featureAccess, "Can Access:", can_access);
+    
+          return { ...feature.get(), ...featureAccess, can_access };
         });
-
+    
         if (!subModuleHasAccess) {
           subModuleHasAccess = userSubModuleAccess.has(subModule.id);
         }
         if (subModuleHasAccess) moduleHasAccess = true;
-
+    
         return { ...subModule.get(), features, can_access: subModuleHasAccess };
       });
-
+    
       return {
         ...module.get(),
         subModules,
         can_access: moduleHasAccess,
       };
     });
+    
     res.status(200).json(formattedModules);
+    
   } catch (error) {
     console.error("Error fetching modules:", error);
-    res.status(500).json({ error: "Internal Server Error",err : error });
+    res.status(500).json({ error: "Internal Server Error", err: error });
   }
 };
 
@@ -282,3 +300,54 @@ module.exports.retrieveCookie = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' }); 
   }
 };
+
+module.exports.getUserOrganisation = async(req,res) => {
+    try{
+        const user = await User.findOne({where : {id : req.params.id}});
+        const org_id = user.organisation_id;
+        const organisation = await Organisation.findOne(
+          {
+            where : {id : org_id},
+            attributes: [
+              "id",
+              "Company_name",
+              "Company_Website",
+              "Company_OrganisationEmail",
+              "Company_Contact",
+              "Address_Line1",
+              "Address_Line2",
+              "Address_Line3",
+              "Address_Postcode",
+              "Address_City_County",
+              "Address_Country",
+            ],
+          });
+      
+    const responseData = {
+      id: organisation.id,
+      "Sl. No.": 1,
+      "Organisation Name": organisation.Company_name,
+      "Organisation Address":
+        organisation.Address_Line1 +
+        "," +
+        organisation.Address_Line2 +
+        "," +
+        organisation.Address_Line3 +
+        "," +
+        organisation.Address_City_County +
+        "," +
+        organisation.Address_Postcode +
+        "," +
+        organisation.Address_Country,
+      Website: organisation.Company_Website,
+      "Email ID": organisation.Company_OrganisationEmail,
+      "Phone No.": organisation.Company_Contact,
+      Action: "Edit",
+    };
+    return res.status(200).json(responseData);
+    }
+    catch(err){
+      console.error('Unexpected error:', err);
+      return res.status(500).json({ message: 'Internal server error' }); 
+    }
+}

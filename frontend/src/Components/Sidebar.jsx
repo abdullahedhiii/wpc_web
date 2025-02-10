@@ -121,7 +121,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                 {openSubModuleIndex === index && (
                   <div className="space-y-3 p-3 text-[13px] text-gray-400">
                     {subModule.features.map((feature, featureIndex) => (
-                      feature.can_access ? (<div
+                      user.isAdmin || feature.can_access ? (<div
                         key={featureIndex}
                         className="flex items-center w-full cursor-pointer hover:bg-gray-100 relative rounded-lg p-2 leading-4"
                         onClick={() => handleFeatureSelect(feature)}
