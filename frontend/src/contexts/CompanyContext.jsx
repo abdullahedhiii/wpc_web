@@ -73,6 +73,7 @@ export const CompanyProvider = ({ children }) => {
     try {
       const response = await axiosInstance.get(`/api/getEmployees/${id_to}`);
       if (response.status === 200) {
+        console.log(response.data)
         setEmployees(response.data);
       }
     } catch (err) {}

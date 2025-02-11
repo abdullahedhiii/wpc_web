@@ -101,6 +101,9 @@ import InterviewForm from "./Components/Mock Interview/InterviewForm";
 import AddInterviewForm from "./Components/Mock Interview/AddInterviewForm";
 import DutyRoster from "./Components/Rota/ShiftManagement/DutyRoster";
 import DutyRosterForm from "./Components/Rota/ShiftManagement/DutyRosterForm";
+import StaffReport from "./Components/Documents/StaffReport";
+import TaskList from "./Components/Tasks/TaskList";
+import EmployeeReport from "./Components/Documents/EmployeeReport";
 
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
@@ -903,7 +906,7 @@ const router = createBrowserRouter([
       },
       {
         path : "document/staff-report",
-        element : (<ProtectedRoute></ProtectedRoute>)
+        element : (<ProtectedRoute><StaffReport/></ProtectedRoute>)
       },
       {
         path : "document/employees-left",
@@ -911,11 +914,11 @@ const router = createBrowserRouter([
       },
       {
         path : "document/employee-report",
-        element : (<ProtectedRoute></ProtectedRoute>)
+        element : (<ProtectedRoute><EmployeeReport/></ProtectedRoute>)
       },
       {
         path : "document/employee-archive-report",
-        element : (<ProtectedRoute></ProtectedRoute>)
+        element : (<ProtectedRoute><EmployeeReport/></ProtectedRoute>)
       },
       {
         path : "document/organisation-report",
@@ -940,6 +943,14 @@ const router = createBrowserRouter([
       {
         path : 'rota/add-employee-duty',
         element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
+      },
+      {
+        path : "taskdashboard",
+        element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
+      },
+      {
+        path : 'task-list-employee',
+        element : (<ProtectedRoute><TaskList/></ProtectedRoute>)
       }
     ],
   },
