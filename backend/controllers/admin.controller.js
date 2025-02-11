@@ -1682,8 +1682,9 @@ module.exports.getAllEmployees = async (req, res) => {
     });
 
 
-
+   console.log(emp);
     const formattedResponse = emp.map((employee, index) => {
+   //   console.log(employee,index,'indexxx')
       const employeeLink = generateLink(employee.employee_code);
 
       return {
@@ -2800,4 +2801,52 @@ module.exports.getDuties = async (req, res) => {
     console.error("Error:", err);
     return res.status(500).json({ message: "Internal server error", error: err.message });
   }
+};
+
+
+module.exports.getTasks = async (req, res) => {
+    const { employee_code, fromDate, toDate } = req.query;
+
+    try {
+        const employee = await Employee.findOne({
+            where: { employee_code },
+            include: [
+                {
+                    model: PersonalDetail,
+                    as: "personaldetail",
+                    attributes: ["fname", "mname", "lname", "employee_code"],
+                },
+            ],
+        });
+
+        if (!employee) {
+            return res.status(404).json({ error: "Employee not found" });
+        }
+
+        const tasks = await Duty.findAll({
+            where: {
+                employee_code,
+                duty_assigned_to: "employee",
+                fromDate: { [Op.gte]: fromDate },
+                toDate: { [Op.lte]: toDate },
+            },
+        });
+
+        const formattedTasks = tasks.map((task, index) => ({
+            "Sl No": index + 1,
+            "Employee Name": `${employee.personaldetail.fname} ${employee.personaldetail.mname || ""} ${employee.personaldetail.lname}`.trim(),
+            "Date": task.fromDate,
+            "From Time": task.fromDate, 
+            "To Time": task.toDate, 
+            "Task Performed": task.taskPerformed || "N/A",
+            "Task Update": task.taskUpdate || "N/A",
+            "Uploaded File": task.uploadedFile || "N/A", // Handle case if file is not available
+        }));
+
+        // Return response
+        return res.status(200).json(formattedTasks);
+    } catch (err) {
+        console.error("Error fetching tasks:", err);
+        res.status(500).json({ error: "Internal server error" });
+    }
 };

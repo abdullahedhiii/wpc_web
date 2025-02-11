@@ -50,7 +50,8 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   getJobOpen,
   addForm,
   assignDuty,
-  getDuties
+  getDuties,
+  getTasks
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -146,4 +147,6 @@ router.get('/getJobsOpen/:id',getJobOpen);
 router.post('/addForm',addForm);
 router.post('/assignDuty',assignDuty);
 router.get('/getDutiesAssigned',getDuties);
+
+router.get('/getTasks',getTasks);
 module.exports = router;

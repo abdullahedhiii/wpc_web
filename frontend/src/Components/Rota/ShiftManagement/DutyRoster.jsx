@@ -198,6 +198,7 @@ const DutyRoster = () => {
                 })
                 setDesignationOptions([])
                 setCodes([])
+                setData([])
               }
              
               }

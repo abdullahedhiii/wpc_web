@@ -23,7 +23,6 @@ const {
 } = require("../config/sequelize");
 
 module.exports.addPersonalDetails = async (req, res) => {
-  console.log("Personal details endpoint hit", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
 
@@ -32,9 +31,6 @@ module.exports.addPersonalDetails = async (req, res) => {
       defaults: { organisation_id: parseInt(organisationId) },
     });
 
-    if (!created) {
-      console.log("Employee already exists, updating personal details.");
-    }
 
     const [personalDetail, personalCreated] = await PersonalDetail.upsert(
       {
@@ -59,14 +55,12 @@ module.exports.addPersonalDetails = async (req, res) => {
 };
 
 module.exports.addServiceDetails = async (req, res) => {
-  console.log("Service hit checking key", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
       ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
-    console.log("Generated file URL:", fileUrl);
 
     // Prepare the data to be inserted or updated
     const serviceDetailsData = {
@@ -79,10 +73,8 @@ module.exports.addServiceDetails = async (req, res) => {
     const [document, created] = await ServiceDetail.upsert(serviceDetailsData);
 
     if (created) {
-      console.log("Document added:", document);
       return res.status(200).json({ message: "Service detail added", document });
     } else {
-      console.log("Document updated:", document);
       return res.status(200).json({ message: "Service detail updated", document });
     }
   } catch (err) {
@@ -135,7 +127,6 @@ module.exports.addEducationalDetails = async (req, res) => {
 
 
 module.exports.addJobDetails = async (req, res) => {
-  console.log("job hit ", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
 
@@ -145,16 +136,20 @@ module.exports.addJobDetails = async (req, res) => {
       ...req.body,
     };
 
-    // Perform the upsert operation
-    const [job, created] = await JobDetail.upsert(jobData);
-
-    if (created) {
-      console.log("Job detail added:", job);
-      return res.status(200).json("Job detail added");
-    } else {
-      console.log("Job detail updated:", job);
+    const existingJob = await JobDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
+    
+    if (existingJob) {
+      await JobDetail.update(req.body, {
+        where: { employee_code: employeeCode },
+      });
       return res.status(200).json("Job detail updated");
+    } else {
+      await JobDetail.create(jobData);
+      return res.status(200).json("Job detail added");
     }
+    
   } catch (err) {
     console.error("Error processing job details:", err);
     return res.status(500).json("Internal server error");
@@ -163,7 +158,6 @@ module.exports.addJobDetails = async (req, res) => {
 
 
 module.exports.addKeyResponsibility = async (req, res) => {
-  console.log("Key responsibility hit ", req.params.id, req.body);
 
   try {
     const employeeCode = req.params.id.split(".")[1];
@@ -193,23 +187,18 @@ module.exports.addKeyResponsibility = async (req, res) => {
 
 
 module.exports.addTrainingData = async (req, res) => {
-  console.log("traing hit ", req.params.id, req.body);
   try {
-    console.log("error here ? ");
     const train = await TrainingDetail.upsert({
       employee_code: req.params.id.split(".")[1],
       ...req.body,
     });
     return res.status(200).json("training detail added ");
   } catch (err) {
-    console.log(err);
-    console.log('errorrr',err);
     return res.status(500).json("internal server error ");
   }
 };
 
 module.exports.addKinData = async (req, res) => {
-  console.log("Kin hit:", req.params.id, req.body);
   try {
     const employeeCode = req.params.id.split(".")[1];
 
@@ -229,7 +218,6 @@ module.exports.addKinData = async (req, res) => {
 
 
 module.exports.addCertification = async (req, res) => {
-  console.log("Cert hit", req.params.id, req.body);
   try {
     const employeeCode = req.params.id.split(".")[1];
 
@@ -238,7 +226,6 @@ module.exports.addCertification = async (req, res) => {
       ...req.body,
     });
 
-    console.log(`${certificationCreated ? "Certification detail added" : "Certification detail updated"}`);
     return res.status(200).json(`${certificationCreated ? "Certification detail added" : "Certification detail updated"}`);
   } catch (err) {
     console.error("Error adding/updating certification details:", err);
@@ -247,7 +234,6 @@ module.exports.addCertification = async (req, res) => {
 };
 
 module.exports.addContact = async (req, res) => {
-    console.log("contact hit", req.params.id, req.body);
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
       const fileUrl = req.file
@@ -256,7 +242,6 @@ module.exports.addContact = async (req, res) => {
           }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
         : null;
   
-      console.log("Generated file URL:", fileUrl);
   
       // Check if contact info already exists for the given employee code
       const existingContact = await ContactInfo.findOne({
@@ -284,7 +269,6 @@ module.exports.addContact = async (req, res) => {
         return res.status(200).json({ message: "Contact detail added", document });
       }
     } catch (err) {
-      console.error("Error adding/updating document:", err);
       return res
         .status(500)
         .json({ message: "Internal server error", error: err });
@@ -293,7 +277,6 @@ module.exports.addContact = async (req, res) => {
   
 
   module.exports.addPayDetails = async (req, res) => {
-    console.log("pay hit ", req.params.id, req.body);
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
       const [payDetail, created] = await PayDetail.upsert({
@@ -317,21 +300,21 @@ module.exports.addContact = async (req, res) => {
     console.log("structure hit ", req.params.id, req.body);
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
-  
-      // Check if pay structure already exists
+      const {payments,deductions} = req.body;
       const existingPayStructure = await PayStructure.findOne({
         where: { employee_code: employeeCode },
       });
   
       if (existingPayStructure) {
-        // Update existing record
-        await existingPayStructure.update(req.body);
+        console.log('upading pay');
+        await existingPayStructure.update({...payments,...deductions});
         return res.status(200).json("Pay structure updated successfully");
       } else {
-        // Create new record
+        
         await PayStructure.create({
           employee_code: employeeCode,
-          ...req.body,
+          ...payments,
+          ...deductions
         });
         return res.status(201).json("Pay structure added successfully");
       }
@@ -343,7 +326,6 @@ module.exports.addContact = async (req, res) => {
   
 
 module.exports.addPassport = async (req, res) => {
-  console.log("passport hit", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
@@ -377,7 +359,6 @@ module.exports.addPassport = async (req, res) => {
         .json({ message: "Passport detail added", document });
     }
   } catch (err) {
-    console.error("Error adding/updating passport detail:", err);
     return res
       .status(500)
       .json({ message: "Internal server error", error: err });
@@ -385,8 +366,6 @@ module.exports.addPassport = async (req, res) => {
 };
 
 module.exports.addVisa = async (req, res) => {
-  console.log("Visa hit", req.params.id, req.body);
-  console.log("Received Files:", req.files); // Debugging line
 
   try {
     const frontFileName = req.files?.front?.[0]?.filename || null;
@@ -443,7 +422,6 @@ module.exports.addVisa = async (req, res) => {
 };
 
 module.exports.addEsus = async (req, res) => {
-  console.log("esus hit", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
@@ -455,7 +433,6 @@ module.exports.addEsus = async (req, res) => {
     let document = await EsusDetail.findOne({
       where: { employee_code: employeeCode },
     });
-    console.log('trying to update esus? ',document);
     if (document) {
       await document.update({
         ...req.body,
@@ -481,7 +458,6 @@ module.exports.addEsus = async (req, res) => {
 };
 
 module.exports.addDBS = async (req, res) => {
-  console.log("DBS hit:", req.params.id, req.body);
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
@@ -524,32 +500,53 @@ module.exports.addDBS = async (req, res) => {
 };
 
 module.exports.add_other_details = async (req, res) => {
-  console.log("other hit ", req.params.id, req.body);
+
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+
+    // Construct file URL if a new file is uploaded
     const fileUrl = req.file
       ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
+    // Check if record with provided ID exists
+    const existingDetail = await EmployeeOtherDetail.findOne({
+      where: { id: req.body.id },
+    });
+
+    if (existingDetail) {
+      // Update the existing record
+      await existingDetail.update({
+        document: fileUrl || existingDetail.document, // Keep old file if no new file is uploaded
+        ...req.body,
+      });
+
+      return res.status(200).json({
+        message: "Other detail updated successfully",
+        document: existingDetail,
+      });
+    }
+
+    // Create a new record if not found
     const document = await EmployeeOtherDetail.create({
       employee_code: employeeCode,
       document: fileUrl,
       ...req.body,
     });
 
-    return res.status(200).json({ message: "other detail added", document });
+    return res.status(200).json({ message: "Other detail added", document });
   } catch (err) {
-    console.error("Error adding document:", err);
+    console.error("Error adding/updating document:", err);
     return res
       .status(500)
       .json({ message: "Internal server error", error: err });
   }
 };
 
+
 module.exports.national_data = async (req, res) => {
-  console.log("National document hit", req.params.id, req.body);
 
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
@@ -559,9 +556,7 @@ module.exports.national_data = async (req, res) => {
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
-    if (!employeeCode) {
-      return res.status(400).json({ message: "Invalid Employee Code" });
-    }
+
 
     // Check if a national detail record already exists
     let document = await NationalDetail.findOne({
@@ -599,16 +594,36 @@ module.exports.national_data = async (req, res) => {
 };
 
 module.exports.add_other_document = async (req, res) => {
-  console.log("other doc hit", req.params.id, req.body);
 
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+
+    // Construct file URL if a new file is uploaded
     const fileUrl = req.file
       ? `http://localhost:${
           process.env.PORT || 3000
         }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
+    // Check if record with provided ID exists
+    const existingDocument = await EmployeeOtherDocument.findOne({
+      where: { id: req.body.id },
+    });
+
+    if (existingDocument) {
+      // Update the existing record
+      await existingDocument.update({
+        doc_url: fileUrl || existingDocument.doc_url, // Keep old file if no new file is uploaded
+        ...req.body,
+      });
+
+      return res.status(200).json({
+        message: "Other document updated successfully",
+        document: existingDocument,
+      });
+    }
+
+    // Create a new record if not found
     const document = await EmployeeOtherDocument.create({
       employee_code: employeeCode,
       doc_url: fileUrl,
@@ -617,24 +632,23 @@ module.exports.add_other_document = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "other document detail added", document });
+      .json({ message: "Other document detail added", document });
   } catch (err) {
-    console.error("Error adding document:", err);
+    console.error("Error adding/updating document:", err);
     return res
       .status(500)
       .json({ message: "Internal server error", error: err });
   }
 };
 
+
 module.exports.addOtherCocDetail = async(req,res)=>{
-    console.log("other coc document hit", req.params.id, req.body);
 
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
       let document = await COCOtherDetail.findOne({
         where: { employee_code: employeeCode },
       });
-     console.log('was document found ? ',document,req.body);
       if (document) {
         await document.update({
             ...req.body,
@@ -659,4 +673,108 @@ module.exports.addOtherCocDetail = async(req,res)=>{
         .status(500)
         .json({ message: "Internal server error", error: err.message });
     }
-}
+};
+module.exports.getDocuments = async (req, res) => {
+  const employee_code = req.params.id;
+
+  try {
+    const educational_documents = await EducationDetail.findAll({
+      where: { employee_code: employee_code },
+    });
+    const contact_doc = await ContactInfo.findOne({
+      where: { employee_code: employee_code },
+    });
+    const other_data = await EmployeeOtherDetail.findAll({
+      where: { employee_code: employee_code },
+    });
+    const other_details = await EmployeeOtherDocument.findAll({
+      where: { employee_code: employee_code },
+    });
+    const visa = await VisaDetail.findOne({
+      where: { employee_code: employee_code },
+    });
+    const passport = await PassportDetail.findOne({
+      where: { employee_code: employee_code },
+    });
+    const national = await NationalDetail.findOne({
+      where: { employee_code: employee_code },
+    });
+    const esus = await EsusDetail.findOne({
+      where: { employee_code: employee_code },
+    });
+    const dbs = await DBSDetail.findOne({
+      where: { employee_code: employee_code },
+    });
+
+    // Format the response
+    const formattedResponse = [
+      ...(educational_documents?.flatMap((doc) => [
+        doc.transcript_document
+          ? {
+              document_type: doc.qualification + " transcript document",
+              document_url: doc.transcript_document,
+            }
+          : null,
+        doc.certificate_document
+          ? {
+              document_type: doc.qualification + " certificate document",
+              document_url: doc.certificate_document,
+            }
+          : null,
+      ]) || []),
+      contact_doc?.proof && {
+        document_type: "Contact Document (proof of correspondence)",
+        document_url: contact_doc.proof,
+      },
+      ...(other_data?.flatMap((doc) =>
+        doc.document
+          ? [
+              {
+                document_type: doc.name + " document",
+                document_url: doc.document,
+              },
+            ]
+          : []
+      ) || []),
+      ...(other_details?.flatMap((doc) =>
+        doc.doc_url
+          ? [
+              {
+                document_type: doc.type,
+                document_url: doc.doc_url,
+              },
+            ]
+          : []
+      ) || []),
+      visa?.front && {
+        document_type: "Visa Front Picture",
+        document_url: visa.front,
+      },
+      visa?.back && {
+        document_type: "Visa Back Picture",
+        document_url: visa.back, // Fixed issue here
+      },
+      passport?.picture && {
+        document_type: "Passport Document",
+        document_url: passport.picture,
+      },
+      national?.document && {
+        document_type: "National Document",
+        document_url: national.document,
+      },
+      esus?.document && {
+        document_type: "EUSS Document",
+        document_url: esus.document,
+      },
+      dbs?.document && {
+        document_type: "DBS Document",
+        document_url: dbs.document,
+      },
+    ].filter(Boolean); 
+
+    return res.status(200).json(formattedResponse);
+  } catch (err) {
+    console.error("Error fetching documents:", err);
+    return res.status(500).json({ message: "Internal Server Error", error: err.message });
+  }
+};

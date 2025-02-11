@@ -543,7 +543,6 @@ const EmployeeForm = () => {
         );
         setFormData(response.data);
         setCode(response.data.personal_details.employee_code);
-        console.log(response.data);
       } catch (err) {
         console.error("Error fetching employe data:", err);
       } finally {
@@ -1388,17 +1387,8 @@ const EmployeeForm = () => {
 
   const handleSubmit = async () => {
     try {
-      //   const personalDetailsFormData = new FormData();
-      //   for (const key in formData.personal_details) {
-      //     if (formData.personal_details[key]) {
-      //         personalDetailsFormData.append(key, formData.personal_details[key]);
-      //       }
-      //   }
-      //   await axiosInstance.post(`/api/submit-personal-details/${companyData[0].id}.${employee_code}`, personalDetailsFormData, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+    
+        await axiosInstance.post(`/api/submit-personal-details/${companyData[0].id}.${employee_code}`,formData.personal_details);
 
         const serviceDetailsFormData = new FormData();
         for (const key in formData.service_details) {
@@ -1413,9 +1403,7 @@ const EmployeeForm = () => {
      
         const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
 
-        // serviceDetailsFormData.append("department_id",department_id);
-        // serviceDetailsFormData.append("designation_id",designation_id);
-       // serviceDetailsFormData.append("employment_type_id",employment_type_id);
+  
 
         await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
           headers: {
@@ -1423,201 +1411,186 @@ const EmployeeForm = () => {
           },
       });
 
-      // formData.education_details.forEach(async (edu, index) => {
-      //   const educationFormData = new FormData();
-      //   for (const key in edu) {
-      //     if (edu[key]) {
-      //       if (
-      //         key === "transcript_document" ||
-      //         key === "certificate_document"
-      //       ) {
-      //         if (edu[key]) {
-      //           educationFormData.append(key, edu[key]);
-      //         }
-      //       } else {
-      //         educationFormData.append(key, edu[key]);
-      //       }
-      //     }
-      //   }
-      //   await axiosInstance.post(
-      //     `/api/submit-education-details/${companyData[0].id}.${employee_code}`,
-      //     educationFormData,
-      //     {
-      //       headers: {
-      //         "Content-Type": "multipart/form-data",
-      //       },
-      //     }
-      //   );
-      // });
+      formData.education_details.forEach(async (edu, index) => {
+        const educationFormData = new FormData();
+        for (const key in edu) {
+          if (edu[key]) {
+            if (
+              key === "transcript_document" ||
+              key === "certificate_document"
+            ) {
+              if (edu[key]) {
+                educationFormData.append(key, edu[key]);
+              }
+            } else {
+              educationFormData.append(key, edu[key]);
+            }
+          }
+        }
+        await axiosInstance.post(
+          `/api/submit-education-details/${companyData[0].id}.${employee_code}`,
+          educationFormData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      });
 
-      //   const job_details_form_data = new FormData();
-      //   for (const key in formData.job_details) {
-      //     if (formData.job_details[key]) {
-      //       job_details_form_data.append(key, formData.job_details[key]);
-      //       }
-      //   }
-      //   job_details_form_data.append("Company_name", companyData[0]['Organisation Name']);
-      //   await axiosInstance.post(`/api/submit-job-details/${companyData[0].id}.${employee_code}`, job_details_form_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        await axiosInstance.post(`/api/submit-job-details/${companyData[0].id}.${employee_code}`,formData.job_details);
 
-      // formData.key_responsibilities.forEach(async (res, index) => {
-      //   await axiosInstance.post(
-      //     `/api/submit-key-responsibilities/${companyData[0].id}.${employee_code}`,
-      //     res
-      //   );
-      // });
+      formData.key_responsibilities.forEach(async (res, index) => {
+        await axiosInstance.post(
+          `/api/submit-key-responsibilities/${companyData[0].id}.${employee_code}`,
+          res
+        );
+      });
 
-      // formData.training_details.forEach(async(training, index) => {
-      //   console.log('sending request 1',employee_code);
-      //   const tt = training.employee_code ? training : {...training,employee_code :employee_code}
-      //   console.log(tt);
-      //   await axiosInstance.post(`/api/submit-training-data/${companyData[0].id}.${employee_code}`,tt)
-      // });
+      formData.training_details.forEach(async(training, index) => {
+        const tt = training.employee_code ? training : {...training,employee_code :employee_code}
+        await axiosInstance.post(`/api/submit-training-data/${companyData[0].id}.${employee_code}`,tt)
+      });
 
-      // await axiosInstance.post(`/api/submit-kin-details/${companyData[0].id}.${employee_code}`, formData.kin_details);
-      // await axiosInstance.post(`/api/submit-certifications/${companyData[0].id}.${employee_code}`, formData.certification)
+      await axiosInstance.post(`/api/submit-kin-details/${companyData[0].id}.${employee_code}`, formData.kin_details);
+      await axiosInstance.post(`/api/submit-certifications/${companyData[0].id}.${employee_code}`, formData.certification)
 
-      //   const contact_data = new FormData();
-      //   for (const key in formData.contact_info) {
-      //     if (formData.contact_info[key]) {
-      //       contact_data.append(key, formData.contact_info[key]);
-      //       }
-      //   }
-      //   await axiosInstance.post(`/api/submit-contact/${companyData[0].id}.${employee_code}`, contact_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        const contact_data = new FormData();
+        for (const key in formData.contact_info) {
+          if (formData.contact_info[key]) {
+            contact_data.append(key, formData.contact_info[key]);
+            }
+        }
+        await axiosInstance.post(`/api/submit-contact/${companyData[0].id}.${employee_code}`, contact_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
 
-      // await axiosInstance.post(`/api/submit-pay-details/${companyData[0].id}.${employee_code}`, formData.pay_details)
-
+      await axiosInstance.post(`/api/submit-pay-details/${companyData[0].id}.${employee_code}`, formData.pay_details)
       await axiosInstance.post(`/api/submit-pay-structure/${companyData[0].id}.${employee_code}`, formData.pay_structure)
 
-      //   formData.other_details.forEach(async (other, index) => {
-      //     const otherData = new FormData();
-      //     for (const key in other) {
-      //       if (other[key]) {
-      //         if (key === "document") {
-      //           if (other[key]) {
-      //             otherData.append(key, other[key]);
-      //           }
-      //         } else {
-      //           otherData.append(key, other[key]);
-      //         }
-      //       }
-      //     }
+        formData.other_details.forEach(async (other, index) => {
+          const otherData = new FormData();
+          for (const key in other) {
+            if (other[key]) {
+              if (key === "document") {
+                if (other[key]) {
+                  otherData.append(key, other[key]);
+                }
+              } else {
+                otherData.append(key, other[key]);
+              }
+            }
+          }
 
-      //     await axiosInstance.post(`/api/submit-other-data/${companyData[0].id}.${employee_code}`, otherData, {
-      //       headers: {
-      //         'Content-Type': 'multipart/form-data',
-      //       },
-      //   });
-      //   });
+          await axiosInstance.post(`/api/submit-other-data/${companyData[0].id}.${employee_code}`, otherData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+        });
+        });
 
-      //   const national_data = new FormData();
-      //   for (const key in formData.national) {
-      //     if (formData.national[key]) {
-      //       if ( (key === "document") && formData.national[key]) {
-      //         national_data.append(key, formData.national[key]);
-      //       } else {
-      //         national_data.append(key, formData.national[key]);
-      //       }
-      //     }
-      //   }
-      //   await axiosInstance.post(`/api/submit-national/${companyData[0].id}.${employee_code}`, national_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        const national_data = new FormData();
+        for (const key in formData.national) {
+          if (formData.national[key]) {
+            if ( (key === "document") && formData.national[key]) {
+              national_data.append(key, formData.national[key]);
+            } else {
+              national_data.append(key, formData.national[key]);
+            }
+          }
+        }
+        await axiosInstance.post(`/api/submit-national/${companyData[0].id}.${employee_code}`, national_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
 
-      //   const dbs_data = new FormData();
-      //   for (const key in formData.dbs) {
-      //     if (formData.dbs[key]) {
-      //       if ( (key === "document") && formData.dbs[key]) {
-      //         dbs_data.append(key, formData.dbs[key]);
-      //       } else {
-      //         dbs_data.append(key, formData.dbs[key]);
-      //       }
-      //     }
-      //   }
-      //   await axiosInstance.post(`/api/submit-dbs/${companyData[0].id}.${employee_code}`, dbs_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        const dbs_data = new FormData();
+        for (const key in formData.dbs) {
+          if (formData.dbs[key]) {
+            if ( (key === "document") && formData.dbs[key]) {
+              dbs_data.append(key, formData.dbs[key]);
+            } else {
+              dbs_data.append(key, formData.dbs[key]);
+            }
+          }
+        }
+        await axiosInstance.post(`/api/submit-dbs/${companyData[0].id}.${employee_code}`, dbs_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
 
-      //   const esus_data = new FormData();
-      //   for (const key in formData.esus) {
-      //     if (formData.esus[key]) {
-      //       if ( (key === "document") && formData.esus[key]) {
-      //         esus_data.append(key, formData.esus[key]);
-      //       } else {
-      //         esus_data.append(key, formData.esus[key]);
-      //       }
-      //     }
-      //   }
-      //   await axiosInstance.post(`/api/submit-esus/${companyData[0].id}.${employee_code}`, esus_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        const esus_data = new FormData();
+        for (const key in formData.esus) {
+          if (formData.esus[key]) {
+            if ( (key === "document") && formData.esus[key]) {
+              esus_data.append(key, formData.esus[key]);
+            } else {
+              esus_data.append(key, formData.esus[key]);
+            }
+          }
+        }
+        await axiosInstance.post(`/api/submit-esus/${companyData[0].id}.${employee_code}`, esus_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
 
-      //   const visa_data = new FormData();
-      //   for (const key in formData.visa) {
-      //     if (formData.visa[key]) {
-      //       if ( (key === "front" || key === "back") && formData.visa[key]) {
-      //         visa_data.append(key, formData.visa[key]);
-      //       } else {
-      //         visa_data.append(key, formData.visa[key]);
-      //       }
-      //     }
-      //   }
-      //   await axiosInstance.post(`/api/submit-visa/${companyData[0].id}.${employee_code}`, visa_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        const visa_data = new FormData();
+        for (const key in formData.visa) {
+          if (formData.visa[key]) {
+            if ( (key === "front" || key === "back") && formData.visa[key]) {
+              visa_data.append(key, formData.visa[key]);
+            } else {
+              visa_data.append(key, formData.visa[key]);
+            }
+          }
+        }
+        await axiosInstance.post(`/api/submit-visa/${companyData[0].id}.${employee_code}`, visa_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
 
-      //   const passport_data = new FormData();
-      //   for (const key in formData.passport_details) {
-      //     if (formData.passport_details[key]) {
-      //       if (key === "picture" && formData.passport_details[key]) {
-      //         passport_data.append(key, formData.passport_details[key]);
-      //       } else {
-      //         passport_data.append(key, formData.passport_details[key]);
-      //       }
-      //     }
-      //   }
-      //   await axiosInstance.post(`/api/submit-passport/${companyData[0].id}.${employee_code}`, passport_data, {
-      //     headers: {
-      //       'Content-Type': 'multipart/form-data',
-      //     },
-      // });
+        const passport_data = new FormData();
+        for (const key in formData.passport_details) {
+          if (formData.passport_details[key]) {
+            if (key === "picture" && formData.passport_details[key]) {
+              passport_data.append(key, formData.passport_details[key]);
+            } else {
+              passport_data.append(key, formData.passport_details[key]);
+            }
+          }
+        }
+        await axiosInstance.post(`/api/submit-passport/${companyData[0].id}.${employee_code}`, passport_data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+      });
 
-      //   formData.other_documents.forEach(async (docc, index) => {
-      //     const other_doc = new FormData();
-      //     for (const key in docc) {
-      //       if (docc[key]) {
-      //         if (key === "doc") {
-      //           if (docc[key]) {
-      //             other_doc.append(key, docc[key]);
-      //           }
-      //         } else {
-      //           other_doc.append(key, docc[key]);
-      //         }
-      //       }
-      //     }
-      //     await axiosInstance.post(`/api/submit-otherdocument/${companyData[0].id}.${employee_code}`, other_doc, {
-      //       headers: {
-      //         'Content-Type': 'multipart/form-data',
-      //       },
-      //   });
-      //   });
+        formData.other_documents.forEach(async (docc, index) => {
+          const other_doc = new FormData();
+          for (const key in docc) {
+            if (docc[key]) {
+              if (key === "doc") {
+                if (docc[key]) {
+                  other_doc.append(key, docc[key]);
+                }
+              } else {
+                other_doc.append(key, docc[key]);
+              }
+            }
+          }
+          await axiosInstance.post(`/api/submit-otherdocument/${companyData[0].id}.${employee_code}`, other_doc, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+        });
+        });
 
-      console.log("Data submitted successfully!");
     } catch (error) {
       console.error("Error submitting form data:", error);
     }
@@ -2430,7 +2403,7 @@ const EmployeeForm = () => {
                         formData[field.value.split(".")[0]][
                           field.value.split(".")[1]
                         ];
-                       { field.type === 'file' && console.log(field.value,fieldValue,formData.service_details.profile_pic)}
+                       { field.type === 'file' }
                       return (
                         <div key={fieldIndex} className="space-y-2">
                           <label
@@ -2479,7 +2452,7 @@ const EmployeeForm = () => {
                                   name={field.value}
                                   value="Yes"
                                   onChange={handleChange}
-                                  checked={fieldValue === "Yes"}
+                                  checked={fieldValue === true}
                                   className="mr-2"
                                 />
                                 Yes
@@ -2490,7 +2463,7 @@ const EmployeeForm = () => {
                                   name={field.value}
                                   value="No"
                                   onChange={handleChange}
-                                  checked={fieldValue === "No"}
+                                  checked={fieldValue === false}
                                   className="mr-2"
                                 />
                                 No
