@@ -8,13 +8,17 @@ const TaxMasterForm = () => {
     const {tax_id} =useParams();
     const navigate = useNavigate();
     
-    const {taxMasters,companyData} = useCompanyContext();
+    const {fetchTaxMasters,taxMasters,companyData} = useCompanyContext();
 
     const [data,setData] = useState({
         tax_code: '',
         percentage : 0,
         reference : ''
     });
+    
+    useEffect(() => {
+      fetchTaxMasters();
+    },[]);
     
     useEffect(() => {
         if(tax_id){

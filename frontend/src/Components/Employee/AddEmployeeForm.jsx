@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSidebarContext } from "../../contexts/SidebarContext";
+import { useSelector } from "react-redux";
 
 const nationalityOptions = [
   "Afghanistan",
@@ -317,8 +318,9 @@ const currency_options = [
 ];
 
 const EmployeeForm = () => {
-  const { id } = useParams();
+  let { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const {user} = useSelector((state) => state.user);
   const {
     companyData,
     departmentData,
@@ -333,6 +335,7 @@ const EmployeeForm = () => {
   } = useCompanyContext();
   const [employee_code, setCode] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const fetch_next_id = async () => {
@@ -344,8 +347,8 @@ const EmployeeForm = () => {
       }
     };
     if (!id && employee_code === "") {
-    }
-    fetch_next_id();
+    
+    fetch_next_id();}
   }, []);
 
   useEffect(() => {
@@ -536,6 +539,10 @@ const EmployeeForm = () => {
   });
 
   useEffect(() => {
+    console.log('on employee form');
+    const isEmployee = location.pathname.includes('update-profile');
+    if(isEmployee && id === null) id = user.employee_code;
+    console.log(isEmployee,' id ',id);
     const fetchFormInfo = async () => {
       try {
         const response = await axiosInstance.get(

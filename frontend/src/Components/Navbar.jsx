@@ -34,39 +34,57 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
 
   if (location.pathname === "/" || location.pathname === "/register") {
     return (
-      <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-24">
-        <div className="ml-28 h-full flex items-center px-4">
-          <img
-            src="/images/logo.png"
-            alt="Logo"
-            className="w-28 h-auto transition-all duration-200"
-          />
-        </div>
-      </nav>
-    );
-  } else if (isLoggedIn && location.pathname === "/employeeDashboard") {
-    return (
-      <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-28">
-        <div className="h-auto flex items-center justify-between px-4">
-          <img
-            src="/images/logo.png"
-            alt="Logo"
-            className="w-44 h-auto transition-all duration-200"
-          />
-
-          <div className="flex items-center space-x-2 mr-10">
-            <img src={user.profile_image} className="h-24 w-24 rounded-full"/>
-            <div className="text-left">
-              <p className="font-bold text-2xl">{user.first_name + " " + user.last_name}</p>
-              <p className="text-gray-600 text-xl">{user.email}</p>
-              <p className="text-gray-600 text-xl">{user.phone_number}</p>
+      <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo Section */}
+            <div className="flex items-center space-x-4">
+              <img
+                src="/images/logo.png"
+                alt="Logo"
+                className="w-auto h-12 transform hover:scale-105 transition-transform duration-300"
+              />
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-semibold text-gray-900">
+                  HR Solutions
+                  <span className="block text-sm text-gray-500 font-normal">
+                    Virtual HR Manager
+                  </span>
+                </h1>
+              </div>
             </div>
-            <button onClick={handleLogout} title="Logout">
-              <i className="la la-power-off text-4xl text-red-600"></i>
-            </button>
+  
+            
           </div>
         </div>
       </nav>
+    );
+  }
+
+ else if (isLoggedIn && location.pathname.includes("/hrms/employeeDashboard")) {
+    return (
+      null
+      // <nav className="relative top-0 left-0 w-full bg-white shadow-md z-50 h-28">
+      //   <div className="h-auto flex items-center justify-between px-4">
+      //     <img
+      //       src="/images/logo.png"
+      //       alt="Logo"
+      //       className="w-44 h-auto transition-all duration-200"
+      //     />
+
+      //     <div className="flex items-center space-x-2 mr-10">
+      //       <img src={user.profile_image} className="h-24 w-24 rounded-full"/>
+      //       <div className="text-left">
+      //         <p className="font-bold text-2xl">{user.first_name + " " + user.last_name}</p>
+      //         <p className="text-gray-600 text-xl">{user.email}</p>
+      //         <p className="text-gray-600 text-xl">{user.phone_number}</p>
+      //       </div>
+      //       <button onClick={handleLogout} title="Logout">
+      //         <i className="la la-power-off text-4xl text-red-600"></i>
+      //       </button>
+      //     </div>
+      //   </div>
+      // </nav>
     );
   }
 // ${isMobile && menuOpen ? "h-24" :"h-16"}
@@ -107,7 +125,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
                   {isLoggedIn && (
                     <>
                       <button
-                        onClick={() => navigate("/employeeDashboard")}
+                        onClick={() => navigate("/hrms/employeeDashboard")}
                         className="block text-gray-800 hover:bg-gray-200 p-2 rounded-md w-full text-left"
                         title="Main Dashboard"
                       >
@@ -176,7 +194,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
             {isLoggedIn ? (
               <div className="ml-auto flex items-center space-x-4 mr-10">
                 <button
-                  onClick={() => navigate("/employeeDashboard")}
+                  onClick={() => navigate("/hrms/employeeDashboard")}
                   className="text-tt"
                   title="Main Dashboard"
                 >

@@ -7,8 +7,11 @@ import axiosInstance from "../../../axiosInstance";
 const BankMasterForm = () => {
   const navigate = useNavigate();
   const {bank_id} = useParams();
-  const {companyData,orgBanks} = useCompanyContext();
-
+  const {companyData,fetchBanks,orgBanks} = useCompanyContext();
+ 
+  useEffect(() => {
+   fetchBanks()
+  },[])
   const [data,setData] = useState({
     Bank_Name : ""
   });
@@ -36,7 +39,6 @@ const BankMasterForm = () => {
     e.preventDefault();
     const isUpdate = Boolean(bank_id);
     const send_data = isUpdate ? {...data,isUpdate,bank_id} : {...data,isUpdate};
-    console.log('sending data  ',send_data);
     try{
        const response = await axiosInstance.post(`/api/addCompanyBank/${companyData[0].id}`,send_data);
        if(response.status === 201){

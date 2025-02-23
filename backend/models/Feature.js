@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       icon: {
         type: DataTypes.STRING(255),
         allowNull:true,
+      },
+      download_api_route:{
+        type: DataTypes.STRING(255),
+        allowNull:true,
       }
     });
   

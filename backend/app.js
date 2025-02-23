@@ -9,6 +9,8 @@ const visitorRoutes = require('./routes/visitor.route');
 const employeeAdd = require('./routes/employee-submission.routes');
 const JobRoutes = require('./routes/job.routes');
 const AttendanceRoutes = require('./routes/attendance.routes');
+const PdfRoutes = require('./routes/pdf.routes');
+const employeeRoutes = require('./routes/employee-routes');
 
 const app = express();
 app.use(express.json());  
@@ -26,6 +28,8 @@ app.use('/',visitorRoutes);
 app.use('/',employeeAdd);
 app.use('/',JobRoutes);
 app.use('/',AttendanceRoutes);
+app.use('/',PdfRoutes);
+app.use('/',employeeRoutes);
 
 app.use('/uploads', express.static('uploads'));
 

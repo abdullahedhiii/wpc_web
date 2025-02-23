@@ -65,7 +65,7 @@ module.exports.Login = async (req, res) => {
               {
                  model : Organisation,
                  as : 'organisation',
-                 attributes : ['Company_name']
+                 attributes : ['Company_name',"id"]
               },
               {
                 model : PersonalDetail,
@@ -75,7 +75,7 @@ module.exports.Login = async (req, res) => {
               {
                 model : ServiceDetail,
                 as : 'servicedetail',
-                attributes : ['profile_pic']
+                attributes : ['profile_pic','type']
               },
 
             ]
@@ -94,14 +94,17 @@ module.exports.Login = async (req, res) => {
     });
     const response  = isAdmin ? {...userDetails, profile_image : org?.Company_Logo || null,isAdmin} :
     {
-           company_name : employee.organisation.company_name,
+           company_name : employee.organisation.Company_name,
+           company_id : employee.organisation.id,
            email : userDetails.email,
            phone_number : employee.personaldetail.contact_1,
            first_name : [employee.personaldetail.fname,employee.personaldetail.mname].filter(Boolean).join(' '),
            id : userDetails.id,
            last_name : employee.personaldetail.lname || '',
            profile_image : employee.servicedetail.profile_pic || null,
-           isAdmin
+           isAdmin,
+           employee_code : employee.employee_code,
+           type : employee.servicedetail.type,
     };
     return res.status(200).json({
       user: response, 
@@ -152,13 +155,14 @@ module.exports.getModules = async (req, res) => {
                 "next_route",
                 "plus_icon_route",
                 "action_route",
+                "download_api_route",
                 "icon",
               ],
               separate: true,
               order: [["id", "ASC"]],
             },
           ],
-          attributes: ["id", "name", "main_route", "icon"],
+          attributes: ["id", "name", "main_route", "icon","download_api_route"],
           separate: true,
           order: [["id", "ASC"]],
         },
@@ -190,6 +194,7 @@ module.exports.getModules = async (req, res) => {
             name: subModule.name,
             main_route: subModule.main_route,
             icon: subModule.icon,
+            download_api_route : subModule.download_api_route,
             features: subModule.features.map((feature) => ({
               name: feature.name,
               next_route: feature.next_route,
@@ -197,6 +202,7 @@ module.exports.getModules = async (req, res) => {
               plus_icon_route: feature.plus_icon_route,
               action_route: feature.action_route,
               id: feature.id,
+              download_api_route : feature.download_api_route,
             })),
           })),
         }))
@@ -224,8 +230,6 @@ module.exports.getModules = async (req, res) => {
       userSubModuleAccess.add(sub_module_id);
     });
     
-    console.log("User Feature Access Map:", userFeatureAccess);
-    
     const formattedModules = modules.map((module) => {
       let moduleHasAccess = false;
     
@@ -234,30 +238,35 @@ module.exports.getModules = async (req, res) => {
     
         const features = subModule.features.map((feature) => {
           const featureId = String(feature.id); // Ensure consistent lookup
-          const featureAccess = userFeatureAccess.get(featureId) || { can_add: false, can_edit: false };
-          const can_access = !!userFeatureAccess.has(featureId);
+          let featureAccess = userFeatureAccess.get(featureId) || { can_add: false, can_edit: false };
+          let can_access = !!userFeatureAccess.has(featureId);
     
-          if (can_access) subModuleHasAccess = true;
-    
-        //  console.log("Feature:", feature.id, "Access:", featureAccess, "Can Access:", can_access);
+          // If the module is "Employee Corner", grant full access and set can_add: true
+          if (module.name === "Employee Corner") {
+            moduleHasAccess = true;
+            subModuleHasAccess = true;
+            can_access = true;
+            featureAccess = { ...featureAccess, can_add: true }; // Ensure can_add is true
+          }
     
           return { ...feature.get(), ...featureAccess, can_access };
         });
     
-        if (!subModuleHasAccess) {
+        // Ensure submodule is accessible if under "Employee Corner"
+        if (module.name === "Employee Corner") {
+          subModuleHasAccess = true;
+        } else if (!subModuleHasAccess) {
           subModuleHasAccess = userSubModuleAccess.has(subModule.id);
         }
+    
         if (subModuleHasAccess) moduleHasAccess = true;
     
         return { ...subModule.get(), features, can_access: subModuleHasAccess };
       });
     
-      return {
-        ...module.get(),
-        subModules,
-        can_access: moduleHasAccess,
-      };
+      return { ...module.get(), subModules, can_access: moduleHasAccess };
     });
+    
     
     res.status(200).json(formattedModules);
     
@@ -308,19 +317,6 @@ module.exports.getUserOrganisation = async(req,res) => {
         const organisation = await Organisation.findOne(
           {
             where : {id : org_id},
-            attributes: [
-              "id",
-              "Company_name",
-              "Company_Website",
-              "Company_OrganisationEmail",
-              "Company_Contact",
-              "Address_Line1",
-              "Address_Line2",
-              "Address_Line3",
-              "Address_Postcode",
-              "Address_City_County",
-              "Address_Country",
-            ],
           });
       
     const responseData = {
@@ -343,6 +339,8 @@ module.exports.getUserOrganisation = async(req,res) => {
       "Email ID": organisation.Company_OrganisationEmail,
       "Phone No.": organisation.Company_Contact,
       Action: "Edit",
+      year_created: new Date(organisation.createdAt).getFullYear()
+
     };
     return res.status(200).json(responseData);
     }

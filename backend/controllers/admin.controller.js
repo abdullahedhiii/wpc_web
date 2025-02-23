@@ -52,9 +52,12 @@ const {
   Job,
   InterviewForm,
   Duty,
+  WorkUpdate,
+  LeaveRequest,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
+const { query } = require("express");
 
 module.exports.submitCompanyForm = async (req, res) => {
   try {
@@ -477,19 +480,6 @@ module.exports.getOrganisations = async (req, res) => {
   try {
     const organisation = await Organisation.findOne({
       where: { admin_id : req.params.id},
-      attributes: [
-        "id",
-        "Company_name",
-        "Company_Website",
-        "Company_OrganisationEmail",
-        "Company_Contact",
-        "Address_Line1",
-        "Address_Line2",
-        "Address_Line3",
-        "Address_Postcode",
-        "Address_City_County",
-        "Address_Country",
-      ],
     });
     if (!organisation) {
       return res.status(200).json({
@@ -518,6 +508,7 @@ module.exports.getOrganisations = async (req, res) => {
       "Email ID": organisation.Company_OrganisationEmail,
       "Phone No.": organisation.Company_Contact,
       Action: "Edit",
+      year_created: new Date(organisation.createdAt).getFullYear()
     };
     return res.status(200).json(responseData);
   } catch (error) {
@@ -1646,7 +1637,8 @@ const generateLink = (employee_code) => {
 module.exports.getAllEmployees = async (req, res) => {
   console.log("get employees hit ", req.params.id);
   const org_id = req.params.id;
-
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   try {
     const emp = await Employee.findAll({
       where: { organisation_id: org_id },
@@ -1665,6 +1657,12 @@ module.exports.getAllEmployees = async (req, res) => {
           model: ServiceDetail,
           as: "servicedetail",
           attributes: ["type", "department","designation_id","department_id","designation","employment_type_id"],
+          where: {
+            [Op.or]: [
+              { end_if: null }, // Employees still active with no end date
+              { end_if: { [Op.gte]: today } } // Employees with a future end date
+            ]
+          }
         },
         {
           model: Organisation,
@@ -2325,6 +2323,7 @@ module.exports.getLeaveRules = async (req, res) => {
           model: LeaveType,
           as: 'leavetype',
           attributes: ['leave_type'],
+          foreignKey : 'leave_type_id',
         },
       ],
     });
@@ -2357,53 +2356,64 @@ module.exports.getLeaveRules = async (req, res) => {
 };
 
 module.exports.allocateLeave = async (req, res) => {
+  console.log('hit allocated leave ');
   const id = req.params.id;
+
   try {
-      const leave_rule = await LeaveRule.findOne({
-          where: { organisation_id: id, employment_type_id: req.body.employment_type_id }
-      });
+    const [a, b] = req.body.year.includes('/') ? req.body.year.split('/') : [null, null];
+    
+    const leave_type = await LeaveType.findOne({
+      where: { id: req.body.leave_type_id }
+    });
+    const leave_rule = await LeaveRule.findOne({
+      where: { leave_type_id: req.body.leave_type_id }
+    });
+    const year = b ? b : req.body.year;
 
-      if (!leave_rule) {
-          return res.status(404).json({ message: "Leave rule not found" });
+    // Check if leave allocation already exists
+    const existingLeave = await LeaveAllocation.findOne({
+      where: {
+        employee_code: req.body.employee_code,
+        leave_type_id: req.body.leave_type_id,
+        year: year
       }
+    });
 
-      const leave_type = await LeaveType.findOne({
-          where: { id: leave_rule.id }
+    if (existingLeave) {
+      // Update existing leave allocation
+      await LeaveAllocation.update(
+        { leave_in_hand: leave_rule.leave_in_hand },
+        { where: { id: existingLeave.id } }
+      );
+    } else {
+      // Create a new leave allocation if it doesn't exist
+      await LeaveAllocation.create({
+        employee_code: req.body.employee_code,
+        employment_type_id: req.body.employment_type_id,
+        leave_type_id: req.body.leave_type_id,
+        year: year,
+        leave_in_hand: leave_rule.max
       });
+    }
 
-      if (!leave_type) {
-          return res.status(404).json({ message: "Leave type not found" });
-      }
-      const [a,b] = req.body.year.split('/') ;
+    // Construct response
+    const response = {
+      'Select': '-',
+      'Employment Type': req.body.employment_type,
+      'Employee Code': req.body.employee_code,
+      'Leave Name': leave_type?.leave_type,
+      'Maximum No.': leave_rule.max,
+      'Leave in hand': leave_rule.max,
+      'Effective Year': req.body.year
+    };
 
-      const [new_leave, created] = await LeaveAllocation.upsert({
-          employee_code: req.body.employee_code,
-          employment_type_id: req.body.employment_type_id,
-          leave_type_id: leave_rule.id,
-          year: b ? b : req.body.year,
-          leave_in_hand: req.body.leave_in_hand ?? leave_rule.max, // Only update leave_in_hand
-      }, {
-          returning: true, // Returns the newly created or updated row
-          conflictFields: ['employee_code', 'year','leave_type_id'], // Ensures upsert is based on employee_code & year
-      });
-
-      // Construct response
-      const response = {
-          'Select': '-',
-          'Employment Type': req.body.employment_type,
-          'Employee Code': req.body.employee_code,
-          'Leave Name': leave_type?.leave_type,
-          'Maximum No.': leave_rule.max,
-          'Leave in hand': new_leave.leave_in_hand,
-          'Effective Year': req.body.year
-      };
-
-      return res.status(created ? 201 : 200).json(response);
+    return res.status(existingLeave ? 200 : 201).json(response);
   } catch (error) {
-      console.error("Error in allocateLeave:", error);
-      return res.status(500).json({ message: "Internal server error" });
+    console.error("Error in allocateLeave:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
 module.exports.getLeaveAllocated = async(req,res) => {
@@ -2678,20 +2688,92 @@ module.exports.getJobOpen = async (req, res) => {
   }
 };
 
-module.exports.addForm = async(req,res) => {
-   try{
-       await InterviewForm.create({
-           job_id : req.body.position,
-           ...req.body
-       });
-       res.status(200).json({ message: "form added"});
+module.exports.addForm = async (req, res) => {
+  try {
+    const { id, job_position, ...rest } = req.body;
 
-   }
-   catch(err){
+    if (id) {
+      // Update existing form
+      const [updated] = await InterviewForm.update(
+        { job_id: job_position, ...rest },
+        { where: { id } }
+      );
+
+      if (updated) {
+        return res.status(200).json({ message: "Form updated successfully" });
+      } else {
+        return res.status(404).json({ message: "Form not found" });
+      }
+    } else {
+      // Create new form
+      await InterviewForm.create({ job_id: job_position, ...rest });
+      return res.status(201).json({ message: "Form added successfully" });
+    }
+  } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error", error: err.message });
-   }
-}
+  }
+};
+
+
+module.exports.getForms = async(req,res) => {
+    const id = req.params.id;
+    const today = new Date(); // Get today's date
+
+    try{
+         const jobs = await Job.findAll({
+          where : {
+            [Op.and]: [
+              { organisation_id: id },
+              { jobClosingDate: { [Op.gt]: today } } // Check if closing date is greater than today
+          ]
+          },
+          include : [
+           { 
+            model: InterviewForm,
+            as : "form"
+          }
+          ]
+         });
+         console.log(jobs);
+         const formattedData = jobs.map((job,index) => (
+          job.form ? {
+            id : job.form?.id,
+            job_id : job.form?.job_id,
+            "Sl. No." : index+1,
+            "Job Title" : job.jobTitle,
+            "Form Name" : job.form?.form_name,
+            "Industry" : job.form?.industry,
+            "Scaling" : job.form?.scaling,
+            "Action" : "Edit"
+          } : null
+         ));
+         return res.status(200).json(formattedData);
+    }
+
+    catch(err){
+      console.error(err);
+      res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+};
+
+module.exports.getJobForm = async (req,res) => {
+   try{
+       const form = await InterviewForm.findOne({
+        where : {id : req.params.id}
+       });
+       const job = await Job.findOne({
+        where : {id : form.job_id}
+       });
+       form.job_position = job.jobTitle;
+       return res.status(200).json(form);
+      }
+  
+      catch(err){
+        console.error(err);
+        res.status(500).json({ message: "Internal server error", error: err.message });
+      }
+};
 
 module.exports.assignDuty = async(req,res) => {
     try{
@@ -2823,24 +2905,23 @@ module.exports.getTasks = async (req, res) => {
             return res.status(404).json({ error: "Employee not found" });
         }
 
-        const tasks = await Duty.findAll({
+        const tasks = await WorkUpdate.findAll({
             where: {
                 employee_code,
-                duty_assigned_to: "employee",
-                fromDate: { [Op.gte]: fromDate },
-                toDate: { [Op.lte]: toDate },
+                update_date: { [Op.gte]: fromDate },
+                update_date :{ [Op.lte]: toDate },
             },
         });
 
         const formattedTasks = tasks.map((task, index) => ({
             "Sl No": index + 1,
             "Employee Name": `${employee.personaldetail.fname} ${employee.personaldetail.mname || ""} ${employee.personaldetail.lname}`.trim(),
-            "Date": task.fromDate,
-            "From Time": task.fromDate, 
-            "To Time": task.toDate, 
-            "Task Performed": task.taskPerformed || "N/A",
-            "Task Update": task.taskUpdate || "N/A",
-            "Uploaded File": task.uploadedFile || "N/A", // Handle case if file is not available
+            "Date": task.update_date,
+            "From Time": task.fromTime, 
+            "To Time": task.toTime, 
+            "Task Performed": task.update || "N/A",
+            "Task Update": task.update || "N/A",
+            "Uploaded File": task.file || "N/A", 
         }));
 
         // Return response
@@ -2849,4 +2930,226 @@ module.exports.getTasks = async (req, res) => {
         console.error("Error fetching tasks:", err);
         res.status(500).json({ error: "Internal server error" });
     }
+};
+
+
+module.exports.getLeavesRequested = async (req, res) => {
+  try {
+    console.log('Oragnisation id ',req.params.id);
+    const leaves = await Employee.findAll({
+      where: {
+        organisation_id: req.params.id,
+      },
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          foreignKey : 'employee_code',
+        },
+        {
+          model: ServiceDetail,
+          as: "servicedetail",
+          foreignKey : 'employee_code'
+        },
+        {
+          model: LeaveRequest,
+          as: "leave_requests",
+          foreignKey: "employeeCode", 
+        },
+      ],
+    });
+console.log(leaves);
+    const formattedTasks = await Promise.all(
+      leaves.flatMap((leave, index) =>
+        leave.leave_requests.map(async (leaveRequest) => {
+ console.log(leaveRequest);
+          const leave_type = await LeaveType.findOne({
+            where: {
+              id: leaveRequest.leave_type_id,
+            },
+          });
+
+          return {
+            id: leaveRequest.id,
+            "Sl. No.": index + 1,
+            "Employment Type": leave.servicedetail?.type || "N/A",
+            "Employee Code": leaveRequest.employeeCode, // Use correct column
+            "Name": [leave.personaldetail?.fname, leave.personaldetail?.mname, leave.personaldetail?.lname]
+              .filter(Boolean)
+              .join(" "),
+            "Leave Type": leave_type?.leave_type || "N/A",
+            "From Date": leaveRequest.fromDate,
+            "To Date": leaveRequest.toDate,
+            "Date Of Application": leaveRequest.applicationDate,
+            "No. Of Leave": leaveRequest.days,
+            "Status": leaveRequest.status,
+            "Action" : [
+              {label : 'approve',route :'Approved'},
+              {label :'reject',route :'Rejected'}]
+          };
+        })
+      )
+    );
+
+    res.status(200).json(formattedTasks );
+  } catch (err) {
+    console.error("Error fetching leave requests:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports.updateLeaveRequest = async (req, res) => {
+  try {
+    // Update the leave request status
+    const updatedRows = await LeaveRequest.update(
+      { status: req.body.status },
+      { where: { id: req.body.request_id } }
+    );
+
+    // Check if any row was updated
+    if (updatedRows[0] === 0) {
+      return res.status(404).json({ message: "Leave request not found" });
+    }
+
+    // Fetch the updated request details
+    const updatedRequest = await LeaveRequest.findOne({
+      where: { id: req.body.request_id },
+    });
+
+    if (!updatedRequest) {
+      return res.status(404).json({ message: "Updated leave request not found" });
+    }
+
+    const num_days = updatedRequest.days;
+    const leaveType = await LeaveAllocation.findOne({
+      where: {
+        employee_code: updatedRequest.employeeCode,
+        leave_type_id: updatedRequest.leave_type_id,
+      },
+    });
+
+    // Check if leaveType exists
+    if (!leaveType) {
+      return res.status(404).json({ message: "Leave allocation record not found" });
+    }
+
+    // Update the leave allocation
+    await LeaveAllocation.update(
+      { leave_in_hand: leaveType.leave_in_hand - num_days },
+      {
+        where: {
+          employee_code: updatedRequest.employeeCode,
+          leave_type_id: updatedRequest.leave_type_id,
+        },
+      }
+    );
+
+    return res.status(200).json({ message: "Request updated successfully" });
+  } catch (err) {
+    console.error("Error updating leave request:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports.getLeaveReportEmployee = async (req, res) => {
+  const { year, employee_code } = req.query;
+
+  if (!year || !employee_code) {
+    return res.status(400).json({ error: "Year and employee_code are required" });
+  }
+
+  try {
+    const startDate = new Date(`${year}-01-01`);
+    const endDate = new Date(`${year}-12-31`);
+
+    const records = await LeaveRequest.findAll({
+      where: {
+        employeeCode: employee_code, // Make sure column name matches DB schema
+        [Op.or]: [
+          { fromDate: { [Op.between]: [startDate, endDate] } },
+          { toDate: { [Op.between]: [startDate, endDate] } }
+        ]
+      }
+    });
+
+    const emp = await PersonalDetail.findOne({
+      where: { employee_code : employee_code }
+    });
+
+    if (!emp) {
+      return res.status(404).json({ error: "Employee not found" });
+    }
+
+    const formattedData = await Promise.all(
+      records.map(async (record, index) => {
+        const leave_type = await LeaveType.findOne({
+          where: { id: record.leave_type_id }
+        });
+
+        return {
+          "Sl No.": index + 1,
+          "Employee Code": record.employeeCode,
+          "Employee Name": [emp.fname, emp.mname, emp.lname].filter(Boolean).join(" "),
+          "Leave Type": leave_type ? leave_type.leave_type : "Unknown",
+          "Date of Application": record.applicationDate,
+          "Date(s)": `${record.fromDate} - ${record.toDate}`,
+          "Duration (Days)": record.days,
+          "Status": record.status
+        };
+      })
+    );
+
+    res.status(200).json(formattedData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+module.exports.getPastStaffData = async (req, res) => {
+  const id = req.params.id;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  try {
+    const organisation = await Organisation.findOne({ where: { id: id } });
+
+    const staff = await Employee.findAll({
+      where: { organisation_id: id },
+      include: [
+        { model: PersonalDetail, as: "personaldetail", attributes: ["fname", "mname", "lname", "dob", "nationality_no", "Nationality", "contact_1"] },
+        { model: JobDetail, as: "jobdetails", attributes: ["start"] },
+        { model: ServiceDetail, as: "servicedetail", attributes: ["end_if"], where: { end_if: { [Op.lt]: today } } }, // Filter past employees
+        { model: VisaDetail, as: "visadetail", attributes: ["expiry_date", "review_date"] },
+        { model: PassportDetail, as: "passportdetail" },
+        { model: EsusDetail, as: "esusdetail", attributes: ["expiry"] },
+        { model: DBSDetail, as: "dbsdetail", attributes: ["expiry"] },
+        { model: NationalDetail, as: "nationaldetail" },
+        { model: ContactInfo, as: "contact" },
+      ],
+    });
+
+    const formattedData = staff.map((emp, index) => ({
+      "Staff Code": emp.employee_code || "=",
+      "Staff Name": [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname].filter(Boolean).join(" "),
+      "Address": [emp.contact.line1, emp.contact.line2, emp.contact.line3, emp.contact.city, emp.contact.country, emp.contact.post_code].filter(Boolean).join(" "),
+      "DOB": emp.personaldetail.dob,
+      "Job Start Date": emp.jobdetails?.start || "N/A",
+      "Service End Date": emp.servicedetail?.end_if || "N/A", // Display when they left
+      "Telephone": emp.personaldetail.contact_1,
+      "Nationality": emp.personaldetail.Nationality || emp.nationaldetail?.nationality || "N/A",
+      "NI Number": emp.nationaldetail?.national_id || "N/A",
+      "Visa Expiry": emp.visadetail?.expiry_date ? `Expires on ${emp.visadetail.expiry_date}` : "N/A",
+      "Visa Review": emp.visadetail?.review_date ? `Review on ${emp.visadetail.review_date}` : "N/A",
+      "Passport No": emp.passportdetail?.passport_no || "N/A",
+      "Passport Expiry Date": emp.passportdetail?.expiry_date ? `Expires on ${emp.passportdetail.expiry_date}` : "N/A",
+      "EUSS Details": emp.esusdetail?.expiry ? `Expires on ${emp.esusdetail.expiry}` : "N/A",
+      "DBS Details": emp.dbsdetail?.expiry ? `Expires on ${emp.dbsdetail.expiry}` : "N/A",
+    }));
+
+    res.status(200).json(formattedData);
+  } catch (err) {
+    console.error("Error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };

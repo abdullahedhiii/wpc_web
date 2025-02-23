@@ -5,7 +5,7 @@ import DataTable from "../../DataTable";
 const LatePolicy = () =>{
     const columns = ['Department','Designation','Shift Code','Max Grace Period','No. of Days Allowed','No. of Day Salary Deducted','Action'];
     const {latePolicies,fetchPolicies} = useCompanyContext();
-    console.log(latePolicies);
+
     useEffect(() => {
       fetchPolicies();
     },[]);

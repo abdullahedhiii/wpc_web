@@ -1,28 +1,28 @@
-const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset }) => {
+import { ChevronRight, Home } from 'lucide-react'
+import { Link } from "react-router-dom"
 
+const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset }) => {
   const handleChange = (e, field) => {
-    const { name, value, checked, type } = e.target;
-    console.log('here to changed ', name, value);
+    const { name, value, checked, type } = e.target
+    console.log("here to changed ", name, value)
 
     if (type === "file") {
-      setData((prev) => ({
-        ...prev,
-        [name]: e.target.files[0],
-      }));
+      setData((prev) => ({ ...prev, [name]: e.target.files[0] }))
     } else if (type === "checkbox") {
-      setData((prev) => ({
-        ...prev,
-        [name]: checked, // Handle checkbox values (true/false)
-      }));
+      setData((prev) => ({ ...prev, [name]: checked }))
     } else {
-      setData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setData((prev) => ({ ...prev, [name]: value }))
     }
-  };
+  }
 
   const renderField = (field) => {
+    const baseInputStyles = `
+      w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700
+      placeholder:text-gray-400 focus:border-yellow-400 focus:outline-none focus:ring-2 
+      focus:ring-yellow-400/50 disabled:cursor-not-allowed disabled:opacity-50
+      transition-all duration-200 hover:border-yellow-300
+    `
+
     switch (field.type) {
       case "select":
         return (
@@ -30,41 +30,68 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
             name={field.name}
             value={data[field.name] || ""}
             onChange={(e) => handleChange(e, field)}
-            className="text-[12px] w-full p-2 border border-gray-300 rounded-md focus:border-blue-700 focus:border-b-2"
+            className={`${baseInputStyles} pr-10 appearance-none bg-right bg-no-repeat cursor-pointer
+              bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22%3E%3Cpath stroke=%22%236B7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22m6 8 4 4 4-4%22/%3E%3C/svg%3E')]
+              bg-[length:1.5rem_1.5rem]
+            `}
           >
             {field.options?.map((option) => (
-              <option key={option.value} value={option.value} className="text-gray-900">
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
-        );
+        )
       case "checkbox":
         return (
-          <div className="flex items-center">
+          <label className="relative flex items-center gap-3 cursor-pointer select-none">
             <input
               type="checkbox"
               name={field.name}
               checked={data[field.name] || false}
               onChange={(e) => handleChange(e, field)}
-              className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500 border-gray-300 rounded"
+              className="peer sr-only"
             />
-            <label htmlFor={field.name} className="ml-2 text-sm font-medium text-gray-700">
-              {field.label}
-            </label>
-          </div>
-        );
+            <div
+              className="h-6 w-6 rounded-md border border-gray-300 bg-white transition-all 
+              peer-checked:border-yellow-500 peer-checked:bg-yellow-500
+              after:absolute after:left-[6px] after:top-[10px] after:h-[8px] after:w-[12px]
+              after:-rotate-45 after:border-2 after:border-t-0 after:border-r-0
+              after:border-white after:opacity-0 peer-checked:after:opacity-100
+              peer-disabled:cursor-not-allowed peer-disabled:opacity-50"
+            />
+            <span className="text-sm font-medium text-gray-700">{field.label}</span>
+          </label>
+        )
       case "file":
         return (
-          <input
-            type="file"
+          <div className="group relative">
+            <input
+              type="file"
+              name={field.name}
+              onChange={(e) => handleChange(e, field)}
+              className="hidden"
+              accept={field.accept}
+              readOnly={field.readOnly}
+              id={field.name}
+            />
+            <label htmlFor={field.name} className={`${baseInputStyles} flex items-center gap-2 cursor-pointer`}>
+              <i className="las la-cloud-upload-alt text-xl text-yellow-500" />
+              <span className="text-gray-500">{data[field.name]?.name || "Choose a file..."}</span>
+            </label>
+          </div>
+        )
+      case "textarea":
+        return (
+          <textarea
             name={field.name}
+            value={data[field.name] || ""}
             onChange={(e) => handleChange(e, field)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            accept={field.accept}
+            className={`${baseInputStyles} min-h-[100px] ${field.readOnly ? "bg-gray-100" : ""}`}
             readOnly={field.readOnly}
+            placeholder={field.placeholder}
           />
-        );
+        )
       default:
         return (
           <input
@@ -72,53 +99,83 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
             name={field.name}
             value={data[field.name] || ""}
             onChange={(e) => handleChange(e, field)}
-            className={`text-[12px] w-full p-2 border border-gray-300 ${field.readOnly ? "bg-gray-200" : undefined} rounded-md focus:outline-none focus:border-blue-700 focus:border-b-2`}
+            className={`${baseInputStyles} ${field.readOnly ? "bg-gray-100" : ""}`}
             readOnly={field.readOnly}
+            placeholder={field.placeholder}
           />
-        );
+        )
     }
-  };
+  }
 
   return (
-    <div className="w-full max-w-7xl mx-auto bg-white rounded-md border-1 border-t-4 border-t-tt shadow-xl">
-      <div className="mb-6 p-2 flex items-center space-x-2 border-b-2">
-        <i className={`${icon} pl-2 text-blue-900 text-[15px]`}></i>
-        <h1 className="text-[15px] font-semibold text-blue-900">{title}</h1>
-      </div>
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      {/* Breadcrumb */}
+      <nav className="flex items-center space-x-1 text-sm font-medium text-gray-500 mb-6">
+        <Link to="/home" className="flex items-center gap-1.5 text-gray-500 hover:text-yellow-600 transition-colors">
+          <Home className="h-4 w-4" />
+          <span>Home</span>
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <Link to="/home/department" className="text-gray-500 hover:text-yellow-600 transition-colors">
+          Department
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <span className="text-gray-900">Add New</span>
+      </nav>
 
-      <form onSubmit={onSubmit}>
-        <div className="px-4 grid grid-cols-1 md:grid-cols-3  gap-6">
-          {fields.map((field) => (
-            <div key={field.name} className="flex flex-col">
-              {field.type !== 'checkbox' && <label htmlFor={field.name} className="mb-2 text-[12px] font-medium text-gray-700">
-                {field.label}
-              </label>}
-              {renderField(field)}
-            </div>
-          ))}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        {/* Header */}
+        <div className="border-b border-gray-200 bg-gradient-to-r from-yellow-50 to-yellow-100">
+          <div className="flex items-center gap-3 px-6 py-4">
+            <i className={`${icon} text-yellow-600 text-2xl`} />
+            <h1 className="text-xl font-bold text-gray-900">{title}</h1>
+          </div>
         </div>
 
-        <div className="p-4">
-          <button
-            type="submit"
-            className="text-[13px] px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Submit
-          </button>
+        <form onSubmit={onSubmit} className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {fields.map((field) => (
+              <div key={field.name} className="space-y-2">
+                {field.type !== "checkbox" && (
+                  <label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                    {field.label}
+                  </label>
+                )}
+                {renderField(field)}
+              </div>
+            ))}
+          </div>
 
-          {reset && (
+          <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-200">
             <button
-              type="button"
-              className="text-[13px] m-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              onClick={handleReset}
+              type="submit"
+              className="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 
+                bg-yellow-500 text-white px-5 py-2.5 hover:bg-yellow-600 focus:outline-none focus:ring-2 
+                focus:ring-yellow-400 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none
+                shadow-md hover:shadow-lg"
             >
-              Reset
+              <i className="las la-save mr-2 text-xl" />
+              Save Changes
             </button>
-          )}
-        </div>
-      </form>
-    </div>
-  );
-};
 
-export default NewForm;
+            {reset && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 
+                  border border-gray-300 bg-white text-gray-700 px-5 py-2.5 hover:bg-gray-50 
+                  focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 
+                  disabled:opacity-50 disabled:pointer-events-none shadow hover:shadow-md"
+              >
+                <i className="las la-redo-alt mr-2 text-xl" />
+                Reset Form
+              </button>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+export default NewForm

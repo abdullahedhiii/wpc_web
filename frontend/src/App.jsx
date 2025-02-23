@@ -97,18 +97,32 @@ import RejectedList from "./Components/Recruitment/RejectedList";
 import OrganisationReport from "./Components/Documents/OrganisationReport";
 import UserForm from "./Components/User access/UserForm";
 import UserRoleForm from "./Components/User access/UserRoleForm";
-import InterviewForm from "./Components/Mock Interview/InterviewForm";
-import AddInterviewForm from "./Components/Mock Interview/AddInterviewForm";
+// import InterviewForm from "./Components/Mock Interview/InterviewForm";
+// import AddInterviewForm from "./Components/Mock Interview/AddInterviewForm";
 import DutyRoster from "./Components/Rota/ShiftManagement/DutyRoster";
 import DutyRosterForm from "./Components/Rota/ShiftManagement/DutyRosterForm";
 import StaffReport from "./Components/Documents/StaffReport";
 import TaskList from "./Components/Tasks/TaskList";
 import EmployeeReport from "./Components/Documents/EmployeeReport";
-
+import Profile from "./Components/Employee Corner/Profile";
+import WorkUpdate from "./Components/Employee Corner/WorkUpdate";
+import WorkUpdateForm from "./Components/Employee Corner/WorkUpdateForm";
+import HolidayCalendar from "./Components/Employee Corner/Calendar";
+import AttendanceStatus from "./Components/Employee Corner/AttendanceStatus";
+import UpdateProfile from "./Components/Employee Corner/UpdateProfile";
+import LeaveApplication from "./Components/Employee Corner/LeaveApplication";
+import ApproveList from "./Components/LeaveManagement/ApproveList";
+import EmployeeCOC from "./Components/Employee Corner/COCView";
+import COCUpdateEmployee from "./Components/Employee Corner/COCUpdate";
+import LeaveReport from "./Components/LeaveManagement/LeaveReport";
+import LeaveReportEmployee from "./Components/LeaveManagement/LeaveReportEmployee";
+import ArchiveStaffReport from "./Components/Documents/ArchiveStaffReport";
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
   const [logoVisible, setLogoVisible] = useState(true);
   const [isMobile,setMobile] = useState(false);
+  const location  = useLocation();
+  const isDashboard = location.pathname.includes('employeeDashboard');
   const handleResize = () => {
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
@@ -130,20 +144,20 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div
+      {/* <div
         className={`fixed top-0 left-0 right-0 z-50 ${
           isSidebarOpen && isMobile ? "pl-64" : "pl-0"
         }`}
-      >
-        <Navbar
+      >${isDashboard ? 'pt-0' : 'pt-12'}
+        {!isDashboard && <Navbar
           isOpen={isSidebarOpen}
           isLogo={logoVisible}
           closeSideBar={setIsSidebarOpen}
           closeLogo={setLogoVisible}
-        />
-      </div>
+        />}
+      </div> */}
   
-      <div className="flex flex-1 pt-12">
+      <div className={`flex flex-1 `}>
         <div
           className={`${
             isSidebarOpen && isMobile ? "fixed top-0 left-0 bottom-0" : "top-16"
@@ -203,15 +217,6 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />,
       },
-      {
-        path: "employeeDashboard",
-        element: (
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        ),
-      },
-
     ],
   },
   {
@@ -223,7 +228,9 @@ const router = createBrowserRouter([
     },  
   ]
   },
+ 
   {
+
     path: "/careers",
     children: [
       {
@@ -237,6 +244,14 @@ const router = createBrowserRouter([
     path: "/hrms/",
     element: <MainLayout />,
     children: [
+      {
+        path: "employeeDashboard",
+        element: (
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+      },
       {
         path: "companydashboard",
         element: (
@@ -845,6 +860,14 @@ const router = createBrowserRouter([
         element  : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
       },
       {
+        path : "leave-management/leave-report",
+        element  : (<ProtectedRoute><LeaveReport/></ProtectedRoute>)
+      },
+      {
+        path : "leave-management/leave-report-employee",
+        element  : (<ProtectedRoute><LeaveReportEmployee/></ProtectedRoute>)
+      },
+      {
         path : "leave-management/view-leave-rule/:rule_id",
         element : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
       },
@@ -910,7 +933,7 @@ const router = createBrowserRouter([
       },
       {
         path : "document/employees-left",
-        element : (<ProtectedRoute></ProtectedRoute>)
+        element : (<ProtectedRoute><ArchiveStaffReport/></ProtectedRoute>)
       },
       {
         path : "document/employee-report",
@@ -918,20 +941,24 @@ const router = createBrowserRouter([
       },
       {
         path : "document/employee-archive-report",
-        element : (<ProtectedRoute><EmployeeReport/></ProtectedRoute>)
+        element : (<ProtectedRoute></ProtectedRoute>)
       },
       {
         path : "document/organisation-report",
         element : (<ProtectedRoute><OrganisationReport/></ProtectedRoute>)
       },
-      {
-        path : "recruitment/interview-forms",
-        element : (<ProtectedRoute><InterviewForm/></ProtectedRoute>)
-      },
-      {
-        path : 'recruitment/add-interview-form',
-        element : (<ProtectedRoute><AddInterviewForm/></ProtectedRoute>)
-      },
+      // {
+      //   path : "recruitment/interview-forms",
+      //   element : (<ProtectedRoute><InterviewForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'recruitment/add-interview-form',
+      //   element : (<ProtectedRoute><AddInterviewForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'recruitment/add-interview-form/:id',
+      //   element : (<ProtectedRoute><AddInterviewForm/></ProtectedRoute>)
+      // },
       {
         path : 'rota/add-duty-roster',
         element: (<ProtectedRoute><DutyRoster/></ProtectedRoute>)
@@ -951,6 +978,62 @@ const router = createBrowserRouter([
       {
         path : 'task-list-employee',
         element : (<ProtectedRoute><TaskList/></ProtectedRoute>)
+      },
+      {
+        path : 'employee-corner',
+        element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
+      },
+      {
+        path : 'employee-corner/user-profile',
+        element : (<ProtectedRoute><Profile/></ProtectedRoute>)
+      },
+      {
+        path : 'employee-corner/update-profile',
+        element : (
+          <ProtectedRoute>
+            <UpdateProfile/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "employee-corner/work-update",
+        element : (<ProtectedRoute><WorkUpdate/></ProtectedRoute>)
+
+      },
+      {
+        path : "employee-corner/add-work-update",
+        element : (<ProtectedRoute><WorkUpdateForm/></ProtectedRoute>)
+
+      },
+      {
+        path : "employee-corner/holiday",
+        element : (<ProtectedRoute><HolidayCalendar/></ProtectedRoute>)
+
+      },
+      {
+        path : "employee-corner/attendance-status",
+        element : (<ProtectedRoute><AttendanceStatus/></ProtectedRoute>)
+
+      },
+      {
+        path : "employee-corner/leave-apply",
+        element : (<ProtectedRoute><LeaveApplication/></ProtectedRoute>)
+
+      },
+      {
+        path : "employee-corner/change-of-circumstances",
+        element : (<ProtectedRoute><EmployeeCOC/></ProtectedRoute>)
+
+      },
+      {
+        path : "employee-corner/update-COC",
+        element : (<ProtectedRoute><COCUpdateEmployee/></ProtectedRoute>)
+
+      },
+      {
+        path : "leave-approver/list",
+        element : (<ProtectedRoute><ApproveList/></ProtectedRoute>)
+
       }
     ],
   },

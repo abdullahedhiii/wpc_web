@@ -9,7 +9,14 @@ const DutyRosterForm = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const isEmployee = location.pathname.includes('rota/add-employee-duty')
-    const { companyData, departmentData, designationData, shifts, employees }  = useCompanyContext();
+    const { fetchDepartments,fetchDesignations,fetchEmployeesLink,fetchShifts,companyData, departmentData, designationData, shifts, employees }  = useCompanyContext();
+   
+    useEffect(() => {
+      fetchDepartments();
+      fetchDesignations();
+      fetchEmployeesLink();
+      fetchShifts();
+    },[]);
     const {isSideBarOpen} = useSidebarContext();
     // console.log(departmentData,designationData,employees);
     const [designationOptions, setDesignationOptions] = useState([]);
@@ -27,7 +34,6 @@ const DutyRosterForm = () => {
 
      useEffect(() => {
         if (formData.department_id) {
-            console.log(formData.department_id);
           const filteredDesignations = designationData
             .filter(
               (designation) =>
@@ -48,7 +54,6 @@ const DutyRosterForm = () => {
       
         useEffect(() => {
           if (formData.department_id && formData.designation_id) {
-            console.log(formData.department_id,formData.designation_id)
             const filteredShifts = shifts
             .filter(
               (ele) =>
@@ -59,7 +64,6 @@ const DutyRosterForm = () => {
           setShiftOptions(filteredShifts);
 
           
-          console.log(employees,formData.department_id,formData.designation_id);
           const filteredEmployees = employees
             .filter(
               (ele) =>
@@ -74,7 +78,6 @@ const DutyRosterForm = () => {
     
         const handleSubmit = async (e) => {
             e.preventDefault();
-            console.log(formData);
             try{
                 await axiosInstance.post(`/api/assignDuty`,formData);
                 navigate("/hrms/rota/add-duty-roster");

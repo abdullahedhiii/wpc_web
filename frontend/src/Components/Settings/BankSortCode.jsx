@@ -11,7 +11,6 @@ const BankSortCode = () => {
       ];
     
     const {bankSortCodes,fetchCodes} = useCompanyContext();
-    console.log('bank sort codes ',bankSortCodes);
     useEffect(() => {
         fetchCodes();
     },[]);

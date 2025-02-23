@@ -1,0 +1,40 @@
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .header {
+    background-color: #D0F7F2;
+    padding: 12px;
+    text-align: left;
+    font-size: 2rem;
+    font-weight: bold;
+    width: 100%;
+  }
+  
+  .react-calendar {
+    width: 600px !important; /* Increase Calendar Size */
+    height: 600px !important;
+    font-size: 1.2rem;
+  }
+  
+  .holiday {
+    background: red !important;
+    color: white !important;
+    border-radius: 50%;
+  }
+  
+  .tooltip {
+    font-size: 0.8rem;
+    background: black;
+    color: white;
+    padding: 3px 6px;
+    border-radius: 5px;
+    position: absolute;
+    transform: translate(-50%, -100%);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  

@@ -2,7 +2,10 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useSidebarContext } from "../contexts/SidebarContext";
+import { useCompanyContext } from "../contexts/CompanyContext";
+
 import { useSelector } from "react-redux";
+import axiosInstance from "../../axiosInstance";
 
 const DataTable = ({
   title,
@@ -17,9 +20,11 @@ const DataTable = ({
   buttonTitle,
   addEmployeeWise = false,
   buttonEmployee,
-  employeePath
+  employeePath,
+  setData
 }) => {
-  const { selectedFeature } = useModuleContext();
+  const { selectedFeature,subModule } = useModuleContext();
+  const {companyData} = useCompanyContext();
   const navigate = useNavigate();
   const [numentries, setNumentries] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,7 +39,30 @@ const DataTable = ({
         )
     );
   }, [data, searchQuery]);
+  
+  const handleDownload = async () => {
+     console.log("Download hit:", selectedFeature);
+     console.log('down hit ',subModule)
+     const routee = selectedFeature ? `/api/${selectedFeature.download_api_route}/${companyData[0].id}`
+     : `/api/${subModule.download_api_route}/${companyData[0].id}`;
+     console.log(routee);
+     try {
+      const response = await axiosInstance.get(routee);
 
+      if (response.data.pdf_url) {
+        window.open(response.data.pdf_url, "_blank"); 
+      } else {
+        console.error("No PDF URL returned from API");
+      }
+    } catch (err) {
+      console.error("Error downloading PDF:", err);
+    }
+  };
+  
+  useEffect(() => {
+
+  },[data])
+  
   const sortedData = useMemo(() => {
     if (!sortBy.field) return filteredData;
 
@@ -99,263 +127,270 @@ const DataTable = ({
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
 
-  return (
-    <div
-      className={`${
-        isSidebarOpen ? "w-[1180px]" : "w-[1360px]"
-      } border-t-4 border-tt bg-white rounded-md shadow-md`}
-    >
-      {title && (
-        <div className="flex justify-between items-center mb-3 border-b-2 border-b-gray-200">
-          <div className="p-2 flex items-center space-x-2">
-            {!isDashboard && selectedFeature && (
-              <i className={`la ${selectedFeature.icon} pl-2 text-[14px] text-blue-900`}></i>
-            )}
-            {isDashboard && (
-              <i className={`pl-2 ${icon} text-[14px]  text-blue-900`}></i>
-            )}
-            <h2 className="text-[14px] font-semibold text-blue-900">{title}</h2>
-          </div>
-          <div className="flex items-center space-x-2 pr-6">
-            {downloadable && (
-             
-                <img src="/images/dnld.png" 
-                className="h-6 w-6 cursor-pointer"
-              />              
-  
-            )}
-            {addMore && (
-              <div className="flex space-x-4">
-                {
-                  addEmployeeWise && 
-                  <img 
-                    src="/images/user-image.png"
-                    className="h-6 w-6 cursor-pointer"
-                    title={buttonEmployee}
-                    onClick={() => navigate(`/hrms/${employeePath}`)}
-                  />
-                }
+  const handleRequestUpdate = async (status, request_id) => {
+    console.log('Sending request to update', status, request_id);
+    
+    try {
+        await axiosInstance.post(`/api/updateLeaveRequest`, {
+            status: status,
+            request_id: request_id
+        });
+        setData(prevData => 
+            prevData.map(request => 
+                request.id === request_id ? { ...request, status: status } : request
+            )
+        );
+    } catch (err) {
+        console.error("Error updating leave request:", err);
+    }
+};
+
+return (
+  <div className={`${
+    isSidebarOpen ? "w-[1200px]" : "w-[1380px]"
+  } bg-white rounded-lg shadow-lg border border-yellow-100 overflow-hidden`}>
+    {title && (
+      <div className="flex justify-between items-center p-4 border-b border-yellow-100 bg-yellow-50">
+        <div className="flex items-center gap-2">
+          {!isDashboard && selectedFeature && <i className={`la ${selectedFeature.icon} text-yellow-500 text-lg`} />}
+          {isDashboard && <i className={`${icon} text-yellow-500 text-lg`} />}
+          <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        </div>
+        <div className="flex items-center gap-4">
+          {downloadable && (
+            <button
+              onClick={handleDownload}
+              className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-500 text-white shadow hover:bg-yellow-600 h-9 px-4 transform hover:scale-105"
+            >
+              <i className="la la-download mr-2" />
+              Download PDF
+            </button>
+          )}
+          {addMore && (
+            <div className="flex items-center gap-4">
+              {addEmployeeWise && (
+                <button
+                  onClick={() => navigate(`/hrms/${employeePath}`)}
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-100 text-yellow-500 shadow-sm hover:bg-yellow-200 h-9 px-4 transform hover:scale-105"
+                  title={buttonEmployee}
+                >
+                  <i className="la la-user mr-2" />
+                  Add Employee
+                </button>
+              )}
               <button
                 title={buttonTitle}
-                className="bg-background text-white w-6 h-6 border rounded-full hover:text-blue-700"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-yellow-100 text-white shadow hover:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-110"
                 onClick={() => {
                   if (selectedFeature && selectedFeature.plus_icon_route) {
-                    navigate(`/hrms/${selectedFeature.plus_icon_route}`);
-                    
+                    navigate(`/hrms/${selectedFeature.plus_icon_route}`)
                   } else {
-                    navigate("/hrms/addemployee");
+                    navigate("/hrms/addemployee")
                   }
                 }}
-                disabled = {user.isAdmin ? false : !selectedFeature.can_add}
-
+                disabled={user.isAdmin ? false : !selectedFeature.can_add}
               >
-                <i className="la la-plus text-xl"></i>
+                <i className="la la-plus text-xl" />
               </button>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    <div className="p-6 overflow-hidden">
+      {(showEntries || searchable) && (
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+          {showEntries && (
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-700">Show</label>
+              <select
+                value={numentries}
+                onChange={(e) => {
+                  setNumentries(Number.parseInt(e.target.value, 10))
+                  setCurrentPage(1)
+                }}
+                className="h-9 rounded-md border border-yellow-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 hover:border-yellow-300"
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+              </select>
+              <span className="text-sm text-gray-500">entries</span>
+            </div>
+          )}
+          {searchable && (
+            <div className="relative w-full sm:w-auto">
+              <i className="la la-search absolute left-3 top-2.5 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-9 w-full sm:w-[250px] rounded-md border border-yellow-200 bg-transparent pl-9 pr-3 py-1 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 hover:border-yellow-300"
+                placeholder="Search in table..."
+              />
+            </div>
+          )}
         </div>
       )}
 
-<div className="w-full overflow-x-auto p-8">
-  <div className="w-full">
-          {(showEntries || searchable) && (
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2 gap-4">
-              {showEntries && (
-                <div className="flex items-center space-x-2 w-full md:w-auto">
-                  <label htmlFor="entries">Show</label>
-                  <select
-                    id="entries"
-                    value={numentries}
-                    onChange={(e) =>{
-                      setNumentries(parseInt(e.target.value, 10))
-                      setCurrentPage(1)}
-                    }
-                    className="border rounded px-4 py-1"
-                  >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                  </select>
-                  <span>entries</span>
-                </div>
-              )}
-              {searchable && (
-                <div className="flex items-center space-x-2  md:w-auto">
-                  <label htmlFor="search">Search:</label>
-                  <input
-                    id="search"
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border rounded px-2 py-1 w-full md:w-auto"
-                    placeholder="Search here..."
-                  />
-                </div>
-              )}
-            </div>
-          )}
-
-<div className="w-full overflow-x-auto">
-<table className="w-full table-auto border-spacing-0.5 border-separate">     
-  <thead>       
-              <tr className="bg-gray-100">
-                {filteredFields.map((field, index) => (
-                  <th
-                    key={index}
-                    className="relative px-3 py-1 text-left text-[14px] font-semibold text-white bg-blue-400  break-words whitespace-nowrap"
-                  >
-                    <div className="flex justify-between items-start">
-                      {field}
-                      <div className="absolute text-xs top-0 right-[-4px] space-y-1 pr-1">
-                        <i
-                          className={`la la-arrow-up ${sortBy.order === 'Ascending' ? 'text-white' : 'text-gray-100'} block cursor-pointer`}
-                          onClick={() => handleClickSort(field, "Ascending")}
-                        ></i>
-                        <i
-                          className={`la la-arrow-down ${sortBy.order === 'Descending' ? 'text-white' : 'text-gray-100'} block cursor-pointer`}
-                          onClick={() => handleClickSort(field, "Descending")}
-                        ></i>
-                      </div>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {dataToshow.length > 0 ? (
-                dataToshow.map((row, rowIndex) => (
-                  <tr
-                    key={rowIndex}
-                    className={
-                      rowIndex % 2 !== 0
-                        ? "bg-white hover:bg-gray-100"
-                        : "bg-gray-100 hover:bg-gray-200"
-                    }
-                  >
-                    {filteredFields.map((field, colIndex) => (
-                      <td
-                        key={colIndex}
-                        className="px-2 py-1 border text-[14px] text-gray-600 max-w-[200px] "
-                      >
-                        {field === "Action" ||
-                        field === "Edit" ||
-                        field === "Delete" ? (
-                          Array.isArray(row["Action"]) ? (
-                            <select
-                              className="border rounded py-1 bg-blue-600 text-white hover:bg-blue-700"
-                              onChange={(e) =>
-                                navigate(`/hrms/${e.target.value}`)
-                              }
-                            >
-                              <option>Action</option>
-                              {row["Action"].map((option, optionIndex) => (
-                                <option key={optionIndex} value={option.route}>
-                                  {option.label}
-                                </option>
-                              ))}
-                            </select>
-                          ) : row["Action"] === "Edit" || field === "Edit" ? (
-                            <img
-                              src="/images/edit.png"
-                              className="h-4 w-4 cursor-pointer"
-                              onClick={() =>
-                                navigate(
-                                  `/hrms/${selectedFeature.action_route}/${row["id"]}`
-                                )
-                              }
-                              disabled = {user.isAdmin ? false : !selectedFeature.can_edit}
-                              title="Edit"
-                            />
-                          ) : row["Action"] === "Delete" ||
-                            field === "Delete" ? (
-                            <img
-                              src="/images/delete.png"
-                              className="h-4 w-4 cursor-pointer"
-                              onClick={() => {}}
-                              title="Delete"
-                              disabled = {user.isAdmin ? false : !selectedFeature.can_edit}
-
-                            />
-                          ) : null
-                        ) : (field === "Visitor Link" ||
-                            field === "Employee Link" ||
-                            field === "Job Link") &&
-                          row[field] ? (
-                          <a
-                            href={row[field]}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 underline text-center break-words"
-                          >
-                            {row[field]}
-                          </a>
-                        ) : row[field] &&
-                          typeof row[field] === "string" &&
-                          row[field].startsWith("http") &&
-                          /\.(jpg|jpeg|png|gif|svg)$/i.test(row[field]) ? (
-                          <img
-                            src={row[field]}
-                            alt="Dynamic Content"
-                            className="h-12 w-12 object-cover rounded"
-                          />
-                        ) : (
-                          row[field] || "-"
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : (
+      <div className="overflow-x-auto">
+        <div className="inline-block min-w-full align-middle">
+          <div className="overflow-hidden border border-yellow-100 rounded-lg">
+            <table className="min-w-full divide-y divide-yellow-100">
+              <thead className="bg-yellow-50">
                 <tr>
-                  <td
-                    colSpan={filteredFields.length}
-                    className="px-6 py-2 text-center text-gray-500 border"
-                  >
-                    No data available in the table.
-                  </td>
+                  {filteredFields.map((field, index) => (
+                    <th
+                      key={index}
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        {field}
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            onClick={() => handleClickSort(field, "Ascending")}
+                            className={`h-3 w-3 transition-colors ${
+                              sortBy.order === "Ascending" ? "text-yellow-500" : "text-gray-400 hover:text-yellow-400"
+                            }`}
+                          >
+                            <i className="la la-arrow-up text-xs" />
+                          </button>
+                          <button
+                            onClick={() => handleClickSort(field, "Descending")}
+                            className={`h-3 w-3 transition-colors ${
+                              sortBy.order === "Descending"
+                                ? "text-yellow-500"
+                                : "text-gray-400 hover:text-yellow-400"
+                            }`}
+                          >
+                            <i className="la la-arrow-down text-xs" />
+                          </button>
+                        </div>
+                      </div>
+                    </th>
+                  ))}
                 </tr>
-              )}
-            </tbody>
-          </table>
-</div>
-          <div className="pt-2 flex flex-col md:flex-row justify-between items-start md:items-center mb-2 mt-2">
-            <div >
-              Showing {Math.min(filteredData.length, numentries)} of{" "}
-              {filteredData.length} entries
-            </div>
-            <div className="flex space-x-3">
-              <button
-                className={`border border-1 rounded-full px-4 py-2 ${
-                  currentPage === 1 ? "bg-white text-gray-600" : "bg-tt text-white"
-                }`}
-                onClick={handlePrevPage}
-              >
-                Previous
-              </button>
-              <button
-                className={`border border-1 rounded-full px-4 py-2 ${
-                  currentPage === 1 ? "hidden" : "bg-tt text-white"
-                }`}
-              >
-                {currentPage}
-              </button>
-              <button
-                className={`border border-1 rounded-full px-4 py-2 ${
-                  currentPage === totalPages
-                    ? "bg-white text-gray-600"
-                    : "bg-tt text-white"
-                }`}
-                onClick={handleNextPage}
-              >
-                Next
-              </button>
-            </div>
+              </thead>
+              <tbody className="bg-white divide-y divide-yellow-100">
+                {dataToshow.length > 0 ? (
+                  dataToshow.map((row, rowIndex) => (
+                    <tr key={rowIndex} className="transition-colors hover:bg-yellow-50/50">
+                      {filteredFields.map((field, colIndex) => (
+                        <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {field === "Action" || field === "Edit" || field === "Delete" ? (
+                            Array.isArray(row["Action"]) ? (
+                              <select
+                                className="h-9 rounded-xl border border-yellow-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 hover:border-yellow-300"
+                                onChange={(e) => {
+                                  if (location.pathname.includes("leave-approver")) {
+                                    handleRequestUpdate(e.target.value, row.id)
+                                  } 
+                                  else {
+                                    console.log('This is navigation ',e.target.value);
+                                    navigate(`/hrms/${e.target.value}`)}
+                                }}
+                              >
+                                <option >Choose </option>
+                                {row["Action"].map((option, optionIndex) => (
+                                  <option key={optionIndex} value={option.route}>
+                                    {option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            ) : row["Action"] === "Edit" || field === "Edit" ? (
+                              <button
+                                onClick={() => navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)}
+                                disabled={user.isAdmin ? false : !selectedFeature.can_edit}
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-yellow-100 transition-all duration-200"
+                                title="Edit"
+                              >
+                                <i className="la la-edit text-lg text-yellow-500" />
+                              </button>
+                            ) : row["Action"] === "Delete" || field === "Delete" ? (
+                              <button
+                                onClick={() => {}}
+                                disabled={user.isAdmin ? false : !selectedFeature.can_edit}
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
+                                title="Delete"
+                              >
+                                <i className="la la-trash text-lg text-red-500" />
+                              </button>
+                            ) : null
+                          ) : (field === "Visitor Link" || field === "Employee Link" || field === "Job Link") &&
+                            row[field] ? (
+                            <a
+                              href={row[field]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-yellow-500 hover:text-yellow-600 hover:underline transition-colors"
+                            >
+                              {row[field]}
+                            </a>
+                          ) : row[field] &&
+                            typeof row[field] === "string" &&
+                            row[field].startsWith("http") &&
+                            /\.(jpg|jpeg|png|gif|svg)$/i.test(row[field]) ? (
+                            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-yellow-100 transition-transform hover:scale-110">
+                              <img
+                                src={row[field] || "/placeholder.svg"}
+                                alt="Content"
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <span className="text-sm text-gray-600">{row[field] || "-"}</span>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={filteredFields.length}
+                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center"
+                    >
+                      No data available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+        <p className="text-sm text-gray-500">
+          Showing {Math.min(filteredData.length, numentries)} of {filteredData.length} entries
+        </p>
+        <div className="flex gap-2">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed border border-yellow-200 bg-white text-gray-700 shadow-sm hover:bg-yellow-50 h-9 px-4 transform hover:scale-105"
+          >
+            Previous
+          </button>
+          {currentPage > 1 && (
+            <button className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-yellow-500 text-white shadow hover:bg-yellow-600 h-9 px-4 transform hover:scale-105 transition-all duration-200">
+              {currentPage}
+            </button>
+          )}
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed border border-yellow-200 bg-white text-gray-700 shadow-sm hover:bg-yellow-50 h-9 px-4 transform hover:scale-105"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
-  );
+  </div>
+)
 };
 
 export default DataTable;

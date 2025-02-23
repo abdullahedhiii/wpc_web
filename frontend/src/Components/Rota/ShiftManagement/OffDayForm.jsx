@@ -6,8 +6,13 @@ import axiosInstance from "../../../../axiosInstance";
 
 const OffDayForm = () => {
   const navigate = useNavigate();
-  const { shifts, designationData, departmentData,companyData } = useCompanyContext();
-
+  const {fetchShifts,fetchDepartments,fetchDesignations, shifts, designationData, departmentData,companyData } = useCompanyContext();
+  
+  useEffect(() => {
+    fetchDepartments();
+    fetchDesignations();
+    fetchShifts();
+  },[]);
   const [data, setData] = useState(() => {
     const defaultDepartment = departmentData[0]["Department Name"];
     const defaultDesignation = designationData.find(

@@ -1,54 +1,122 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useModuleContext } from '../contexts/ModuleContext';
-import { useCompanyContext } from '../contexts/CompanyContext';
-import { useSelector } from 'react-redux';
+"use client"
+
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { useModuleContext } from "../contexts/ModuleContext"
+import { useCompanyContext } from "../contexts/CompanyContext"
+import { useSelector } from "react-redux"
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const { modules, setSelectedModule } = useModuleContext();
-  const [isLoading, setIsLoading] = useState(true);
-  const {companyData} = useCompanyContext();
-  const {user} = useSelector((state) => state.user);
+  const navigate = useNavigate()
+  const { modules, setSelectedModule, setSubFeature, setSubModule } = useModuleContext()
+  const [isLoading, setIsLoading] = useState(true)
+  const { companyData } = useCompanyContext()
+  const { user } = useSelector((state) => state.user)
+  const from = "/payroll"
+  console.group('in dashboard ', user);
+  console.log(modules);
+
   useEffect(() => {
     if (Array.isArray(modules) && modules.length > 0) {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [modules]);
-
+  }, [modules])
+  
   const handleModuleSelect = (module) => {
-    setSelectedModule(module);
-    module.name === 'Payroll' ? navigate(from) : navigate(`/hrms/${module.next_route}`);
-  };
+    setSelectedModule(module)
+    setSubFeature(null)
+    setSubModule(null)
+    module.name === "Payroll" ? navigate(from) : navigate(`/hrms/${module.next_route}`)
+  }
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-xl font-semibold">Loading modules...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-xl font-medium text-gray-700">Loading modules...</p>
+        </div>
       </div>
-    );
+    )
   }
 
   return (
-    <>
-    <div className="grid gap-0.5 sm:grid-cols-2 lg:grid-cols-6">
-      {modules.map((module) => (
-        <button
-          key={module.id}
-          className="bg-background text-white shadow-md flex flex-col items-center justify-center p-10"
-          onClick={() => handleModuleSelect(module)}
-          disabled={user.isAdmin ? false : !module.can_access}        
-          >
-          <i className={`la ${module.icon} text-4xl mb-4`}></i>
-          <img src= {module.icon_image} className='mb-4 h-12 w-12'/>
-          <p className="text-center text-lg font-semibold">{module.name}</p>
-        </button>
-      ))}
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+      {/* <header className="bg-white shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="text-yellow-600 text-2xl font-semibold">HR Dashboard</div>
+            <div className="text-gray-600 text-sm">
+              Welcome, {user.first_name} | {new Date().toLocaleDateString()}
+            </div>
+          </div>
+        </div>
+      </header> */}
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to Your HR Hub</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Manage your organisation efficiently with our comprehensive suite of HR tools.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+          {modules.map((module) => (
+            <button
+              key={module.id}
+              onClick={() => handleModuleSelect(module)}
+              disabled={user.isAdmin ? false : !module.can_access}
+              className={`group relative bg-white rounded-2xl p-6 transition-all duration-300 
+                ${
+                  user.isAdmin || module.can_access
+                    ? "hover:shadow-xl hover:-translate-y-2 hover:bg-yellow-50"
+                    : "opacity-60 "
+                }
+                shadow-md focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2`}
+            >
+              <div className="relative flex flex-col items-center text-center">
+                {module.count > 0 && (
+                  <span className="absolute -top-3 -right-3 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                    {module.count}
+                  </span>
+                )}
+
+                <div className="w-16 h-16 mb-4 rounded-full bg-yellow-400 flex items-center justify-center group-hover:bg-yellow-600 transition-colors duration-300">
+                  <img
+                    src={module.icon_image || "/placeholder.svg"}
+                    alt={module.name}
+                    className="w-8 h-8 text-yellow-500"
+                  />
+                </div>
+
+                <h3
+                  className={`text-sm font-medium
+                  ${user.isAdmin || module.can_access ? "text-gray-700" : "text-gray-400"}`}
+                >
+                  {module.name}
+                </h3>
+
+                {!(user.isAdmin || module.can_access) && (
+                  <span className="absolute top-2 right-2 text-gray-400 text-lg">
+                    <i className="las la-lock"></i>
+                  </span>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      </main>
+
+      <footer className="bg-white border-t border-gray-200 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <p className="text-center text-sm text-gray-600">
+            © {new Date().getFullYear()} WorkPermitCloud | All Rights Reserved
+          </p>
+        </div>
+      </footer>
     </div>
-    <div className='mt-0.5 p-2 bg-gray-700 text-white text-center'>© 2025 WorkPermitCloud | All Right Reserved</div>
+  )
+}
 
-    </>
-  );
-};
-
-export default Dashboard;
+export default Dashboard

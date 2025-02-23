@@ -10,9 +10,12 @@ module.exports = {
   theme: {
     extend: {
       colors: theme.colors, 
-     
-    },
-  },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+  
   plugins: [],
   safelist: [
     'bg-blue-700',
@@ -27,4 +30,6 @@ module.exports = {
     'border-gray-700'
     // Add more if you're using more colors dynamically
   ],
+}
+ }
 }

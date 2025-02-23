@@ -76,6 +76,8 @@ const PayStructure= require('../models/PayStructure')(sequelize,DataTypes);
 const TrainingDetail = require('../models/TrainingData')(sequelize,DataTypes);
 const Attendance = require('../models/Attendance')(sequelize,DataTypes);
 const Duty = require('../models/Duty')(sequelize,DataTypes);
+const WorkUpdate = require('../models/WorkUpdate')(sequelize,DataTypes);
+const LeaveRequest = require('../models/LeaveRequests')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
 Dashboard.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
@@ -106,7 +108,7 @@ Organisation.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'organisation_id
 LeaveRule.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
 
 LeaveType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
-LeaveRule.belongsTo(LeaveType, { as: 'leavetype', foreignKey: 'id' });
+LeaveRule.belongsTo(LeaveType, { as: 'leavetype', foreignKey: 'leave_type_id' });
 
 EmploymentType.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'id' });
 LeaveRule.belongsTo(EmploymentType, { as: 'employeetypes', foreignKey: 'id' });
@@ -176,6 +178,11 @@ Employee.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisatio
 PersonalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
 Employee.hasOne(PersonalDetail, {foreignKey: "employee_code",as: "personaldetail",});
 
+WorkUpdate.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+Employee.hasMany(WorkUpdate, {foreignKey: "employee_code",as: "work_updates",});
+
+LeaveRequest.belongsTo(Employee,{foreignKey : "employeeCode",as:"leave_requests"});
+Employee.hasMany(LeaveRequest, {foreignKey: "employeeCode",as: "leave_requests",});
 
 LeaveAllocation.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
 Employee.hasMany(LeaveAllocation, {foreignKey: "employee_code",as: "leavesallocated",});
@@ -208,7 +215,8 @@ Employee.hasOne(Certification, {foreignKey: "employee_code",as: "certification",
  Employee.hasOne(PassportDetail, {foreignKey: "employee_code",as: "passportdetail",});
 
  PayDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
- 
+ Employee.hasOne(PayDetail, {foreignKey: "employee_code",as: "paydetail",});
+
  PayStructure.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
  
  TrainingDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
@@ -245,7 +253,7 @@ module.exports = { sequelize, Admin,Organisation, Module,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,
                    TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
-                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,User,UserRole,Duty,
+                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,User,UserRole,Duty,WorkUpdate,LeaveRequest,
                    Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,InterviewForm,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail

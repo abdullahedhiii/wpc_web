@@ -7,8 +7,11 @@ import axiosInstance from "../../../axiosInstance";
 const LeaveTypeForm = () => {
   const {leave_id} = useParams();
   const navigate = useNavigate();
-  const {leaveTypes,companyData} = useCompanyContext();
-  console.log(leaveTypes,'in form',leave_id);
+  const {fetchLeaveTypes,leaveTypes,companyData} = useCompanyContext();
+  useEffect(() => {
+      fetchLeaveTypes();
+  },[]);
+  // console.log(leaveTypes,'in form',leave_id);
   const [data, setData] = useState({
       leave_type : '',
       sort_code : '',

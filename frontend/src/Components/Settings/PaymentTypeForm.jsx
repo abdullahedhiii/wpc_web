@@ -7,8 +7,11 @@ import NewForm from "../NewForm";
 const PaymentTypeForm = () => {
     const {p_id} = useParams();
     const navigate = useNavigate();
-    const {paymentTypes,companyData} = useCompanyContext();
-
+    const {paymentTypes,companyData,fetchPaymentTypes} = useCompanyContext();
+    
+    useEffect(() => {
+        fetchPaymentTypes()
+    },[]);
     const [data,setData] = useState({
         payment_type: '',
         min_hours: 0,
@@ -35,7 +38,6 @@ const PaymentTypeForm = () => {
        useEffect(() => {
             if(p_id){
                 const selected_type = paymentTypes.find((ele) => ele.id === parseInt(p_id));
-                console.log('p _ id ',p_id ,'found ',selected_type);
                 if(selected_type){
                     setData({
                         payment_type : selected_type['Payment Type'],

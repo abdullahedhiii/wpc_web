@@ -10,7 +10,6 @@ const OffDay = () => {
     ];
 
     const {shifts,fetchShifts} = useCompanyContext();
-    console.log(shifts);
     const filteredShifts = shifts.filter((shift) => {
         return Object.keys(shift['Off Days']).length > 0; 
     });

@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     main_route: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    download_api_route: {
+      type : DataTypes.STRING(255),
+      allowNull:true,
     }
   });
 

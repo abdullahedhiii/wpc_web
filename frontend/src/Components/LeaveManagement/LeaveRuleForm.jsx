@@ -3,12 +3,35 @@ import NewForm from "../NewForm";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
-
+    // fetchDepartments(response.data.id);
+      // fetchDesignations(response.data.id);
+      // fetchTypes(response.data.id);
+      // fetchPayGroups(response.data.id);
+      // fetchAnnualPays(response.data.id);
+      // fetchBanks(response.data.id);
+      // fetchCodes(response.data.id);
+      // fetchTaxMasters(response.data.id);
+      // fetchPaymentTypes(response.data.id);
+      // fetchHolidays(response.data.id);
+      // fetchHolidayList(response.data.id);
+      // fetchVisitors(response.data.id);
+      // fetchShifts(response.data.id);
+      // fetchPolicies(response.data.id);
+      // fetchEmployeesLink(response.data.id);
+      // fetchLeaveTypes(response.data.id);
+      // fetchLeaveRules(response.data.id);
+      // fetchLeavesAllocated(response.data.id);
 const LeaveRuleForm = () => {
   const {rule_id} = useParams();
   const navigate = useNavigate();
-  const {leaveTypes,companyData,employeeTypes,leaveRules} = useCompanyContext();
-  console.log(leaveTypes,'in form',rule_id,employeeTypes);
+  const {fetchTypes,fetchLeaveTypes,fetchLeaveRules,leaveTypes,companyData,employeeTypes,leaveRules} = useCompanyContext();
+ 
+  useEffect(() =>{
+     fetchLeaveRules();
+     fetchLeaveTypes();
+     fetchTypes();
+  },[]);
+  // console.log(leaveTypes,'in form',rule_id,employeeTypes);
   
   const [data, setData] = useState({
       employee_type : '',
@@ -86,13 +109,13 @@ const LeaveRuleForm = () => {
     const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === data.employee_type).id;
     const data_to = isUpdate ? {...data,leave_type_id,employment_type_id,rule_id,isUpdate} : {...data,leave_type_id,employment_type_id,isUpdate};
    console.log(data_to)
-    // try{
-    //       await axiosInstance.post(`/api/addLeaveRule/${companyData[0].id}`,data_to);
-    //       navigate('/hrms/leave-management/leave-rule-listing');
-    // } 
-    // catch(err){
-    //    console.log('error adding leave rule ',err);
-    // }    
+    try{
+          await axiosInstance.post(`/api/addLeaveRule/${companyData[0].id}`,data_to);
+          navigate('/hrms/leave-management/leave-rule-listing');
+    } 
+    catch(err){
+       console.log('error adding leave rule ',err);
+    }    
 
 };
 

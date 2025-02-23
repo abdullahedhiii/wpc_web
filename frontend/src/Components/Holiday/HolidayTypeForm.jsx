@@ -3,10 +3,28 @@ import NewForm from "../NewForm";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
-
+// fetchDetails(response.data.id);
+// fetchDepartments(response.data.id);
+// fetchDesignations(response.data.id);
+// fetchTypes(response.data.id);
+// fetchPayGroups(response.data.id);
+// fetchAnnualPays(response.data.id);
+// fetchBanks(response.data.id);
+// fetchCodes(response.data.id);
+// fetchTaxMasters(response.data.id);
+// fetchPaymentTypes(response.data.id);
+// fetchHolidays(response.data.id);
+// fetchHolidayList(response.data.id);
+// fetchVisitors(response.data.id);
+// fetchShifts(response.data.id);
+// fetchPolicies(response.data.id);
+// fetchEmployeesLink(response.data.id);
+// fetchLeaveTypes(response.data.id);
+// fetchLeaveRules(response.data.id);
+// fetchLeavesAllocated(response.data.id);
 const HolidayTypeForm = () => {
     const navigate = useNavigate();
-  const {companyData,holidayData} = useCompanyContext();
+  const {companyData,fetchholidayData} = useCompanyContext();
   const {h_id} = useParams();
 
   const [data, setData] = useState({

@@ -30,7 +30,7 @@ const EmployeeLink = () => {
         data={employees}
         showEntries
         searchable
-        downloadable
+        downloadable = {false}
         
       /></div>
     </>

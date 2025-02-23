@@ -1,165 +1,211 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useModuleContext } from "../contexts/ModuleContext";
-import { useSelector } from "react-redux";
-import { useCompanyContext } from "../contexts/CompanyContext";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useModuleContext } from "../contexts/ModuleContext"
+import { useDispatch, useSelector } from "react-redux"
+import { useCompanyContext } from "../contexts/CompanyContext"
+import { ChevronDown, ChevronRight, LogOut, Menu, User } from 'lucide-react'
+import { useSidebarContext } from "../contexts/SidebarContext"
+import { logout } from "../redux/UserSlice";
 
 const Sidebar = ({ isOpen, setOpen }) => {
-  const navigate = useNavigate();
-  const { selectedModule, setSubFeature } = useModuleContext();
-  const { companyData } = useCompanyContext();
-  const { user } = useSelector((state) => state.user);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [openSubModuleIndex, setOpenSubModuleIndex] = useState(null);
- // console.log('in side bar ',selectedModule);
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  const { setSubFeature, setSubModule, modules } = useModuleContext()
+  const { companyData } = useCompanyContext()
+  const { user } = useSelector((state) => state.user)
+  const [expandedModules, setExpandedModules] = useState({})
+  const [expandedFeatures, setExpandedFeatures] = useState({})
+  const { setIsSidebarOpen, isSidebarOpen } = useSidebarContext()
+  
+    const handleLogout = () => {
+      dispatch(logout());
+      navigate("/");
+    };
+  const toggleModule = (moduleId) => {
+    setExpandedModules((prev) => ({ ...prev, [moduleId]: !prev[moduleId] }))
+  }
 
-  const toggleSubModule = (index) => {
-    setOpenSubModuleIndex(openSubModuleIndex === index ? null : index);
-  };
+  const toggleFeatures = (moduleId, subModuleId) => {
+    const key = `${moduleId}-${subModuleId}`
+    setExpandedFeatures((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
 
   const handleFeatureSelect = (feature) => {
-    setSubFeature(feature);
-    setOpenSubModuleIndex(null);
-
-    if (feature.name === "Organisation Profile" && !companyData[0].id) {
-      navigate(`/hrms/company-profile/edit-company`);
+    setSubFeature(feature)
+    if (feature.name === "Organisation Profile" && !companyData[0]?.id) {
+      navigate(`/hrms/company-profile/edit-company`)
     } else {
-      navigate(`/hrms/${feature.next_route}`);
+      navigate(`/hrms/${feature.next_route}`)
     }
-  };
+  }
 
   return (
-    <aside
-      className={` fixed h-full bg-white text-black shadow-2xl z-40 transition-all duration-300 ${
-        isOpen ? "w-64" : "w-20"
-      } overflow-y-auto`}
-      onMouseOver={!isOpen ? setOpen : undefined}
-    >
-      <div
-        className={`p-3 pt-10 text-lg flex items-center ${
-          isOpen ? "space-x-2" : "justify-center"
-        }`}
-      >
-        <img src="/images/profile.png" className="w-10 h-10"></img>
-        {isOpen && (
+    <aside className={`fixed h-full bg-white shadow-lg z-40 transition-all duration-300 ${
+      isOpen ? "w-64" : "w-20"
+    } flex flex-col`}>
+      <div className="p-4 border-b border-gray-200">
+        {isOpen ? (
           <div
-            className={`text-gray-500 text-[14px] ${
-              selectedModule.name === "Organisation Profile"
-                ? "uppercase"
-                : undefined
-            }`}
-          >
-            {selectedModule.name === "Organisation Profile"
-              ? companyData[0]['Organisation Name'] || "Company Name"
-              : selectedModule.name}
+          className="flex items-center space-x-2"
+          > 
+            <img src="/images/small-logo.png" alt="HR Solutions" className="w-10 h-10" />
+            <h1 className="text-sm font-bold text-gray-800">HR Solutions</h1>
           </div>
+        ) : (
+          <img src="/images/small-logo.png" alt="HR Solutions" className="w-10 h-10" />
         )}
       </div>
 
-      <hr
-        className={`border-t border-gray-300 ${
-          isOpen ? "mx-4" : "mx-auto w-10"
-        } transition-all duration-300`}
-      />
-      <div className={`mt-6 ${isOpen ? "px-4" : "px-3"}`}>
-        <button
-          className={`flex items-center w-full ${
-            isOpen
-              ? "justify-between bg-blue-600 text-white rounded-lg py-3 px-4"
-              : "justify-center bg-blue-600 text-white rounded-[10px] h-12 "
-          } mb-4`}
-        >
-          <div
-            className={`flex items-center ${
-              isOpen ? "space-x-3" : "justify-center"
-            }`}
-            onClick={() => navigate(`/hrms/${selectedModule.next_route}`)}
-          >
-            <i className={`fas fa-home ${isOpen ? "text-xl" : "text-[22px]"}`}></i>
-            {isOpen && (
-              <span className="font-semibold text-[16px]">Dashboard</span>
-            )}
-          </div>
-          {isOpen && (
-            <i className="fa-solid fa-caret-down text-[12px] transform transition-transform"></i>
-          )}
-        </button>
-
-        {isOpen && (
-          <div>
-            {selectedModule.subModules.map((subModule, index) => (
-              <div key={index} className="mb-4">
-                <div
-                  className={`flex items-center justify-between text-gray-400 hover:bg-gray-100 hover:text-gray-700 hover:font-semidbold${
-                    openSubModuleIndex === index
-                      ? "bg-gray-100 shadow-sm text-gray-700 font-semibold"
-                      : undefined
-                  } rounded-lg  p-3 cursor-pointer`}
-                  onClick={() => subModule.features.length > 0 ? toggleSubModule(index) : undefined}
-
-                >
-                  <div className="flex items-center space-x-3" 
-                     onClick={() => subModule.features.length === 0 && navigate(`/hrms/${subModule.main_route}`)}
-                  >
-                    <i className={`${subModule.icon} text-xl`}></i>
-                    <span className="text-[14px]">{subModule.name}</span>
-                  </div>
-
-                  {subModule.features.length > 0 && (
-                    <i
-                      className={`fa-solid fa-caret-down text-[12px] text-gray-400 transform transition-transform duration-900 ease-in-out ${
-                        openSubModuleIndex === index ? "rotate-180" : ""
-                      }`}
-                      onClick={() => toggleSubModule(index)}
-                    ></i>
-                  )}
-                </div>
-
-                {openSubModuleIndex === index && (
-                  <div className="space-y-3 p-3 text-[13px] text-gray-400">
-                    {subModule.features.map((feature, featureIndex) => (
-                      user.isAdmin || feature.can_access ? (<div
-                        key={featureIndex}
-                        className="flex items-center w-full cursor-pointer hover:bg-gray-100 relative rounded-lg p-2 leading-4"
-                        onClick={() => handleFeatureSelect(feature)}
-                      >
-                        <span className="absolute left-5 top-1/2 transform -translate-y-1/2 w-1 h-1 bg-gray-500 rounded-full"></span>
-
-                        <div className="flex items-center w-full space-x-2 pl-6">
-                          <span className="text-gray-700">{feature.name}</span>
-                        </div>
-                      </div>) : null
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {!isOpen && (
-          <div className="flex flex-col items-center space-y-2">
-            <i className="fa-solid fa-ellipsis font-extrabold text-[24px] text-gray-400"></i>
-
-            {selectedModule.subModules.map((subModule, index) => (
+      <nav className="flex-grow overflow-y-auto py-4">
+        {modules?.map((module) =>
+          module.can_access || user.isAdmin ? (
+            <div key={module.id} className="mb-2">
               <button
-                key={index}
-                className="p-1 text-gray-400 hover:text-blue-500"
-                onClick={() => navigate(`/hrms/${subModule.main_route}`)}
+                onClick={() => isOpen ? toggleModule(module.id) : navigate(`/hrms/${module.next_route}`)}
+                className={`w-full flex items-center justify-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
+                  expandedModules[module.id] ? "bg-yellow-100 rounded-3xl" : ""
+                }`}
+                title={module.name}
               >
-                <i
-                  className={`la ${subModule.icon || "la-th-large"} text-[20px]`}
-                ></i>
+                 <div className="w-10 h-10  rounded-full bg-yellow-300 flex items-center justify-center group-hover:bg-yellow-200 transition-colors duration-300">
+                  <img
+                    src={module.icon_image || "/placeholder.svg"}
+                    alt={module.name}
+                    className="w-6 h-6 text-yellow-500"
+                  />
+                </div>
+                {isOpen && (
+                  <>
+                    <span className="ml-3 flex-grow text-left">{module.name}</span>
+                    {module.subModules?.length > 0 && (
+                      expandedModules[module.id] ? <ChevronDown size={16} /> : <ChevronRight size={16} />
+                    )}
+                  </>
+                )}
               </button>
-            ))}
-          </div>
+
+              {isOpen && expandedModules[module.id] && (
+                <div className="pl-8 ">
+                  {module.subModules?.map((subModule) => (
+                    <div key={subModule.id}>
+                      <button
+                        onClick={() => {
+                          if (subModule.features?.length > 0) {
+                            toggleFeatures(module.id, subModule.id)
+                          } else {
+                            setSubModule(subModule)
+                            navigate(`/hrms/${subModule.main_route}`)
+                          }
+                        }}
+                        className="w-full flex items-center px-6 py-2 text-[14px] text-gray-600 hover:bg-yellow-100 hover:mt-2 hover:rounded-2xl transition-all duration-200"
+                      >
+                        <i className={`${subModule.icon || "las la-circle"} text-[16px] mr-3 text-yellow-300`}></i>
+                        <span className="flex-grow text-left">{subModule.name}</span>
+                        {subModule.features?.length > 0 && (
+                          expandedFeatures[`${module.id}-${subModule.id}`] ? <ChevronDown size={14} /> : <ChevronRight size={14} />
+                        )}
+                      </button>
+
+                      {expandedFeatures[`${module.id}-${subModule.id}`] && (
+                        <div className="pl-4">
+                          {subModule.features?.map((feature) =>
+                            user.isAdmin || feature.can_access ? (
+                              <button
+                                key={feature.id}
+                                onClick={() => handleFeatureSelect(feature)}
+                                className="w-full flex items-center px-8 py-2 text-[11px] text-gray-600 hover:bg-yellow-100 hover:mt-2 hover:rounded-xl transition-all duration-200"
+                              >
+                                <span className="w-1 h-1 bg-yellow-300 rounded-full mr-3"></span>
+                                <span>{feature.name}</span>
+                              </button>
+                            ) : null
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : null
         )}
+      </nav>
+
+      <div className="border-t border-gray-200 p-4">
+        <div className="flex items-center justify-center">
+          {isOpen ? (
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center space-x-3">
+                <img
+                  src={user.profile_image || "https://via.placeholder.com/40"}
+                  alt="User"
+                  className="w-8 h-8 rounded-full border border-gray-200"
+                />
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-700">{user.first_name}</span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+              <button
+                  onClick={() => navigate("/hrms/employeeDashboard")}
+                  title="Main Dashboard"
+                >
+                  <img
+                    src="/images/home.png"
+                    alt="home Icon"
+                    className="w-5 h-5"
+                  />
+                </button>
+                
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  title="Logout"
+                >
+                  <LogOut size={18} />
+                </button>
+                <button
+                  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                  className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  title="Toggle Sidebar"
+                >
+                  <Menu size={18} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center space-y-2">
+
+                <img
+                  src={user.profile_image || "https://via.placeholder.com/40"}
+                  alt="User"
+                  className="w-8 h-8 rounded-full border border-gray-200"
+                />
+              
+              <button
+                  onClick={() => navigate("/hrms/employeeDashboard")}
+                  title="Main Dashboard"
+                >
+                  <img
+                    src="/images/home.png"
+                    alt="home Icon"
+                    className="w-5 h-5"
+                  />
+                </button>
+                
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2 text-gray-500 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                title="Toggle Sidebar"
+              >
+                <Menu size={20} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

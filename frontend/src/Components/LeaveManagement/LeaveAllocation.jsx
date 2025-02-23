@@ -8,6 +8,7 @@ const LeaveAllocation = () => {
     "Leave Type", "Max. No Of Leave","Leave In Hand","Effective Year", "Action"];
   const {leavesAllocated,fetchLeavesAllocated} = useCompanyContext();
 
+  console.log('In allocation ',leavesAllocated);
   useEffect(() => {
     fetchLeavesAllocated();
   },[]);

@@ -7,6 +7,7 @@ const ModuleContext = createContext();
 export const ModuleProvider = ({ children }) => {
   const [selectedModule,setSelectedModule] = useState(null);
   const [selectedFeature,setSubFeature] = useState(null);
+  const [subModule,setSubModule] = useState(null);
   const [modules,setModules] = useState(null);
 
   const fetchModules = async (id,isAdmin) => {
@@ -28,7 +29,9 @@ export const ModuleProvider = ({ children }) => {
             selectedModule,
             fetchModules,
             setSubFeature,
-            selectedFeature
+            selectedFeature,
+            setSubModule,
+            subModule
           }}
       >
         {children}

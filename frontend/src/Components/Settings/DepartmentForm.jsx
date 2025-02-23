@@ -6,9 +6,12 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate, useParams } from "react-router-dom";
 
 const DepartmentForm = () =>{
-   const {companyData,departmentData} = useCompanyContext();
+   const {companyData,departmentData,fetchDepartments} = useCompanyContext();
    const {department_id} = useParams();
-
+   
+   useEffect(() => {
+    fetchDepartments();
+   },[])
    const navigate = useNavigate();
    const [data,setData] = useState({
       department_name : ""
@@ -28,7 +31,6 @@ const DepartmentForm = () =>{
     e.preventDefault();
     
     try {
-      console.log('Sending request for', companyData[0].id, data);
       const isUpdate = Boolean(department_id);
       const requestData = department_id ? { ...data, isUpdate, department_id} : {...data,isUpdate}; 
       const response = await axios.post(`/api/addDepartment/${companyData[0].id}`, requestData);
@@ -38,7 +40,6 @@ const DepartmentForm = () =>{
         navigate("/hrms/settings/vw-department");
       }
     } catch (err) {
-      console.error("Error occurred while submitting:", err);
     }
   };
   

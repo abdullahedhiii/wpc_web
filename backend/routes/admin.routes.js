@@ -51,7 +51,13 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   addForm,
   assignDuty,
   getDuties,
-  getTasks
+  getTasks,
+  getForms,
+  getJobForm,
+  getLeavesRequested,
+  updateLeaveRequest,
+  getLeaveReportEmployee,
+  getPastStaffData
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -145,8 +151,15 @@ router.get('/getUserRoles/:id',getUserRoles);
 
 router.get('/getJobsOpen/:id',getJobOpen);
 router.post('/addForm',addForm);
+router.get('/getForms/:id',getForms);
+router.get('/getFormOfJob/:id',getJobForm);
+
 router.post('/assignDuty',assignDuty);
 router.get('/getDutiesAssigned',getDuties);
 
 router.get('/getTasks',getTasks);
+router.get('/getLeavesList/:id',getLeavesRequested);
+router.post('/updateLeaveRequest',updateLeaveRequest);
+router.get('/getLeaveReportEmployee',getLeaveReportEmployee);
+router.get('/getPastStaffData/:id',getPastStaffData);
 module.exports = router;

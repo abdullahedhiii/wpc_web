@@ -5,9 +5,13 @@ import axiosInstance from "../../../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 
 const ShiftManagementForm = () => {
-  const { departmentData, designationData,companyData } = useCompanyContext();
+  const {fetchDepartments,fetchDesignations, departmentData, designationData,companyData } = useCompanyContext();
   const navigate = useNavigate();
-
+  
+  useEffect(() => {
+   fetchDepartments();
+   fetchDesignations();
+  },[]);
   const [data, setData] = useState({
     department: departmentData[0]["Department Name"],
     designation: designationData.find(

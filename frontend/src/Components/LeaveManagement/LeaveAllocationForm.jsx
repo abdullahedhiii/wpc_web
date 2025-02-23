@@ -5,19 +5,43 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import DataTable from "../DataTable";
 import axios from "axios";
+    // fetchDepartments(response.data.id);
+      // fetchDesignations(response.data.id);
+      // fetchTypes(response.data.id);
+      // fetchPayGroups(response.data.id);
+      // fetchAnnualPays(response.data.id);
+      // fetchBanks(response.data.id);
+      // fetchCodes(response.data.id);
+      // fetchTaxMasters(response.data.id);
+      // fetchPaymentTypes(response.data.id);
+      // fetchHolidays(response.data.id);
+      // fetchHolidayList(response.data.id);
+      // fetchVisitors(response.data.id);
+      // fetchShifts(response.data.id);
+      // fetchPolicies(response.data.id);
+      // fetchEmployeesLink(response.data.id);
+      // fetchLeaveTypes(response.data.id);
+      // fetchLeaveRules(response.data.id);
+      // fetchLeavesAllocated(response.data.id);
 
 const LeaveAllocationForm = () => {
   const navigate = useNavigate();
-  const {employeeTypes,employees,leaveTypes,companyData} = useCompanyContext();
+  const {fetchEmployeesLink,fetchTypes,fetchLeaveTypes,employeeTypes,employees,fetchLeavesAllocated,leaveTypes,companyData} = useCompanyContext();
+  
+  useEffect(() => {
+     fetchLeaveTypes();
+     fetchTypes();
+     fetchEmployeesLink();
+  },[]);
   const [empOptions,setEmpOptions] = useState([]);
   const [data, setData] = useState({
       employment_type : '',
       employee_code : '',
+      year: `01/${new Date().getFullYear()}`,
   });
   const [tableData,setTableData] = useState([]);
 
   useEffect(() => {
-    console.log(employeeTypes, employees);
   
     if (data.employment_type !== '') {
       const employmentTypeObj = employeeTypes.find(
@@ -49,7 +73,7 @@ const LeaveAllocationForm = () => {
       name: "employment_type",
       label: "Employment Type",
       type : 'select',
-      options : [{label : '',value: ''},...employeeTypes.map((type) => ({
+      options : [{label : 'employee type',value: ''},...employeeTypes.map((type) => ({
         label : type['Employment Type'],
         value : type["Employment Type"]
       }))]
@@ -58,26 +82,31 @@ const LeaveAllocationForm = () => {
       name: "employee_code",
       label: "Employee Code",
       type: "select",
-      options : [{label : '',value:''},...empOptions]
+      options : [{label : 'choose code',value:''},...empOptions]
     },
     {
       name: "year",
       label: "Choose Year",
+      type: "text",
+      readOnly :true,
+    },
+    {
+      name: "leave_type_id",
+      label: "Leave Type",
       type: "select",
-      options : [{label : '',value: ''},...[2023,2024,2025,2026,2027,2028,2029,2030].map((year) => ({
-          label : year,
-          value : year
+      options : [{label : 'choose type',value:''},...leaveTypes.map((leave) => ({
+         label : leave['Leave Type'],
+         value : leave.id
       }))]
     },
+    
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Leave type submit hit', data);
-    console.log('Sending request for', companyData[0].id, data);
-    
+    console.log(data);
     try{
-        const response = await axios.post(`/api/allocateLeave/${companyData[0].id}`,data);
+        const response = await axiosInstance.post(`/api/allocateLeave/${companyData[0].id}`,data);
         setTableData([response.data]);    
     }
     catch(err){

@@ -7,16 +7,17 @@ import axiosInstance from "../../../axiosInstance";
 const PayGroupForm = () => {
   const {group_id} = useParams();
   const navigate = useNavigate();
-  const {companyData,payGroups} = useCompanyContext();
+  const {companyData,payGroups,fetchPayGroups} = useCompanyContext();
   const [data, setData] = useState({
     paygroup : "",
     status : "Active"
   });
 
-  
+  useEffect(() => {
+    fetchPayGroups();
+  },[]);
   useEffect(() => {
     if (group_id) {
-        console.log('trying to find ',group_id,' in ',payGroups);
       const selected_group = payGroups.find(
         (ele) => ele.id === parseInt(group_id) 
       );
@@ -45,7 +46,6 @@ const PayGroupForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data, "pay group submit");
     const isUpdate = Boolean(group_id);
     const send_data = isUpdate ? {...data,isUpdate,group_id} : {...data,isUpdate};
     try{

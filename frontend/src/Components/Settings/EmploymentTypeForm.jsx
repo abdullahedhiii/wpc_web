@@ -8,15 +8,17 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const EmploymentTypeForm = () =>{
    const {type_id} = useParams();
-   const {companyData,employeeTypes} = useCompanyContext();
+   const {companyData,employeeTypes,fetchTypes} = useCompanyContext();
+
+   useEffect(() => {
+     fetchTypes()
+   },[])
    const navigate = useNavigate();
    const [data,setData] = useState({
       Employment_Type : ""
    });
-   console
    let selected_type;
    useEffect(() => {
-      console.log('trying to find ',type_id,' in ',employeeTypes);
        selected_type = employeeTypes.find(
         (ele) => ele.id === parseInt(type_id) 
       );
@@ -29,7 +31,6 @@ const EmploymentTypeForm = () =>{
 
    const handleSubmit = async (e) => {
      e.preventDefault();
-     console.log("dataa type" ,data);
      const isUpdate = Boolean(type_id);
      const send_data = isUpdate ? {...data,isUpdate,type_id} : {...data,isUpdate};
      try{

@@ -8,7 +8,11 @@ const BankSortCodeForm = () => {
     const navigate = useNavigate();
     const {sortcode_id} = useParams();
 
-    const {orgBanks,bankSortCodes} = useCompanyContext();
+    const {fetchBanks,fetchCodes,orgBanks,bankSortCodes} = useCompanyContext();
+    useEffect(() => {
+       fetchBanks();
+       fetchCodes();
+    },[]);
     const [data,setData] = useState({
         bank_name : orgBanks[0]['Bank Name'],
         sort_code : ''

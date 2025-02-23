@@ -6,9 +6,14 @@ import axiosInstance from "../../../../axiosInstance";
 
 const LatePolicyForm = () => {
     const navigate = useNavigate();
-    const { departmentData, designationData, shifts,companyData } = useCompanyContext();
-    console.log(shifts ,'in late policy');
-
+    const { fetchDepartments,fetchDesignations,fetchShifts,departmentData, designationData, shifts,companyData } = useCompanyContext();
+  
+    useEffect(() => {
+      fetchDepartments()
+      fetchDesignations()
+      fetchShifts()
+    },[]);
+  
     const [data, setData] = useState(() => {
         const defaultDepartment = departmentData[0]['Department Name'];
         const defaultDesignation = designationData.find(item => item['Department Name'] === defaultDepartment)?.['Designation'];
@@ -120,15 +125,11 @@ const LatePolicyForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Late policy submit hit', data);
         const s_dep = departmentData.find((ele) => ele['Department Name'] === data.department);
         const s_des = designationData.find((ele) => ele['Department Name'] === data.department && ele['Designation'] === data.designation);
-        console.log(s_dep,s_des,data);
         try{
-            console.log('sedning request to add late policy');
             const response = await axiosInstance.post(`/api/addLatePolicy/${companyData[0].id}`,{data,dep_id : s_dep.id,des_id : s_des.id});
             if(response.status === 200){
-                console.log('navigating /');
                 navigate('/hrms/rota/late-policy');
             }
         }

@@ -1,8 +1,12 @@
+import { useEffect, useState } from "react";
+import axiosInstance from "../../../axiosInstance";
 import PDFGenerator from "../../PDFGenerator"
 import DataTable from "../DataTable";
+import { useCompanyContext } from "../../contexts/CompanyContext";
 
 const StaffReport = () => {
-
+      const [data,setData] = useState([]);
+      const {companyData} = useCompanyContext();
       const headings = [
         "Staff Code",
         "Staff Name",
@@ -12,35 +16,25 @@ const StaffReport = () => {
         "Telephone",
         "Nationality",
         "NI Number",
-        "Visa Expiry Date",
+        "Visa Expiry",
         "Visa Review",
-        "Passport No.",
         "Passport Expiry Date",
         "EUSS Details",
         "DBS Details",
-        "National Id Details"
       ];
       
-      const data = [
-        {
-          "Staff Code": "MAR6001",
-          "Staff Name": "",
-          "Address": "448 Marston Road, Oxford, OX3 0JE, UK",
-          "DOB": "10/04/1996",
-          "Job Start Date": "01/11/2024",
-          "Telephone": "07586295823",
-          "Nationality": "India",
-          "NI Number": "SW690895D",
-          "Visa Expiry Date": "26/01/2025",
-          "Visa Review": "26/12/2024",
-          "Passport No.": "M8823219",
-          "Passport Expiry Date": "06/05/2025",
-          "EUSS Details": "",
-          "DBS Details": "",
-          "National Id Details": ""
-        }
-      ];
-      
+      const fetchData = async() => {
+         try{
+              const response = await axiosInstance.get(`/api/getStaffData/${companyData[0].id}`);
+              setData(response.data);
+         }
+         catch(err){
+
+         }
+      }
+      useEffect(() => {
+          fetchData();
+      },[]);
       return (
         <div className="m-16">
         <p className="text-[14px] text-gray-400 mb-4">

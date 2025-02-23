@@ -7,9 +7,13 @@ import axiosInstance from "../../../axiosInstance";
 const AnnualPayForm = () => {
   const navigate = useNavigate();
   const {annual_id} = useParams();
-  const { payGroups,annualPays } = useCompanyContext();
-  console.log(payGroups, ' in annual pay form ');
-
+  const {fetchPayGroups,fetchAnnualPays, payGroups,annualPays } = useCompanyContext();
+  
+  useEffect(() => {
+   fetchPayGroups();
+   fetchAnnualPays()
+  },[])
+  
   const [data, setData] = useState({
     paygroup: payGroups[0]['Pay Group'],
     annual_pay: 0,
@@ -17,7 +21,6 @@ const AnnualPayForm = () => {
   
   useEffect(() => {
     if (annual_id) {
-        console.log('trying to find ',annual_id,' in ',annualPays);
         const selectedAnnualPay = annualPays.find(
         (ele) => ele.id === parseInt(annual_id) 
       );
@@ -49,7 +52,6 @@ const AnnualPayForm = () => {
 
   const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('annual pay submit hit ',data);
         const isUpdate = Boolean(annual_id);
         const data_send = isUpdate ? {...data,isUpdate,annual_id} : {...data,isUpdate};
         const group = payGroups.find((ele) => ele['Pay Group'] === data.paygroup);

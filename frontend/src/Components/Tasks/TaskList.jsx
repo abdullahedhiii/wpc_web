@@ -50,7 +50,7 @@ const TaskList = () => {
             Employee
             <span className="mx-2 text-tt">/ Task List</span>
           </p>
-          <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+          <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1300px]" : "max-w[1300px]"} `}>
             <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
     
               <div>
