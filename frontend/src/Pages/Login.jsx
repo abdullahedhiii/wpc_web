@@ -53,14 +53,14 @@ const Login = () => {
               <p className="text-gray-600 mb-8">Your Complete Virtual HR Management System</p>
             </div>
             <img src="/images/logo.png"/>
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               <button className="w-full bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300 flex items-center justify-center">
                 <i className="las la-play-circle mr-2"></i> Watch Tutorial
               </button>
               <button className="w-full bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300 flex items-center justify-center">
                 <i className="las la-file-download mr-2"></i> Download Manual
               </button>
-            </div>
+            </div> */}
           </div>
           <div className="md:w-1/2 bg-yellow-100 p-8 md:p-12">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h2>

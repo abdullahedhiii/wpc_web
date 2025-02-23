@@ -171,7 +171,7 @@ return (
               {addEmployeeWise && (
                 <button
                   onClick={() => navigate(`/hrms/${employeePath}`)}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-100 text-yellow-500 shadow-sm hover:bg-yellow-200 h-9 px-4 transform hover:scale-105"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-200 text-yellow-500 shadow-sm hover:bg-yellow-200 h-9 px-4 transform hover:scale-105"
                   title={buttonEmployee}
                 >
                   <i className="la la-user mr-2" />
