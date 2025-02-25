@@ -116,13 +116,26 @@ module.exports.Login = async (req, res) => {
   }
 };
 
+module.exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      secure: false, // Set to true if using HTTPS
+    });
+
+    return res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({ error: "An error occurred while logging out" });
+  }
+};
+
 module.exports.getModules = async (req, res) => {
   console.log("Modules endpoint hit");
   const { isAdmin } = req.query;
   const userId = req.params.id;
 
   try {
-    // Fetch all modules with related subModules and features
     const modules = await Module.findAll({
       order: [["id", "ASC"]],
       include: [
@@ -169,7 +182,6 @@ module.exports.getModules = async (req, res) => {
       ],
     });
 
-    // If admin, return full data
     if (isAdmin === 'true' ) {
       console.log('returningg ',isAdmin)
       return res.status(200).json(
@@ -216,9 +228,8 @@ module.exports.getModules = async (req, res) => {
     const userFeatureAccess = new Map();
     const userSubModuleAccess = new Set();
     
-    // Populate access maps
     userRoles.forEach(({ sub_module_id, feature_id, right }) => {
-      const featureId = String(feature_id); // Ensure consistent data type
+      const featureId = String(feature_id); 
     
       if (!userFeatureAccess.has(featureId)) {
         userFeatureAccess.set(featureId, { can_add: false, can_edit: false });
@@ -237,22 +248,20 @@ module.exports.getModules = async (req, res) => {
         let subModuleHasAccess = false;
     
         const features = subModule.features.map((feature) => {
-          const featureId = String(feature.id); // Ensure consistent lookup
+          const featureId = String(feature.id); 
           let featureAccess = userFeatureAccess.get(featureId) || { can_add: false, can_edit: false };
           let can_access = !!userFeatureAccess.has(featureId);
     
-          // If the module is "Employee Corner", grant full access and set can_add: true
           if (module.name === "Employee Corner") {
             moduleHasAccess = true;
             subModuleHasAccess = true;
             can_access = true;
-            featureAccess = { ...featureAccess, can_add: true }; // Ensure can_add is true
+            featureAccess = { ...featureAccess, can_add: true }; 
           }
     
           return { ...feature.get(), ...featureAccess, can_access };
         });
     
-        // Ensure submodule is accessible if under "Employee Corner"
         if (module.name === "Employee Corner") {
           subModuleHasAccess = true;
         } else if (!subModuleHasAccess) {
@@ -280,25 +289,63 @@ module.exports.retrieveCookie = async (req, res) => {
   const token = req.cookies.access_token; 
   try {
     if (!token) {
-      return res.status(401).json({ message: 'Not authenticated' });
+      return res.status(404).json({ message: 'No cookie found to retrieve -new session' });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err || !decoded.id) {
-        return res.status(403).json({ message: 'Token expired or invalid' }); 
+        return res.status(404).json({ message: 'Token expired or invalid - new session' }); 
       }
 
       try {
-        const user = await User.findOne({
-          where: { id: decoded.id, email: decoded.email },raw: true 
-        });
-        
-        if (!user) {
-          return res.status(404).json({ message: 'User not found' }); 
+        let existingUser ,isAdmin;
+        existingUser = await Admin.findOne({ where: { email : decoded.email }, raw: true });
+        if (existingUser) isAdmin = true;
+        else{
+          existingUser = await User.findOne({ where: {email: decoded.email }, raw: true });
+          if(existingUser) isAdmin = false;
         }
-        const { password: _, ...userDetails } = user;
-        console.log('responsing with user ',userDetails);
-        return res.status(200).json(userDetails);
+        const { password: _, ...userDetails } = existingUser;
+
+        let org,employee;
+        if(isAdmin) org = await Organisation.findOne({where : {admin_id : userDetails.id}})
+        else{
+           employee = await Employee.findOne({where : {employee_code : existingUser.employee_code},
+                include : [
+                  {
+                     model : Organisation,
+                     as : 'organisation',
+                     attributes : ['Company_name',"id"]
+                  },
+                  {
+                    model : PersonalDetail,
+                    as : 'personaldetail',
+                    attributes : ['fname','mname','lname','contact_1']
+                  },
+                  {
+                    model : ServiceDetail,
+                    as : 'servicedetail',
+                    attributes : ['profile_pic','type']
+                  },
+    
+                ]
+          })
+        }
+        const response  = isAdmin ? {...userDetails, profile_image : org?.Company_Logo || null,isAdmin} :
+        {
+               company_name : employee.organisation.Company_name,
+               company_id : employee.organisation.id,
+               email : userDetails.email,
+               phone_number : employee.personaldetail.contact_1,
+               first_name : [employee.personaldetail.fname,employee.personaldetail.mname].filter(Boolean).join(' '),
+               id : userDetails.id,
+               last_name : employee.personaldetail.lname || '',
+               profile_image : employee.servicedetail.profile_pic || null,
+               isAdmin,
+               employee_code : employee.employee_code,
+               type : employee.servicedetail.type,
+        };
+        return res.status(200).json({user : response});
       } catch (err) {
         console.error('Database error:', err);
         return res.status(500).json({ message: 'Internal server error' }); 

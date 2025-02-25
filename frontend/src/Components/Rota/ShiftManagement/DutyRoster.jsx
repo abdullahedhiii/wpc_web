@@ -29,7 +29,6 @@ const DutyRoster = () => {
 
      useEffect(() => {
         if (formData.department_id) {
-            console.log(formData.department_id);
           const filteredDesignations = designationData
             .filter(
               (designation) =>
@@ -51,7 +50,6 @@ const DutyRoster = () => {
         useEffect(() => {
           if (formData.department_id && formData.designation_id) {
 
-            console.log(employees,formData.department_id,formData.designation_id);
             const filteredEmployees = employees
               .filter(
                 (ele) =>

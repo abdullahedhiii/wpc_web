@@ -50,7 +50,6 @@ const UserForm = () => {
   };
   
   const handleSubmit = async(e) =>{
-     console.log(formData);
      try{
         const response = await axiosInstance.post(`/api/createUser/${companyData[0].id}`,formData);
         navigate('/hrms/role/vw-users');

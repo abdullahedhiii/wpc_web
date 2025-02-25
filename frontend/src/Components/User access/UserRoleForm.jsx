@@ -62,7 +62,6 @@ const UserRoleForm = () => {
     };
     
     const handleSubmit = async (e) => {
-       console.log('submit hjit ',formData);
        try{
           const response = await axiosInstance.post(`/api/grantRights`,formData);
           navigate('/hrms/role/view-users-role');

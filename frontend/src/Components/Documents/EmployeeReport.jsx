@@ -8,14 +8,17 @@ import { useLocation } from "react-router-dom";
 const EmployeeReport = () => {
   const location = useLocation();
   const [documents, setDocuments] = useState([]);
-  const { companyData, employees } = useCompanyContext();
+  const { companyData,fetchEmployeesLink, employees } = useCompanyContext();
   const { isSideBarOpen } = useSidebarContext();
-  console.log(employees);
+
   const [formData, setFormData] = useState({
     employee_code: "",
     document_type: "",
   });
   
+  useEffect(() => {
+   fetchEmployeesLink();
+  },[]);
   const fetchDocuments = async(req,res) => {
      try{
        const response = await axiosInstance.get(`/api/getEmployeeDocuments/${formData.employee_code}`);

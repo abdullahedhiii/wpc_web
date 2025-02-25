@@ -41,11 +41,8 @@ const DataTable = ({
   }, [data, searchQuery]);
   
   const handleDownload = async () => {
-     console.log("Download hit:", selectedFeature);
-     console.log('down hit ',subModule)
      const routee = selectedFeature ? `/api/${selectedFeature.download_api_route}/${companyData[0].id}`
      : `/api/${subModule.download_api_route}/${companyData[0].id}`;
-     console.log(routee);
      try {
       const response = await axiosInstance.get(routee);
 
@@ -128,7 +125,6 @@ const DataTable = ({
   };
 
   const handleRequestUpdate = async (status, request_id) => {
-    console.log('Sending request to update', status, request_id);
     
     try {
         await axiosInstance.post(`/api/updateLeaveRequest`, {
@@ -171,7 +167,7 @@ return (
               {addEmployeeWise && (
                 <button
                   onClick={() => navigate(`/hrms/${employeePath}`)}
-                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-200 text-yellow-500 shadow-sm hover:bg-yellow-200 h-9 px-4 transform hover:scale-105"
+                  className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-300 text-yellow-500 shadow-sm hover:bg-yellow-200 h-9 px-4 transform hover:scale-105"
                   title={buttonEmployee}
                 >
                   <i className="la la-user mr-2" />
@@ -180,7 +176,7 @@ return (
               )}
               <button
                 title={buttonTitle}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-yellow-100 text-white shadow hover:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-110"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-yellow-300 text-white shadow hover:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-110"
                 onClick={() => {
                   if (selectedFeature && selectedFeature.plus_icon_route) {
                     navigate(`/hrms/${selectedFeature.plus_icon_route}`)
@@ -288,7 +284,6 @@ return (
                                     handleRequestUpdate(e.target.value, row.id)
                                   } 
                                   else {
-                                    console.log('This is navigation ',e.target.value);
                                     navigate(`/hrms/${e.target.value}`)}
                                 }}
                               >

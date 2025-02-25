@@ -16,7 +16,10 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
-
+        has_filled_out_form : {
+          type : DataTypes.BOOLEAN,
+          defaultValue : false,
+        }
       },
       {
         tableName: "Employees",

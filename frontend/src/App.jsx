@@ -15,6 +15,7 @@ import Navbar from "./Components/Navbar";
 import Dashboard from "./Components/Dashboard";
 import "line-awesome/dist/line-awesome/css/line-awesome.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { login } from "./redux/UserSlice";
 
 import RoleManagement from "./Components/User access/RoleManagement";
 import JobList from "./Components/Recruitment/JobList";
@@ -117,6 +118,11 @@ import COCUpdateEmployee from "./Components/Employee Corner/COCUpdate";
 import LeaveReport from "./Components/LeaveManagement/LeaveReport";
 import LeaveReportEmployee from "./Components/LeaveManagement/LeaveReportEmployee";
 import ArchiveStaffReport from "./Components/Documents/ArchiveStaffReport";
+import { useDispatch } from "react-redux";
+import axiosInstance from "../axiosInstance";
+import { useModuleContext } from "./contexts/ModuleContext";
+import { useCompanyContext } from "./contexts/CompanyContext";
+import LandingPage from "./Pages/LandingPage";
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
   const [logoVisible, setLogoVisible] = useState(true);
@@ -206,6 +212,15 @@ const router = createBrowserRouter([
       element : <NotFound/>
   },
   {
+    path : '/our-services',
+    children : [
+      {
+        path : '',
+        element : <LandingPage/>
+      }
+    ]
+  },
+  {
     path: "/",
     element: <SimpleLayout />,
     children: [
@@ -216,6 +231,10 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+      },
+      {
+        path: "employeelink/:id",
+        element: <EmployeeLink />
       },
     ],
   },
@@ -228,7 +247,7 @@ const router = createBrowserRouter([
     },  
   ]
   },
- 
+
   {
 
     path: "/careers",
@@ -1038,11 +1057,32 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
 function App() {
- 
+  const dispatch = useDispatch();
+  const { fetchModules } = useModuleContext();
+  const { fetchOrganisation } = useCompanyContext();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axiosInstance.get("/api/check-session")
+      .then(response => {
+        console.log('Retrieving user session: ', response.data.user);
+        if (response.data?.user) {  
+          dispatch(login(response.data.user));
+          fetchModules(response.data.user.id, response.data.user.isAdmin);
+          fetchOrganisation(response.data.user.id, response.data.user.isAdmin);
+        }
+      })
+      .catch(err => {
+        console.log('No cookie found:', err.response?.data?.message);
+      })
+      .finally(() => setLoading(false)); // Ensure loading state is updated
+  }, []); 
+
+  if (loading) return <div></div>;
 
   return <RouterProvider router={router} />;
 }
+
 
 export default App;

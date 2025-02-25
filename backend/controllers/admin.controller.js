@@ -1683,7 +1683,7 @@ module.exports.getAllEmployees = async (req, res) => {
    console.log(emp);
     const formattedResponse = emp.map((employee, index) => {
    //   console.log(employee,index,'indexxx')
-      const employeeLink = generateLink(employee.employee_code);
+      const employeeLink = emp.has_filled_out_form ? null : generateLink(employee.employee_code);
 
       return {
         "Sl. No.": index + 1,
@@ -1709,7 +1709,7 @@ module.exports.getAllEmployees = async (req, res) => {
         "Job Title": employee.jobdetails?.title,
         "Employee Link": employeeLink
           ? `http://localhost:5173/employeelink/${employeeLink}`
-          : "Encryption Error",
+          : "Form filled out already",
         Designation : employee.servicedetail?.designation,
         Designation_id : employee.servicedetail?.designation_id,
         Department_id : employee.servicedetail?.department_id,

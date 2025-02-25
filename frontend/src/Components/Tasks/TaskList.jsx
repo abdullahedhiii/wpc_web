@@ -35,7 +35,6 @@ const TaskList = () => {
             const tasks = await axiosInstance.get(`/api/getTasks`,{
                 params : formData
             });
-            console.log(tasks.data);
             setData(tasks.data);
         }
         catch(err){

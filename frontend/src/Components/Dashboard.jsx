@@ -13,8 +13,6 @@ const Dashboard = () => {
   const { companyData } = useCompanyContext()
   const { user } = useSelector((state) => state.user)
   const from = "/payroll"
-  console.group('in dashboard ', user);
-  console.log(modules);
 
   useEffect(() => {
     if (Array.isArray(modules) && modules.length > 0) {

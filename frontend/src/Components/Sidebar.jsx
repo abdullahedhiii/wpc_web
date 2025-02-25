@@ -6,6 +6,7 @@ import { useCompanyContext } from "../contexts/CompanyContext"
 import { ChevronDown, ChevronRight, LogOut, Menu, User } from 'lucide-react'
 import { useSidebarContext } from "../contexts/SidebarContext"
 import { logout } from "../redux/UserSlice";
+import axiosInstance from "../../axiosInstance"
 
 const Sidebar = ({ isOpen, setOpen }) => {
   const dispatch = useDispatch();
@@ -17,9 +18,16 @@ const Sidebar = ({ isOpen, setOpen }) => {
   const [expandedFeatures, setExpandedFeatures] = useState({})
   const { setIsSidebarOpen, isSidebarOpen } = useSidebarContext()
   
-    const handleLogout = () => {
-      dispatch(logout());
-      navigate("/");
+    const handleLogout = async() => {
+      try{
+         await axiosInstance.post(`/api/logout`);
+         dispatch(logout());
+         navigate("/");
+      }
+      catch(err){
+
+      }
+     
     };
   const toggleModule = (moduleId) => {
     setExpandedModules((prev) => ({ ...prev, [moduleId]: !prev[moduleId] }))

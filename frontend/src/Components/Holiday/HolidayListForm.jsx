@@ -7,7 +7,12 @@ import axiosInstance from "../../../axiosInstance";
 const HolidayListForm = () => {
   const navigate = useNavigate();
   const {ho_id} = useParams();
-  const {holidayList,holidayData,companyData} = useCompanyContext();
+  const {fetchHolidayList,fetchHolidays,holidayList,holidayData,companyData} = useCompanyContext();
+  
+  useEffect(() => {
+    fetchHolidayList();
+    fetchHolidays();
+  },[]);
   const [data, setData] = useState({
     year : new Date().getFullYear(),
     day: 'Monday',

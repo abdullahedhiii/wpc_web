@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset }) => {
   const handleChange = (e, field) => {
     const { name, value, checked, type } = e.target
-    console.log("here to changed ", name, value)
 
     if (type === "file") {
       setData((prev) => ({ ...prev, [name]: e.target.files[0] }))

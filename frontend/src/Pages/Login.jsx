@@ -6,6 +6,8 @@ import axios from "axios";
 import { login } from "../redux/UserSlice";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useCompanyContext } from "../contexts/CompanyContext";
+import { motion } from "framer-motion";
+import { Building2, Lock, Mail, PlayCircle, FileDown } from 'lucide-react';
 
 const Login = () => {
   const { fetchModules } = useModuleContext();
@@ -31,7 +33,9 @@ const Login = () => {
       fetchModules(response.data.user.id, response.data.user.isAdmin);
       fetchOrganisation(response.data.user.id, response.data.user.isAdmin);
     } catch (err) {
-      setError(err.response?.data?.error || "An unexpected error occurred. Please try again.");
+      setError(
+        err.response?.data?.error || "An unexpected error occurred. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -44,84 +48,165 @@ const Login = () => {
   }, [user]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100 p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden"
+      >
         <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">HR Solutions</h1>
-              <p className="text-gray-600 mb-8">Your Complete Virtual HR Management System</p>
-            </div>
-            <img src="/images/logo.png"/>
-            {/* <div className="space-y-4">
-              <button className="w-full bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300 flex items-center justify-center">
-                <i className="las la-play-circle mr-2"></i> Watch Tutorial
-              </button>
-              <button className="w-full bg-yellow-500 text-white py-2 px-4 rounded-full hover:bg-yellow-600 transition duration-300 flex items-center justify-center">
-                <i className="las la-file-download mr-2"></i> Download Manual
-              </button>
-            </div> */}
-          </div>
-          <div className="md:w-1/2 bg-yellow-100 p-8 md:p-12">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <input
-                  type="email"
-                  name="email"
-                  value={info.email}
-                  onChange={handleChange}
-                  placeholder="Email address"
-                  className="w-full px-4 py-3 rounded-full border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  type="password"
-                  name="password"
-                  value={info.password}
-                  onChange={handleChange}
-                  placeholder="Password"
-                  className="w-full px-4 py-3 rounded-full border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
-                  required
-                />
-              </div>
-              <div className="flex justify-between items-center">
-                <label className="flex items-center">
-                  <input type="checkbox" className="form-checkbox text-yellow-500" />
-                  <span className="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-                <a href="#" className="text-sm text-yellow-600 hover:text-yellow-700">Forgot password?</a>
-              </div>
-              <div className="flex justify-center">
-                <ReCAPTCHA sitekey="your-recaptcha-site-key" />
-              </div>
-              {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-full text-sm">
-                  {error}
+          {/* Left Section */}
+          <div className="md:w-1/2 bg-yellow-500 p-8 md:p-12 text-white relative overflow-hidden">
+            <div className="relative z-10">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h1 className="text-4xl font-bold mb-6">HR Solutions</h1>
+                <p className="text-yellow-100 text-lg mb-8">
+                  Your Complete Virtual HR Management System
+                </p>
+              </motion.div>
+
+              <div className="space-y-4 mb-8">
+                <h3 className="text-xl font-semibold mb-4">Why Choose Us?</h3>
+                <div className="space-y-3">
+                  {[
+                    "Comprehensive HR Management",
+                    "Advanced Analytics & Reporting",
+                    "Employee Self-Service Portal",
+                    "Automated Workflows",
+                  ].map((feature, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3 + index * 0.1 }}
+                      className="flex items-center space-x-2"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-yellow-200" />
+                      <span className="text-yellow-50">{feature}</span>
+                    </motion.div>
+                  ))}
                 </div>
-              )}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-yellow-500 text-white py-3 px-4 rounded-full font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200"
-              >
-                {isSubmitting ? "Signing in..." : "Sign in"}
-              </button>
-            </form>
-            <p className="mt-6 text-center text-sm text-gray-600">
-              Don't have an account?{" "}
-              <button
-                onClick={() => navigate("/register")}
-                className="font-medium text-yellow-600 hover:text-yellow-700"
-              >
-                Sign up
-              </button>
-            </p>
+              </div>
+
+              <div className="space-y-3">
+                <button className="w-full bg-white/10 backdrop-blur-sm text-white py-3 px-6 rounded-xl hover:bg-white/20 transition duration-300 flex items-center justify-center space-x-2">
+                  <PlayCircle className="w-5 h-5" />
+                  <span>Watch Tutorial</span>
+                </button>
+                <button className="w-full bg-white/10 backdrop-blur-sm text-white py-3 px-6 rounded-xl hover:bg-white/20 transition duration-300 flex items-center justify-center space-x-2">
+                  <FileDown className="w-5 h-5" />
+                  <span>Download Manual</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-full">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400 rounded-full opacity-20 transform translate-x-1/2 -translate-y-1/2" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-yellow-400 rounded-full opacity-20 transform -translate-x-1/2 translate-y-1/2" />
+            </div>
+          </div>
+
+          {/* Right Section */}
+          <div className="md:w-1/2 p-8 md:p-12 bg-white">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h2>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="relative">
+                  <Mail className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={info.email}
+                    onChange={handleChange}
+                    placeholder="Email address"
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                    required
+                  />
+                </div>
+
+                <div className="relative">
+                  <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={info.password}
+                    onChange={handleChange}
+                    placeholder="Password"
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                    required
+                  />
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox rounded text-yellow-500 focus:ring-yellow-500"
+                    />
+                    <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                  </label>
+                  <a
+                    href="#"
+                    className="text-sm text-yellow-600 hover:text-yellow-700 hover:underline"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
+
+                <div className="flex justify-center">
+                  <ReCAPTCHA sitekey="your-recaptcha-site-key" />
+                </div>
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm flex items-center"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-red-600 mr-2" />
+                    {error}
+                  </motion.div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-yellow-500 text-white py-3 px-4 rounded-xl font-medium hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-300 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Signing in...</span>
+                    </div>
+                  ) : (
+                    "Sign in"
+                  )}
+                </button>
+              </form>
+
+              <p className="mt-8 text-center text-sm text-gray-600">
+                Don't have an account?{" "}
+                <button
+                  onClick={() => navigate("/our-services")}
+                  className="font-medium text-yellow-600 hover:text-yellow-700 hover:underline"
+                >
+                  Sign up
+                </button>
+              </p>
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

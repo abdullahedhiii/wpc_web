@@ -6,10 +6,15 @@ import axiosInstance from "../../../axiosInstance";
 
 const COCView = () => {
     const {isSideBarOpen} = useSidebarContext();
-    const {employeeTypes,employees,companyData} = useCompanyContext();
+    const {fetchTypes,fetchEmployeesLink,employeeTypes,employees,companyData} = useCompanyContext();
     const [filteredEmployees,setFiltered] = useState([])
     const [formData,setFormData] = useState({employee_code : '',employment_type: ''});
     const [data,setData] = useState([]);
+
+    useEffect(() => {
+    fetchEmployeesLink();
+    fetchTypes();
+    },[]);
     const columns = [
         "Updated Date",
         "Employment Type",

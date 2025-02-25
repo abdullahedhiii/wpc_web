@@ -676,7 +676,6 @@ module.exports.addOtherCocDetail = async(req,res)=>{
 };
 module.exports.getDocuments = async (req, res) => {
   const employee_code = req.params.id;
-
   try {
     const educational_documents = await EducationDetail.findAll({
       where: { employee_code: employee_code },
