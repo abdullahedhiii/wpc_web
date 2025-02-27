@@ -67,10 +67,10 @@ const UserForm = () => {
         Home
         <span className="mx-2 text-tt">/ User Configuration</span>
       </p>
-      <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+      <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
       <div className="p-2 flex items-center space-x-2">
-          <i className="pl-2 fas fa-user text-[14px]  text-blue-900"></i>
-          <h2 className="text-[14px] font-semibold text-blue-900">Add User Configuration</h2>
+          <i className="pl-2 fas fa-user text-[14px]  text-yellow-900"></i>
+          <h2 className="text-[14px] font-semibold text-yellow-900">Add User Configuration</h2>
       </div>
 
         <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -82,7 +82,7 @@ const UserForm = () => {
               name="employee_code"
               value={formData.employee_code}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
               <option value="" disabled>
@@ -105,7 +105,7 @@ const UserForm = () => {
               name="employee_name"
               value={formData.employee_name}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border bg-gray-200 focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border bg-gray-200 focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
               readOnly = {true}
            />
@@ -120,7 +120,7 @@ const UserForm = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
            />
           </div>
@@ -133,13 +133,13 @@ const UserForm = () => {
               name="password"
               value={formData.password}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
            />
                
           </div>
       </div>
-      <button onClick={handleSubmit} className="text-white ml-4 px-2 py-1 bg-blue-700 rounded-md mb-2">Submit</button>
+      <button onClick={handleSubmit} className="text-white ml-4 px-2 py-1 bg-yellow-700 rounded-md mb-2">Submit</button>
 
 
 </div>

@@ -30,7 +30,7 @@ const AuthorizingOfficer = () => {
 
   return (
     <div className="p-6">
-      <p className="mt-10 text-gray-400 mb-4">
+      <p className="m-16 text-gray-400 mb-4">
         <a href="/hrms/companydashboard">Home</a> / <span className="text-tt">Authorizing Officer</span>
       </p>
       <DataTable

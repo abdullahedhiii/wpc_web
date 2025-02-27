@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
             key: "employee_code",
           },
           onDelete: "CASCADE",
+          primaryKey : true,
+
         },
         visa_no: DataTypes.STRING,
         nationality: DataTypes.STRING,

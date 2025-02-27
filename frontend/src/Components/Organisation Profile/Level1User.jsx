@@ -28,7 +28,7 @@ const Level1User = () => {
   
 
   return (
-    <div className="p-6">
+    <div className="m-16">
       <p className="mt-10 text-gray-400 mb-4">
       <a href="/hrms/companydashboard">Home</a>  / <span className="text-tt">Level 1 User</span>
       </p>

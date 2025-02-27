@@ -49,7 +49,7 @@ const TaskList = () => {
             Employee
             <span className="mx-2 text-tt">/ Task List</span>
           </p>
-          <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1300px]" : "max-w[1300px]"} `}>
+          <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1300px]" : "max-w[1300px]"} `}>
             <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
     
               <div>
@@ -60,7 +60,7 @@ const TaskList = () => {
                   name="employee_code"
                   value={formData.employee_code}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 >
                   <option value="" disabled></option>
@@ -81,7 +81,7 @@ const TaskList = () => {
                   name="fromDate"
                   value={formData.fromDate}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 />
               </div>
@@ -95,7 +95,7 @@ const TaskList = () => {
                   name="toDate"
                   value={formData.toDate}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 />
               </div>
@@ -103,7 +103,7 @@ const TaskList = () => {
             </div>
             <div className="flex space-x-4">
             <button
-              className="ml-4 px-4 py-2 text-[14px] font-semibold bg-blue-700 rounded text-white mb-4"
+              className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
               onClick={handleView}
             >
               View Tasks

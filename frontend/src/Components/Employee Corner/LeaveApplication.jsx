@@ -122,13 +122,13 @@ const LeaveApplication = () => {
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
         <p className="text-gray-700 font-medium">
-          Employment Type: <span className="text-blue-600">{formData.employmentType}</span>
+          Employment Type: <span className="text-yellow-600">{formData.employmentType}</span>
         </p>
         <p className="text-gray-700 font-medium">
-          Employee Code: <span className="text-blue-600">{formData.employeeCode}</span>
+          Employee Code: <span className="text-yellow-600">{formData.employeeCode}</span>
         </p>
         <p className="text-gray-700 font-medium">
-          Employee Name: <span className="text-blue-600">{formData.employeeName}</span>
+          Employee Name: <span className="text-yellow-600">{formData.employeeName}</span>
         </p>
       </div>
 
@@ -140,7 +140,7 @@ const LeaveApplication = () => {
               name="leaveType"
               value={formData.leaveType}
               onChange={handleChange}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
             >
               <option value="">Select Leave Type</option>
               {leaveTypes.map((holiday) => (
@@ -172,7 +172,7 @@ const LeaveApplication = () => {
               name="fromDate"
               value={formData.fromDate}
               onChange={handleChange}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
             />
           </div>
 
@@ -184,7 +184,7 @@ const LeaveApplication = () => {
               name="toDate"
               value={formData.toDate}
               onChange={handleChange}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
             />
           </div>
 
@@ -200,7 +200,7 @@ const LeaveApplication = () => {
         </div>
 
         <div className="flex gap-4">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition duration-300"
+          <button className="bg-yellow-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-yellow-700 transition duration-300"
             onClick={handleApply}
           >
             Apply

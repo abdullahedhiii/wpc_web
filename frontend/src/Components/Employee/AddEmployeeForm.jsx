@@ -323,20 +323,30 @@ const EmployeeForm = () => {
   const {user} = useSelector((state) => state.user);
   const {
     companyData,
-    departmentData,
-    annualPays,
-    designationData,
-    employeeTypes,
+    departmentData,fetchDepartments,
+    annualPays,fetchAnnualPays,
+    designationData,fetchDesignations,
+    employeeTypes,fetchTypes,
     authorizingDetails,
-    payGroups,
-    paymentTypes,
-    taxMasters,
-    orgBanks,
+    payGroups,fetchPayGroups,
+    paymentTypes,fetchPaymentTypes,
+    taxMasters,fetchTaxMasters,
+    orgBanks,fetchBanks,
   } = useCompanyContext();
   const [employee_code, setCode] = useState("");
   const [isLoading, setLoading] = useState(false);
   const location = useLocation();
 
+  useEffect(() => {
+    fetchAnnualPays()
+    fetchBanks()
+    fetchDepartments()
+    fetchDesignations()
+    fetchPayGroups()
+    fetchPaymentTypes()
+    fetchTaxMasters()
+    fetchTypes();
+  },[]);
   useEffect(() => {
     const fetch_next_id = async () => {
       try {
@@ -1407,10 +1417,8 @@ const EmployeeForm = () => {
             }
           }
         }
-     
         const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
 
-  
 
         await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
           headers: {
@@ -1434,6 +1442,7 @@ const EmployeeForm = () => {
             }
           }
         }
+        educationFormData.append('isDefault', formData.education_details.length === 1);
         await axiosInstance.post(
           `/api/submit-education-details/${companyData[0].id}.${employee_code}`,
           educationFormData,
@@ -1448,6 +1457,7 @@ const EmployeeForm = () => {
         await axiosInstance.post(`/api/submit-job-details/${companyData[0].id}.${employee_code}`,formData.job_details);
 
       formData.key_responsibilities.forEach(async (res, index) => {
+        res.isDefault = formData.key_responsibilities.length === 1;
         await axiosInstance.post(
           `/api/submit-key-responsibilities/${companyData[0].id}.${employee_code}`,
           res
@@ -1455,7 +1465,8 @@ const EmployeeForm = () => {
       });
 
       formData.training_details.forEach(async(training, index) => {
-        const tt = training.employee_code ? training : {...training,employee_code :employee_code}
+        const tt = training.employee_code ? training : {...training,employee_code :employee_code,isDefault : formData.training_details.length === 1}
+
         await axiosInstance.post(`/api/submit-training-data/${companyData[0].id}.${employee_code}`,tt)
       });
 
@@ -1490,6 +1501,7 @@ const EmployeeForm = () => {
               }
             }
           }
+          otherData.append('isDefault', formData.other_details.length === 1);
 
           await axiosInstance.post(`/api/submit-other-data/${companyData[0].id}.${employee_code}`, otherData, {
             headers: {
@@ -1591,6 +1603,7 @@ const EmployeeForm = () => {
               }
             }
           }
+          other_doc.append('isDefault',formData.other_documents.length === 1)
           await axiosInstance.post(`/api/submit-otherdocument/${companyData[0].id}.${employee_code}`, other_doc, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -1627,21 +1640,22 @@ const EmployeeForm = () => {
   };
 
   const handleAddEducationDetail = () => {
+
     setFormData((prevState) => ({
       ...prevState,
       education_details: [
         ...prevState.education_details,
         {
           sl_no: "",
-          qualification: "",
-          subject: "",
-          institution_name: "",
-          awarding_body: "",
-          year_of_passing: "",
-          percentage: "",
-          grade_division: "",
-          transcript_document: null,
-          certificate_document: null,
+        qualification: "",
+        subject: "",
+        institution_name: "",
+        awarding_body: "",
+        year_of_passing: "",
+        percentage: "",
+        grade_division: "",
+        transcript_document: null,
+        certificate_document: null,
         },
       ],
     }));
@@ -1664,13 +1678,13 @@ const EmployeeForm = () => {
         <span className="mx-2 text-tt">/ Add New Employee</span>
       </p>
       <div
-        className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${
-          isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"
+        className={`min-h-screen mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
+          isSideBarOpen ? "max-w-[700px]" : "max-w[1300px]"
         }`}
       >
         <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-user text-lg text-blue-900"></i>
-          <h1 className="text-blue-900 text-lg font-medium">
+          <i className="fas fa-user text-lg text-yellow-900"></i>
+          <h1 className="text-yellow-900 text-lg font-medium">
             Add New Employee
           </h1>
         </div>
@@ -1736,7 +1750,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].sl_no`}
+                                    name={education.sl_no}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1747,7 +1761,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].qualification`}
+                                    name={education.qualification}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1758,7 +1772,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].subject`}
+                                    name={education.subject}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1769,7 +1783,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].institution_name`}
+                                    name={education.institution_name}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1780,7 +1794,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].awarding_body`}
+                                    name={education.awarding_body}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1791,7 +1805,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].year_of_passing`}
+                                    name={education.year_of_passing}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1802,7 +1816,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].percentage`}
+                                    name={education.percentage}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1813,7 +1827,7 @@ const EmployeeForm = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].grade_division`}
+                                    name={education.grade_division}
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1824,7 +1838,7 @@ const EmployeeForm = () => {
                                       onChange={(e) =>
                                         handleEducationChange(e, index)
                                       }
-                                      name={`education_details[${index}].transcript_document`}
+                                      name={education.transcript_document}
                                     />
                                     {education.transcript_document && (
                                       <a
@@ -1846,7 +1860,7 @@ const EmployeeForm = () => {
                                       onChange={(e) =>
                                         handleEducationChange(e, index)
                                       }
-                                      name={`education_details[${index}].certificate_document`}
+                                      name={education.certificate_document}
                                     />
                                     {education.certificate_document && (
                                       <a
@@ -1885,7 +1899,7 @@ const EmployeeForm = () => {
                   ) : section.title === "Pay Structure" ? (
                     <div className="max-w-4xl mx-auto p-4">
                       <div>
-                        <div className="bg-blue-600 text-white text-lg font-semibold px-4 py-2">
+                        <div className="bg-yellow-600 text-white text-lg font-semibold px-4 py-2">
                           Payment (Taxable)
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
@@ -1913,7 +1927,7 @@ const EmployeeForm = () => {
                       </div>
 
                       <div className="mt-4">
-                        <div className="bg-blue-600 text-white text-lg font-semibold px-4 py-2">
+                        <div className="bg-yellow-600 text-white text-lg font-semibold px-4 py-2">
                           Deduction
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
@@ -2428,7 +2442,7 @@ const EmployeeForm = () => {
                             <select
                               id={field.value}
                               name={field.value}
-                              className="w-full px-3 py-2 border rounded-md text-sm focus:border-blue-200 focus:border-b-4 hover:border-blue-200 hover:border-b-4"
+                              className="w-full px-3 py-2 border rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4"
                               required={field.required}
                               onChange={handleChange}
                               value={fieldValue || ""}
@@ -2447,7 +2461,7 @@ const EmployeeForm = () => {
                               name={field.value}
                               onChange={handleChange}
                               value={fieldValue || ""}
-                              className="w-full px-3 py-2 border rounded-md text-sm focus:border-blue-200 focus:border-b-4 hover:border-blue-200 hover:border-b-4"
+                              className="w-full px-3 py-2 border rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4"
                               required={field.required}
                               readOnly={field.readOnly}
                             />
@@ -2490,7 +2504,7 @@ const EmployeeForm = () => {
                               }
                               className={`w-full px-3 py-2 border ${
                                 field.readOnly ? "bg-gray-200" : undefined
-                              } rounded-md text-sm focus:border-blue-200 focus:border-b-4 hover:border-blue-200 hover:border-b-4`}
+                              } rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4`}
                               required={field.required}
                               readOnly={field.readOnly}
                             />
@@ -2526,7 +2540,7 @@ const EmployeeForm = () => {
         >
           {currentPage > 1 && (
             <button
-              className="px-4 py-2 bg-blue-800 text-white rounded"
+              className="px-4 py-2 bg-yellow-800 text-white rounded"
               onClick={() => setCurrentPage(currentPage - 1)}
             >
               Back
@@ -2534,7 +2548,7 @@ const EmployeeForm = () => {
           )}
           {currentPage < 8 ? (
             <button
-              className="px-4 py-2 text-white bg-blue-800 rounded"
+              className="px-4 py-2 text-white bg-yellow-800 rounded"
               onClick={() => setCurrentPage(currentPage + 1)}
             >
               Next

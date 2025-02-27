@@ -268,13 +268,13 @@ const JobPostingForm = () => {
       </p>
 
       <div
-        className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${
+        className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
           isSideBarOpen ? "max-w-[1200px]" : "max-w-[1400px]"
         }`}
       >
         <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-user text-lg text-blue-900"></i>
-          <h1 className="text-blue-900 text-lg font-medium">Add Job Posting</h1>
+          <i className="fas fa-user text-lg text-yellow-900"></i>
+          <h1 className="text-yellow-900 text-lg font-medium">Add Job Posting</h1>
         </div>
         <hr className="my-4 border-t-1 border-gray-200" />
 
@@ -299,7 +299,7 @@ const JobPostingForm = () => {
                         name={field.stateAttribute}
                         value={formData[field.stateAttribute]}
                         onChange={handleChange}
-                        className="mt-1 p-2 border rounded-md text-[14px] text-gray-600 focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                        className="mt-1 p-2 border rounded-md text-[14px] text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                       >
                         {field.options.map((option, i) => (
                           <option
@@ -317,7 +317,7 @@ const JobPostingForm = () => {
                         name={field.stateAttribute}
                         value={formData[field.stateAttribute]}
                         onChange={handleChange}
-                        className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"
+                        className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                         readOnly = {field.readOnly}
                       />
                     )}
@@ -341,7 +341,7 @@ const JobPostingForm = () => {
                   name="qualifications"
                   value={formData.qualifications}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4 "
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4 "
                 />
               </div>
 
@@ -354,7 +354,7 @@ const JobPostingForm = () => {
                   name="skillSet"
                   value={formData.skillSet}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
 
@@ -366,7 +366,7 @@ const JobPostingForm = () => {
                   name="ageMin"
                   value={formData.ageMin}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                 >
                   <option value=""></option>
                   {Array.from({ length: 21 }, (_, i) => i + 15).map((age) => (
@@ -385,7 +385,7 @@ const JobPostingForm = () => {
                   name="ageMax"
                   value={formData.ageMax}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                 >
                   <option value=""></option>
                   {Array.from({ length: 21 }, (_, i) => i + 15).map((age) => (
@@ -433,7 +433,7 @@ const JobPostingForm = () => {
                   name="jobPostingDate"
                   value={formData.jobPostingDate}
                   onChange={handleChange}
-                  className="p-2 border rounded-md text-[12px]  focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border rounded-md text-[12px]  focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
               <div className="flex flex-col">
@@ -445,7 +445,7 @@ const JobPostingForm = () => {
                   name="jobClosingDate"
                   value={formData.jobClosingDate}
                   onChange={handleChange}
-                  className="p-2 border text-[12px] rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border text-[12px] rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
 
@@ -458,7 +458,7 @@ const JobPostingForm = () => {
                   name="authorisingOfficer"
                   value={formData.authorisingOfficer}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
               <div className="flex flex-col">
@@ -470,7 +470,7 @@ const JobPostingForm = () => {
                   name="authorisingOfficerDesignation"
                   value={formData.authorisingOfficerDesignation}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
 
@@ -483,7 +483,7 @@ const JobPostingForm = () => {
                   name="contactNumber"
                   value={formData.contactNumber}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
               <div className="flex flex-col">
@@ -495,7 +495,7 @@ const JobPostingForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                 />
               </div>
 
@@ -507,7 +507,7 @@ const JobPostingForm = () => {
                   name="newRole"
                   value={formData.newRole}
                   onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"
+                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                 >
                   <option value="" className="text-[12px]"></option>
                   <option value="Yes"  className="text-[12px]">Yes</option>
@@ -525,7 +525,7 @@ const JobPostingForm = () => {
                   value={formData.language}
                   onChange={handleChange}
                   className="p-2 border rounded-md text-[14px] 
-                  focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"
+                  focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                 >
                   <option value="" className="text-[12px]"></option>
                   <option value="English Proficiency - Minimum of UKVI IELTS 4 or equivalent for international students only" 
@@ -540,7 +540,7 @@ const JobPostingForm = () => {
 
           <button
             onClick={handleJobPost}
-            className="rounded mt-2 px-4 py-2 bg-blue-900 text-white"
+            className="rounded mt-2 px-4 py-2 bg-yellow-900 text-white"
           >
             Submit
           </button>

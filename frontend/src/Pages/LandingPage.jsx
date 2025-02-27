@@ -53,6 +53,11 @@ const LandingPage = () => {
               >
                 Get Started
               </button>
+              <button className="bg-yellow-500 text-white px-6 py-2 rounded-full hover:bg-yellow-600 transition-all transform hover:scale-105"
+                onClick={() => navigate('/hr-solutions/sponsors')}
+              >
+                Sponsor List
+              </button>
             </div>
           </div>
         </div>

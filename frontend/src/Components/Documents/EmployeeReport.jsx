@@ -71,7 +71,7 @@ const EmployeeReport = () => {
         <span className="mx-2 text-tt">/ Employee {location.pathname.includes('employee-archive-report') && "Archive "}Report</span>
       </p>
       <div
-        className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${
+        className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
           isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"
         } `}
       >
@@ -84,7 +84,7 @@ const EmployeeReport = () => {
               name="employee_code"
               value={formData.employee_code}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
               <option value="" disabled></option>
@@ -104,7 +104,7 @@ const EmployeeReport = () => {
               name="document_type"
               value={formData.document_type}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
               <option value="" ></option>
@@ -117,7 +117,7 @@ const EmployeeReport = () => {
           </div>
         </div>
         <button 
-          className="text-[12px] p-2 ml-4 mb-2 rounded-md text-white bg-blue-700"
+          className="text-[12px] p-2 ml-4 mb-2 rounded-md text-white bg-yellow-700"
           onClick={handleView}  
         >
           View Document

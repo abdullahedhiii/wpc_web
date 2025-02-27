@@ -1,6 +1,8 @@
 const { type } = require("os");
-const { Op } = require("sequelize"); // Import Sequelize operators
+const { Op, BOOLEAN } = require("sequelize"); // Import Sequelize operators
 const {Sequelize} = require('sequelize')
+const moment = require("moment");
+
 const {
   User,
   Organisation,
@@ -54,6 +56,7 @@ const {
   Duty,
   WorkUpdate,
   LeaveRequest,
+  Attendance,
 } = require("../config/sequelize");
 require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
@@ -1634,6 +1637,7 @@ const generateLink = (employee_code) => {
   }
 };
 
+
 module.exports.getAllEmployees = async (req, res) => {
   console.log("get employees hit ", req.params.id);
   const org_id = req.params.id;
@@ -1683,7 +1687,7 @@ module.exports.getAllEmployees = async (req, res) => {
    console.log(emp);
     const formattedResponse = emp.map((employee, index) => {
    //   console.log(employee,index,'indexxx')
-      const employeeLink = emp.has_filled_out_form ? null : generateLink(employee.employee_code);
+      const employeeLink = employee.has_filled_out_form ? null : generateLink(employee.employee_code);
 
       return {
         "Sl. No.": index + 1,
@@ -1830,7 +1834,7 @@ module.exports.getEmployeeData = async (req, res) => {
     const education_details = await EducationDetail.findAll({
       where: { employee_code: code },
     });
-    const job_details = await JobDetail.findAll({
+    const job_details = await JobDetail.findOne({
       where: { employee_code: code },
     });
     const key_responsibilities = await KeyResponsibility.findAll({
@@ -3151,5 +3155,252 @@ module.exports.getPastStaffData = async (req, res) => {
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+module.exports.processAttendance = async (req, res) => {
+  try {
+    const { department_id, designation_id, fromDate, toDate, employee_code } = req.query;
+    const Dept = await Department.findOne({
+      where : {id : department_id}
+    });
+
+    const Desg = await Designation.findOne({
+      where : {id : designation_id}
+    })
+    const workingArray = [];
+    const leaveArray = [];
+    const absentArray = [];
+    const presentArray = []
+    const shift = await Shift.findOne({
+      where: { department_id, designation_id },
+    });
+
+    if (!shift) {
+      return res.status(404).json({ message: "Shift not found" });
+    }
+
+    const shiftOffDays = await ShiftOffDay.findOne({
+      where: { shift_code: shift.shift_code },
+    });
+
+    if (!shiftOffDays) {
+      return res.status(404).json({ message: "Shift off days not found" });
+    }
+
+    const startDate = moment(fromDate, "YYYY-MM-DD");
+    const endDate = moment(toDate, "YYYY-MM-DD");
+
+    if (!startDate.isValid() || !endDate.isValid()) {
+      return res.status(400).json({ message: "Invalid date format" });
+    }
+
+    const employee_leaves = await LeaveRequest.findAll({
+      where: {
+        employee_code,
+        status: "Approved",
+        [Op.or]: [
+          { fromDate: { [Op.between]: [fromDate, toDate] } },
+          { toDate: { [Op.between]: [fromDate, toDate] } },
+        ],
+      },
+    });
+
+    const leaveDates = new Set();
+    employee_leaves.forEach((leave) => {
+      const leaveStart = moment(leave.fromDate, "YYYY-MM-DD");
+      const leaveEnd = moment(leave.toDate, "YYYY-MM-DD");
+
+      for (let date = leaveStart.clone(); date.isSameOrBefore(leaveEnd); date.add(1, "day")) {
+        leaveDates.add(date.format("YYYY-MM-DD"));
+      }
+    });
+
+    const employee_attendance = await Attendance.findAll({
+      where: {
+        employee_code,
+        date: { [Op.between]: [fromDate, toDate] },
+      },
+    });
+
+    const attendedDates = new Map();
+    employee_attendance.forEach((record) => {
+      attendedDates.set(moment(record.date).format("YYYY-MM-DD"), {
+        status: record.status,
+        grace_period_exceeded: record.grace_period_exceeded
+      });
+    });
+    
+
+    let workingDays = 0,salary_deducted = 0;
+
+    for (let date = startDate.clone(); date.isSameOrBefore(endDate); date.add(1, "day")) {
+      const formattedDate = date.format("YYYY-MM-DD");
+      const dayName = date.format("dddd").toLowerCase(); 
+
+      if (shiftOffDays[dayName]) {
+        continue;
+      }
+
+      workingDays++;
+      workingArray.push(formattedDate);
+
+      if (leaveDates.has(formattedDate)) {
+        leaveArray.push(formattedDate);
+      } else if (!attendedDates.has(formattedDate)) {
+        absentArray.push(formattedDate); 
+      } else {
+        const {status,grace_period_exceeded} = attendedDates.get(formattedDate);
+        if (status !== "Present" && status !== "Incomplete Hours") {
+          absentArray.push(formattedDate); 
+        }else presentArray.push(formattedDate);
+        if(grace_period_exceeded) salary_deducted++;
+      }
+    }
+    const emp = await PersonalDetail.findOne({
+      where : {employee_code}
+    })
+    const response = [{
+      'Department' : Dept.department_name, 
+      'Designation': Desg.designation_name,
+      'Employee Code' : employee_code,
+      'Employee Name': [emp.fname,emp.mname,emp.lname].filter(BOOLEAN).join(' '),
+      'No. of working days' : workingDays,
+      'No. of Present days' : presentArray.length,
+      'No. of absent days' : absentArray.length,
+      'Leaves Taken' : leaveArray.length,
+      'No. of days salary deducted' : salary_deducted
+    }]
+    return res.status(200).json(response);
+
+  } catch (err) {
+    console.error("Error processing attendance:", err);
+    return res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+};
+module.exports.processAbsentReport = async (req, res) => {
+  try {
+    const { department_id, designation_id, employee_code, year } = req.query;
+
+    if (!year) {
+      return res.status(400).json({ message: "Year is required" });
+    }
+
+    const Dept = await Department.findOne({ where: { id: department_id } });
+    const Desg = await Designation.findOne({ where: { id: designation_id } });
+    const shift = await Shift.findOne({ where: { department_id, designation_id } });
+
+    if (!shift) {
+      return res.status(404).json({ message: "Shift not found" });
+    }
+
+    const shiftOffDays = await ShiftOffDay.findOne({ where: { shift_code: shift.shift_code } });
+
+    if (!shiftOffDays) {
+      return res.status(404).json({ message: "Shift off days not found" });
+    }
+
+    const emp = await PersonalDetail.findOne({ where: { employee_code } });
+
+    const currentYear = moment().year();
+    const currentMonth = moment().month() + 1; // Month is 0-based, so add 1
+    const monthsToProcess = year == currentYear ? currentMonth : 12;
+
+    const reportData = [];
+
+    for (let month = 0; month < monthsToProcess; month++) {
+      const startDate = moment(`${year}-${month + 1}-01`, "YYYY-MM-DD").startOf("month");
+      const endDate = moment(startDate).endOf("month");
+
+      const leaveArray = [];
+      const absentArray = [];
+      const presentArray = [];
+      let workingDays = 0;
+      let salary_deducted = 0;
+
+      // Fetch approved leaves in the month
+      const employee_leaves = await LeaveRequest.findAll({
+        where: {
+          employee_code,
+          status: "Approved",
+          [Op.or]: [
+            { fromDate: { [Op.between]: [startDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD")] } },
+            { toDate: { [Op.between]: [startDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD")] } },
+          ],
+        },
+      });
+
+      // Store leave dates
+      const leaveDates = new Set();
+      employee_leaves.forEach((leave) => {
+        const leaveStart = moment(leave.fromDate, "YYYY-MM-DD");
+        const leaveEnd = moment(leave.toDate, "YYYY-MM-DD");
+
+        for (let date = leaveStart.clone(); date.isSameOrBefore(leaveEnd); date.add(1, "day")) {
+          leaveDates.add(date.format("YYYY-MM-DD"));
+        }
+      });
+
+      // Fetch attendance records for the month
+      const employee_attendance = await Attendance.findAll({
+        where: {
+          employee_code,
+          date: { [Op.between]: [startDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD")] },
+        },
+      });
+
+      // Store attended dates
+      const attendedDates = new Map();
+      employee_attendance.forEach((record) => {
+        attendedDates.set(moment(record.date).format("YYYY-MM-DD"), {
+          status: record.status,
+          grace_period_exceeded: record.grace_period_exceeded,
+        });
+      });
+
+      for (let date = startDate.clone(); date.isSameOrBefore(endDate); date.add(1, "day")) {
+        const formattedDate = date.format("YYYY-MM-DD");
+        const dayName = date.format("dddd").toLowerCase();
+
+        if (shiftOffDays[dayName]) {
+          continue; // Skip non-working days
+        }
+
+        workingDays++;
+
+        if (leaveDates.has(formattedDate)) {
+          leaveArray.push(formattedDate);
+        } else if (!attendedDates.has(formattedDate)) {
+          absentArray.push(formattedDate);
+        } else {
+          const { status, grace_period_exceeded } = attendedDates.get(formattedDate);
+          if (status !== "Present" && status !== "Incomplete Hours") {
+            absentArray.push(formattedDate);
+          } else {
+            presentArray.push(formattedDate);
+          }
+
+          if (grace_period_exceeded) salary_deducted++;
+        }
+      }
+
+      // Store the formatted row for the current month
+      reportData.push({
+        "Employee Code" : employee_code,
+       "Employee Name": [emp?.fname, emp?.mname, emp?.lname].filter(Boolean).join(" "),
+        "Month":startDate.format("MMMM"), // Full month name
+        "No. of working days": workingDays,
+       "No. of Present days": presentArray.length,
+       "No. of absent days":  absentArray.length,
+       "Leaves Taken": leaveArray.length,
+       "No. of days salary deducted": salary_deducted,
+    });
+    }
+
+    return res.status(200).json(reportData);
+  } catch (err) {
+    console.error("Error processing AbsentReport:", err);
+    return res.status(500).json({ message: "Internal server error", error: err.message });
   }
 };

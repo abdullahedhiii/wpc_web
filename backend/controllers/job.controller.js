@@ -1,5 +1,8 @@
 const { Job, Organisation, Candidate } = require("../config/sequelize");
 const crypto = require("crypto");
+const fs = require('fs');
+const path = require('path');
+const PDFDocument = require('pdfkit');
 
 const generateLink = (job_id) => {
   try {
@@ -284,6 +287,7 @@ module.exports.getCandidates = async (req, res) => {
             'Contact Number':candidate.contactNo,
             'Status' : candidate.status,
             'Date' : candidate.applyDate,
+            'View Letter' : candidate.offer_letter_url,
             'Action' : 'Edit'  
         }
       })
@@ -329,6 +333,210 @@ module.exports.updateStatus = async (req, res) => {
           updateData.timeTo = timeTo;
       }
 
+      if (status === "Job Offered") {
+        const job = await Job.findOne({
+          where : {
+            id : candidate.job_id
+          }
+        });
+        const org = await Organisation.findOne({
+          where : {
+            id : candidate.organisation_id
+          }
+        })
+        try {
+        const outputDir = path.join(__dirname, "../uploads", candidate.organisation_id.toString(),'JobCandidates',candidate.job_id.toString());
+        if (!fs.existsSync(outputDir)) {
+          fs.mkdirSync(outputDir, { recursive: true });
+        }
+        const filePath = path.join(outputDir, `OfferLetter_${candidate.id}.pdf`);
+        // Create PDF
+        const doc = new PDFDocument({ 
+          margin: 50, 
+          size: 'A4',
+          bufferPages: true
+        });
+
+        const writeStream = fs.createWriteStream(filePath);
+        doc.pipe(writeStream);
+
+        // Helper function to draw table cell
+        const drawTableCell = (text, x, y, width, height, options = {}) => {
+          const defaultOptions = {
+            align: 'left',
+            valign: 'center',
+            padding: 5,
+            fontSize: 10,
+            textColor: 'black',
+            backgroundColor: null,
+            border: true
+          };
+
+          const opts = { ...defaultOptions, ...options };
+
+          if (opts.backgroundColor) {
+            doc.fillColor(opts.backgroundColor)
+               .rect(x, y, width, height)
+               .fill();
+          }
+
+          if (opts.border) {
+            doc.strokeColor('#cccccc')
+               .lineWidth(0.5)
+               .rect(x, y, width, height)
+               .stroke();
+          }
+
+          doc.fillColor(opts.textColor)
+             .fontSize(opts.fontSize);
+
+          const textOptions = {
+            width: width - (opts.padding * 2),
+            align: opts.align,
+            lineBreak: true
+          };
+
+          const textHeight = doc.heightOfString(text, textOptions);
+          const textY = y + (height - textHeight) / 2;
+
+          doc.text(text, x + opts.padding, textY, textOptions);
+        };
+
+        // Add logo and header
+        if (org.Company_Logo) {
+          const logoFilename = path.basename(org.Company_Logo);
+          const logoPath = path.join(__dirname, `../uploads/${org.Company_name}/`, logoFilename);
+
+          if (fs.existsSync(logoPath)) {
+            doc.save()
+               .circle(75, 75, 50)
+               .clip()
+               .image(logoPath, 25, 25, { width: 100, height: 100 })
+               .restore();
+          }
+        }
+
+        // Header
+        doc.fontSize(16)
+           .font('Helvetica-Bold')
+           .text(org.Company_name.toUpperCase(), { align: 'center' })
+           .fontSize(12)
+           .font('Helvetica')
+           .text(`${org.Address_Line1 || ''}`, { align: 'center' })
+           .text(`${org.Address_City_County || ''}, ${org.Address_Country || ''}`, { align: 'center' })
+           .moveDown()
+           .fontSize(14)
+           .font('Helvetica-Bold')
+           .text('OFFER LETTER', { align: 'center' })
+           .moveDown(2);
+
+        // Date
+        doc.fontSize(10)
+           .font('Helvetica')
+           .text(`Date: ${new Date().toLocaleDateString()}`, { align: 'right' })
+           .moveDown(2);
+
+        // Candidate Details
+        doc.font('Helvetica')
+           .text(`Dear ${candidate.name},`)
+           .moveDown()
+           .text('We are pleased to offer you employment with our organization. The details of the offer are as follows:')
+           .moveDown(2);
+
+        // Job Details Table
+        const startX = 50;
+        let startY = doc.y;
+        const colWidth = 250;
+        const rowHeight = 30;
+
+        // Table Headers
+        drawTableCell(
+          'Employment Details',
+          startX,
+          startY,
+          colWidth * 2,
+          rowHeight,
+          {
+            backgroundColor: '#f3c06b',
+            textColor: 'black',
+            fontSize: 12,
+            align: 'center'
+          }
+        );
+
+        startY += rowHeight;
+
+        // Table Rows
+        const details = [
+          ['Position', job.jobTitle],
+          ['Department', job.department],
+          ['Location', job.jobLocation],
+          ['Working Hours', `${job.workingHours} hours per week`],
+          ['Contract Type', job.jobContractType],
+          ['Salary Range', `${job.basicSalaryMin} - ${job.basicSalaryMax}`],
+        ];
+
+        details.forEach(([label, value]) => {
+          drawTableCell(label, startX, startY, colWidth, rowHeight, { backgroundColor: '#fff9e6' });
+          drawTableCell(value || 'N/A', startX + colWidth, startY, colWidth, rowHeight);
+          startY += rowHeight;
+        });
+
+        doc.moveDown(2);
+
+        // Terms and Conditions
+        doc.font('Helvetica-Bold')
+           .text('Terms and Conditions:', { underline: true })
+           .moveDown()
+           .font('Helvetica')
+           .text([
+             '1. This offer is subject to satisfactory reference checks and required documentation.',
+             '2. Your employment will be governed by the company\'s policies and procedures.',
+             '3. The notice period for resignation will be as per company policy.',
+             '4. This offer is valid for 7 days from the date of issue.',
+           ].join('\n\n'))
+           .moveDown(2);
+
+        // Signature Section
+        doc.text('Please indicate your acceptance by signing and returning this letter.')
+           .moveDown(3)
+           .text('For ' + org.Company_name)
+           .moveDown()
+           .text(job.authorisingOfficer)
+           .text(job.authorisingOfficerDesignation)
+           .moveDown(2)
+           .text('_______________________', { align: 'right' })
+           .text('Candidate Signature', { align: 'right' });
+
+        // Add page numbers
+        let pages = doc.bufferedPageRange();
+        for (let i = 0; i < pages.count; i++) {
+          doc.switchToPage(i);
+          doc.fontSize(8)
+             .text(
+               `Page ${i + 1} of ${pages.count}`,
+               0,
+               doc.page.height - 20,
+               { align: 'center' }
+             );
+        }
+
+        doc.end();
+
+        // Wait for the file to be written
+        await new Promise((resolve, reject) => {
+          writeStream.on('finish', resolve);
+          writeStream.on('error', reject);
+        });
+
+        // Update the offer letter URL in the database
+        updateData.offer_letter_url =  `http://localhost:${process.env.PORT || 3000}/uploads/${org.id}/JobCandidates/${candidate.job_id}/OfferLetter_${candidate.id}.pdf`;
+
+        } catch (error) {
+          console.error("Error generating offer letter:", error);
+          return res.status(500).json({ message: "Error generating offer letter" });
+        }
+      }
       await Candidate.update(updateData, { where: { id } });
 
       return res.status(200).json({ message: "Candidate status updated successfully" });

@@ -18,12 +18,12 @@ module.exports = {
   
   plugins: [],
   safelist: [
-    'bg-blue-700',
+    'bg-yellow-700',
     'bg-red-700',
     'bg-purple-700',
     'bg-green-700',
     'bg-gray-700',
-    'text-blue-700',
+    'text-yellow-700',
     'text-red-500',
     'text-purple-500',
     'text-green-500',

@@ -96,7 +96,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
             <div className="flex items-center">
               <button
                 onClick={handleSideBarClose}
-                className="text-blue-700 hover:text-blue-800"
+                className="text-yellow-700 hover:text-yellow-800"
                 title="Toggle Sidebar"
               >
                 <i className="la la-bars text-3xl"></i>
@@ -114,7 +114,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
             <div className="flex items-center">
               <button
                 onClick={toggleMenu}
-                className="text-blue-700 hover:text-blue-800"
+                className="text-yellow-700 hover:text-yellow-800"
                 title="Options"
               >
                 <i className="la la-ellipsis-v text-4xl"></i>
@@ -179,7 +179,7 @@ const Navbar = ({ isOpen, isLogo, closeSideBar, closeLogo }) => {
               {isLoggedIn && location.pathname !== "/employeeDashboard" && (
                 <button
                   onClick={handleSideBarClose}
-                  className="text-blue-700 font-extrabold hover:text-blue-800"
+                  className="text-yellow-700 font-extrabold hover:text-yellow-800"
                   title="Toggle Sidebar"
                 >
                   {isLogo ? (

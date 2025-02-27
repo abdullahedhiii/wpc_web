@@ -55,7 +55,7 @@ const UploadAttendance = () => {
                 Home
                 <span className="mx-2 text-tt">/ Upload Attendance</span>
             </p>
-            <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-6 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}>
+            <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-6 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}>
                 <input 
                     type="file" 
                     onChange={handleChange} 
@@ -63,8 +63,8 @@ const UploadAttendance = () => {
                 />
                 <p>* CSV Size Less Than 2MB</p>
                 <div className="mt-4 space-x-2">
-                    <button onClick={handleUpload} className="px-4 py-2 bg-blue-600 text-white rounded">Upload</button>
-                    <button onClick={handleReset} className="px-4 py-2 bg-blue-600 text-white rounded">Reset</button>
+                    <button onClick={handleUpload} className="px-4 py-2 bg-yellow-600 text-white rounded">Upload</button>
+                    <button onClick={handleReset} className="px-4 py-2 bg-yellow-600 text-white rounded">Reset</button>
                 </div>
             </div>
         </div>

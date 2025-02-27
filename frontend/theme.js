@@ -8,7 +8,7 @@ const theme = {
     text_c : '#2870C1',
     pinkbg: '#fef6f6',
     tt: '#007BFF',
-    "light-blue": {
+    "light-yellow": {
       50: "#f0f9ff",
       100: "#e0f2fe",
       200: "#bae6fd",

@@ -109,7 +109,7 @@ const StatisticsDashboard = ({ title }) => {
       </p>
 
       <div className="absolute top-[130px] left-1/2 transform -translate-x-1/2 rounded-sm shadow-2xl p-6 bg-white w-[90%]">
-        <h2 className="text-blue-800 text-[15px] font-sm mb-6 font-semibold">{title}</h2>
+        <h2 className="text-yellow-800 text-[15px] font-sm mb-6 font-semibold">{title}</h2>
         <div className={`grid gap-4 ${dashboard.length === 1 ? "grid-cols-1 place-items-center" : "md:grid-cols-3"}`}>
           {dashboard.map((item, index) => (
             <CircularProgress key={index} current={item} />
@@ -118,8 +118,8 @@ const StatisticsDashboard = ({ title }) => {
       </div>
 
       {title === "Leave Type" && (
-        <div className="relative mt-[280px] rounded-sm shadow-2xl p-6 bg-white w-[90%] border-t-4 border-blue-700 mx-auto">
-          <h2 className="text-blue-800 text-[15px] font-sm mb-4 font-semibold">Annual Total Leave</h2>
+        <div className="relative mt-[280px] rounded-sm shadow-2xl p-6 bg-white w-[90%] border-t-4 border-yellow-700 mx-auto">
+          <h2 className="text-yellow-800 text-[15px] font-sm mb-4 font-semibold">Annual Total Leave</h2>
           <TotalLeaveChart data={data} />
         </div>
       )}

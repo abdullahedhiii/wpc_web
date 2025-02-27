@@ -1,5 +1,180 @@
-const {Employee, PersonalDetail, ServiceDetail, ContactInfo, NationalDetail, PassportDetail, PayDetail, UserRole, JobDetail, Department, Designation, VisaDetail, WorkUpdate, Attendance, LeaveAllocation, LeaveRequest, COCOtherDetail, EsusDetail, DBSDetail, LeaveRule}= require("../config/sequelize");
+const {Employee, PersonalDetail, ServiceDetail, ContactInfo, NationalDetail, PassportDetail, PayDetail, UserRole, JobDetail, Department, Designation, VisaDetail, WorkUpdate, Attendance, LeaveAllocation, LeaveRequest, COCOtherDetail, EsusDetail, DBSDetail, LeaveRule, User, EducationDetail, KeyResponsibility, TrainingDetail, KinDetail, Certification, PayStructure, EmployeeOtherDocument, EmployeeOtherDetail}= require("../config/sequelize");
 const { Sequelize, DataTypes, Op } = require('sequelize');
+const crypto = require('crypto');
+
+
+module.exports.setFormStatus = async (req, res) => {
+  try {
+    const employee = await Employee.findOne({
+      where: { employee_code: req.params.id }
+    });
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    await employee.update({ has_filled_out_form: true });
+
+    res.status(200).json({ message: "Form status updated successfully" });
+  } catch (err) {
+    console.error("Error updating form status:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const decryptLink = (encryptedData) => {
+  try {
+    const algorithm = "aes-256-cbc";
+    const secretKey = process.env.EMP_SECRET_KEY;
+
+    if (!secretKey || secretKey.length !== 64) {
+      throw new Error(
+        "Secret key must be 64 hex characters (32 bytes in length)"
+      );
+    }
+
+    // Extract IV (first 32 characters represent 16 bytes in hex)
+    const iv = Buffer.from(encryptedData.slice(0, 32), "hex");
+    const encryptedText = encryptedData.slice(32);
+
+    const decipher = crypto.createDecipheriv(
+      algorithm,
+      Buffer.from(secretKey, "hex"),
+      iv
+    );
+
+    let decrypted = decipher.update(encryptedText, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+
+    return decrypted;
+  } catch (error) {
+    console.error("Decryption Error:", error.message);
+    return null;
+  }
+};
+
+module.exports.getLinkFormDetails = async (req,res) => {
+    const code = decryptLink(req.params.id);
+    try {
+      const employee = await Employee.findOne({
+        where : {employee_code : code}
+      })
+      const personal_details = await PersonalDetail.findOne({
+        where: { employee_code: code },
+      });
+      const service_details = await ServiceDetail.findOne({
+        where: { employee_code: code },
+      });
+      const education_details = await EducationDetail.findAll({
+        where: { employee_code: code },
+      });
+      const job_details = await JobDetail.findOne({
+        where: { employee_code: code },
+      });
+      const key_responsibilities = await KeyResponsibility.findAll({
+        where: { employee_code: code },
+      });
+      const training_details = await TrainingDetail.findAll({
+        where: { employee_code: code },
+      });
+      const kin_details = await KinDetail.findOne({
+        where: { employee_code: code },
+      });
+      const certification = await Certification.findOne({
+        where: { employee_code: code },
+      });
+      const contact_info = await ContactInfo.findOne({
+        where: { employee_code: code },
+      });
+      const other_documents = await EmployeeOtherDocument.findAll({
+        where: { employee_code: code },
+      });
+      const passport_details = await PassportDetail.findOne({
+        where: { employee_code: code },
+      });
+      const esus = await EsusDetail.findOne({ where: { employee_code: code } });
+      const dbs = await DBSDetail.findOne({ where: { employee_code: code } });
+      const visa = await VisaDetail.findOne({ where: { employee_code: code } });
+      const national = await NationalDetail.findOne({
+        where: { employee_code: code },
+      });
+      const pay_details = await PayDetail.findOne({
+        where: { employee_code: code },
+      });
+      const other_details = await EmployeeOtherDetail.findAll({
+        where: { employee_code: code },
+      });
+      const pay_structure = await PayStructure.findOne({
+        where: { employee_code: code },
+      });
+  
+      // Format pay_structure to match frontend state
+      const formatted_pay_structure = pay_structure
+        ? {
+            payments: {
+              dearnessAllowance: pay_structure.dearnessAllowance || false,
+              houseRentAllowance: pay_structure.houseRentAllowance || false,
+              conveyanceAllowance: pay_structure.conveyanceAllowance || false,
+              performanceAllowance: pay_structure.performanceAllowance || false,
+              monthlyFixedAllowance: pay_structure.monthlyFixedAllowance || false,
+            },
+            deductions: {
+              niDeduction: pay_structure.niDeduction || false,
+              incomeTaxDeduction: pay_structure.incomeTaxDeduction || false,
+              incomeTaxCess: pay_structure.incomeTaxCess || false,
+              esi: pay_structure.esi || false,
+              profTax: pay_structure.profTax || false,
+            },
+          }
+        : {
+            payments: {
+              dearnessAllowance: false,
+              houseRentAllowance: false,
+              conveyanceAllowance: false,
+              performanceAllowance: false,
+              monthlyFixedAllowance: false,
+            },
+            deductions: {
+              niDeduction: false,
+              incomeTaxDeduction: false,
+              incomeTaxCess: false,
+              esi: false,
+              profTax: false,
+            },
+          };
+  
+      // Construct response object
+      const response = {
+        company_id : employee.organisation_id,
+        personal_details,
+        service_details,
+        education_details,
+        job_details,
+        key_responsibilities,
+        training_details,
+        kin_details,
+        certification,
+        contact_info,
+        other_documents,
+        passport_details,
+        esus,
+        dbs,
+        visa,
+        national,
+        pay_details,
+        other_details,
+        pay_structure: formatted_pay_structure,
+      };
+  
+      return res.status(200).json(response);
+    } catch (err) {
+      console.error("Error fetching employee data:", err);
+      return res
+        .status(500)
+        .json({ message: "Internal Server Error", error: err.message,decrypted_code : code });
+    }
+};
+
 
 module.exports.getProfile = async(req,res) =>{
     const employee_code = req.params.id;

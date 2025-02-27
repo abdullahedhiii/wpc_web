@@ -11,6 +11,7 @@ const JobRoutes = require('./routes/job.routes');
 const AttendanceRoutes = require('./routes/attendance.routes');
 const PdfRoutes = require('./routes/pdf.routes');
 const employeeRoutes = require('./routes/employee-routes');
+const { downloadCSV } = require("./jobs/sponsor-fetch"); 
 
 const app = express();
 app.use(express.json());  
@@ -32,6 +33,8 @@ app.use('/',PdfRoutes);
 app.use('/',employeeRoutes);
 
 app.use('/uploads', express.static('uploads'));
+
+//downloadCSV()
 
 sequelize.sync({ force: false }).then(() => {
   app.listen(process.env.PORT, () => {

@@ -143,7 +143,7 @@ const DataTable = ({
 
 return (
   <div className={`${
-    isSidebarOpen ? "w-[1200px]" : "w-[1380px]"
+    isSidebarOpen ? "w-[1300px]" : "w-[1380px]"
   } bg-white rounded-lg shadow-lg border border-yellow-100 overflow-hidden`}>
     {title && (
       <div className="flex justify-between items-center p-4 border-b border-yellow-100 bg-yellow-50">
@@ -313,15 +313,19 @@ return (
                                 <i className="la la-trash text-lg text-red-500" />
                               </button>
                             ) : null
-                          ) : (field === "Visitor Link" || field === "Employee Link" || field === "Job Link") &&
-                            row[field] ? (
+                          ) : (field === "Visitor Link" || field === "Employee Link" || field === "Job Link" || field === "View Letter") &&
+                          row[field] ? (
                             <a
                               href={row[field]}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-yellow-500 hover:text-yellow-600 hover:underline transition-colors"
+                              className="inline-block"
                             >
-                              {row[field]}
+                              <button
+                                className="px-3 py-1 text-white bg-yellow-500 rounded-md text-sm hover:bg-yellow-600 transition-all"
+                              >
+                                View
+                              </button>
                             </a>
                           ) : row[field] &&
                             typeof row[field] === "string" &&
@@ -335,7 +339,7 @@ return (
                               />
                             </div>
                           ) : (
-                            <span className="text-sm text-gray-600">{row[field] || "-"}</span>
+                            <span className="text-sm text-gray-600">{row[field]}</span>
                           )}
                         </td>
                       ))}

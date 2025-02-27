@@ -74,7 +74,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
   return (
     <div className="mt-12 max-w-4xl mx-auto p-6 bg-[#FFF4F4] shadow-lg rounded-lg">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-blue-600">Job Application</h1>
+        <h1 className="text-2xl font-bold text-yellow-600">Job Application</h1>
         <button onClick={onBack} className="text-gray-600 hover:text-gray-800">
           ← Back to Job Details
         </button>
@@ -86,7 +86,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">{jobTitle}</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 bg-blue-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 bg-yellow-200 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               placeholder="Help Desk Technician"
               name="jobTitle"
               value={formData.jobTitle}
@@ -98,7 +98,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="name"
               value={formData.name}
               onChange={handleChange}
@@ -110,7 +110,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Email ID</label>
             <input
               type="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="email"
               value={formData.email}
               onChange={handleChange}
@@ -122,7 +122,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Contact No.</label>
             <input
               type="tel"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="contactNo"
               value={formData.contactNo}
               onChange={handleChange}
@@ -133,7 +133,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="gender"
               value={formData.gender}
               onChange={handleChange}
@@ -149,7 +149,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Date Of Birth</label>
             <input
               type="date"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="dob"
               value={formData.dob}
               onChange={handleChange}
@@ -159,7 +159,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Experience in Year</label>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="experienceYear"
               value={formData.experienceYear}
               onChange={handleChange}
@@ -176,7 +176,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Experience in Months</label>
             <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="experienceMonth"
               value={formData.experienceMonth}
               onChange={handleChange}
@@ -194,7 +194,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Educational Qualification</label>
           <textarea
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
             rows="3"
             name="education"
             value={formData.education}
@@ -207,7 +207,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Most Recent Position</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="recentPosition"
               value={formData.recentPosition}
               onChange={handleChange}
@@ -218,7 +218,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Next Recent Job Title</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="nextJobTitle"
               value={formData.nextJobTitle}
               onChange={handleChange}
@@ -229,7 +229,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Current/Past code</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="currentCode"
               value={formData.currentCode}
               onChange={handleChange}
@@ -240,7 +240,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
             <label className="block text-sm font-medium text-gray-700 mb-1">Current Location / Address</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
               name="currentLocation"
               value={formData.currentLocation}
               onChange={handleChange}
@@ -252,7 +252,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
           <label className="block text-sm font-medium text-gray-700 mb-1">Expected salary/CTC</label>
           <input
             type="text"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
             name="expectedSalary"
             value={formData.expectedSalary}
             onChange={handleChange}
@@ -263,7 +263,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
           <label className="block text-sm font-medium text-gray-700 mb-1">Upload Resume * (pdf)</label>
           <input
             type="file"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
             name="resume"
             onChange={handleFileChange}
             required
@@ -274,7 +274,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
           <label className="block text-sm font-medium text-gray-700 mb-1">Upload Cover Letter * (pdf)</label>
           <input
             type="file"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-yellow-500"
             name="coverLetter"
             onChange={handleFileChange}
             required
@@ -283,7 +283,7 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
 
         <button
           type="submit"
-          className="w-full py-2 mt-6 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full py-2 mt-6 bg-yellow-600 text-white font-bold rounded-md hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
         >
           Submit Application
         </button>

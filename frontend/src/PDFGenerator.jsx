@@ -15,7 +15,7 @@ const PDFGenerator = ({ title, headings, data, filename }) => {
       startY: 20,
       theme: "grid",
       styles: { fontSize: 8 },
-      headStyles: { fillColor: [41, 128, 185] }, // Blue header
+      headStyles: { fillColor: [41, 128, 185] }, // yellow header
       bodyStyles: { textColor: 50 },
     });
 

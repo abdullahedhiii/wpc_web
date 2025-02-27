@@ -61,7 +61,7 @@ const CompanyForm = () => {
           type: "text",
           required: true,
           additionalElement: (
-            <button className="px-2 py-1 bg-blue-600 text-white rounded-md text-sm w-auto">
+            <button className="px-2 py-1 bg-yellow-600 text-white rounded-md text-sm w-auto">
               Find
             </button>
           ),
@@ -837,7 +837,7 @@ const CompanyForm = () => {
   
   
   return (
-    <div className="p-12">
+    <div className="m-16">
       <p className="text-[12px] text-gray-600">
         Home
         <span className="mx-2">/</span>
@@ -847,15 +847,15 @@ const CompanyForm = () => {
           Edit organisation profile
         </a>
       </p>
-      <div className="mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
+      <div className="mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
         <div className="flex items-center gap-2 mb-6">
-          <i className="la la-user-edit text-lg text-blue-900"></i>
-          <h1 className="text-blue-900 text-lg font-medium">Profile Update</h1>
+          <i className="la la-user-edit text-lg text-yellow-900"></i>
+          <h1 className="text-yellow-900 text-lg font-medium">Profile Update</h1>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
           {formSections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
-              <h2 className="text-lg font-semibold text-blue-900 mb-4">
+              <h2 className="text-lg font-semibold text-yellow-900 mb-4">
                 {section.title}
               </h2>
               <hr className="my-6 border-t-1 border-gray-400" />
@@ -1018,7 +1018,7 @@ const CompanyForm = () => {
               
                         <div className="flex flex-row gap-2 items-center">
                           {row.sampleDocument && (
-                            <button className="bg-blue-800 p-2 border rounded w-[140px] text-[10px]">
+                            <button className="bg-yellow-800 p-2 border rounded w-[140px] text-[10px]">
                               <a
                                 href={row.sampleDocument}
                                 target="_blank"
@@ -1172,7 +1172,7 @@ const CompanyForm = () => {
             </div>
           ))}
 
-          <button className="p-2 rounded-lg text-white bg-blue-900">
+          <button className="p-2 rounded-lg text-white bg-yellow-900">
             Submit
           </button>
         </form>

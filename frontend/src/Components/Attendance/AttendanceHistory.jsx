@@ -8,7 +8,13 @@ const AttendanceHistory = () => {
     const {isSideBarOpen} = useSidebarContext();
     const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date','Clock In','Clock In Location','Clock Out','Clock Out Location','Duty Hours'];
     const [attendance,setAttendance] = useState([]);
-    const {companyData,employees,departmentData,designationData} = useCompanyContext();
+    const {companyData,fetchEmployeesLink,fetchDepartments,fetchDesignations,employees,departmentData,designationData} = useCompanyContext();
+    
+    useEffect(() => {
+       fetchDepartments();
+       fetchDesignations();
+       fetchEmployeesLink();
+    },[]);
     const [formData,setFormData] = useState({
         department : '',
         designation : '',
@@ -84,7 +90,7 @@ const AttendanceHistory = () => {
         Employee
         <span className="mx-2 text-tt">/ Daily Attendance</span>
       </p>
-      <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+      <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
@@ -94,7 +100,7 @@ const AttendanceHistory = () => {
               name="department"
               value={formData.department}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
               <option value="" disabled>
@@ -116,7 +122,7 @@ const AttendanceHistory = () => {
               name="designation"
               value={formData.designation}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
               <option value="" disabled>
@@ -138,7 +144,7 @@ const AttendanceHistory = () => {
               name="employeeCode"
               value={formData.employeeCode}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
               <option value="" disabled>Select Employee</option>
@@ -159,7 +165,7 @@ const AttendanceHistory = () => {
               name="fromDate"
               value={formData.fromDate}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             />
           </div>
@@ -173,7 +179,7 @@ const AttendanceHistory = () => {
               name="toDate"
               value={formData.toDate}
               onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             />
           </div>
@@ -181,13 +187,13 @@ const AttendanceHistory = () => {
         </div>
         <div className="flex space-x-3"> 
         <button
-          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-blue-700 rounded text-white mb-4"
+          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
           onClick={handleGenerate}
         >
           View
         </button>
         <button
-          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-blue-700 rounded text-white mb-4"
+          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
           onClick={() => {
             setFormData({
                 department :'',designation :'',employeeCode: '',fromDate :'',toDate : ''

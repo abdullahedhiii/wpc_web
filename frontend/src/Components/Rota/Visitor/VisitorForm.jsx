@@ -81,7 +81,7 @@ const VisitorForm = () => {
                 <input
                   type="text"
                   name="name"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.name}
                   onChange={handleChange}
                 />
@@ -94,7 +94,7 @@ const VisitorForm = () => {
                 <input
                   type="email"
                   name="email"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -107,7 +107,7 @@ const VisitorForm = () => {
                 <input
                   type="text"
                   name="address"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.address}
                   onChange={handleChange}
                 />
@@ -120,7 +120,7 @@ const VisitorForm = () => {
                 <input
                   type="date"
                   name="date"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.date}
                   onChange={handleChange}
                 />
@@ -132,7 +132,7 @@ const VisitorForm = () => {
                 </label>
                 <textarea
                   name="reference"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 h-20"
                   value={formData.reference}
                   onChange={handleChange}
                 />
@@ -147,7 +147,7 @@ const VisitorForm = () => {
                 <input
                   name="designation"
                   type="text"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.designation}
                   onChange={handleChange}
                 />
@@ -160,7 +160,7 @@ const VisitorForm = () => {
                 <input
                   type="tel"
                   name="contact"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.contact}
                   onChange={handleChange}
                 />
@@ -172,7 +172,7 @@ const VisitorForm = () => {
                 </label>
                 <textarea
                   name="description"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 h-20"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500 h-20"
                   value={formData.description}
                   onChange={handleChange}
                 />
@@ -185,7 +185,7 @@ const VisitorForm = () => {
                 <input
                   type="time"
                   name="time"
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.time}
                   onChange={handleChange}
                 />
@@ -195,7 +195,7 @@ const VisitorForm = () => {
             <div className="md:col-span-2 flex justify-center">
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
+                className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600 transition-colors"
               >
                 Submit
               </button>

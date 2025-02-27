@@ -79,13 +79,13 @@ const JobListForm = () => {
       </p>
 
       <div
-        className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${
+        className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
           isSideBarOpen ? "max-w-[1200px]" : "max-w-[1400px]"
         }`}
       >
         <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-user text-lg text-blue-900"></i>
-          <h1 className="text-blue-900 text-lg font-medium">Add Job List</h1>
+          <i className="fas fa-user text-lg text-yellow-900"></i>
+          <h1 className="text-yellow-900 text-lg font-medium">Add Job List</h1>
         </div>
         <hr className="my-4 border-t-1 border-gray-200" />
 
@@ -101,7 +101,7 @@ const JobListForm = () => {
                     name={field.stateAttribute}
                     value={formData[field.stateAttribute]}
                     onChange={handleChange}
-                    className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400  hover:border-b-4"
+                    className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                   >
                     {field.options.map((option, i) => (
                       <option key={i} value={option.value}>
@@ -115,7 +115,7 @@ const JobListForm = () => {
                     name={field.stateAttribute}
                     value={formData[field.stateAttribute]}
                     onChange={handleChange}
-                    className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-blue-400 focus:border-b-4 hover:border-blue-400 hover:border-b-4"
+                    className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                   />
                 )}
               </div>
@@ -132,7 +132,7 @@ const JobListForm = () => {
             />
           </div>
 
-            <button onClick={handleJobPost} className="rounded mt-2 px-4 py-2 bg-blue-900 text-white">submit </button>
+            <button onClick={handleJobPost} className="rounded mt-2 px-4 py-2 bg-yellow-900 text-white">submit </button>
 
         </div>
 

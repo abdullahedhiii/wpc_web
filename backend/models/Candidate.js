@@ -114,6 +114,10 @@ module.exports = (sequelize, DataTypes) => {
         timeTo: {
           type : DataTypes.TIME,
           allowNull:true,
+        },
+        offer_letter_url : {
+          type : DataTypes.STRING,
+          allowNull : true,
         }        
       },
       {

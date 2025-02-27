@@ -29,7 +29,7 @@ const LeaveReport = () => {
     return (
         <div className="p-8">
             <p className="text-sm text-gray-500">
-                Home <span className="mx-2 text-blue-600">/ Leave Report</span>
+                Home <span className="mx-2 text-yellow-600">/ Leave Report</span>
             </p>
 
             <div className={`mt-6 border-l-4 border-yellow-600 bg-white rounded-lg shadow-md p-6 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}>
@@ -38,7 +38,7 @@ const LeaveReport = () => {
                     <select 
                         value={year} 
                         onChange={(e) => setYear(e.target.value)}
-                        className="w-64 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:bg-gray-50 transition"
+                        className="w-64 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 hover:bg-gray-50 transition"
                     >
                         <option value="">Choose Year</option>
                         {Array.from({ length: currentYear - startYear + 1 }, (_, i) => (

@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             model: "Employees",
             key: "employee_code",
           },
+          primaryKey : true,
           onDelete: "CASCADE",
         },
         dearnessAllowance: DataTypes.BOOLEAN,

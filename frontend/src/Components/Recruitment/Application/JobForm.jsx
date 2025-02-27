@@ -48,7 +48,7 @@ export default function JobForm() {
     <div className="mt-12 max-w-4xl mx-auto p-6 bg-[#FFF4F4] shadow-lg rounded-lg">
       <div className="space-y-6">
         <div className="border-b pb-4">
-          <h1 className="text-2xl font-bold text-blue-600">{jobData.company}</h1>
+          <h1 className="text-2xl font-bold text-yellow-600">{jobData.company}</h1>
           <div className="text-sm text-gray-500">
             <span>Job Title - {jobData.jobTitle}</span>
             <span className="mx-2">|</span>
@@ -108,7 +108,7 @@ export default function JobForm() {
         <div className="flex justify-end pt-4">
           <button
             onClick={() => setShowApplication(true)}
-            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
+            className="bg-yellow-500 text-white px-6 py-2 rounded hover:bg-yellow-600 transition-colors"
           >
             Apply
           </button>

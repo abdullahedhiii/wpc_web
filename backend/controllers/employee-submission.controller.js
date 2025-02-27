@@ -22,8 +22,16 @@ const {
   COCOtherDetail,
 } = require("../config/sequelize");
 
+const isValidDate = (date) => {
+  if (!date || date.trim() === "") return false; // Handle empty or null values
+  const parsedDate = new Date(date);
+  return !isNaN(parsedDate.getTime());
+};
+
+
 module.exports.addPersonalDetails = async (req, res) => {
   try {
+    console.log(req.body);
     const [organisationId, employeeCode] = req.params.id.split(".");
 
     const [employee, created] = await Employee.findOrCreate({
@@ -31,23 +39,35 @@ module.exports.addPersonalDetails = async (req, res) => {
       defaults: { organisation_id: parseInt(organisationId) },
     });
 
+    const existingPersonalDetail = await PersonalDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
 
-    const [personalDetail, personalCreated] = await PersonalDetail.upsert(
-      {
+    let personalDetail;
+    let message;
+    req.body.dob = isValidDate(req.body.dob) ? req.body.dob : null;
+    if (existingPersonalDetail) {
+      await existingPersonalDetail.update({
+        ...req.body,
+      });
+
+      personalDetail = existingPersonalDetail;
+      message = "Personal details updated";
+    } else {
+      personalDetail = await PersonalDetail.create({
         employee_code: employeeCode,
         ...req.body,
-      },
-      {
-        where: { employee_code: employeeCode },
-        returning: true, 
-      }
-    );
+      });
+
+      message = "Personal details added";
+    }
 
     return res.status(200).json({
-      message: personalCreated ? "Personal details added" : "Personal details updated",
+      message,
       code: employeeCode,
       personalDetail,
     });
+
   } catch (err) {
     console.error("Error processing personal details:", err);
     return res.status(500).json({ message: "Internal server error", error: err });
@@ -61,24 +81,39 @@ module.exports.addServiceDetails = async (req, res) => {
       ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
+    let existingServiceDetail = await ServiceDetail.findOne({
+      where: { employee_code: employeeCode },
+    });
 
-    // Prepare the data to be inserted or updated
-    const serviceDetailsData = {
-      employee_code: employeeCode,
-      profile_pic: fileUrl,
-      ...req.body,
-    };
+    let serviceDetail;
+    let message;
 
-    // Perform the upsert operation
-    const [document, created] = await ServiceDetail.upsert(serviceDetailsData);
+    if (existingServiceDetail) {
+      await existingServiceDetail.update({
+        profile_pic: fileUrl,
+        start: isValidDate(req.body.start) ? req.body.start : null,
+        end_if: isValidDate(req.body.end_if) ?  req.body.end_if : null,
+        ...req.body,
+      });
 
-    if (created) {
-      return res.status(200).json({ message: "Service detail added", document });
+      serviceDetail = existingServiceDetail;
+      message = "Service detail updated";
     } else {
-      return res.status(200).json({ message: "Service detail updated", document });
+      serviceDetail = await ServiceDetail.create({
+        employee_code: employeeCode,
+        profile_pic: fileUrl,
+        start: isValidDate(req.body.start) ? req.body.start : null,
+        end_if: isValidDate(req.body.end_if) ?  req.body.end_if : null,
+        ...req.body,
+      });
+
+      message = "Service detail added";
     }
+
+    return res.status(200).json({ message, serviceDetail });
+
   } catch (err) {
-    console.error("Error adding or updating document:", err);
+    console.error("Error adding or updating service details:", err);
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -87,9 +122,11 @@ module.exports.addEducationalDetails = async (req, res) => {
   console.log("Educational hit ", req.params.id, req.body);
 
   try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+    const isDefault = req.body.isDefault; // Check if the record is default
+
     const file1 = req.files?.transcript_document ? req.files.transcript_document[0].filename : null;
     const file2 = req.files?.certificate_document ? req.files.certificate_document[0].filename : null;
-    const [organisationId, employeeCode] = req.params.id.split(".");
 
     const f1 = file1
       ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${file1}`
@@ -99,86 +136,151 @@ module.exports.addEducationalDetails = async (req, res) => {
       ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${file2}`
       : null;
 
-    // Check if an ID is provided to determine whether to update or create
     const { id, ...otherDetails } = req.body;
+    let document;
+    let message;
 
-    // Prepare the data for upsert (insert or update)
-    const educationalDetails = {
-      id: id || null, // If ID exists, use it for updating; otherwise, create new
-      employee_code: employeeCode,
-      transcript_document: f1,
-      certificate_document: f2,
-      ...otherDetails,
-    };
+    if (isDefault) {
+      // Find the default record for this employee
+      let defaultRecord = await EducationDetail.findOne({
+        where: { employee_code: employeeCode },
+      });
 
-    // Perform the upsert
-    const [document, created] = await EducationDetail.upsert(educationalDetails);
+      if (defaultRecord) {
+        // Update the default record
+        await defaultRecord.update({
+          transcript_document: f1 || defaultRecord.transcript_document,
+          certificate_document: f2 || defaultRecord.certificate_document,
+          ...otherDetails,
+        });
 
-    const message = created
-      ? "Educational details added successfully."
-      : "Educational details updated successfully.";
+        document = defaultRecord;
+        message = "Default educational details updated successfully.";
+      }
+      else {
+        document = await EducationDetail.create({
+          employee_code: employeeCode,
+          transcript_document: f1,
+          certificate_document: f2,
+          ...otherDetails,
+        });
+      } 
+    } else {
+      // If not default, check if ID exists (update) or create new
+      if (id) {
+        document = await EducationDetail.findByPk(id);
+        if (document) {
+          await document.update({
+            transcript_document: f1 || document.transcript_document,
+            certificate_document: f2 || document.certificate_document,
+            ...otherDetails,
+          });
+
+          message = "Educational details updated successfully.";
+        } else {
+          return res.status(404).json({ message: "Record not found for update." });
+        }
+      } else {
+        // Create a new record if it's not an update
+        document = await EducationDetail.create({
+          employee_code: employeeCode,
+          transcript_document: f1,
+          certificate_document: f2,
+          ...otherDetails,
+        });
+
+        message = "Educational details added successfully.";
+      }
+    }
 
     return res.status(200).json({ message, document });
+
   } catch (err) {
     console.error("Error adding or updating document:", err);
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
-
-
 module.exports.addJobDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+    console.log(req.body);
 
-    // Prepare the data to be inserted or updated
     const jobData = {
       employee_code: employeeCode,
-      ...req.body,
+      start: isValidDate(req.body.start) ? req.body.start : null,
+      end: isValidDate(req.body.end) ? req.body.end : null,
+      title: req.body.title,
+      experience: req.body.experience,
+      description: req.body.description
     };
 
-    const existingJob = await JobDetail.findOne({
-      where: { employee_code: employeeCode },
-    });
-    
-    if (existingJob) {
-      await JobDetail.update(req.body, {
-        where: { employee_code: employeeCode },
-      });
-      return res.status(200).json("Job detail updated");
+    // Check if the job detail already exists for the given employee
+    let jobDetail = await JobDetail.findOne({ where: { employee_code: employeeCode } });
+
+    if (jobDetail) {
+      // Update the existing job detail
+      await jobDetail.update(jobData);
+      return res.status(200).json({ message: "Job detail updated" });
     } else {
-      await JobDetail.create(jobData);
-      return res.status(200).json("Job detail added");
+      // Create a new job detail record
+      jobDetail = await JobDetail.create(jobData);
+      return res.status(201).json({ message: "Job detail added", jobDetail });
     }
-    
   } catch (err) {
     console.error("Error processing job details:", err);
-    return res.status(500).json("Internal server error");
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 
-module.exports.addKeyResponsibility = async (req, res) => {
 
+module.exports.addKeyResponsibility = async (req, res) => {
   try {
     const employeeCode = req.params.id.split(".")[1];
+    const { id, isDefault, ...otherDetails } = req.body;
 
-    const { id, ...otherDetails } = req.body;
+    let keyResponsibility;
 
-    // Prepare the responsibility data
-    const keyResponsibilityData = {
-      id: id || null, // If ID exists, use it for updating; otherwise, create new
+    if (isDefault) {
+      keyResponsibility = await KeyResponsibility.findOne({
+        where: { employee_code: employeeCode},
+      });
+
+      if (keyResponsibility) {
+        await keyResponsibility.update(otherDetails);
+        return res.status(200).json({
+          message: "Default key responsibility updated successfully.",
+          keyResponsibility,
+        });
+      }
+    }
+
+    if (id) {
+      // Check if a record with the provided ID exists
+      keyResponsibility = await KeyResponsibility.findOne({ where: { id } });
+
+      if (keyResponsibility) {
+        // Update the existing record
+        await keyResponsibility.update(otherDetails);
+        return res.status(200).json({
+          message: "Key responsibility updated successfully.",
+          keyResponsibility,
+        });
+      }
+    }
+
+    // If no default record found and no existing record with ID, create a new one
+    keyResponsibility = await KeyResponsibility.create({
       employee_code: employeeCode,
       ...otherDetails,
-    };
+    });
 
-    // Perform upsert (insert or update)
-    const [keyResponsibility, created] = await KeyResponsibility.upsert(keyResponsibilityData);
-
-    const message = created
-      ? "Key responsibility added successfully."
-      : "Key responsibility updated successfully.";
-
-    return res.status(200).json({ message, keyResponsibility });
+    return res.status(201).json({
+      message: isDefault
+        ? "Default key responsibility created."
+        : "Key responsibility added successfully.",
+      keyResponsibility,
+    });
   } catch (err) {
     console.error("Error adding or updating key responsibility:", err);
     return res.status(500).json({ message: "Internal server error", error: err });
@@ -188,13 +290,54 @@ module.exports.addKeyResponsibility = async (req, res) => {
 
 module.exports.addTrainingData = async (req, res) => {
   try {
-    const train = await TrainingDetail.upsert({
-      employee_code: req.params.id.split(".")[1],
-      ...req.body,
+    const employeeCode = req.params.id.split(".")[1];
+    req.body.start = isValidDate(req.body.start) ? req.body.start : null;
+    req.body.end = isValidDate(req.body.end) ? req.body.end : null;
+    const { id, isDefault, ...otherDetails } = req.body;
+    
+    let trainingDetail;
+
+    if (isDefault) {
+      trainingDetail = await TrainingDetail.findOne({
+        where: { employee_code: employeeCode },
+      });
+
+      if (trainingDetail) {
+        await trainingDetail.update(otherDetails);
+        return res.status(200).json({
+          message: "Default training detail updated successfully.",
+          trainingDetail,
+        });
+      }
+    }
+
+    if (id) {
+      trainingDetail = await TrainingDetail.findOne({ where: { id } });
+
+      if (trainingDetail) {
+        await trainingDetail.update(otherDetails);
+        return res.status(200).json({
+          message: "Training detail updated successfully.",
+          trainingDetail,
+        });
+      }
+    }
+
+    // If no default record found and no existing record with ID, create a new one
+    trainingDetail = await TrainingDetail.create({
+      employee_code: employeeCode,
+      ...otherDetails,
     });
-    return res.status(200).json("training detail added ");
+
+    return res.status(201).json({
+      message: isDefault
+        ? "Default training detail created."
+        : "Training detail added successfully.",
+      trainingDetail,
+    });
   } catch (err) {
-    return res.status(500).json("internal server error ");
+    console.error("Error adding or updating training detail:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 
@@ -202,31 +345,52 @@ module.exports.addKinData = async (req, res) => {
   try {
     const employeeCode = req.params.id.split(".")[1];
 
-    const [kin, kinCreated] = await KinDetail.upsert({
-      employee_code: employeeCode,
-      ...req.body,
-    });
+    // Check if kin details already exist
+    const existingKin = await KinDetail.findOne({ where: { employee_code: employeeCode } });
 
-    return res.status(200).json({
-      message: kinCreated ? "Kin detail added" : "Kin detail updated",
-    });
+    if (existingKin) {
+      // Update existing record
+      await existingKin.update(req.body);
+      return res.status(200).json({ message: "Kin detail updated" });
+    }
+
+    // Create new record if not found
+    await KinDetail.create({ employee_code: employeeCode, ...req.body });
+    return res.status(201).json({ message: "Kin detail added" });
+
   } catch (err) {
     console.error("Error adding/updating kin details:", err);
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 
-
 module.exports.addCertification = async (req, res) => {
   try {
     const employeeCode = req.params.id.split(".")[1];
 
-    const [certification, certificationCreated] = await Certification.upsert({
+    const certificationData = {
       employee_code: employeeCode,
-      ...req.body,
-    });
+      start: isValidDate(req.body.start) ? req.body.start : null,
+      end: isValidDate(req.body.end) ? req.body.end : null,
+      title: req.body.title,
+      license: req.body.license,
+    };
 
-    return res.status(200).json(`${certificationCreated ? "Certification detail added" : "Certification detail updated"}`);
+    // Check if certification exists for the employee
+    const existingCertification = await Certification.findOne({ where: { employee_code: employeeCode } });
+
+    if (existingCertification) {
+      // Update existing certification
+      await existingCertification.update(certificationData);
+
+      return res.status(200).json("Certification detail updated");
+    }
+
+    // Create new certification record if not found
+    await Certification.create(certificationData);
+
+    return res.status(201).json("Certification detail added");
+
   } catch (err) {
     console.error("Error adding/updating certification details:", err);
     return res.status(500).json("Internal server error");
@@ -234,90 +398,99 @@ module.exports.addCertification = async (req, res) => {
 };
 
 module.exports.addContact = async (req, res) => {
-    try {
-      const [organisationId, employeeCode] = req.params.id.split(".");
-      const fileUrl = req.file
-        ? `http://localhost:${
-            process.env.PORT || 3000
-          }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
-        : null;
-  
-  
-      // Check if contact info already exists for the given employee code
-      const existingContact = await ContactInfo.findOne({
-        where: { employee_code: employeeCode },
-      });
-  
-      let document;
-  
-      if (existingContact) {
-        // If the contact exists, update it
-        document = await existingContact.update({
-          proof: fileUrl || existingContact.proof, // Update file URL if a new file is provided
-          ...req.body, // Update other fields with the provided data
-        });
-  
-        return res.status(200).json({ message: "Contact details updated", document });
-      } else {
-        // If the contact doesn't exist, create a new one
-        document = await ContactInfo.create({
-          employee_code: employeeCode,
-          proof: fileUrl,
-          ...req.body,
-        });
-  
-        return res.status(200).json({ message: "Contact detail added", document });
-      }
-    } catch (err) {
-      return res
-        .status(500)
-        .json({ message: "Internal server error", error: err });
-    }
-  };
-  
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
 
-  module.exports.addPayDetails = async (req, res) => {
-    try {
-      const [organisationId, employeeCode] = req.params.id.split(".");
-      const [payDetail, created] = await PayDetail.upsert({
-        employee_code: employeeCode,
+    // Construct file URL if a new file is uploaded
+    const fileUrl = req.file
+      ? `http://localhost:${
+          process.env.PORT || 3000
+        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      : null;
+
+    // Check if contact details exist
+    const existingContact = await ContactInfo.findOne({ where: { employee_code: employeeCode } });
+
+    if (existingContact) {
+      // Update existing record
+      await existingContact.update({
+        proof: fileUrl || existingContact.proof, // Keep old file if no new file is uploaded
         ...req.body,
       });
-  
-      if (created) {
-        return res.status(200).json("Pay detail added");
-      } else {
-        return res.status(200).json("Pay detail updated");
-      }
-    } catch (err) {
-      console.error("Error processing pay details:", err);
-      return res.status(500).json("Internal server error");
+
+      return res.status(200).json({ message: "Contact details updated", document: existingContact });
     }
-  };
-  
+
+    // Create new record if not found
+    const document = await ContactInfo.create({
+      employee_code: employeeCode,
+      proof: fileUrl,
+      ...req.body,
+    });
+
+    return res.status(201).json({ message: "Contact detail added", document });
+
+  } catch (err) {
+    console.error("Error processing contact details:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
+  }
+};
+
+
+module.exports.addPayDetails = async (req, res) => {
+  try {
+    const [organisationId, employeeCode] = req.params.id.split(".");
+
+    const payDetailData = {
+      employee_code: employeeCode,
+      ...req.body,
+    };
+
+    // Check if pay detail exists for the employee
+    const existingPayDetail = await PayDetail.findOne({ where: { employee_code: employeeCode } });
+
+    if (existingPayDetail) {
+      // Update existing pay detail
+      await existingPayDetail.update(payDetailData);
+      return res.status(200).json("Pay detail updated");
+    }
+
+    // Create new pay detail record if not found
+    await PayDetail.create(payDetailData);
+    return res.status(201).json("Pay detail added");
+
+  } catch (err) {
+    console.error("Error processing pay details:", err);
+    return res.status(500).json("Internal server error");
+  }
+};
+
 
   module.exports.addPayStructure = async (req, res) => {
     console.log("structure hit ", req.params.id, req.body);
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
-      const {payments,deductions} = req.body;
-      const existingPayStructure = await PayStructure.findOne({
-        where: { employee_code: employeeCode },
-      });
+      const { payments, deductions } = req.body;
   
+      const payStructureData = {
+        employee_code: employeeCode,
+        ...payments,
+        ...deductions,
+      };
+  
+      const existingPayStructure = await PayStructure.findOne({
+        where: { employee_code: employeeCode }
+      });
+      
       if (existingPayStructure) {
-        console.log('upading pay');
-        await existingPayStructure.update({...payments,...deductions});
+        await existingPayStructure.update(payStructureData);
         return res.status(200).json("Pay structure updated successfully");
       } else {
-        
-        await PayStructure.create({
-          employee_code: employeeCode,
-          ...payments,
-          ...deductions
-        });
+        await PayStructure.create(payStructureData);
         return res.status(201).json("Pay structure added successfully");
       }
+      
+  
     } catch (err) {
       console.error("Error processing pay structure:", err);
       return res.status(500).json("Internal server error");
@@ -460,6 +633,7 @@ module.exports.addEsus = async (req, res) => {
 module.exports.addDBS = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+    console.log(req.body,employeeCode,'dbss ');
     const fileUrl = req.file
       ? `http://localhost:${
           process.env.PORT || 3000
@@ -498,53 +672,71 @@ module.exports.addDBS = async (req, res) => {
       .json({ message: "Internal server error", error: err });
   }
 };
-
 module.exports.add_other_details = async (req, res) => {
-
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+    const { id, isDefault, ...otherDetails } = req.body;
 
-    // Construct file URL if a new file is uploaded
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
-    // Check if record with provided ID exists
-    const existingDetail = await EmployeeOtherDetail.findOne({
-      where: { id: req.body.id },
-    });
+    let existingDetail;
 
-    if (existingDetail) {
-      // Update the existing record
-      await existingDetail.update({
-        document: fileUrl || existingDetail.document, // Keep old file if no new file is uploaded
-        ...req.body,
+    if (isDefault) {
+      // Check if a default record exists
+      existingDetail = await EmployeeOtherDetail.findOne({
+        where: { employee_code: employeeCode },
       });
 
-      return res.status(200).json({
-        message: "Other detail updated successfully",
-        document: existingDetail,
-      });
+      if (existingDetail) {
+        // Update the existing default record
+        await existingDetail.update({
+          document: fileUrl || existingDetail.document, // Keep old file if no new file is uploaded
+          ...otherDetails,
+        });
+
+        return res.status(200).json({
+          message: "Default other detail updated successfully",
+          document: existingDetail,
+        });
+      }
     }
 
-    // Create a new record if not found
+    if (id) {
+      // Check if a record with the provided ID exists
+      existingDetail = await EmployeeOtherDetail.findOne({ where: { id } });
+
+      if (existingDetail) {
+        // Update the existing record
+        await existingDetail.update({
+          document: fileUrl || existingDetail.document,
+          ...otherDetails,
+        });
+
+        return res.status(200).json({
+          message: "Other detail updated successfully",
+          document: existingDetail,
+        });
+      }
+    }
+
+    // If no default record is found and no existing record with ID, create a new one
     const document = await EmployeeOtherDetail.create({
       employee_code: employeeCode,
       document: fileUrl,
-      ...req.body,
+      ...otherDetails,
     });
 
-    return res.status(200).json({ message: "Other detail added", document });
+    return res.status(201).json({
+      message: isDefault ? "Default other detail created." : "Other detail added successfully.",
+      document,
+    });
   } catch (err) {
-    console.error("Error adding/updating document:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: err });
+    console.error("Error adding/updating other details:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
-
 
 module.exports.national_data = async (req, res) => {
 
@@ -592,54 +784,73 @@ module.exports.national_data = async (req, res) => {
       .json({ message: "Internal server error", error: err.message });
   }
 };
-
 module.exports.add_other_document = async (req, res) => {
-
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+    const { id, isDefault, ...otherDetails } = req.body;
 
     // Construct file URL if a new file is uploaded
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
-    // Check if record with provided ID exists
-    const existingDocument = await EmployeeOtherDocument.findOne({
-      where: { id: req.body.id },
-    });
+    let existingDocument;
 
-    if (existingDocument) {
-      // Update the existing record
-      await existingDocument.update({
-        doc_url: fileUrl || existingDocument.doc_url, // Keep old file if no new file is uploaded
-        ...req.body,
+    if (isDefault) {
+      // Check if a default record exists
+      existingDocument = await EmployeeOtherDocument.findOne({
+        where: { employee_code: employeeCode},
       });
 
-      return res.status(200).json({
-        message: "Other document updated successfully",
-        document: existingDocument,
-      });
+      if (existingDocument) {
+        // Update the existing default record
+        await existingDocument.update({
+          doc_url: fileUrl || existingDocument.doc_url, // Keep old file if no new file is uploaded
+          ...otherDetails,
+        });
+
+        return res.status(200).json({
+          message: "Default other document updated successfully",
+          document: existingDocument,
+        });
+      }
     }
 
-    // Create a new record if not found
+    if (id) {
+      // Check if a record with the provided ID exists
+      existingDocument = await EmployeeOtherDocument.findOne({ where: { id } });
+
+      if (existingDocument) {
+        // Update the existing record
+        await existingDocument.update({
+          doc_url: fileUrl || existingDocument.doc_url,
+          ...otherDetails,
+        });
+
+        return res.status(200).json({
+          message: "Other document updated successfully",
+          document: existingDocument,
+        });
+      }
+    }
+
+    // If no default record is found and no existing record with ID, create a new one
     const document = await EmployeeOtherDocument.create({
       employee_code: employeeCode,
       doc_url: fileUrl,
-      ...req.body,
+      ...otherDetails,
     });
 
-    return res
-      .status(200)
-      .json({ message: "Other document detail added", document });
+    return res.status(201).json({
+      message: isDefault ? "Default other document created." : "Other document added successfully.",
+      document,
+    });
   } catch (err) {
-    console.error("Error adding/updating document:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: err });
+    console.error("Error adding/updating other document:", err);
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
+
 
 
 module.exports.addOtherCocDetail = async(req,res)=>{

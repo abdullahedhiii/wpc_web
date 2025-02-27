@@ -43,8 +43,8 @@ const AttendanceStatus = () => {
 
       <div className="bg-white p-4 rounded-xl shadow-xl">
         <div className="flex items-center gap-2 mb-4">
-          <Eye className="text-blue-500" size={24} />
-          <h1 className="text-xl text-blue-500 font-medium">Attendance Status</h1>
+          <Eye className="text-yellow-500" size={24} />
+          <h1 className="text-xl text-yellow-500 font-medium">Attendance Status</h1>
         </div>
 
         <div className="flex items-center gap-6 text-[13px]">
@@ -57,7 +57,7 @@ const AttendanceStatus = () => {
               name="fromDate"
               value={formData.fromDate}
               onChange={handleChange}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-56"
+              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent w-56"
             />
               </div>
             </div>
@@ -70,7 +70,7 @@ const AttendanceStatus = () => {
               name="toDate"
               value={formData.toDate}
               onChange={handleChange}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-56"
+              className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent w-56"
             />
               </div>
             </div>
@@ -79,7 +79,7 @@ const AttendanceStatus = () => {
           
         </div>
         <button 
-           className="bg-blue-700 text-white font-semibold text-[12px] px-4 py-2 rounded-xl hover:bg-blue-600 transition-colors mt-6"
+           className="bg-yellow-700 text-white font-semibold text-[12px] px-4 py-2 rounded-xl hover:bg-yellow-600 transition-colors mt-6"
            onClick={handleView}
         >
               View

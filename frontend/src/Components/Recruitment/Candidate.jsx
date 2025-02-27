@@ -16,7 +16,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
     "Telephone Interview",
     "Face to Face Interview",
   ].includes(selectedStatus);
-
+  
   const handleStatusUpdate = async () => {
     try {
       const payload = { status: selectedStatus };
@@ -47,7 +47,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
       <select
         value={selectedStatus}
         onChange={(e) => setSelectedStatus(e.target.value)}
-        className="text-[12px] w-full p-2 mt-2 border rounded-md focus:outline-none focus:border-blue-200 focus:border-b-4"
+        className="text-[12px] w-full p-2 mt-2 border rounded-md focus:outline-none focus:border-yellow-200 focus:border-b-4"
       >
         <option value="">Select</option>
         <option value="Application Received">Application Received</option>
@@ -73,7 +73,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
         type="date"
         value={interviewDate}
         onChange={(e) => setInterviewDate(e.target.value)}
-        className="text-[12px] w-full p-2 border rounded-md focus:outline-none focus:border-blue-200 focus:border-b-4"
+        className="text-[12px] w-full p-2 border rounded-md focus:outline-none focus:border-yellow-200 focus:border-b-4"
       />
     </div>
 
@@ -85,7 +85,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
         type="time"
         value={timeFrom}
         onChange={(e) => settimeFrom(e.target.value)}
-        className="text-[12px] w-full p-2 border rounded-md focus:outline-none focus:border-blue-200 focus:border-b-4"
+        className="text-[12px] w-full p-2 border rounded-md focus:outline-none focus:border-yellow-200 focus:border-b-4"
       />
     </div>
 
@@ -97,7 +97,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
         type="time"
         value={timeTo}
         onChange={(e) => setToTime(e.target.value)}
-        className="text-[12px] w-full p-2 border rounded-md focus:outline-none focus:border-blue-200 focus:border-b-4"
+        className="text-[12px] w-full p-2 border rounded-md focus:outline-none focus:border-yellow-200 focus:border-b-4"
       />
     </div>
   </div>
@@ -105,7 +105,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
 
       <button
         onClick={handleStatusUpdate}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
       >
         Update Status
       </button>
@@ -140,14 +140,14 @@ const Candidate = () => {
         Home <span className="mx-2">/</span> Employee <span className="mx-2 text-tt">/ Candidate Details</span>
       </p>
       <div
-        className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-4 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}
+        className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-4 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}
       >
         <div className="flex items-center space-x-2">
-          <i className="fas fa-user-tie text-blue-800 text-[18px]"></i>
-          <p className="text-blue-800 text-[18px]">Candidate Details</p>
+          <i className="fas fa-user-tie text-yellow-800 text-[18px]"></i>
+          <p className="text-yellow-800 text-[18px]">Candidate Details</p>
         </div>
 
-        <div className="text-[14px] mt-12 bg-blue-100 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 border rounded-sm shadow-md">
+        <div className="text-[14px] mt-12 bg-yellow-100 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 border rounded-sm shadow-md">
           <p><strong>Name:</strong> {details.name}</p>
           <p><strong>Email:</strong> {details.email}</p>
           <p><strong>Contact:</strong> {details.contactNo}</p>
@@ -163,14 +163,14 @@ const Candidate = () => {
 
           <p>
             <strong>Resume:</strong>{" "}
-            <a href={details.resume} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href={details.resume} target="_blank" rel="noopener noreferrer" className="text-yellow-600 hover:underline">
               <FaDownload className="inline-block ml-2" />
             </a>
           </p>
 
           <p>
             <strong>Cover Letter:</strong>{" "}
-            <a href={details.coverLetter} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+            <a href={details.coverLetter} target="_blank" rel="noopener noreferrer" className="text-yellow-600 hover:underline">
               <FaDownload className="inline-block ml-2" />
             </a>
           </p>

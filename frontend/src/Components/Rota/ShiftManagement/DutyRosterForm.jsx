@@ -94,11 +94,11 @@ const DutyRosterForm = () => {
             Employee
             <span className="mx-2 text-tt">/ Duty Roster</span>
           </p>
-          <div className={`mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+          <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
           <div className="p-2 flex items-center space-x-2">
-              <i className={`pl-2 ${isEmployee ? "fa fa-users": "fas fa-cogs"} text-[14px]  text-blue-900`}></i>
+              <i className={`pl-2 ${isEmployee ? "fa fa-users": "fas fa-cogs"} text-[14px]  text-yellow-900`}></i>
         
-            <h2 className="text-[14px] font-semibold text-blue-900">Duty Roster { isEmployee ? "(Employee Wise)": "(Department Wise)"}</h2>
+            <h2 className="text-[14px] font-semibold text-yellow-900">Duty Roster { isEmployee ? "(Employee Wise)": "(Department Wise)"}</h2>
           </div>
 
             <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -110,7 +110,7 @@ const DutyRosterForm = () => {
                   name="department_id"
                   value={formData.department_id}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 >
                   <option value="" disabled>
@@ -132,7 +132,7 @@ const DutyRosterForm = () => {
                   name="designation_id"
                   value={formData.designation_id}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 >
                   <option value="" disabled>
@@ -154,7 +154,7 @@ const DutyRosterForm = () => {
                   name= {isEmployee ? "employee_code" : "shift_code"}
                   value={isEmployee ? formData.employee_code : formData.shift_code}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 >
                   <option value="" disabled></option>
@@ -181,7 +181,7 @@ const DutyRosterForm = () => {
                   name="fromDate"
                   value={formData.fromDate}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 />
               </div>
@@ -195,7 +195,7 @@ const DutyRosterForm = () => {
                   name="toDate"
                   value={formData.toDate}
                   onChange={handleInputChange}
-                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-blue-400 hover:border-b-4 hover:border-blue-400 rounded-md"
+                  className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
                   required
                 />
               </div>
@@ -203,13 +203,13 @@ const DutyRosterForm = () => {
             </div>
             <div className="flex space-x-6">
             <button
-              className="ml-4 px-4 py-2 text-[14px] font-semibold bg-blue-700 rounded text-white mb-4"
+              className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
               onClick={handleSubmit}
             >
               Submit
             </button>
             <button
-              className="ml-4 px-4 py-2 text-[14px] font-semibold bg-blue-700 rounded text-white mb-4"
+              className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
               onClick={ () => {
                 setFormData({
                     department_id : '',

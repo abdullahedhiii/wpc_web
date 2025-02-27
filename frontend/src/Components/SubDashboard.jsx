@@ -11,17 +11,17 @@ const SubDashboard = () => {
   const isDocuments = location.pathname.includes('documentsdashboard') ? true : false;
   return (
     <>
-    <div className={`text-white bg-gradient-to-r from-blue-700 to-blue-500 ${isDocuments ? "flex justify-between items-center" : ""}`}>
+    <div className={`text-white bg-gradient-to-r from-yellow-700 to-yellow-500 ${isDocuments ? "flex justify-between items-center" : ""}`}>
   <p className="p-12 text-2xl">Dashboard</p>
   {isDocuments && (
     <div className="flex space-x-3 mr-4 ">
-      <button className="border border-white bg-blue-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
+      <button className="border border-white bg-yellow-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
         <a href="/sample_documents/staffreport.pdf" target="_blank">Blank Staff Report</a>
         </button>
-      <button className="border border-white bg-blue-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
+      <button className="border border-white bg-yellow-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
       <a href="/sample_documents/contract.pdf" target="_blank">Blank Contract</a>
       </button>
-      <button className="border border-white bg-blue-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
+      <button className="border border-white bg-yellow-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
       <a href="/sample_documents/employeereport.pdf" target="_blank">Blank Employee Report</a>
         </button>
     </div>

@@ -426,10 +426,10 @@ console.log(err);
         Employee
         <span className="mx-2 text-tt">/ Change Of Circumstances</span>
       </p>
-      <div className="mt-4 border-t-4 border-blue-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
+      <div className="mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
         <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-user text-lg text-blue-900"></i>
-          <h1 className="text-blue-900 text-lg font-medium">
+          <i className="fas fa-user text-lg text-yellow-900"></i>
+          <h1 className="text-yellow-900 text-lg font-medium">
             Change Of Circumstances
           </h1>
         </div>
@@ -460,7 +460,7 @@ console.log(err);
                           <select
                             id={field.value}
                             name={field.value}
-                            className="w-full px-3 py-2 border rounded-md text-sm focus:border-blue-200 focus:border-b-4 hover:border-blue-200 hover:border-b-4"
+                            className="w-full px-3 py-2 border rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4"
                             required={field.required}
                             onChange={handleChange}
                             value={fieldValue || ""}
@@ -478,7 +478,7 @@ console.log(err);
                             name={field.value}
                             onChange={handleChange}
                             value={fieldValue || ""}
-                            className="w-full px-3 py-2 border rounded-md text-sm focus:border-blue-200 focus:border-b-4 hover:border-blue-200 hover:border-b-4"
+                            className="w-full px-3 py-2 border rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4"
                             required={field.required}
                             readOnly={field.readOnly}
                           />
@@ -515,7 +515,7 @@ console.log(err);
                             name={field.value}
                             onChange={handleChange}
                             value={field.type !== 'file' ? fieldValue || "" : undefined}
-                            className={`w-full px-3 py-2 border ${field.readOnly ? "bg-gray-200" : ""} rounded-md text-sm focus:border-blue-200 focus:border-b-4 hover:border-blue-200 hover:border-b-4`}
+                            className={`w-full px-3 py-2 border ${field.readOnly ? "bg-gray-200" : ""} rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4`}
                             required={field.required}
                             readOnly={field.readOnly}
                           />
@@ -544,7 +544,7 @@ console.log(err);
             <div className="mt-6">
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md text-lg hover:bg-blue-700"
+                className="w-full bg-yellow-600 text-white py-2 rounded-md text-lg hover:bg-yellow-700"
               >
                 Submit
               </button>

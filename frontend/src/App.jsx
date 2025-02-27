@@ -123,6 +123,11 @@ import axiosInstance from "../axiosInstance";
 import { useModuleContext } from "./contexts/ModuleContext";
 import { useCompanyContext } from "./contexts/CompanyContext";
 import LandingPage from "./Pages/LandingPage";
+import EmployeeFormOnline from "./Components/Organisation Profile/EmployeeForm";
+import ProcessAttendance from "./Components/Attendance/ProcessAttendance";
+import AbsentReport from "./Components/Attendance/AbsentReport";
+import SponsorList from "./Components/Organisation Profile/SponsorList";
+import GenerateOfferLetter from "./Components/Recruitment/GenerateLetterList";
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
   const [logoVisible, setLogoVisible] = useState(true);
@@ -212,6 +217,10 @@ const router = createBrowserRouter([
       element : <NotFound/>
   },
   {
+    path : 'hr-solutions/sponsors',
+    element : <SponsorList/>
+  },
+  {
     path : '/our-services',
     children : [
       {
@@ -234,7 +243,7 @@ const router = createBrowserRouter([
       },
       {
         path: "employeelink/:id",
-        element: <EmployeeLink />
+        element: <EmployeeFormOnline />
       },
     ],
   },
@@ -287,6 +296,7 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+
       {
         path: "company-profile/company",
         element: (
@@ -823,6 +833,10 @@ const router = createBrowserRouter([
         element : (<ProtectedRoute><JobListForm/></ProtectedRoute>)
       },
       {
+        path : "recruitment/offer-letter",
+        element : (<ProtectedRoute><GenerateOfferLetter/></ProtectedRoute>)
+      },
+      {
         path : "recruitment/job-posting",
         element : (<ProtectedRoute><JobPosting/></ProtectedRoute>)
       },
@@ -849,6 +863,14 @@ const router = createBrowserRouter([
       {
         path : "attendance/generate-data",
         element : (<ProtectedRoute><GenerateAttendance/></ProtectedRoute>)
+      },
+      {
+        path : "attendance/process-attendance",
+        element : (<ProtectedRoute><ProcessAttendance/></ProtectedRoute>)
+      },
+      {
+        path : "attendance/absent-report",
+        element : (<ProtectedRoute><AbsentReport/></ProtectedRoute>)
       },
       {
         path : "attendance/daily-attendance",
@@ -1074,7 +1096,6 @@ function App() {
         }
       })
       .catch(err => {
-        console.log('No cookie found:', err.response?.data?.message);
       })
       .finally(() => setLoading(false)); // Ensure loading state is updated
   }, []); 

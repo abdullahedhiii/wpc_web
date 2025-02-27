@@ -54,6 +54,7 @@ const User = require('../models/User')(sequelize,DataTypes);
 const UserRole = require('../models/UserRoles')(sequelize,DataTypes);
 const InterviewForm = require('../models/InterviewForm')(sequelize,DataTypes);
 
+const Sponsor = require('../models/Sponsor')(sequelize,DataTypes);
 const Employee = require('../models/Employee')(sequelize,DataTypes);
 const PersonalDetail = require('../models/PersonalDetail')(sequelize,DataTypes);
 const EducationDetail = require('../models/EducationalDetails')(sequelize,DataTypes);
@@ -248,7 +249,7 @@ Candidate.belongsTo(Job,{as : 'job',foreignKey:'id'});
 Job.hasOne(InterviewForm,{as : 'form',foreignKey : 'job_id'});
 InterviewForm.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
 
-module.exports = { sequelize, Admin,Organisation, Module,
+module.exports = {Sponsor, sequelize, Admin,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,

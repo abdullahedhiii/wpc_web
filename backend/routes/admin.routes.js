@@ -57,7 +57,9 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   getLeavesRequested,
   updateLeaveRequest,
   getLeaveReportEmployee,
-  getPastStaffData
+  getPastStaffData,
+  processAttendance,
+  processAbsentReport
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -162,4 +164,7 @@ router.get('/getLeavesList/:id',getLeavesRequested);
 router.post('/updateLeaveRequest',updateLeaveRequest);
 router.get('/getLeaveReportEmployee',getLeaveReportEmployee);
 router.get('/getPastStaffData/:id',getPastStaffData);
+
+router.get('/processAttendance',processAttendance);
+router.get('/absentReport',processAbsentReport);
 module.exports = router;

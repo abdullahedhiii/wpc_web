@@ -23,7 +23,7 @@ const HolidayList = () => {
 
     return (
         <>
-          <div className="m-12">
+          <div className="m-16">
           <p className="text-gray-400 mb-4 text-[12px]">
             Home <span className="text-tt"> / Holiday List</span>
           </p>
