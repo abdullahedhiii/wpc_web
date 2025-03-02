@@ -49,6 +49,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100 p-4">
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -119,7 +120,11 @@ const Login = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Welcome Back</h2>
+              <div className="flex items-center space-x-1 mb-4 justify-center">
+  <img src="/images/small-logo.png" className="w-16 h-16 object-contain" />
+  <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
+</div>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="relative">
                   <Mail className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -197,7 +202,7 @@ const Login = () => {
               <p className="mt-8 text-center text-sm text-gray-600">
                 Don't have an account?{" "}
                 <button
-                  onClick={() => navigate("/our-services")}
+                  onClick={() => navigate("/register")}
                   className="font-medium text-yellow-600 hover:text-yellow-700 hover:underline"
                 >
                   Sign up

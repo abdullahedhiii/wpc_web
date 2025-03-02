@@ -63,38 +63,114 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      <section className="pt-32 pb-20 px-4">
-        <div className="container mx-auto text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold text-gray-800 mb-6"
-          >
-            Transform Your HR Management
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto"
-          >
-            Streamline your HR processes with our comprehensive solution designed for modern businesses
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <button className="bg-yellow-500 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-yellow-600 transition-all transform hover:scale-105 shadow-lg">
-              View User guide
-            </button>
-            <button className="bg-white text-yellow-600 px-8 py-3 rounded-full text-lg font-medium hover:bg-yellow-50 transition-all transform hover:scale-105 shadow-lg">
-              Watch Demo
-            </button>
-          </motion.div>
+      <section className="pt-32 pb-20 px-4 bg-white relative overflow-hidden">
+  {/* Decorative background elements - made smaller and more subtle */}
+  <div className="absolute inset-0">
+    <div className="absolute top-20 left-10 w-48 h-48 bg-yellow-200 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-blob" />
+    <div className="absolute top-40 right-10 w-48 h-48 bg-yellow-300 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-blob animation-delay-2000" />
+    <div className="absolute -bottom-20 left-1/2 w-48 h-48 bg-yellow-400 rounded-full mix-blend-multiply filter blur-2xl opacity-20 animate-blob animation-delay-4000" />
+  </div>
+
+  <div className="container mx-auto text-center relative z-10">
+    <motion.h1 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="text-4xl md:text-6xl font-bold text-gray-800 mb-6"
+    >
+      Transform Your HR Management
+    </motion.h1>
+    <motion.p 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto"
+    >
+      Streamline your HR processes with our comprehensive solution designed for modern businesses
+    </motion.p>
+
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+      className="relative max-w-2xl mx-auto" // Reduced from max-w-4xl to max-w-2xl
+    >
+      {/* Image container with decorative elements - made more compact */}
+      <div className="relative inline-block"> {/* Changed to inline-block for tighter wrapping */}
+        {/* Corner decorations - made smaller */}
+        <div className="absolute -top-3 -left-3 w-6 h-6 bg-yellow-400 rounded-full animate-pulse" />
+        <div className="absolute -top-3 -right-3 w-6 h-6 bg-yellow-400 rounded-full animate-pulse animation-delay-200" />
+        <div className="absolute -bottom-3 -left-3 w-6 h-6 bg-yellow-400 rounded-full animate-pulse animation-delay-400" />
+        <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-yellow-400 rounded-full animate-pulse animation-delay-600" />
+
+        {/* Diagonal lines - made shorter */}
+        <div className="absolute top-0 left-0 w-12 h-1 bg-yellow-400 transform -rotate-45 origin-top-left" />
+        <div className="absolute top-0 right-0 w-12 h-1 bg-yellow-400 transform rotate-45 origin-top-right" />
+        <div className="absolute bottom-0 left-0 w-12 h-1 bg-yellow-400 transform rotate-45 origin-bottom-left" />
+        <div className="absolute bottom-0 right-0 w-12 h-1 bg-yellow-400 transform -rotate-45 origin-bottom-right" />
+
+        {/* Image with gradient border - adjusted padding */}
+        <div className="relative rounded-xl overflow-hidden p-0.5 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400">
+          <img 
+            src='/images/main.gif' 
+            className='w-full max-w-xl rounded-lg' // Added max-width constraint
+            style={{ boxShadow: '0 0 15px rgba(251, 191, 36, 0.15)' }}
+          />
         </div>
-      </section>
+
+        {/* Floating dots - reduced number and made smaller */}
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1.5 h-1.5 bg-yellow-400 rounded-full"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: [0, 1, 0],
+              y: [-8, 8],
+              x: Math.sin(i) * 8,
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+            style={{
+              left: `${15 + i * 14}%`,
+              top: i % 2 === 0 ? '-15px' : 'calc(100% + 15px)',
+            }}
+          />
+        ))}
+      </div>
+    </motion.div>
+  </div>
+
+  {/* Animation keyframes remain the same */}
+  <style jsx>{`
+    @keyframes blob {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(20px, -30px) scale(1.1); }
+      66% { transform: translate(-15px, 15px) scale(0.9); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    .animate-blob {
+      animation: blob 7s infinite;
+    }
+    .animation-delay-200 {
+      animation-delay: 0.2s;
+    }
+    .animation-delay-400 {
+      animation-delay: 0.4s;
+    }
+    .animation-delay-600 {
+      animation-delay: 0.6s;
+    }
+    .animation-delay-2000 {
+      animation-delay: 2s;
+    }
+    .animation-delay-4000 {
+      animation-delay: 4s;
+    }
+  `}</style>
+</section>
 
       {/* Features Grid */}
       <section id="features" className="py-20 bg-white">
@@ -149,42 +225,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-16">
-            Trusted by Leading Companies
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((_, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-yellow-50 p-6 rounded-2xl"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[1, 2, 3, 4, 5].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 fill-current text-yellow-500" />
-                  ))}
-                </div>
-                <p className="text-gray-600 mb-4">
-                  "This HR solution has transformed how we manage our workforce. The automation and insights are invaluable."
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-yellow-200 rounded-full"></div>
-                  <div>
-                    <div className="font-semibold text-gray-800">John Doe</div>
-                    <div className="text-sm text-gray-500">HR Director, Tech Corp</div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+   
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">

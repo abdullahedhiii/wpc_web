@@ -145,7 +145,10 @@ const Register = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Create your account</h2>
+                  <div className="flex items-center space-x-1 mb-4 justify-center">
+  <img src="/images/small-logo.png" className="w-16 h-16 object-contain" />
+  <h2 className="text-2xl font-bold text-gray-800">Create your account</h2>
+</div>
               {error && (
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
@@ -313,7 +316,7 @@ const Register = () => {
               <div className="mt-6 text-center">
                 <span className="text-gray-600">Already have an account?</span>
                 <button
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/login")}
                   className="ml-2 text-yellow-600 hover:text-yellow-700 font-medium hover:underline transition-colors"
                 >
                   Sign in

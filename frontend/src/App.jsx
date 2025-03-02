@@ -226,21 +226,15 @@ const router = createBrowserRouter([
     element : <PaymentPage/>
   },
   {
-    path : '/our-services',
+    path : '/',
     children : [
       {
         path : '',
         element : <LandingPage/>
       },
-    ]
-  },
-  {
-    path: "/",
-    element: <SimpleLayout />,
-    children: [
       {
-        path: "",
-        element: <Login />,
+        path : 'login',
+        element : <Login/>
       },
       {
         path: "register",
@@ -250,10 +244,13 @@ const router = createBrowserRouter([
         path: "employeelink/:id",
         element: <EmployeeFormOnline />
       },
-    ],
+    ]
   },
+ 
   {
     path: "/visitor",
+    errorElement : <NotFound/>,
+
     children :[
     {
       path : ':id',
@@ -265,6 +262,8 @@ const router = createBrowserRouter([
   {
 
     path: "/careers",
+    errorElement : <NotFound/>,
+
     children: [
       {
         path : ':id',
@@ -275,6 +274,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/hrms/",
+    errorElement : <NotFound/>,
     element: <MainLayout />,
     children: [
       {
