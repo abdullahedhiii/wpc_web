@@ -73,13 +73,10 @@ const AttendanceHistory = () => {
         }
         setAttendance([])
         try{
-            console.log('sendingg ',formData);
            const response = await axiosInstance.get(`/api/getAttendanceHistory`,{params : {data : formData}});
            setAttendance(response.data);
-           console.log('response of dailu ',response.data);
         }
         catch{
-           console.log('error fetching attendance');
         }
     };
 

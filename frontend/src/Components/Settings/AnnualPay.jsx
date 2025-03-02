@@ -6,7 +6,7 @@ const AnnualPay = () => {
   const columns = ["Sl. No.", "Annual Pay", "Action"];
 
   const { annualPays,fetchAnnualPays } = useCompanyContext();
-  console.log(annualPays);
+  //console.log(annualPays);
   useEffect(() => {
     fetchAnnualPays();
   },[]);

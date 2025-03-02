@@ -353,7 +353,7 @@ const EmployeeForm = () => {
         const response = await axiosInstance.get("/api/getNextEmployeeCode");
         setCode(response.data);
       } catch (err) {
-        console.error("Error fetching employee code:", err);
+      //  console.error("Error fetching employee code:", err);
       }
     };
     if (!id && employee_code === "") {
@@ -549,10 +549,8 @@ const EmployeeForm = () => {
   });
 
   useEffect(() => {
-    console.log('on employee form');
     const isEmployee = location.pathname.includes('update-profile');
     if(isEmployee && id === null) id = user.employee_code;
-    console.log(isEmployee,' id ',id);
     const fetchFormInfo = async () => {
       try {
         const response = await axiosInstance.get(
@@ -561,7 +559,6 @@ const EmployeeForm = () => {
         setFormData(response.data);
         setCode(response.data.personal_details.employee_code);
       } catch (err) {
-        console.error("Error fetching employe data:", err);
       } finally {
         setLoading(false);
       }

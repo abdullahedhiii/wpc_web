@@ -11,7 +11,6 @@ const LatePolicy = () =>{
     useEffect(() => {
       fetchPolicies();
     },[]);
- console.log(latePolicies);
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
       {/* Header Section */}

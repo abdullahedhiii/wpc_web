@@ -510,7 +510,6 @@ const UpdateProfile = () => {
 
         setFormData(response.data);
       } catch (err) {
-        console.error("Error fetching employe data:", err);
       } finally {
         setLoading(false);
       }

@@ -20,7 +20,6 @@ const SponsorList = () => {
             updatedCount : response.data.updatedCount
           })
       }catch(err){
-console.log(err);
       }
   }
 

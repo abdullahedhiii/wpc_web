@@ -14,10 +14,8 @@ export const ModuleProvider = ({ children }) => {
        try{
           const response = await axios.get(`/api/getModules/${id}`, {params : {isAdmin : isAdmin}}) ;
           setModules(response.data);
-          console.log(response.data);
        }
        catch(err){
-          console.log('error fetching modules',err);
        }
   };
 

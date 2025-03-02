@@ -87,7 +87,6 @@ const HolidayListForm = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-      console.log('hit submit ',data);
       const isUpdate = Boolean(ho_id);
       const send_data = ho_id ? {...data,isUpdate,ho_id} : {...data,isUpdate};
       try{

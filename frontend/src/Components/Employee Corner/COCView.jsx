@@ -41,7 +41,6 @@ const EmployeeCOC = () => {
             setData(response.data);
         }
         catch(err){
-            console.log('Error fetching employee COC',err);
         }
     }
 

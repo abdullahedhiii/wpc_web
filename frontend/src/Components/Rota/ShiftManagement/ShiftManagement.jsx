@@ -6,7 +6,6 @@ import {motion} from 'framer-motion'
 const ShiftManagement = () =>{
    const columns = ['Shift Code','Shift Description','Work In Time','Work Out Time','Break Time From','Break Time To','Action'];
    const {shifts,fetchShifts} = useCompanyContext();
-   console.log(shifts);
    useEffect(() => {
        fetchShifts();
    },[]);

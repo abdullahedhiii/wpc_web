@@ -46,7 +46,6 @@ const LandingPage = () => {
             <div className="text-2xl font-bold text-yellow-600">HR Solutions</div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-700 hover:text-yellow-600 transition-colors">Features</a>
-              <a href="#services" className="text-gray-700 hover:text-yellow-600 transition-colors">Services</a>
               <a href="#pricing" className="text-gray-700 hover:text-yellow-600 transition-colors">Pricing</a>
               <button className="bg-yellow-500 text-white px-6 py-2 rounded-full hover:bg-yellow-600 transition-all transform hover:scale-105"
                 onClick={() => navigate('/register')}

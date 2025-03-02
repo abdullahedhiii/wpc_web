@@ -16,7 +16,6 @@ const GenerateOfferLetter = () => {
            setData(response.data);
         }
         catch(err){
-            console.log(err);
         }
     };
     

@@ -27,7 +27,6 @@ const LeaveApplication = () => {
 
   const fetchMyleave = async () => {
     try {
-      console.log(formData);
       const response = await axiosInstance.get(
         `/api/getMyLeaves/${user.employee_code}.${formData.leaveType}`
       );
@@ -87,7 +86,6 @@ const LeaveApplication = () => {
       return;
     };
     try{
-      console.log('sending req ',formData);
        const response = await axiosInstance.post(`/api/applyLeave`,formData);
        if(response.data.message){
         window.alert(response.data.message);

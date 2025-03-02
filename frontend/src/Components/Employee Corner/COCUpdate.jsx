@@ -170,9 +170,7 @@ const nationalityOptions = [
            try {
               const response = await axiosInstance.get(`/api/getCOCDetailsEmp/${user.employee_code}`);
               setFormData(response.data);
-              console.log(response.data);
            } catch (err) {
-              console.log('error fetching COC form data', err);
            } 
         };
         fetchMyData();     
@@ -294,7 +292,6 @@ const nationalityOptions = [
    const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     const section = name.split(".")[0];
-    console.log('form dataaa ','here to chanhe ',name,value);
     if (type === "file") {
       setFormData((prevData) => ({
         ...prevData,
@@ -316,7 +313,6 @@ const nationalityOptions = [
 
   const handleSubmit = async(e) => {
      e.preventDefault();
-     console.log('coc submit hitt ',formData);
      const employee_code = formData.employee.employee_code;
      try{
 
@@ -415,7 +411,6 @@ const nationalityOptions = [
       await axiosInstance.post(`/api/submit-other-coc-details/${user.company_id}.${employee_code}`, formData.other_details,); 
      }
      catch(err){
-console.log(err);
      }
   }
   return (

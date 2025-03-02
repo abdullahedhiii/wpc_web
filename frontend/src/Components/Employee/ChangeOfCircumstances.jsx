@@ -11,14 +11,11 @@ const ChangeOfCircumstances = () => {
     useEffect(() => {
        const fetchData = async () => {
             try{
-                console.log('coc table');
 
             const response  = await axiosInstance.get(`/api/getCOCTable/${companyData[0].id}`);
             setData(response.data);
-            console.log(response.data,'coc table');
             }
             catch(err){
-           console.log(err);
             }
             finally{
                 setLoading(false);

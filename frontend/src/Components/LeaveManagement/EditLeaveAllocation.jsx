@@ -26,7 +26,6 @@ const EditLeaveAllocation = () => {
             setData(response.data);
         }
         catch(err){
-           console.log(err);
         }
     }
     
@@ -77,13 +76,11 @@ const EditLeaveAllocation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Leave edit allocation submit hit', data);
     try{
        const response =  await axiosInstance.post(`/api/allocateLeave/${companyData[0].id}`,data);
        navigate('/hrms/leave-management/leave-allocation-listing')
     }
     catch(err){
-     console.log(err,'in update')
     }
 
 };

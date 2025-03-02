@@ -27,7 +27,6 @@ const StatusSearch = () => {
       );
       setCandidates(response.data);
     } catch (err) {
-      console.error(err); 
     }
   };
 
@@ -75,7 +74,6 @@ const StatusSearch = () => {
       return isTitleMatch && isDateInRange;
     });
   
-    console.log(filteredCandidates); 
     setData(filteredCandidates); 
   };
   

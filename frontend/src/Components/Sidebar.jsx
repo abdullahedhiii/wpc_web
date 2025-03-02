@@ -69,7 +69,15 @@ const Sidebar = ({ isOpen, setOpen }) => {
           module.can_access || user.isAdmin ? (
             <div key={module.id} className="mb-2">
               <button
-                onClick={() => isOpen ? toggleModule(module.id) : navigate(`/hrms/${module.next_route}`)}
+                onClick={() =>{
+                  if(isOpen){
+                     toggleModule(module.id) 
+                  }
+                 else {
+                  setSubFeature(null)
+                  navigate(`/hrms/${module.next_route}}`)}
+                }
+              }
                 className={`w-full flex items-center justify-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 transition-all duration-200 ${
                   expandedModules[module.id] ? "bg-yellow-100 rounded-3xl" : ""
                 }`}

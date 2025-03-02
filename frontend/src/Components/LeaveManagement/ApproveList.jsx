@@ -17,7 +17,6 @@ const ApproveList  = () => {
       try{
           const response  = await axiosInstance.get(`/api/getLeavesList/${companyData[0].id}`);
           setLeaves(response.data);
-          console.log(response.data);
       }
       catch(err){
 

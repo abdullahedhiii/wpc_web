@@ -28,7 +28,6 @@ const Search = () => {
       );
       setCandidates(response.data);
     } catch (err) {
-      console.error(err); 
     }
   };
 
@@ -81,7 +80,7 @@ const Search = () => {
       return isStatusMatch && isTitleMatch && isDateInRange;
     });
   
-    console.log(filteredCandidates); 
+    
     setData(filteredCandidates); 
   };
   

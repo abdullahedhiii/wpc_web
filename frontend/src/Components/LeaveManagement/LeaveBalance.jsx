@@ -8,7 +8,6 @@ const LeaveBalance = () => {
      fetchLeavesAllocated();
    },[]);
 
-   console.log(leavesAllocated);
    const [data,setData] = useState([])
    const columns = ["Sl. No.", "Employee Code","Employee Name",
     "Leave Type","Leave Balance"];

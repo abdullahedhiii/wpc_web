@@ -14,7 +14,6 @@ const InterviewList = () => {
            setData(response.data);
         }
         catch(err){
-            console.log(err);
         }
     };
     

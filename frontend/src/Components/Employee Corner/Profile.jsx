@@ -13,7 +13,6 @@ const Profile = () => {
       });
       setData(response.data);
     } catch (err) {
-      console.error("Error fetching profile data:", err);
     }
   };
 

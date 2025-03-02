@@ -15,7 +15,6 @@ const HiredList = () => {
            setData(response.data);
         }
         catch(err){
-            console.log(err);
         }
     };
     

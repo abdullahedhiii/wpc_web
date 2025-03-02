@@ -95,13 +95,11 @@ const LeaveAllocationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data);
     try{
         const response = await axiosInstance.post(`/api/allocateLeave/${companyData[0].id}`,data);
         setTableData([response.data]);    
     }
     catch(err){
-       console.log(err);
     }
 };
 

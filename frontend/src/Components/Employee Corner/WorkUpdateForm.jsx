@@ -17,7 +17,6 @@ const [data, setData] = useState({
     file: null,
     update: "",
   });
-  console.log(user);
   const calculateTimeDifference = (fromTime, toTime) => {
     if (!fromTime || !toTime) return { hours: "", minutes: "" };
   
@@ -78,7 +77,6 @@ const [data, setData] = useState({
   
       navigate(`/hrms/employee-corner/work-update`);
     } catch (err) {
-      console.error("Error submitting form:", err);
     }
   };
   

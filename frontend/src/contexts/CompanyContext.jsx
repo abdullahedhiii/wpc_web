@@ -72,7 +72,6 @@ export const CompanyProvider = ({ children }) => {
     try {
       const response = await axiosInstance.get(`/api/getEmployees/${id_to}`);
       if (response.status === 200) {
-        console.log(response.data)
         setEmployees(response.data);
       }
     } catch (err) {}
@@ -223,7 +222,6 @@ export const CompanyProvider = ({ children }) => {
       //  console.log(response.data);
       setDesignationData(response.data);
     } catch (err) {
-      console.error(err, "designation");
       setDesignationData([]);
     }
   };
@@ -252,14 +250,13 @@ export const CompanyProvider = ({ children }) => {
         }
       }
     } catch (err) {
-      console.log("Error fetching pre set form details", err);
+
     }
   };
 
   const fetchOrganisation = async (id,isAdmin) => {
     try {   
       if(isAdmin){
-        console.log(id);
       const response = await axiosInstance.get(`/api/getOrganisation/${id}`);
       setCompanyData([response.data]);
       fetchDetails(response.data.id);
@@ -285,11 +282,9 @@ export const CompanyProvider = ({ children }) => {
     }
     else{
       const response = await axiosInstance.get(`/api/getUserOrganisation/${id}`);
-      console.log('not admins ',response.data);
       setCompanyData([response.data])
     }
     } catch (err) {
-      console.log("errorr ", err);
       setCompanyData([]);
     }
   };

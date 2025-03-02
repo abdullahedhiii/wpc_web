@@ -33,7 +33,6 @@ const EmployeePage = () => {
         const response = await axiosInstance.get(`/api/getEmployeePage/${companyData[0].id}`); 
         setEmployeeDetails(response.data); 
       } catch (error) {
-        console.error("Error fetching employees:", error);
         setEmployeeDetails([]); 
       } finally {
         setLoading(false);
@@ -80,6 +79,7 @@ const EmployeePage = () => {
           icon="far fa-user"
           buttonTitle="Add New Employee"
           isDashboard={true}
+          action_route = "/hrms/addemployee"
         />
     </div>
     </div>

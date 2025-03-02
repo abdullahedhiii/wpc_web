@@ -25,14 +25,12 @@ const OrganisationReport = () => {
       try {
          const response = await axiosInstance.get(`/api/getOrganisationDocuments/${id}`);
          setDocuments(response.data);
-        console.log(response.data);
          const opt = response.data.map((ele) => ({
             label: ele.document_type,
             value: ele.document_type
          }));
          setOptions(opt);
       } catch (err) {
-         console.error("Error fetching documents:", err);
       }
    };
 
@@ -65,7 +63,7 @@ const OrganisationReport = () => {
              document.body.removeChild(link);
              window.URL.revokeObjectURL(blobUrl); // Clean up memory
           })
-          .catch(err => console.error("Error downloading file:", err));
+          .catch(err );
     } else {
        alert("Document URL not found!");
     }

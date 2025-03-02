@@ -506,9 +506,7 @@ const EmployeeFormOnline = () => {
         );
         setCode(response.data.personal_details.employee_code);
         setFormData(response.data);
-        console.log(response.data);
       } catch (err) {
-        console.error("Error fetching employe data:", err);
       } finally {
         setLoading(false);
       }

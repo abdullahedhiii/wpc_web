@@ -68,7 +68,6 @@ const LeaveTypeForm = () => {
         await axiosInstance.post(`/api/addLeaveType/${companyData[0].id}`, dataTo);
         navigate('/hrms/leave-management/leave-type-listing');
     } catch (err) {
-        console.error('Error adding leave type:', err.response?.data || err.message);
     }
 };
 

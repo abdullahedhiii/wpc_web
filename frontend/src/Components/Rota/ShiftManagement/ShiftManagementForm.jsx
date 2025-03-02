@@ -120,7 +120,6 @@ const ShiftManagementForm = () => {
       type: "text",
     },
   ];
-  console.log(shifts);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if((new Date(`2000-01-01T${data.break_end}`) < new Date(`2000-01-01T${data.break_start}`))
@@ -154,7 +153,6 @@ const ShiftManagementForm = () => {
         navigate("/hrms/rota/shift-management");
       }
     } catch (err) {
-      console.error(err);
     }
   };
 

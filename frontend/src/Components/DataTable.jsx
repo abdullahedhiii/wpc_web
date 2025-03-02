@@ -21,7 +21,8 @@ const DataTable = ({
   addEmployeeWise = false,
   buttonEmployee,
   employeePath,
-  setData
+  setData,
+  action_route
 }) => {
   const { selectedFeature,subModule } = useModuleContext();
   const {companyData} = useCompanyContext();
@@ -49,10 +50,9 @@ const DataTable = ({
       if (response.data.pdf_url) {
         window.open(response.data.pdf_url, "_blank"); 
       } else {
-        console.error("No PDF URL returned from API");
       }
     } catch (err) {
-      console.error("Error downloading PDF:", err);
+      alert('Network error downloading pdf');
     }
   };
   
@@ -137,7 +137,6 @@ const DataTable = ({
             )
         );
     } catch (err) {
-        console.error("Error updating leave request:", err);
     }
 };
 
@@ -178,11 +177,12 @@ return (
                 title={buttonTitle}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-yellow-300 text-white shadow hover:bg-yellow-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-110"
                 onClick={() => {
-                  if (selectedFeature && selectedFeature.plus_icon_route) {
+                  if(action_route){
+                    navigate(action_route);
+                  }            
+                  else if (selectedFeature && selectedFeature.plus_icon_route) {
                     navigate(`/hrms/${selectedFeature.plus_icon_route}`)
-                  } else {
-                    navigate("/hrms/addemployee")
-                  }
+                  } 
                 }}
                 disabled={user.isAdmin ? false : !selectedFeature.can_add}
               >

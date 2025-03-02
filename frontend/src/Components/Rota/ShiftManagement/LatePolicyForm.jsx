@@ -40,7 +40,6 @@ const LatePolicyForm = () => {
     useEffect(() => {
       if(policy_id){
          const current_policy = latePolicies.find((ele) => ele.id === parseInt(policy_id));
-         console.log(current_policy);
          setData({
             department : current_policy.Department,
             designation : current_policy.Designation,
@@ -154,7 +153,6 @@ const LatePolicyForm = () => {
           salary_days: 0,
         });
     };
-console.log(latePolicies);
     const handleSubmit = async (e) => {
         e.preventDefault();
     
@@ -171,7 +169,6 @@ console.log(latePolicies);
             }
         }
         catch(err){
-console.log(err);
         }
     };
 

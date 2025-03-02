@@ -31,14 +31,12 @@ const ProcessAttendance = () => {
 
   const [filteredDesignations, setFiltered] = useState([]);
   const [employeeCodes, setCodes] = useState([]);
-console.log(formData);
   useEffect(() => {
     if (formData.department_id) {
       const filteredDesignations = designationData
         .filter(
           (designation) => designation.department_id === parseInt(formData.department_id)
         );
-        console.log(filteredDesignations);
       setFiltered(filteredDesignations);
     }
   }, [formData.department_id]);

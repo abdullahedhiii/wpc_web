@@ -59,14 +59,12 @@ const JobPostingForm = () => {
           alert('Kindly list a job first to proceed with posting');
           navigate(`/hrms/recruitment/job-list`);
         }
-        console.log('response of jobs ',response.data);
         const options = [{label : "",value : ""},...response.data.map((ele) =>({
             value: ele['SOC CODE'], 
             label: ele['SOC CODE']
           }))];
         setSocOptions(options);
       } catch (err) {
-        console.error(err);
       }
       finally{
         setLoading(false);
@@ -75,10 +73,7 @@ const JobPostingForm = () => {
     if(!id) fetchJobsPosted();
   }, []); 
 
-  useEffect(() => {
-   console.log('form data changed ',formData);
-  },[formData]);
- 
+
   useEffect(() => {
      const fetchJobDetail = async () =>{
         try{
@@ -120,7 +115,6 @@ const JobPostingForm = () => {
         ...prev,
         job_id : selected_job.id
      }));
-     console.log('selected job ',selected_job);
      setContent(selected_job.jobDescription)
     }
  
@@ -258,7 +252,6 @@ const JobPostingForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log('here to change name,value ',name,value,formData)
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -269,7 +262,6 @@ const JobPostingForm = () => {
 
   const handleJobPost = async (e) => {
     e.preventDefault();
-    console.log(content, formData);
     try {
       const response = await axiosInstance.post(
         `/api/addJobPosted/${companyData[0].id}`,
@@ -277,7 +269,6 @@ const JobPostingForm = () => {
       );
       if (response.status === 200) navigate("/hrms/recruitment/job-posting");
     } catch (err) {
-      console.log("error posting job list",err);
     }
   };
 
@@ -433,8 +424,8 @@ const JobPostingForm = () => {
                     <input
                       type="radio"
                       name="gender"
-                      value="Male"
-                      checked={formData.gender === "Male"}
+                      value="male"
+                      checked={formData.gender === "male"}
                       onChange={handleChange}
                     />
                     Male
@@ -443,11 +434,21 @@ const JobPostingForm = () => {
                     <input
                       type="radio"
                       name="gender"
-                      value="Female"
-                      checked={formData.gender === "Female"}
+                      value="female"
+                      checked={formData.gender === "female"}
                       onChange={handleChange}
                     />
                     Female
+                  </label>
+                  <label className="flex items-center gap-2 text-[14px] ">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="male/female"
+                      checked={formData.gender === "male/female"}
+                      onChange={handleChange}
+                    />
+                    Male/Female
                   </label>
                 </div>
               </div>

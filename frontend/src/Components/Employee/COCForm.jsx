@@ -158,11 +158,9 @@ const nationalityOptions = [
        const fetchEmployees = async () => {
           try {
              const response = await axiosInstance.get(`/api/getCOCDetails/${companyData[0].id}`);
-             console.log('employees response COC ', response.data);
              setEmployees(response.data);
              setEmployeeCodes(response.data.map((emp) => emp.employee.full_name)); // Store in state
           } catch (err) {
-             console.log('error fetching COC form data', err);
           } finally {
              setIsLoading(false);
           }
@@ -183,17 +181,12 @@ const nationalityOptions = [
        national: { national_id: '', nationality: '', country: '', issued: '', expiry: '', review_date: '', remarks: '', document: null, current: false }, 
        other_details: { changeDate: '', remarks: '', awareContact: '', awareInterview: '' }
     });
- 
-    useEffect(() => {
-     console.log('form data changed ',formData);
-    },[formData]);
+
     useEffect(() => {
         if (employees.length > 0 && formData.employee.full_name) {
-          console.log('trying tooo find employeee ', formData.employee);
           const selected_employee = employees.find(
             (emp) => emp.employee.full_name === formData.employee.full_name
           );
-          console.log('Selected Employee:', selected_employee);
       
           if (selected_employee) {
             // Transform the backend response before updating state
@@ -327,7 +320,6 @@ const nationalityOptions = [
    const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     const section = name.split(".")[0];
-    console.log('form dataaa ','here to chanhe ',name,value);
     if (type === "file") {
       setFormData((prevData) => ({
         ...prevData,
@@ -349,7 +341,7 @@ const nationalityOptions = [
 
   const handleSubmit = async(e) => {
      e.preventDefault();
-     console.log('coc submit hitt ',formData);
+
      const employee_code = formData.employee.employee_code;
      try{
 

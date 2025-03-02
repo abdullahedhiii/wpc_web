@@ -40,7 +40,6 @@ const AbsentReport = () => {
         .filter(
           (designation) => designation.department_id === parseInt(formData.department_id)
         );
-        console.log(filteredDesignations);
       setFiltered(filteredDesignations);
     }
   }, [formData.department_id]);

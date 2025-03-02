@@ -23,7 +23,6 @@ const JobListForm = () => {
          };
          fetchListed();
   },[]);
-console.log(jobsListed);
   const formFields = [
     {
       label: "Job Type",
@@ -91,7 +90,6 @@ console.log(jobsListed);
           navigate('/hrms/recruitment/job-list');
     }
     catch(err){
-       console.log('error posting job list');
     }
   }
 

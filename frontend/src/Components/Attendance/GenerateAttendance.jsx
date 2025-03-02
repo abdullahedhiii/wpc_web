@@ -78,15 +78,12 @@ const GenerateAttendance = () => {
         return;
     }
     try {
-      console.log("sendingg ", formData);
       const response = await axiosInstance.get(
         `/api/getAttendance/${companyData[0].id}`,
         { params: { data: formData } }
       );
-      console.log("response of attendance ", response.data);
       setAttendance(response.data);
     } catch (err) {
-      console.log("error fetching attendance");
     }
   };
   
@@ -99,7 +96,6 @@ const GenerateAttendance = () => {
        if(attendance.length > 0){
            const total = Math.ceil(attendance.length / per_page);
            setTotalPages(total);
-           console.log('total pages ',total)
        }
   },[attendance]);
   

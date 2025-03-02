@@ -24,7 +24,6 @@ const AttendanceStatus = () => {
            const response  = await axiosInstance.get(`/api/getMyAttendance`,{
             params : formData
            });
-           console.log(response.data);
            setAttendance(response.data);
         }
         catch(err){

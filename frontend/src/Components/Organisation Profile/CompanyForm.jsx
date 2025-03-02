@@ -679,7 +679,7 @@ const CompanyForm = () => {
           }
         }
       } catch (err) {
-        console.log("Error fetching pre set form details", err);
+
       }
     };
     fetchDetails();
@@ -760,9 +760,6 @@ const CompanyForm = () => {
     }
 };
 
-useEffect(() => {
-console.log(formData);
-},[formData]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -829,7 +826,6 @@ console.log(formData);
       navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
     } catch (err) {
-      console.error("Error submitting company data:", err.response?.data || err.message);
     }
   };
   

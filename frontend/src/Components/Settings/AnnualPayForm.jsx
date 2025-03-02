@@ -8,7 +8,7 @@ const AnnualPayForm = () => {
   const navigate = useNavigate();
   const {annual_id} = useParams();
   const {fetchPayGroups,fetchAnnualPays, payGroups,annualPays } = useCompanyContext();
-  console.log(payGroups, ' ',annualPays);
+
   useEffect(() => {
     fetchPayGroups();
    fetchAnnualPays()
@@ -18,7 +18,6 @@ const AnnualPayForm = () => {
     paygroup: payGroups.length > 0 ? payGroups[0]['Pay Group'] : '',
     annual_pay: 0,
   });
-  console.log(annualPays);
   useEffect(() => {
     if (annual_id) {
         const selectedAnnualPay = annualPays.find(

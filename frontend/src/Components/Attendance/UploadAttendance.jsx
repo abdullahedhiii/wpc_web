@@ -34,7 +34,6 @@ const UploadAttendance = () => {
             alert("Please select a file to upload");
             return;
         }
-        console.log("Uploading file:", file);
         const formData = new FormData();
         formData.append("attendance", file);
         try{

@@ -20,16 +20,12 @@ const Dashboard = () => {
   
   const handleModuleSelect = (module) => {
     try{
-        console.log(module);
     setSelectedModule(module)
     setSubFeature(null)
     setSubModule(null)
-    console.log('navigatingg' ,module.next_route);
     navigate(`/hrms/${module.next_route}`)
-    console.log('Could not ')
     }
   catch(err){
-    console.log(err);
   }
   }
 

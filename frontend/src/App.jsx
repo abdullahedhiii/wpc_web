@@ -1117,7 +1117,6 @@ function App() {
   useEffect(() => {
     axiosInstance.get("/api/check-session")
       .then(response => {
-        console.log('Retrieving user session: ', response.data.user);
         if(!response.data.found) return;
         if (response.data?.user) {  
           dispatch(login(response.data.user));

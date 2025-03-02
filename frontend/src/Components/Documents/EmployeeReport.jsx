@@ -24,7 +24,6 @@ const EmployeeReport = () => {
      try{
        const response = await axiosInstance.get(`/api/getEmployeeDocuments/${formData.employee_code}`);
        setDocuments(response.data);
-       console.log(response.data);
      }
      catch(err){
 
