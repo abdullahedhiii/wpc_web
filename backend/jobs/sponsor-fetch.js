@@ -12,67 +12,70 @@ const DOWNLOAD_DIR = "./downloads";
 if (!fs.existsSync(DOWNLOAD_DIR)) {
   fs.mkdirSync(DOWNLOAD_DIR);
 }
-
 const processCSV = async (csvFilePath) => {
-    try {
+  try {
       const existingSponsors = await Sponsor.findAll();
       const existingMap = new Map(existingSponsors.map(s => [s.organisationName, s]));
-  
-      const newSponsors = new Set();  // Track new CSV sponsor names
-      const updates = [];
-  
-      fs.createReadStream(csvFilePath)
-        .pipe(csv())
-        .on("data", (row) => {
-          const orgName = row["Organisation Name"];
-          const typeAndRating = row["Type & Rating"];
-          const route = row["Route"];
-  
-          newSponsors.add(orgName);
-  
-          const sponsorData = {
-            organisationName: orgName,
-            townCity: row["Town/City"],
-            county: row["County"],
-            typeAndRating,
-            route,
-            status: "active",
-            newSponsor: false, // Default false unless actually new
-          };
-  
-          if (existingMap.has(orgName)) {
-            const existingSponsor = existingMap.get(orgName);
-  
-            // Only update if typeAndRating or route changed
-            if (existingSponsor.typeAndRating !== typeAndRating || existingSponsor.route !== route) {
-              sponsorData.status = "updated";
-              updates.push(Sponsor.update(sponsorData, { where: { organisationName: orgName } }));
-            }
-          } else {
-            // New sponsor, mark as new
-            sponsorData.newSponsor = true;
-            updates.push(Sponsor.create(sponsorData));
-          }
-        })
-        .on("end", async () => {
-          await Promise.all(updates);
-  
-          // Mark missing sponsors as "removed"
-          await Sponsor.update({ status: "removed", newSponsor: false }, {
-            where: {
-              organisationName: {
-                [sequelize.Sequelize.Op.notIn]: Array.from(newSponsors),
-              },
-            },
-          });
-  
-          console.log("CSV processing completed.");
-        });
-    } catch (error) {
-      console.error("Error processing CSV:", error);
-    }
-  };
 
+      const sponsorRecords = new Map(); // To store all CSV entries grouped by organisationName
+      const newSponsors = new Set();
+
+      // Step 1: Read CSV and group by organisationName
+      await new Promise((resolve, reject) => {
+          fs.createReadStream(csvFilePath)
+              .pipe(csv())
+              .on("data", (row) => {
+                  const orgName = row["Organisation Name"];
+                  const typeAndRating = row["Type & Rating"];
+                  const route = row["Route"];
+                  const licenseEntry = `${typeAndRating} - ${route}`; // Concatenating values
+
+                  if (!sponsorRecords.has(orgName)) {
+                      sponsorRecords.set(orgName, {
+                          organisationName: orgName,
+                          townCity: row["Town/City"],
+                          county: row["County"],
+                          licenseTier: new Set(), // Using Set to avoid duplicates
+                      });
+                  }
+                  sponsorRecords.get(orgName).licenseTier.add(licenseEntry);
+                  newSponsors.add(orgName);
+              })
+              .on("end", resolve)
+              .on("error", reject);
+      });
+
+      // Step 2: Insert or update sponsors
+      const updates = [];
+      for (const [orgName, sponsorData] of sponsorRecords.entries()) {
+          sponsorData.licenseTier = Array.from(sponsorData.licenseTier).join("; "); // Convert Set to string
+
+          if (existingMap.has(orgName)) {
+              const existingSponsor = existingMap.get(orgName);
+              if (existingSponsor.licenseTier !== sponsorData.licenseTier) {
+                  sponsorData.status = "updated";
+                  updates.push(Sponsor.update(sponsorData, { where: { organisationName: orgName } }));
+              }
+          } else {
+              sponsorData.status = "active";
+              sponsorData.newSponsor = true;
+              updates.push(Sponsor.create(sponsorData));
+          }
+      }
+
+      await Promise.all(updates);
+
+      // Step 3: Mark missing sponsors as "removed"
+      await Sponsor.update(
+          { status: "removed", newSponsor: false },
+          { where: { organisationName: { [Op.notIn]: Array.from(newSponsors) } } }
+      );
+
+      console.log("CSV processing completed.");
+  } catch (error) {
+      console.error("Error processing CSV:", error);
+  }
+};
   
 const getCSVUrl = async () => {
   try {
@@ -118,11 +121,10 @@ const downloadCSV = async () => {
   }
 };
 
+downloadCSV();
+
 cron.schedule("0 0 * * *", () => {
   console.log("Running scheduled CSV fetch...");
   downloadCSV();
 });
 
-module.exports = {
-  downloadCSV,
-};

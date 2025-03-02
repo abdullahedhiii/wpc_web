@@ -2,21 +2,24 @@ import { useState, useEffect } from "react";
 import NewForm from "../../NewForm";
 import { useCompanyContext } from "../../../contexts/CompanyContext";
 import axiosInstance from "../../../../axiosInstance";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ShiftManagementForm = () => {
-  const {fetchDepartments,fetchDesignations, departmentData, designationData,companyData } = useCompanyContext();
+  const {shift_code} = useParams();
+  const {fetchDepartments,fetchDesignations, departmentData, designationData,companyData,shifts,fetchShifts } = useCompanyContext();
   const navigate = useNavigate();
   
   useEffect(() => {
    fetchDepartments();
    fetchDesignations();
+   fetchShifts();
   },[]);
+
   const [data, setData] = useState({
-    department: departmentData[0]["Department Name"],
-    designation: designationData.find(
+    department: departmentData.length > 0 ? departmentData[0]["Department Name"] : '',
+    designation: designationData.length > 0 ? designationData.find(
       (item) => item["Department Name"] === departmentData[0]["Department Name"]
-    )?.["Designation"] || "",
+    )?.["Designation"] || "" : '',
     work_in: "",
     work_out: "",
     break_start: "",
@@ -33,6 +36,21 @@ const ShiftManagementForm = () => {
     }))
   );
 
+  useEffect(() => {
+     if(shift_code){
+        const current_shift = shifts.find((ele) => ele['Shift Code'] === shift_code);
+        setData({
+          department: current_shift.Department,
+          designation: current_shift.Designation,
+          work_in: current_shift['Work In Time'],
+          work_out: current_shift['Work Out Time'],
+          break_start: current_shift['Break Time From'],
+          break_end: current_shift['Break Time To'],
+          description: current_shift['Description'],
+
+        })
+     }
+  },[]);
   useEffect(() => {
     const filteredOptions = designationData
       .filter((item) => item["Department Name"] === data.department)
@@ -59,33 +77,42 @@ const ShiftManagementForm = () => {
       options: departmentData.map((group) => ({
         label: group["Department Name"],
         value: group["Department Name"],
-      })),
+      })),      required: true,
+      readOnly : shift_code ? true : false
+
     },
     {
       name: "designation",
       label: "Select Designation",
       type: "select",
-      options: filteredDesignationOptions,
+      options: filteredDesignationOptions,      required: true,
+      readOnly : shift_code ? true : false
+
+
     },
     {
       name: "work_in",
       label: "Work In Time",
-      type: "time",
+      type: "time",      required: true,
+
     },
     {
       name: "work_out",
       label: "Work Out Time",
-      type: "time",
+      type: "time",      required: true,
+
     },
     {
       name: "break_start",
       label: "Break Time From",
-      type: "time",
+      type: "time",      required: true,
+
     },
     {
       name: "break_end",
       label: "Break Time To",
-      type: "time",
+      type: "time",      required: true,
+
     },
     {
       name: "description",
@@ -93,9 +120,20 @@ const ShiftManagementForm = () => {
       type: "text",
     },
   ];
-
+  console.log(shifts);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if((new Date(`2000-01-01T${data.break_end}`) < new Date(`2000-01-01T${data.break_start}`))
+    || (new Date(`2000-01-01T${data.work_out}`) < new Date(`2000-01-01T${data.work_in}`)
+    || (new Date(`2000-01-01T${data.break_start}`) < new Date(`2000-01-01T${data.work_in}`)
+    || (new Date(`2000-01-01T${data.break_end}`) > new Date(`2000-01-01T${data.work_out}`))
+  )
+  )
+    ){
+      alert('Please enter a valid time range');
+      return;
+    }
+
     const dep_id = departmentData.find(
       (ele) => ele["Department Name"] === data.department
     );
@@ -104,6 +142,9 @@ const ShiftManagementForm = () => {
         ele["Designation"] === data.designation &&
         ele["Department Name"] === data.department
     );
+    if(!shift_code && shifts.find((ele) => ele.Department_id === dep_id && ele["Designation ID"] === des_id)){
+       alert('Shift for this department and designation exists already');
+    }
     try {
       const response = await axiosInstance.post(
         `/api/addShift/${companyData[0].id}`,

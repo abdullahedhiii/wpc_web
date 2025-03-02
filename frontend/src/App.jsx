@@ -128,6 +128,7 @@ import ProcessAttendance from "./Components/Attendance/ProcessAttendance";
 import AbsentReport from "./Components/Attendance/AbsentReport";
 import SponsorList from "./Components/Organisation Profile/SponsorList";
 import GenerateOfferLetter from "./Components/Recruitment/GenerateLetterList";
+import PaymentPage from "./Pages/PaymentPage";
 const MainLayout = () => {
   const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
   const [logoVisible, setLogoVisible] = useState(true);
@@ -221,12 +222,16 @@ const router = createBrowserRouter([
     element : <SponsorList/>
   },
   {
+    path : 'payment-page',
+    element : <PaymentPage/>
+  },
+  {
     path : '/our-services',
     children : [
       {
         path : '',
         element : <LandingPage/>
-      }
+      },
     ]
   },
   {
@@ -289,7 +294,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "employeedashboard",
+        path: "employee-module-dashboard",
         element: (
           <ProtectedRoute>
             <SubDashboard />
@@ -690,6 +695,14 @@ const router = createBrowserRouter([
         )
       },
       {
+        path : "rota/add-shift-management/:shift_code",
+        element : (
+          <ProtectedRoute>
+            <ShiftManagementForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
         path : "rota/late-policy",
         element:(
           <ProtectedRoute>
@@ -706,6 +719,14 @@ const router = createBrowserRouter([
         )
       },
       {
+        path : "rota/add-late-policy/:policy_id",
+        element:(
+          <ProtectedRoute>
+            <LatePolicyForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
         path : "rota/offday",
         element:(
           <ProtectedRoute>
@@ -715,6 +736,14 @@ const router = createBrowserRouter([
       },
       {
         path : "rota/add-offday",
+        element:(
+          <ProtectedRoute>
+            <OffDayForm/>
+          </ProtectedRoute>
+        )
+      },
+      {
+        path : "rota/add-offday/:shift_code",
         element:(
           <ProtectedRoute>
             <OffDayForm/>
@@ -1089,6 +1118,7 @@ function App() {
     axiosInstance.get("/api/check-session")
       .then(response => {
         console.log('Retrieving user session: ', response.data.user);
+        if(!response.data.found) return;
         if (response.data?.user) {  
           dispatch(login(response.data.user));
           fetchModules(response.data.user.id, response.data.user.isAdmin);

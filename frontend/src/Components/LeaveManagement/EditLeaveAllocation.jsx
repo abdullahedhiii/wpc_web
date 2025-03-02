@@ -71,6 +71,7 @@ const EditLeaveAllocation = () => {
         label: "Effective Year",
         type : 'text',
         readOnly : true,
+        
     },
   ];
 

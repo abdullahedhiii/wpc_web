@@ -21,17 +21,23 @@ const PaymentTypeForm = () => {
         {
             label : 'Payment Type',
             type : 'text',
-            name : 'payment_type'
+            name : 'payment_type',
+            required : true
+
         },
         {
             label : 'Min.Working Hour',
             type : 'text',
-            name : 'min_hours'
+            name : 'min_hours',
+            required : true
+
         },
         {
             label : 'Rate',
             type : 'text',
-            name : 'rate'
+            name : 'rate',
+            required : true
+
         }
     ];
 
@@ -50,6 +56,10 @@ const PaymentTypeForm = () => {
 
     const handleSubmit = async(e) => {
        e.preventDefault();
+       if(!p_id && paymentTypes.find((ele) => ele['Payment Type'].toLowerCase() === data.payment_type.toLowerCase())){
+        alert('Entered Payment Type already exists in your organisation');
+        return;
+      }
        const isUpdate = Boolean(p_id);
        const send_data = isUpdate ? {...data,isUpdate,p_id} : {...data,isUpdate};
        try{

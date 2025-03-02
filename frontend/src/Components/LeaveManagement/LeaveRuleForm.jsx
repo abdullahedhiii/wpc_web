@@ -3,24 +3,7 @@ import NewForm from "../NewForm";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
-    // fetchDepartments(response.data.id);
-      // fetchDesignations(response.data.id);
-      // fetchTypes(response.data.id);
-      // fetchPayGroups(response.data.id);
-      // fetchAnnualPays(response.data.id);
-      // fetchBanks(response.data.id);
-      // fetchCodes(response.data.id);
-      // fetchTaxMasters(response.data.id);
-      // fetchPaymentTypes(response.data.id);
-      // fetchHolidays(response.data.id);
-      // fetchHolidayList(response.data.id);
-      // fetchVisitors(response.data.id);
-      // fetchShifts(response.data.id);
-      // fetchPolicies(response.data.id);
-      // fetchEmployeesLink(response.data.id);
-      // fetchLeaveTypes(response.data.id);
-      // fetchLeaveRules(response.data.id);
-      // fetchLeavesAllocated(response.data.id);
+
 const LeaveRuleForm = () => {
   const {rule_id} = useParams();
   const navigate = useNavigate();
@@ -62,27 +45,29 @@ const LeaveRuleForm = () => {
       name: "employee_type",
       label: "Employee Type",
       type : 'select',
-      options : [{value : '',label : ''},
-        ...employeeTypes.map((type) => (
+      options : 
+        employeeTypes.map((type) => (
             {
                value : type['Employment Type'],
                label : type['Employment Type']
             }
         ))
-      ]
+      ,        required : true
+
     },
     {
       name: "leave_type",
       label: "Leave Type ",
       type : 'select',
-      options : [{value : '',label : ''},
-        ...leaveTypes.map((type) => (
+      options : 
+        leaveTypes.map((type) => (
             {
                value : type['Leave Type'],
                label : type['Leave Type']
             }
         ))
-      ]
+      ,        required : true
+
     },
     {
       name: "max",
@@ -103,7 +88,7 @@ const LeaveRuleForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Leave rule submit hit', data);
+
     const isUpdate = Boolean(rule_id);
     const leave_type_id = leaveTypes.find((ele) => ele['Leave Type'] === data.leave_type).id;
     const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === data.employee_type).id;

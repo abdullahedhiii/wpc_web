@@ -56,7 +56,7 @@ const Register = () => {
         privacyPolicyAccepted: false,
         termsAccepted: false,
       })
-      navigate("/")
+      navigate("/payment-page")
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.")
     } finally {

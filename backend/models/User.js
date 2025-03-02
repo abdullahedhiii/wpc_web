@@ -24,6 +24,8 @@ module.exports = (sequelize, DataTypes) => {
           model: "Employees",
           key: "employee_code",
         },
+        unique: true,
+
       },
       email: {
         type: DataTypes.STRING,

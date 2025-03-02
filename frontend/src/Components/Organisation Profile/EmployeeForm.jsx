@@ -1505,7 +1505,7 @@ const EmployeeFormOnline = () => {
         });
 
     } catch (error) {
-      console.error("Error submitting form data:", error);
+      alert(error.response?.data?.message || 'An error occured');
     }
   };
 

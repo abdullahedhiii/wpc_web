@@ -35,26 +35,31 @@ const LeaveTypeForm = () => {
     {
       name: "leave_type",
       label: "Leave Type",
-      type : 'text'
+      type : 'text',
+      required : true
+
     },
     {
       name: "sort_code",
       label: "Leave Type Sort Code",
       type: "text",
+      required : true
+
     },
     {
       name: "remarks",
       label: "Remarks",
       type: "text",
+
     },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Leave type submit hit', data);
-
-    console.log('Sending request for', companyData[0].id, data);
-
+    if(!leave_id && leaveTypes.find(ele => ele['Leave Type'] === data.leave_type || ele['Leave Type Sort Code'] == data.sort_code) ){
+      alert('Leave Type already exists or another leave type is associated witht this sort code');
+      return;
+    }
 
     const isUpdate = Boolean(leave_id);
     const dataTo = isUpdate ? {...data, leave_id} : {...data};

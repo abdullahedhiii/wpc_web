@@ -2,6 +2,7 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useState } from "react";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import axiosInstance from "../../../axiosInstance";
+import {motion} from 'framer-motion';
 
 const LeaveReport = () => {
     const { companyData } = useCompanyContext();
@@ -27,18 +28,40 @@ const LeaveReport = () => {
         }
     }
     return (
-        <div className="p-8">
-            <p className="text-sm text-gray-500">
-                Home <span className="mx-2 text-yellow-600">/ Leave Report</span>
-            </p>
+        <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+        {/* Header Section */}
+        <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+          
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex flex-col gap-1">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-2xl font-bold text-white"
+              >
+                Leave Report
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-yellow-100 text-sm"
+              >
+                View Employee Leave Report(year wise)
+              </motion.p>
+            </div>
+          </div>
+          
+        </div>
 
-            <div className={`mt-6 border-l-4 border-yellow-600 bg-white rounded-lg shadow-md p-6 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}>
+            <div className={`mt-16 mr-16 ml-16 border-l-4 border-yellow-600 bg-white rounded-lg shadow-md p-6 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}>
                 <div className="flex flex-col space-y-2">
                     <label className="text-gray-700 font-semibold">Choose Year</label>
                     <select 
                         value={year} 
                         onChange={(e) => setYear(e.target.value)}
                         className="w-64 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 hover:bg-gray-50 transition"
+                        required 
                     >
                         <option value="">Choose Year</option>
                         {Array.from({ length: currentYear - startYear + 1 }, (_, i) => (

@@ -1,10 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCompanyContext } from "../../../contexts/CompanyContext";
 import { useState, useEffect } from "react";
 import NewForm from "../../NewForm";
 import axiosInstance from "../../../../axiosInstance";
 
 const OffDayForm = () => {
+  const {shift_code} = useParams();
   const navigate = useNavigate();
   const {fetchShifts,fetchDepartments,fetchDesignations, shifts, designationData, departmentData,companyData } = useCompanyContext();
   
@@ -14,7 +15,7 @@ const OffDayForm = () => {
     fetchShifts();
   },[]);
   const [data, setData] = useState(() => {
-    const defaultDepartment = departmentData[0]["Department Name"];
+    const defaultDepartment = departmentData.length > 0 ? departmentData[0]["Department Name"] : '';
     const defaultDesignation = designationData.find(
       (item) => item["Department Name"] === defaultDepartment
     )?.["Designation"];
@@ -41,6 +42,23 @@ const OffDayForm = () => {
     };
   });
 
+  useEffect(() => {
+    if(shift_code){
+       const current_shift = shifts.find((ele) => ele['Shift Code'] === shift_code);
+       setData({
+        department: current_shift.Department,
+        designation: current_shift.Designation,
+        shift_code: shift_code,
+        Monday: current_shift['Off Days'].Monday,
+        Tuesday: current_shift['Off Days'].Tuesday,
+        Wednesday: current_shift['Off Days'].Wednesday,
+        Thursday: current_shift['Off Days'].Thursday,
+        Friday: current_shift['Off Days'].Friday,
+        Saturday: current_shift['Off Days'].Saturday,
+        Sunday: current_shift['Off Days'].Sunday,
+       })
+    }
+  },[]);
   const [filteredDesignations, setFilteredDesignations] = useState([]);
   const [filteredShifts, setFilteredShifts] = useState([]);
 
@@ -67,10 +85,34 @@ const OffDayForm = () => {
           updatedFilteredShifts.length > 0
             ? updatedFilteredShifts[0]["Shift Code"]
             : "",
+            Monday: false,
+            Tuesday: false,
+            Wednesday: false,
+            Thursday: false,
+            Friday: false,
+            Saturday: false,
+            Sunday: false,
       }));
     }
   }, [data.department, data.designation, designationData, shifts]);
 
+
+  useEffect(() => {
+    const current_shift = shifts.find((ele) => ele['Shift Code'] === data.shift_code);
+    if(!current_shift) return;
+    setData({
+     department: current_shift.Department,
+     designation: current_shift.Designation,
+     shift_code: data.shift_code,
+     Monday: current_shift['Off Days'].Monday,
+     Tuesday: current_shift['Off Days'].Tuesday,
+     Wednesday: current_shift['Off Days'].Wednesday,
+     Thursday: current_shift['Off Days'].Thursday,
+     Friday: current_shift['Off Days'].Friday,
+     Saturday: current_shift['Off Days'].Saturday,
+     Sunday: current_shift['Off Days'].Sunday,
+    });
+  },[data.shift_code]);
   const fields = [
     {
       label: "Select Department",
@@ -80,6 +122,8 @@ const OffDayForm = () => {
         label: department["Department Name"],
         value: department["Department Name"],
       })),
+      required: true,
+      readOnly :shift_code ? true : false,
     },
     {
       label: "Select Designation",
@@ -88,7 +132,9 @@ const OffDayForm = () => {
       options: filteredDesignations.map((des) => ({
         label: des["Designation"],
         value: des["Designation"],
-      })),
+      })),      required: true,
+      readOnly :shift_code ? true : false,
+
     },
     {
       label: "Shift Code",
@@ -97,7 +143,9 @@ const OffDayForm = () => {
       options: filteredShifts.map((shift) => ({
         label: shift["Shift Name"],
         value: shift["Shift Code"],
-      })),
+      })),      required: true,
+      readOnly :shift_code ? true : false,
+
     },
     ...[
       "Monday",
@@ -116,7 +164,7 @@ const OffDayForm = () => {
   ];
 
   const handleReset = () => {
-    const defaultDepartment = departmentData[0]["Department Name"];
+    const defaultDepartment = departmentData.length > 0 ? departmentData[0]["Department Name"] : '';
     const defaultDesignation = designationData.find(
       (item) => item["Department Name"] === defaultDepartment
     )?.["Designation"];
@@ -146,7 +194,6 @@ const OffDayForm = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("data off day ", data);
     try{
         const response = await axiosInstance.post(`/api/setOffDays/${companyData[0].id}`,{data : data});
         if(response.status === 201){

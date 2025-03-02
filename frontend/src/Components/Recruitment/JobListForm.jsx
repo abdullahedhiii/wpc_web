@@ -1,41 +1,59 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 
 import TextEditor from "./TextEditor";
 import axiosInstance from "../../../axiosInstance";
-import { useNavigate } from "react-router-dom";
+import { data, useNavigate } from "react-router-dom";
 
 const JobListForm = () => {
   const { isSideBarOpen } = useSidebarContext();
   const {companyData} = useCompanyContext();
   const [content, setContent] = useState("");
+  const [jobsListed,setListed] = useState([]);
+  useEffect(( ) => {
+         const fetchListed = async() => {
+                 try{
+                  const response = await axiosInstance.get(`/api/getJobsListed/${companyData[0].id}`);
+                  setListed(response.data);
+                 }
+                 catch(err){
 
+                 }
+         };
+         fetchListed();
+  },[]);
+console.log(jobsListed);
   const formFields = [
     {
       label: "Job Type",
       type: "select",
       stateAttribute: "jobType",
       options: [
-        { value: "", label: "" },
         { value: "Existing", label: "Existing" },
         { value: "New", label: "New" },
       ],
+      required : true,
     },
     {
       label: "SOC Code",
       type: "text",
       stateAttribute: "socCode",
+      required : true
+
     },
     {
       label: "Department",
       type: "text",
       stateAttribute: "department",
+      required : true
+
     },
     {
       label: "Job Title",
       type: "text",
       stateAttribute: "jobTitle",
+      required : true
     },
   ];
 
@@ -58,7 +76,15 @@ const JobListForm = () => {
   const navigate = useNavigate();
   const handleJobPost = async(e) => {
     e.preventDefault();
-    console.log(content,formData);
+    if(jobsListed.find((ele) => ele['SOC CODE'].toLowerCase() === formData.socCode.toLowerCase() )){
+      alert('SOC Code must be unique, job with this code exists');
+      return;
+    }
+    else if(jobsListed.find((ele) => ele.department.toLowerCase() === formData.department.toLowerCase() 
+      && ele["Job Title"].toLowerCase() === formData.jobTitle.toLowerCase())){
+       alert('A job with this title is already listed,try updating');
+       return;
+      }
     try{
        const response = await axiosInstance.post(`/api/addJobListed/${companyData[0].id}`,{formData,content});
        if(response.status === 200)
@@ -101,8 +127,10 @@ const JobListForm = () => {
                     name={field.stateAttribute}
                     value={formData[field.stateAttribute]}
                     onChange={handleChange}
+                    required
                     className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                   >
+                    <option disabled value =''>Select</option>
                     {field.options.map((option, i) => (
                       <option key={i} value={option.value}>
                         {option.label}
@@ -116,7 +144,8 @@ const JobListForm = () => {
                     value={formData[field.stateAttribute]}
                     onChange={handleChange}
                     className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
-                  />
+                     required = {field.required}
+                    />
                 )}
               </div>
             ))}

@@ -23,6 +23,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       tableName: "Banks",
       timestamps: false,
+      indexes: [
+        {
+          unique: true,
+          fields: ['organisation_id', 'bank_name'], // Unique constraint on both fields
+        },
+      ]
     });
     return Bank;
   };

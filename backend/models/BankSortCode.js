@@ -18,11 +18,18 @@ module.exports = (sequelize, DataTypes) => {
       sort_code:{
           type: DataTypes.STRING,
           allowNull:false,
+          unique : true,
       },
     },
     {
       tableName: "BankSortCodes",
       timestamps: false,
+      indexes: [
+        {
+          unique: true,
+          fields: ['bank_id', 'sort_code'], // Unique constraint on both fields
+        },
+      ]
     });
     return BankSortCode;
   };

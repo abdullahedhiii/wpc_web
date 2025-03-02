@@ -31,6 +31,10 @@ const EmploymentTypeForm = () =>{
 
    const handleSubmit = async (e) => {
      e.preventDefault();
+     if(!type_id && employeeTypes.find((ele) => ele['Employment Type'].toLowerCase() === data.Employment_Type.toLowerCase())){
+      alert('Entered Employment Type already exists in your organisation');
+      return;
+    }
      const isUpdate = Boolean(type_id);
      const send_data = isUpdate ? {...data,isUpdate,type_id} : {...data,isUpdate};
      try{
@@ -50,6 +54,8 @@ const EmploymentTypeForm = () =>{
         name : 'Employment_Type',
         label : "Employment Type",
         type : "text",     
+        required : true
+
     }
    ];
 

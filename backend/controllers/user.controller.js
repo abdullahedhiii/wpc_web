@@ -1,16 +1,15 @@
-const {User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole} = require('../config/sequelize');
+const {User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole, Sponsor} = require('../config/sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
 
 module.exports.Register = async (req, res) => {
   try {
-    console.log('Register endpoint hit');
-    console.log(req.body);
+
 
     const { companyName,firstName, lastName, email, contactNumber,password } = req.body;
 
-    const existingUser = await Admin.findOne({ where: { email } });
+    const existingUser = await Admin.findOne({ where: { email,phone_number : contactNumber } });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists.' });
     }
@@ -28,7 +27,11 @@ module.exports.Register = async (req, res) => {
       message: 'User registered successfully.',
     });
   } catch (error) {
-    console.error('Error in Register:', error);
+     if (err instanceof Sequelize.UniqueConstraintError) {
+      return res.status(400).json({ 
+        message: "The entered email or phone number has been registered already" 
+      });
+    }
     return res.status(500).json({ error: 'An error occurred. Please try again later.' });
   }
 };
@@ -130,6 +133,38 @@ module.exports.logout = async (req, res) => {
   }
 };
 
+module.exports.getSponsors = async (req, res) => {
+  console.log('get sponsors hit');
+  try {
+    const sponsors = await Sponsor.findAll();
+
+    let newCount = 0;
+    let updatedCount = 0;
+
+    const formattedData = sponsors.map((sponsor) => {
+      if (sponsor.newSponsor) newCount++; // Count new sponsors
+      if (sponsor.status === 'updated') updatedCount++; // Count updated sponsors
+
+      return {
+        id: sponsor.id,
+        company: sponsor.organisationName,
+        location: [sponsor.townCity, sponsor.country].filter(Boolean).join(' '),
+        licenseTier: sponsor.licenseTier,
+        status: sponsor.status,
+      };
+    });
+
+    return res.status(200).json({
+      sponsors: formattedData,
+      newCount,
+      updatedCount
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "An error occurred while fetching sponsors", err });
+  }
+};
+
+
 module.exports.getModules = async (req, res) => {
   console.log("Modules endpoint hit");
   const { isAdmin } = req.query;
@@ -182,8 +217,9 @@ module.exports.getModules = async (req, res) => {
       ],
     });
 
-    if (isAdmin === 'true' ) {
-      console.log('returningg ',isAdmin)
+    if (isAdmin === 'true') {
+      console.log('returningg ', isAdmin);
+      
       return res.status(200).json(
         modules.map((module) => ({
           id: module.id,
@@ -206,20 +242,23 @@ module.exports.getModules = async (req, res) => {
             name: subModule.name,
             main_route: subModule.main_route,
             icon: subModule.icon,
-            download_api_route : subModule.download_api_route,
-            features: subModule.features.map((feature) => ({
-              name: feature.name,
-              next_route: feature.next_route,
-              icon: feature.icon || "",
-              plus_icon_route: feature.plus_icon_route,
-              action_route: feature.action_route,
-              id: feature.id,
-              download_api_route : feature.download_api_route,
-            })),
+            download_api_route: subModule.download_api_route,
+            features: subModule.features
+              .filter((feature) => ![56, 58, 59, 60,55].includes(feature.id)) 
+              .map((feature) => ({
+                name: feature.name,
+                next_route: feature.next_route,
+                icon: feature.icon || "",
+                plus_icon_route: feature.plus_icon_route,
+                action_route: feature.action_route,
+                id: feature.id,
+                download_api_route: feature.download_api_route,
+              })),
           })),
         }))
       );
     }
+    
     const userRoles = await UserRole.findAll({
       where: { user_id: userId },
       attributes: ["sub_module_id", "feature_id", "right"],
@@ -289,12 +328,12 @@ module.exports.retrieveCookie = async (req, res) => {
   const token = req.cookies.access_token; 
   try {
     if (!token) {
-      return res.status(404).json({ message: 'No cookie found to retrieve -new session' });
+      return res.status(200).json({ found:false,message: 'No cookie found to retrieve -new session' });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err || !decoded.id) {
-        return res.status(404).json({ message: 'Token expired or invalid - new session' }); 
+        return res.status(200).json({found:false, message: 'Token expired or invalid - new session' }); 
       }
 
       try {
@@ -345,7 +384,7 @@ module.exports.retrieveCookie = async (req, res) => {
                employee_code : employee.employee_code,
                type : employee.servicedetail.type,
         };
-        return res.status(200).json({user : response});
+        return res.status(200).json({found:true,user : response});
       } catch (err) {
         console.error('Database error:', err);
         return res.status(500).json({ message: 'Internal server error' }); 

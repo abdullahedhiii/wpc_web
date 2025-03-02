@@ -18,11 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
         },
-        typeAndRating: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        route: {
+        licenseTier: {
             type: DataTypes.STRING,
             allowNull: true,
         },

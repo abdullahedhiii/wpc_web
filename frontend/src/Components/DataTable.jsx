@@ -143,7 +143,7 @@ const DataTable = ({
 
 return (
   <div className={`${
-    isSidebarOpen ? "w-[1300px]" : "w-[1380px]"
+    isSidebarOpen ? "w-[1150px]" : "w-[1350px]"
   } bg-white rounded-lg shadow-lg border border-yellow-100 overflow-hidden`}>
     {title && (
       <div className="flex justify-between items-center p-4 border-b border-yellow-100 bg-yellow-50">
@@ -296,7 +296,14 @@ return (
                               </select>
                             ) : row["Action"] === "Edit" || field === "Edit" ? (
                               <button
-                                onClick={() => navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)}
+                                onClick={() => {
+;                                  if(location.pathname.includes("rota/shift-management") || location.pathname.includes("rota/offday")){
+                                    navigate(`/hrms/${selectedFeature.action_route}/${row["Shift Code"]}`);
+
+                                  }
+                                  else navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)}
+                                
+                                }
                                 disabled={user.isAdmin ? false : !selectedFeature.can_edit}
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-yellow-100 transition-all duration-200"
                                 title="Edit"
@@ -313,8 +320,10 @@ return (
                                 <i className="la la-trash text-lg text-red-500" />
                               </button>
                             ) : null
-                          ) : (field === "Visitor Link" || field === "Employee Link" || field === "Job Link" || field === "View Letter") &&
+                          ) : (field === "Visitor Link" || field === "Website" || field === "Employee Link" || field === "Job Link" || field === "View Letter") &&
                           row[field] ? (
+                            row[field] === 'Job Closed' ?                             <span className="text-sm text-gray-600">{row[field]}</span>
+                            :
                             <a
                               href={row[field]}
                               target="_blank"

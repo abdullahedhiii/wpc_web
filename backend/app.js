@@ -11,7 +11,8 @@ const JobRoutes = require('./routes/job.routes');
 const AttendanceRoutes = require('./routes/attendance.routes');
 const PdfRoutes = require('./routes/pdf.routes');
 const employeeRoutes = require('./routes/employee-routes');
-const { downloadCSV } = require("./jobs/sponsor-fetch"); 
+
+// require('./jobs/sponsor-fetch');
 
 const app = express();
 app.use(express.json());  

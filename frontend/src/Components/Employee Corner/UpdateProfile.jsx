@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { useLocation, useParams } from "react-router-dom";
 import { useSidebarContext } from "../../contexts/SidebarContext";
@@ -1336,6 +1335,8 @@ const UpdateProfile = () => {
             }
           }
         }
+        educationFormData.append('isDefault',formData.education_details.length === 1)
+
         await axiosInstance.post(
           `/api/submit-education-details/${user.company_id}.${employee_code}`,
           educationFormData,
@@ -1350,6 +1351,8 @@ const UpdateProfile = () => {
       await axiosInstance.post(`/api/submit-job-details/${user.company_id}.${employee_code}`,formData.job_details);
 
       formData.key_responsibilities.forEach(async (res, index) => {
+        res.isDefault = formData.key_responsibilities.length === 1;
+
         await axiosInstance.post(
           `/api/submit-key-responsibilities/${user.company_id}.${employee_code}`,
           res
@@ -1357,7 +1360,7 @@ const UpdateProfile = () => {
       });
 
       formData.training_details.forEach(async(training, index) => {
-        const tt = training.employee_code ? training : {...training,employee_code :employee_code}
+        const tt = training.employee_code ? training : {...training,employee_code :employee_code,isDefault : formData.training_details.length === 1}
         await axiosInstance.post(`/api/submit-training-data/${user.company_id}.${employee_code}`,tt)
       });
 
@@ -1391,6 +1394,7 @@ const UpdateProfile = () => {
               }
             }
           }
+          otherData.append('isDefault', formData.other_details.length === 1);
 
           await axiosInstance.post(`/api/submit-other-data/${user.company_id}.${employee_code}`, otherData, {
             headers: {
@@ -1491,7 +1495,8 @@ const UpdateProfile = () => {
                 other_doc.append(key, docc[key]);
               }
             }
-          }
+          }          other_doc.append('isDefault',formData.other_documents.length === 1)
+
           await axiosInstance.post(`/api/submit-otherdocument/${user.company_id}.${employee_code}`, other_doc, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -1500,7 +1505,7 @@ const UpdateProfile = () => {
         });
 
     } catch (error) {
-      console.error("Error submitting form data:", error);
+      alert(error.response?.data?.message || 'An error occured');
     }
   };
 

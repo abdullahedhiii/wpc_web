@@ -29,7 +29,10 @@ const DepartmentForm = () =>{
 
  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    if(departmentData.find((ele) => ele['Department Name'].toLowerCase() === data.department_name.toLowerCase())){
+      alert('Department with this name exists in your organisation');
+      return;
+    }
     try {
       const isUpdate = Boolean(department_id);
       const requestData = department_id ? { ...data, isUpdate, department_id} : {...data,isUpdate}; 
@@ -49,6 +52,8 @@ const DepartmentForm = () =>{
         name : 'department_name',
         label : "Department Name",
         type : "text",     
+        required : true
+
     }
    ];
 

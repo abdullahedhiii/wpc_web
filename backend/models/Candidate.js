@@ -29,21 +29,20 @@ module.exports = (sequelize, DataTypes) => {
         },
         name: {
           type: DataTypes.STRING,
-          allowNull: false, // Required field
+          allowNull: false,
         },
         email: {
           type: DataTypes.STRING,
-          allowNull: false, // Required field
-          unique: true, // Ensure email is unique
+          allowNull: false,
           validate: {
             isEmail: true, // Validate email format
           },
         },
         contactNo: {
           type: DataTypes.STRING,
-          allowNull: false, // Required field
+          allowNull: false,
           validate: {
-            len: [10, 15], // Assuming phone number length constraints
+            len: [10, 15],
           },
         },
         gender: {
@@ -94,39 +93,43 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.STRING,
           allowNull: false, 
         },
-        status : {
-          type : DataTypes.STRING,
-          allowNull:false,
+        status: {
+          type: DataTypes.STRING,
+          allowNull: false,
         },
         applyDate: {
           type: DataTypes.DATEONLY,
           allowNull: false,
-          defaultValue: Sequelize.NOW
-        }  ,
+          defaultValue: Sequelize.NOW,
+        },
         interviewDate: {
           type: DataTypes.DATEONLY,
           allowNull: true,
         },
         timeFrom: {
-          type : DataTypes.TIME,
-          allowNull:true,
+          type: DataTypes.TIME,
+          allowNull: true,
         },
         timeTo: {
-          type : DataTypes.TIME,
-          allowNull:true,
+          type: DataTypes.TIME,
+          allowNull: true,
         },
-        offer_letter_url : {
-          type : DataTypes.STRING,
-          allowNull : true,
-        }        
+        offer_letter_url: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
       },
       {
         tableName: "Candidates",
         timestamps: false,
+        indexes: [
+          {
+            unique: true,
+            fields: ["job_id", "email"], // Composite unique constraint
+          },
+        ],
       }
     );
 
-  
     return Candidate;
-  };
-  
+};

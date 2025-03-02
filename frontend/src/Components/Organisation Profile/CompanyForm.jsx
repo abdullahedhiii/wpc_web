@@ -47,6 +47,8 @@ const CompanyForm = () => {
               Find
             </button>
           ),
+          readOnly: true,
+
         },
         {
           label: "Type of Organisation",
@@ -374,42 +376,42 @@ const CompanyForm = () => {
         },
       ],
     },
-    {
-      title: "Organisation Employee(According to latest RTI)",
-      state_name: "RTIData",
-      fields: [
-        {
-          label: "Full Name",
-          value: "RTI_fname",
-          type: "text",
-          readOnly: true,
-        },
-        {
-          label: "Department",
-          value: "RTI_department",
-          type: "text",
-          readOnly: true,
-        },
-        {
-          label: "Job Type",
-          value: "RTI_job_type",
-          type: "text",
-          readOnly: true,
-        },
-        {
-          label: "Job Title",
-          value: "RTI_job_title",
-          type: "text",
-          readOnly: true,
-        },
-        {
-          label: "Immigration Status",
-          value: "RTI_Immigration_Status",
-          type: "text",
-          readOnly: true,
-        },
-      ],
-    },
+    // {
+    //   title: "Organisation Employee(According to latest RTI)",
+    //   state_name: "RTIData",
+    //   fields: [
+    //     {
+    //       label: "Full Name",
+    //       value: "RTI_fname",
+    //       type: "text",
+    //       readOnly: true,
+    //     },
+    //     {
+    //       label: "Department",
+    //       value: "RTI_department",
+    //       type: "text",
+    //       readOnly: true,
+    //     },
+    //     {
+    //       label: "Job Type",
+    //       value: "RTI_job_type",
+    //       type: "text",
+    //       readOnly: true,
+    //     },
+    //     {
+    //       label: "Job Title",
+    //       value: "RTI_job_title",
+    //       type: "text",
+    //       readOnly: true,
+    //     },
+    //     {
+    //       label: "Immigration Status",
+    //       value: "RTI_Immigration_Status",
+    //       type: "text",
+    //       readOnly: true,
+    //     },
+    //   ],
+    // },
     {
       title: "Trading Hours",
       state_name: "tradingHours",
@@ -604,7 +606,7 @@ const CompanyForm = () => {
 
   const [formData, setFormData] = useState({
     Company_admin_id: user.id,
-    Company_name: "",
+    Company_name: user.company_name,
     Company_Type: "Private Company Limited by shares",
     Company_RegNo: "",
     Company_Contact: "",
@@ -664,11 +666,9 @@ const CompanyForm = () => {
     const fetchDetails = async () => {
       try {
         if (company_id) {
-          console.log("sending id", company_id);
           const response = await axios.get("/api/getCompanyDetails", {
             params: { id: company_id },
           });
-          console.log(response.data);
           if (response.data) {
             setFormData({
               Email: user.email,
@@ -684,87 +684,88 @@ const CompanyForm = () => {
     };
     fetchDetails();
   }, [company_id]);
-
   const handleChange = (e, fieldName) => {
     const { value, type, checked, files } = e.target;
     const updatedValue = type === "checkbox" ? checked : value;
 
     if (type === "file") {
-      setFormData((prevData) => ({
-        ...prevData,
-        [fieldName]: files[0],
-      }));
-      return;
+        setFormData((prevData) => ({
+            ...prevData,
+            [fieldName]: files[0], // Store file in state
+        }));
+        return;
     }
 
     if (type === "checkbox") {
-      if (fieldName === "KeyContact_check") {
-        if (updatedValue) {
-          setFormData((prevData) => ({
+        setFormData((prevData) => {
+            let newState = { ...prevData };
+
+            if (fieldName === "KeyContact_check") {
+                if (updatedValue) {
+                    newState = {
+                        ...newState,
+                        KeyContact_fname: prevData.Authorizing_fname,
+                        KeyContact_lname: prevData.Authorizing_lname,
+                        KeyContact_designation: prevData.Authorizing_designation,
+                        KeyContact_email: prevData.Authorizing_email,
+                        KeyContact_phone: prevData.Authorizing_phone,
+                        KeyContact_proof_id: prevData.Authorizing_proof_id || null, // Fix: Copy file properly
+                        KeyContact_history: prevData.Authorizing_history,
+                    };
+                } else {
+                    newState = {
+                        ...newState,
+                        KeyContact_fname: "",
+                        KeyContact_lname: "",
+                        KeyContact_designation: "",
+                        KeyContact_email: "",
+                        KeyContact_phone: "",
+                        KeyContact_proof_id: null, // Fix: Reset file correctly
+                        KeyContact_history: "",
+                    };
+                }
+            } else if (fieldName === "Level1_check") {
+                if (updatedValue) {
+                    newState = {
+                        ...newState,
+                        Level1_fname: prevData.Authorizing_fname,
+                        Level1_lname: prevData.Authorizing_lname,
+                        Level1_designation: prevData.Authorizing_designation,
+                        Level1_email: prevData.Authorizing_email,
+                        Level1_phone: prevData.Authorizing_phone,
+                        Level1_proof_id: prevData.Authorizing_proof_id || null, // Fix: Copy file properly
+                        Level1_history: prevData.Authorizing_history,
+                    };
+                } else {
+                    newState = {
+                        ...newState,
+                        Level1_fname: "",
+                        Level1_lname: "",
+                        Level1_designation: "",
+                        Level1_email: "",
+                        Level1_phone: "",
+                        Level1_proof_id: null, // Fix: Reset file correctly
+                        Level1_history: "",
+                    };
+                }
+            }
+
+            return newState;
+        });
+    } else {
+        setFormData((prevData) => ({
             ...prevData,
-            KeyContact_fname: prevData.Authorizing_fname,
-            KeyContact_lname: prevData.Authorizing_lname,
-            KeyContact_designation: prevData.Authorizing_designation,
-            KeyContact_email: prevData.Authorizing_email,
-            KeyContact_phone: prevData.Authorizing_phone,
-            KeyContact_proof_id: prevData.Authorizing_proof_id,
-            KeyContact_history: prevData.Authorizing_history,
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            KeyContact_fname: "",
-            KeyContact_lname: "",
-            KeyContact_designation: "",
-            KeyContact_email: "",
-            KeyContact_phone: "",
-            KeyContact_proof_id: "",
-            KeyContact_history: "",
-          }));
-        }
-      } else if (fieldName === "Level1_check") {
-        if (updatedValue) {
-          setFormData((prevData) => ({
-            ...prevData,
-            Level1_fname: prevData.Authorizing_fname,
-            Level1_lname: prevData.Authorizing_lname,
-            Level1_designation: prevData.Authorizing_designation,
-            Level1_email: prevData.Authorizing_email,
-            Level1_phone: prevData.Authorizing_phone,
-            Level1_proof_id: prevData.Authorizing_proof_id,
-            Level1_history: prevData.Authorizing_history,
-          }));
-        } else {
-          setFormData((prevData) => ({
-            ...prevData,
-            Level1_fname: "",
-            Level1_lname: "",
-            Level1_designation: "",
-            Level1_email: "",
-            Level1_phone: "",
-            Level1_proof_id: "",
-            Level1_history: "",
-          }));
-        }
-      }
+            [fieldName]: updatedValue,
+        }));
     }
+};
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [fieldName]: updatedValue,
-    }));
-
-    console.log("Updated:", fieldName, updatedValue);
-  };
-
-  useEffect(() => {
-    console.log("form data", formData);
-  }, [formData]);
-
+useEffect(() => {
+console.log(formData);
+},[formData]);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-  
+    
     const formDataToSend = new FormData();
   
     Object.entries(formData).forEach(([key, value]) => {
@@ -787,7 +788,6 @@ const CompanyForm = () => {
     });
   
     try {
-      console.log('sending company data ', formDataToSend);
   
       // Submit company data first
       const response = await axios.post(
@@ -800,14 +800,12 @@ const CompanyForm = () => {
         }
       );
   
-      console.log("Company data submitted successfully:", response.data);
   
       const newCompanyId = company_id ? company_id : response.data.organisation.id; 
   
       const documentUploads = uploadDocuments.map((document, index) => {
         if (document.file) {
           const documentData = new FormData();
-          console.log('Appending company name and document details',document);
           documentData.append("Company_name", formData.Company_name);
           documentData.append("document", document.file);
           documentData.append("documentType", document.documentType);
@@ -820,15 +818,15 @@ const CompanyForm = () => {
             },
           })
           .then((response) => {
-            console.log(`Document ${index + 1} uploaded successfully`, response.data);
           })
           .catch((err) => {
-            console.error(`Error uploading document ${index + 1}:`, err.response?.data || err.message);
           });
         }
       });
   
       await Promise.all(documentUploads);
+      alert('Company Submission Successful');
+      navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
     } catch (err) {
       console.error("Error submitting company data:", err.response?.data || err.message);

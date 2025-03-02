@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const moment = require('moment');
 
 const generateLink = (job_id) => {
   try {
@@ -132,6 +133,7 @@ module.exports.getJobsListed = async(req,res) => {
                 "Job Title" : job.jobTitle,
                 "Action" : "Edit",
                 "jobDescription" : job.jobDescription,
+                department : job.department,
             }
         })
         return res.status(200).json(formattedResponse);
@@ -185,15 +187,18 @@ module.exports.getJobsPosted = async(req,res) => {
         const jobs = await Job.findAll({
             where :{ organisation_id : id , status : 'Posted'}
         });
+
         console.log('is error here ?');
         const formattedResponse  = jobs.map((job,index) => {
           const hash = generateLink(job.id);
+          const isClosed = job.jobClosingDate && moment(job.jobClosingDate).isBefore(moment()); 
+
             return {
                 "id" : job.id,
                 "Sl. No." : index+1,
                 "SOC Code": job.socCode,
                 "Job Title" : job.jobTitle,
-                "Job Link": `http://localhost:5173/careers/${hash}`,
+                "Job Link": isClosed? 'Job Closed' : `http://localhost:5173/careers/${hash}`,
                 "Vacancy" : job.numVacancies,
                 "Job Location": job.jobLocation,
                 "Job Posted Date" : job.jobPostingDate,
@@ -234,34 +239,42 @@ module.exports.getJobDetails = async (req, res) => {
 
 module.exports.applyJob = async (req, res) => {
   const [organisationId, job_id, email] = req.params.id.split('.');
-  
-  const resumeFile = req.files && req.files.resume ? req.files.resume[0].filename : null;
-  const coverLetterFile = req.files && req.files.coverLetter ? req.files.coverLetter[0].filename : null;
-  
+
+  const resumeFile = req.files?.resume ? req.files.resume[0].filename : null;
+  const coverLetterFile = req.files?.coverLetter ? req.files.coverLetter[0].filename : null;
+
   const resumeUrl = resumeFile
     ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${resumeFile}`
     : null;
-  
+
   const coverLetterUrl = coverLetterFile
     ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${coverLetterFile}`
     : null;
-  
+
   try {
     const candidate = await Candidate.create({
-      organisation_id : organisationId,
+      organisation_id: organisationId,
       job_id,
+      email, // Ensure email is explicitly passed
       coverLetter: coverLetterUrl,
       resume: resumeUrl,
       ...req.body, 
     });
 
-    return res.status(200).json({ message: 'Applied for job successfully', candidate });
+    return res.status(200).json({ message: "Applied for job successfully", candidate });
   } catch (err) {
-    console.error('Error applying for job:', err);
-    return res.status(500).json({ message: 'Internal server error', error: err });
+    console.error("Error applying for job:", err);
+
+    // Handle unique constraint error
+    if (err instanceof Sequelize.UniqueConstraintError) {
+      return res.status(400).json({ 
+        message: "You have already applied for this job with this email." 
+      });
+    }
+
+    return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
-
 
 module.exports.getCandidates = async (req, res) => {
   const { id } = req.params;

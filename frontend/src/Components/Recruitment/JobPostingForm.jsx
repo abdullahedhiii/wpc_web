@@ -49,11 +49,16 @@ const JobPostingForm = () => {
   const [titleOptions,setTitleOptions] = useState([]);
   const [loading,setLoading] = useState(true);
 
+
   useEffect(() => {
     const fetchJobsPosted = async () => {
       try {
         const response = await axiosInstance.get(`/api/getJobsListed/${companyData[0].id}`);
         setJobs(response.data);
+        if(response.data.length == 0){
+          alert('Kindly list a job first to proceed with posting');
+          navigate(`/hrms/recruitment/job-list`);
+        }
         console.log('response of jobs ',response.data);
         const options = [{label : "",value : ""},...response.data.map((ele) =>({
             value: ele['SOC CODE'], 
@@ -73,12 +78,11 @@ const JobPostingForm = () => {
   useEffect(() => {
    console.log('form data changed ',formData);
   },[formData]);
-
+ 
   useEffect(() => {
      const fetchJobDetail = async () =>{
         try{
             const response  = await axiosInstance.get(`/api/getJobDetails/${id}`);
-            console.log('rresponse of detail ',response.data);
             setFormData(response.data);
             setContent(response.data.jobDescription)
             setSocOptions([{label : response.data.socCode, value : response.data.socCode}]);
@@ -128,105 +132,127 @@ const JobPostingForm = () => {
       type: "select",
       stateAttribute: "socCode",
       options: socCodeOptions,
+      required : true
+
     },
     {
       label: "Job Title",
       type: "select",
       stateAttribute: "jobTitle",
       options: titleOptions,
+      required : true
 
     },
     {
       label: "Department",
       type: "text",
       stateAttribute: "department",
+      required : true
+
     },
     {
       label: "Job Code",
       type: "text",
       stateAttribute: "jobCode",
+      required : true
 
     },
     {
       label: "Job Description",
+      required : true
+
     },
     {
       label: "Job Type",
       type: "select",
       stateAttribute: "jobContractType",
       options: [
-        { value: "", label: "" },
         { value: "Full Time", label: "Full Time" },
         { value: "Part Time", label: "Part Time" },
         { value: "Contractual", label: "Contractual" },
       ],
+      required : true
+
     },
     {
       label: "Working Hours (Weekly)",
       type: "select",
       stateAttribute: "workingHours",
-      options: [
-        { value: "", label: "" },
-        ...Array.from({ length: 80 }, (_, i) => ({
+      options: 
+        Array.from({ length: 80 }, (_, i) => ({
           value: (i + 1) * 0.5,
           label: (i + 1) * 0.5,
         })),
-      ],
+  
+      required : true
+
     },
     {
       label: "Job Experience (Min)",
       type: "select",
       stateAttribute: "jobExperienceMin",
-      options: [
-        { value: "", label: "" },
-        ...Array.from({ length: 16 }, (_, i) => ({
+      options: 
+        Array.from({ length: 16 }, (_, i) => ({
           value: i,
           label: i,
         })),
-      ],
+  
+      required : true
+
     },
     {
       label: "Job Experience (Max)",
       type: "select",
       stateAttribute: "jobExperienceMax",
-      options: [
-        { value: "", label: "" },
-        ...Array.from({ length: 16 }, (_, i) => ({
+      options: 
+        Array.from({ length: 16 }, (_, i) => ({
           value: i,
           label: i,
         })),
-      ],
+  
+      required : true
+
     },
+
     {
       label: "Basic Salary (Min)",
       type: "text",
       stateAttribute: "basicSalaryMin",
+      required : true
+
     },
     {
       label: "Basic Salary (Max)",
       type: "text",
       stateAttribute: "basicSalaryMax",
+      required : true
+
     },
     {
       label: "Salary Period",
       type: "select",
       stateAttribute: "salaryPeriod",
       options: [
-        { value: "", label: "" },
         { value: "annually", label: "Annually" },
         { value: "monthly", label: "Monthly" },
         { value: "weekly", label: "Weekly" },
       ],
+      required : true
+
     },
     {
       label: "Number of Vacancies",
       type: "text",
       stateAttribute: "numVacancies",
+      required : true
+
     },
     {
       label: "Job Location",
       type: "text",
       stateAttribute: "jobLocation",
+      required : true
+
     },
   ];
 
@@ -251,13 +277,12 @@ const JobPostingForm = () => {
       );
       if (response.status === 200) navigate("/hrms/recruitment/job-posting");
     } catch (err) {
-      console.log("error posting job list");
+      console.log("error posting job list",err);
     }
   };
 
   return (
-    loading ? (<p>loading...</p>)
-        : 
+  
             <div className="m-12">
 
       <p className="text-[12px] text-gray-600">
@@ -299,8 +324,10 @@ const JobPostingForm = () => {
                         name={field.stateAttribute}
                         value={formData[field.stateAttribute]}
                         onChange={handleChange}
+                        required = {field.required}
                         className="mt-1 p-2 border rounded-md text-[14px] text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
                       >
+                        <option value = '' disabled>Select </option>
                         {field.options.map((option, i) => (
                           <option
                             key={i}
@@ -317,6 +344,7 @@ const JobPostingForm = () => {
                         name={field.stateAttribute}
                         value={formData[field.stateAttribute]}
                         onChange={handleChange}
+                        required ={field.required}
                         className="mt-1 p-2 border rounded-md text-gray-600 focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
                         readOnly = {field.readOnly}
                       />

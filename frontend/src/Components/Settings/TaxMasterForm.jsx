@@ -37,22 +37,32 @@ const TaxMasterForm = () => {
         {
             label : 'Tax Code',
             type : 'text',
-            name : 'tax_code'
+            name : 'tax_code',
+            required : true
+
         },
         {
             label : 'Percentage of Deduction',
             type : 'text',
-            name : 'percentage'
+            name : 'percentage',
+            required : true
+
         },
         {
             label : 'Tax Reference',
             type : 'text',
-            name : 'reference'
+            name : 'reference',
+            required : true
+
         }
     ]
 
     const handleSubmit = async(e) => {
        e.preventDefault();
+       if(!tax_id && taxMasters.find((ele) => ele['Tax Code'].toLowerCase() === data.tax_code.toLowerCase())){
+        alert('Entered Tax Code is associated already with a tax master in your organisation');
+        return;
+      }
        const isUpdate = Boolean(tax_id);
        const send_data = isUpdate ? {...data,isUpdate,tax_id} : {...data,isUpdate};
        try{

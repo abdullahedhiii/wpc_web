@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { useSidebarContext } from "../../contexts/SidebarContext";
-
+import {motion} from 'framer-motion';
 const GenerateAttendance = () => {
   const { companyData,fetchDepartments,fetchDesignations,fetchEmployeesLink,fetchShifts, departmentData, designationData, shifts, employees } =
     useCompanyContext();
@@ -122,14 +122,32 @@ const GenerateAttendance = () => {
   const {isSideBarOpen} = useSidebarContext();
 
   return (
-    <div className="p-12">
-      <p className="text-[12px] text-gray-600">
-        Home
-        <span className="mx-2">/</span>
-        Employee
-        <span className="mx-2 text-tt">/ Generate Attendance</span>
-      </p>
-      <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+    {/* Header Section */}
+    <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col gap-1">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-2xl font-bold text-white"
+          >
+           Generate Attendance
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-yellow-100 text-sm"
+          >
+            View Attendance(date range)
+          </motion.p>
+        </div>
+      </div>
+      
+    </div>
+      <div className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "w-[800px]" : "w[1300px]"} `}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
@@ -251,7 +269,7 @@ const GenerateAttendance = () => {
         </button>
       </div>
 
-      <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+      <div className={`mt-16 mr-16 ml-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "w-[800px]" : "w[1300px]"} `}>
         <div className="flex items-center gap-2 pl-2">
           <i className="fas fa-cog text-lg text-yellow-900"></i>
           <h1 className="text-yellow-900 text-[15px] font-medium">
@@ -303,10 +321,10 @@ const GenerateAttendance = () => {
             </tbody>
           </table>
           <div className="mt-4 flex justify-end space-x-3 text-white text-[12px]">
-                <button className={`w-10 h-10 rounded-full ${ currentPage === 1 ? "bg-gray-400 text-gray-600" :"bg-tt" }`} 
+                <button className={`w-10 h-10 rounded-full ${ currentPage === 1 ? "bg-gray-400 text-gray-600" :"bg-yellow-400" }`} 
                 onClick={handlePrevPage}>prev</button>
-                <button className="w-10 h-10 rounded-full  bg-tt">{currentPage}</button>
-                <button className={`w-10 h-10 rounded-full ${ currentPage === totalPages ? "bg-gray-400 text-gray-600" : "bg-tt"}`}
+                <button className="w-10 h-10 rounded-full  bg-yellow-400">{currentPage}</button>
+                <button className={`w-10 h-10 rounded-full ${ currentPage === totalPages ? "bg-gray-400 text-gray-600" : "bg-yellow-400"}`}
                      onClick={handleNextPage}
                 >next</button>
 

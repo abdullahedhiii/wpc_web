@@ -84,6 +84,7 @@ const VisitorForm = () => {
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.name}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -97,6 +98,7 @@ const VisitorForm = () => {
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -123,6 +125,7 @@ const VisitorForm = () => {
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.date}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -150,6 +153,7 @@ const VisitorForm = () => {
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.designation}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -163,6 +167,7 @@ const VisitorForm = () => {
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.contact}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -188,6 +193,7 @@ const VisitorForm = () => {
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
                   value={formData.time}
                   onChange={handleChange}
+                  required
                 />
               </div>
             </div>

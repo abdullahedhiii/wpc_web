@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
           primaryKey : true,
 
         },
-        visa_no: DataTypes.STRING,
+        visa_no: {type : DataTypes.STRING,unique : true,},
         nationality: DataTypes.STRING,
         country: DataTypes.STRING,
         issued_by: DataTypes.STRING,

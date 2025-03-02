@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
-        passport_no: DataTypes.STRING,
+        passport_no: {type : DataTypes.STRING,unique : true},
         nationality: DataTypes.STRING,
         place: DataTypes.STRING,
         issued_by: DataTypes.STRING,

@@ -35,17 +35,25 @@ const PayGroupForm = () => {
       name: "paygroup",
       label: "Pay Group",
       type: "text",
+      required : true
+
     },
     {
       name: "status",
       label: "Select status",
       type: "select",
-      options :[{label : 'Active',value :'Active'},{label : 'Inactive',value : 'Inactive'}]
+      options :[{label : 'Active',value :'Active'},{label : 'Inactive',value : 'Inactive'}],
+      required : true
+
     },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(payGroups.find((ele) => ele['Pay Group'].toLowerCase() === data.paygroup.toLowerCase())){
+      alert('The entered Pay Group already exixts!');
+      return;
+    }
     const isUpdate = Boolean(group_id);
     const send_data = isUpdate ? {...data,isUpdate,group_id} : {...data,isUpdate};
     try{

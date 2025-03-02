@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
-        national_id : DataTypes.STRING,
+        national_id : {type : DataTypes.STRING,unique : true},
         country: DataTypes.STRING,
         nationality: DataTypes.STRING,
         issued: DataTypes.DATEONLY,

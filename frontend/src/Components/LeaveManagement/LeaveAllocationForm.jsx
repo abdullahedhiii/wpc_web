@@ -5,24 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import DataTable from "../DataTable";
 import axios from "axios";
-    // fetchDepartments(response.data.id);
-      // fetchDesignations(response.data.id);
-      // fetchTypes(response.data.id);
-      // fetchPayGroups(response.data.id);
-      // fetchAnnualPays(response.data.id);
-      // fetchBanks(response.data.id);
-      // fetchCodes(response.data.id);
-      // fetchTaxMasters(response.data.id);
-      // fetchPaymentTypes(response.data.id);
-      // fetchHolidays(response.data.id);
-      // fetchHolidayList(response.data.id);
-      // fetchVisitors(response.data.id);
-      // fetchShifts(response.data.id);
-      // fetchPolicies(response.data.id);
-      // fetchEmployeesLink(response.data.id);
-      // fetchLeaveTypes(response.data.id);
-      // fetchLeaveRules(response.data.id);
-      // fetchLeavesAllocated(response.data.id);
+
 
 const LeaveAllocationForm = () => {
   const navigate = useNavigate();
@@ -73,31 +56,39 @@ const LeaveAllocationForm = () => {
       name: "employment_type",
       label: "Employment Type",
       type : 'select',
-      options : [{label : 'employee type',value: ''},...employeeTypes.map((type) => ({
+      options : employeeTypes.map((type) => ({
         label : type['Employment Type'],
         value : type["Employment Type"]
-      }))]
+      })),
+      required : true
+
     },
     {
       name: "employee_code",
       label: "Employee Code",
       type: "select",
-      options : [{label : 'choose code',value:''},...empOptions]
+      options : empOptions,
+      required : true
+
     },
     {
       name: "year",
       label: "Choose Year",
       type: "text",
       readOnly :true,
+      required : true
+
     },
     {
       name: "leave_type_id",
       label: "Leave Type",
       type: "select",
-      options : [{label : 'choose type',value:''},...leaveTypes.map((leave) => ({
+      options : leaveTypes.map((leave) => ({
          label : leave['Leave Type'],
          value : leave.id
-      }))]
+      })),
+      required : true
+
     },
     
   ];

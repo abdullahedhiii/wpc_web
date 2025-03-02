@@ -49,6 +49,11 @@ const BankSortCodeForm = () => {
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
+        if(!sortcode_id && bankSortCodes.find((ele) => ele["Bank Sort Code"] === data.sort_code) || bankSortCodes.find((ele) => ele['Bank Name'].toLowerCase() 
+            === data.bank_name.toLowerCase())){
+            alert('Either the choosen bank is already associated with sort code or another bank with this sort code exists in your organisation');
+            return;
+          }
         const isUpdate = Boolean(sortcode_id);
         const send_data = isUpdate ? {...data,isUpdate,sortcode_id} : {...data,isUpdate};
         const bank = orgBanks.find((ele) => ele['Bank Name'] === data.bank_name);

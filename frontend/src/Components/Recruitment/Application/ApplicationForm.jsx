@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useState } from "react";
 
 export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_id, }) {
-  console.log(jobTitle,job_id,organisation_id)
   const [formData, setFormData] = useState({
     job_id : job_id,
     organisation_id: organisation_id, 
@@ -41,35 +40,39 @@ export default function ApplicationForm({ onBack,job_id ,jobTitle,organisation_i
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    try{
-        const candidate = new FormData();
+  
+    try {
+      const candidate = new FormData();
       for (const key in formData) {
         if (formData[key]) {
-          if (key === "coverLetter" &&formData[key]) {
-            candidate.append(key, formData[key]);
-          } else if (key === "resume" && formData[key]) {
-            candidate.append(key, formData[key]);
-          }
-          else {
-            candidate.append(key, formData[key]);
-          }
+          candidate.append(key, formData[key]);
         }
       }
-      await axios.post(`/api/applyJob/${formData.organisation_id}.${formData.job_id}.${formData.email}`, candidate, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-    });
-     window.alert('request submitted successfully');
+  
+      await axios.post(
+        `/api/applyJob/${formData.organisation_id}.${formData.job_id}.${formData.email}`,
+        candidate,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      window.alert("Request submitted successfully");
+    } catch (err) {
+
+      
+      if (err.response) {
+        window.alert(err.response.data.message || "Something went wrong. Please try again.");
+      } else {
+        window.alert("Network error. Please check your connection.");
+      }
     }
-    catch(err){
-      console.log(err);
-    }
-    
   };
+  
 
   return (
     <div className="mt-12 max-w-4xl mx-auto p-6 bg-[#FFF4F4] shadow-lg rounded-lg">

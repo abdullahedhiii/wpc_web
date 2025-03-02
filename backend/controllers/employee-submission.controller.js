@@ -69,7 +69,11 @@ module.exports.addPersonalDetails = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Error processing personal details:", err);
+if (err instanceof Sequelize.UniqueConstraintError) {
+  return res.status(400).json({ 
+    message: "Personal Details Error : Employee details like nationality number or contact numbers must be unique!" 
+  });
+}
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -532,6 +536,11 @@ module.exports.addPassport = async (req, res) => {
         .json({ message: "Passport detail added", document });
     }
   } catch (err) {
+    if (err instanceof Sequelize.UniqueConstraintError) {
+      return res.status(400).json({ 
+        message: "Passport Details Error : Passport number must be unique!" 
+      });
+    }
     return res
       .status(500)
       .json({ message: "Internal server error", error: err });
@@ -587,8 +596,11 @@ module.exports.addVisa = async (req, res) => {
       return res.status(201).json({ message: "Visa details added", document });
     }
   } catch (err) {
-    console.error("Error adding/updating Visa details:", err);
-    return res
+    if (err instanceof Sequelize.UniqueConstraintError) {
+      return res.status(400).json({ 
+        message: "Visa Details Error : Visa number must be unique!" 
+      });
+    }    return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
   }

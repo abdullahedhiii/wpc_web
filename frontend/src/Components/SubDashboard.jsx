@@ -1,73 +1,177 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useModuleContext } from "../contexts/ModuleContext";
-import { FaCheckCircle } from "react-icons/fa";
-import { FaArrowRight } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { Calendar, FileText, Download, CheckCircle, ChevronRight, ExternalLink, FileDown } from 'lucide-react';
+
+const BlankReportCard = ({ title, href }) => {
+  return (
+    <motion.a
+      href={href}
+      target="_blank"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all"
+    >
+      <div className="p-3 bg-yellow-100 rounded-lg">
+        <FileText className="w-6 h-6 text-yellow-600" />
+      </div>
+      <div className="flex-1">
+        <h3 className="text-sm font-medium text-gray-800">{title}</h3>
+        <p className="text-xs text-gray-500">Click to download</p>
+      </div>
+      <FileDown className="w-5 h-5 text-yellow-600" />
+    </motion.a>
+  );
+};
+
+const FeatureCard = ({ feature, navigate }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.02 }}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden"
+    >
+      <div className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="p-3 bg-yellow-100 rounded-xl">
+            <img src={feature.icon || "/placeholder.svg"} className="w-6 h-6" alt={feature.name} />
+          </div>
+          {feature.completed && (
+            <div className="flex items-center gap-2 text-green-600 text-sm">
+              <CheckCircle className="w-4 h-4" />
+              <span>Completed</span>
+            </div>
+          )}
+          {feature.count >= 0 && (
+            <div className="text-2xl font-bold text-gray-800">{feature.count}</div>
+          )}
+        </div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">{feature.name}</h3>
+        {feature.view_route && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              if (feature.view_route === 'https://www.gov.uk/calculate-your-holiday-entitlement') {
+                window.open(feature.view_route, "_blank");
+              } else {
+                navigate(`/hrms/${feature.view_route}`);
+              }
+            }}
+            className="w-full py-3 px-4 bg-yellow-500 text-white rounded-xl flex items-center justify-center gap-2 hover:bg-yellow-600 transition-colors"
+          >
+            {feature.view_route.startsWith('https') ? (
+              <>
+                <span>Visit External Link</span>
+                <ExternalLink className="w-4 h-4" />
+              </>
+            ) : (
+              <>
+                <span>View Details</span>
+                <ChevronRight className="w-4 h-4" />
+              </>
+            )}
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
+  );
+};
 
 const SubDashboard = () => {
   const { selectedModule } = useModuleContext();
   const location = useLocation();
   const navigate = useNavigate();
   const dashboard = selectedModule.dashboard;
-  const isDocuments = location.pathname.includes('documentsdashboard') ? true : false;
-  return (
-    <>
-    <div className={`text-white bg-gradient-to-r from-yellow-700 to-yellow-500 ${isDocuments ? "flex justify-between items-center" : ""}`}>
-  <p className="p-12 text-2xl">Dashboard</p>
-  {isDocuments && (
-    <div className="flex space-x-3 mr-4 ">
-      <button className="border border-white bg-yellow-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
-        <a href="/sample_documents/staffreport.pdf" target="_blank">Blank Staff Report</a>
-        </button>
-      <button className="border border-white bg-yellow-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
-      <a href="/sample_documents/contract.pdf" target="_blank">Blank Contract</a>
-      </button>
-      <button className="border border-white bg-yellow-900 rounded px-2 py-1 text-sm h-auto self-start shrink-0">
-      <a href="/sample_documents/employeereport.pdf" target="_blank">Blank Employee Report</a>
-        </button>
-    </div>
-  )}
-</div>
+  const isDocuments = location.pathname.includes('documentsdashboard');
 
-     
-      <div className="min-h-screen bg-white p-6">
-        <div className="relative top-[-86px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-12">
-          {dashboard.map((feature, index) => (
-            <div
-              key={index}
-              className={`flex flex-col justify-between p-4 rounded-md shadow-lg text-white bg-${feature.color}-700`}
+  const blankReports = [
+    {
+      title: "Staff Report Template",
+      href: "/sample_documents/staffreport.pdf"
+    },
+    {
+      title: "Contract Template",
+      href: "/sample_documents/contract.pdf"
+    },
+    {
+      title: "Employee Report Template",
+      href: "/sample_documents/employeereport.pdf"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+      {/* Header Section */}
+      <div className="relative">
+        <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-b-[3rem] shadow-lg pt-12 pb-32">
+          <div className="container mx-auto px-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-3xl font-bold text-white mb-2"
             >
-              <div className="flex justify-between items-center">
-                <img src={feature.icon} className="w-8 h-8" />
-                {feature.completed && (
-                  <FaCheckCircle className="text-green-200 text-xl" />
-                )}
-                {feature.count && feature.count >= 0 ? (
-                  <p className="text-white text-2xl">{feature.count}</p>
-                ) : null}
-              </div>
-              <div className="mt-4 flex justify-between items-center">
-                <span className="font-medium">{feature.name}</span>
-                { feature.view_route && <img
-                  src="/images/login.png"
-                  className="w-6 h-6 cursor-pointer"
-                  
-                  onClick={() => {
-                    if (
-                      feature.view_route ===
-                      'https://www.gov.uk/calculate-your-holiday-entitlement'
-                    ) {
-                      window.open(feature.view_route, "_blank");
-                    } else {
-                      navigate(`/hrms/${feature.view_route}`);
-                    }
-                  }}
-                />}
-              </div>
+              Dashboard
+            </motion.h1>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex items-center text-yellow-100"
+            >
+              <Calendar className="w-5 h-5 mr-2" />
+              <span>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Blank Reports Section */}
+        {isDocuments && (
+          <div className="container mx-auto px-6">
+            <div className="relative -mt-16 mb-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-white rounded-2xl shadow-lg p-6"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-yellow-100 rounded-lg">
+                    <Download className="w-5 h-5 text-yellow-600" />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-800">Blank Reports</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {blankReports.map((report, index) => (
+                    <BlankReportCard
+                      key={index}
+                      title={report.title}
+                      href={report.href}
+                    />
+                  ))}
+                </div>
+              </motion.div>
             </div>
-          ))}
+          </div>
+        )}
+
+        {/* Dashboard Features Grid */}
+        <div className="container mx-auto px-6 -mt-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {dashboard.map((feature, index) => (
+              <FeatureCard
+                key={index}
+                feature={feature}
+                navigate={navigate}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

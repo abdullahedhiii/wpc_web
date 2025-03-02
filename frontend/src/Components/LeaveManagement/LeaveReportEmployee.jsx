@@ -3,7 +3,7 @@ import { useSidebarContext } from "../../contexts/SidebarContext";
 import DataTable from "../DataTable";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
-
+import {motion} from 'framer-motion';
 
 const LeaveReportEmployee = () =>{
     const {isSideBarOpen} = useSidebarContext();
@@ -42,14 +42,32 @@ const LeaveReportEmployee = () =>{
     const columns = ['Sl No.','Employee Code','Employee Name','Leave Type','Date of Application','Date(s)','Duration (Days)','Status']
 
    return(
-    <div className="p-12">
-    <p className="text-[12px] text-gray-600">
-      Home
-      <span className="mx-2">/</span>
-      Employee
-      <span className="mx-2 text-tt">/ Leave Report Employee Wise</span>
-    </p>
-    <div className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+    {/* Header Section */}
+    <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col gap-1">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-2xl font-bold text-white"
+          >
+            Leave Report
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-yellow-100 text-sm"
+          >
+            View Employee Leave Report(date range)
+          </motion.p>
+        </div>
+      </div>
+      
+    </div>
+    <div className={`mt-16 mr-16 ml-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
       <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label className="block text-[12px] font-medium text-gray-700">
@@ -114,7 +132,7 @@ const LeaveReportEmployee = () =>{
         </button>
         </div>
 </div>
-<div className="mt-8">
+<div className="p-16">
         <DataTable
           title="Employee Leave Report"
           fields={columns}

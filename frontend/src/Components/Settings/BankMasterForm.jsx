@@ -31,12 +31,18 @@ const BankMasterForm = () => {
     {
         name : "Bank_Name",
         label : "Bank Name",
-        type : "text"
+        type : "text",
+        required : true
+
     }
   ];
   
   const handleSubmit = async(e) => {
     e.preventDefault();
+    if(!bank_id && orgBanks.find((ele) => ele["Bank Name"].toLowerCase() === data.Bank_Name.toLowerCase())){
+      alert('Bank with this name already exists in your organisation');
+      return;
+    }
     const isUpdate = Boolean(bank_id);
     const send_data = isUpdate ? {...data,isUpdate,bank_id} : {...data,isUpdate};
     try{

@@ -496,17 +496,12 @@ module.exports.getOrganisations = async (req, res) => {
       "Sl. No.": 1,
       "Organisation Name": organisation.Company_name,
       "Organisation Address":
-        organisation.Address_Line1 +
-        "," +
-        organisation.Address_Line2 +
-        "," +
-        organisation.Address_Line3 +
-        "," +
-        organisation.Address_City_County +
-        "," +
-        organisation.Address_Postcode +
-        "," +
-        organisation.Address_Country,
+       [organisation.Address_Line1 ,
+        organisation.Address_Line2 ,
+        organisation.Address_Line3 ,
+        organisation.Address_City_County ,
+        organisation.Address_Postcode ,
+        organisation.Address_Country].filter(Boolean).join(' '),
       Website: organisation.Company_Website,
       "Email ID": organisation.Company_OrganisationEmail,
       "Phone No.": organisation.Company_Contact,
@@ -1343,22 +1338,44 @@ module.exports.getVisitors = async (req, res) => {
 };
 
 module.exports.addShift = async (req, res) => {
-  const organisation_id = req.param.id;
+  const organisation_id = req.params.id; // Fix: Changed from req.param.id to req.params.id
   const { data, dep_id, des_id } = req.body;
+
   try {
-    const newShift = await Shift.create({
-      department_id: dep_id,
-      designation_id: des_id,
-      work_in: data.work_in,
-      work_out: data.work_out,
-      break_start: data.break_start,
-      break_end: data.break_end,
-      description: data.description,
+    // Check if a shift already exists for the given department and designation
+    const existingShift = await Shift.findOne({
+      where: { department_id: dep_id, designation_id: des_id },
     });
-    return res.status(201).json({
-      message: "new shift created successfully",
-      shift: newShift,
-    });
+
+    if (existingShift) {
+      await existingShift.update({
+        work_in: data.work_in,
+        work_out: data.work_out,
+        break_start: data.break_start,
+        break_end: data.break_end,
+        description: data.description,
+      });
+
+      return res.status(201).json({
+        message: "Shift updated successfully",
+        shift: existingShift,
+      });
+    } else {
+      const newShift = await Shift.create({
+        department_id: dep_id,
+        designation_id: des_id,
+        work_in: data.work_in,
+        work_out: data.work_out,
+        break_start: data.break_start,
+        break_end: data.break_end,
+        description: data.description,
+      });
+
+      return res.status(201).json({
+        message: "New shift created successfully",
+        shift: newShift,
+      });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -1447,6 +1464,7 @@ module.exports.getShifts = async (req, res) => {
                 Sunday: offDay.sunday,
               }
             : {},
+          "Action" : "Edit",
         };
 
         return shiftDetail;
@@ -1464,23 +1482,50 @@ module.exports.getShifts = async (req, res) => {
 
 module.exports.addLatePolicy = async (req, res) => {
   const { data, dep_id, des_id } = req.body;
-  console.log('adding late policy ',data,dep_id,des_id);
+  console.log('Adding late policy:', data, dep_id, des_id);
+
   try {
-    const newPolicy = await LatePolicy.create({
-      department_id: dep_id,
-      designation_id: des_id,
-      shift_code: data.shift_code,
-      days: data.days,
-      period: data.period,
-      salary_days: data.salary_days,
+    // Check if a policy already exists
+    let existingPolicy = await LatePolicy.findOne({
+      where: {
+        department_id: dep_id,
+        designation_id: des_id,
+        shift_code: data.shift_code,
+      },
     });
-    console.log('late polocy created ');
-    return res.status(200).json({
-      message: "new shift created successfully",
-      policy: newPolicy,
-    });
+
+    if (existingPolicy) {
+      // Update the existing policy
+      await existingPolicy.update({
+        days: data.days,
+        period: data.period,
+        salary_days: data.salary_days,
+      });
+
+      console.log('Late policy updated');
+      return res.status(200).json({
+        message: "Late policy updated successfully",
+        policy: existingPolicy,
+      });
+    } else {
+      // Create a new policy
+      const newPolicy = await LatePolicy.create({
+        department_id: dep_id,
+        designation_id: des_id,
+        shift_code: data.shift_code,
+        days: data.days,
+        period: data.period,
+        salary_days: data.salary_days,
+      });
+
+      console.log('Late policy created');
+      return res.status(201).json({
+        message: "New late policy created successfully",
+        policy: newPolicy,
+      });
+    }
   } catch (error) {
-    console.error(error,'in laete policy');
+    console.error('Error in late policy:', error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1516,14 +1561,14 @@ module.exports.getLatePolicies = async (req, res) => {
 
           if (latePolicy) {
             result.push({
-              id: LatePolicy.id,
+              id: latePolicy.id,
               Department: department.department_name,
               Designation: designation.designation_name,
               "Shift Code": shift.shift_code,
               "Max Grace Period": latePolicy.period,
               "No. of Days Allowed": latePolicy.days,
               "No. of Day Salary Deducted": latePolicy.salary_days,
-              Action: "",
+              Action: "Edit",
             });
           }
         }
@@ -1540,26 +1585,53 @@ module.exports.getLatePolicies = async (req, res) => {
 module.exports.addOffDay = async (req, res) => {
   const id = req.params.id;
   const { data } = req.body;
+
   try {
-    const new_entry = await ShiftOffDay.create({
-      shift_code: data.shift_code,
-      monday: data.Monday,
-      tuesday: data.Tuesday,
-      wednesday: data.Wednesday,
-      thursday: data.Thursday,
-      friday: data.Friday,
-      saturday: data.Saturday,
-      sunday: data.Sunday,
+    // Check if off day entry already exists for the given shift_code
+    let existingEntry = await ShiftOffDay.findOne({
+      where: { shift_code: data.shift_code },
     });
-    return res.status(201).json({
-      message: "new shift off day created successfully",
-      days: new_entry,
-    });
+
+    if (existingEntry) {
+      // Update existing record
+      await existingEntry.update({
+        monday: data.Monday,
+        tuesday: data.Tuesday,
+        wednesday: data.Wednesday,
+        thursday: data.Thursday,
+        friday: data.Friday,
+        saturday: data.Saturday,
+        sunday: data.Sunday,
+      });
+
+      return res.status(201).json({
+        message: "Shift off days updated successfully",
+        days: existingEntry,
+      });
+    } else {
+      // Create a new entry if not found
+      const newEntry = await ShiftOffDay.create({
+        shift_code: data.shift_code,
+        monday: data.Monday,
+        tuesday: data.Tuesday,
+        wednesday: data.Wednesday,
+        thursday: data.Thursday,
+        friday: data.Friday,
+        saturday: data.Saturday,
+        sunday: data.Sunday,
+      });
+
+      return res.status(201).json({
+        message: "New shift off day created successfully",
+        days: newEntry,
+      });
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Error in adding/updating shift off days:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 module.exports.uploadDocuments = async (req, res) => {
   try {
@@ -1808,7 +1880,6 @@ module.exports.getEmployeePage = async (req, res) => {
           .join(", "),
         Action: [
           { label: "Edit", route: `addEmployee/${employee.employee_code}` },
-          { label: "Delete", route: `addEmployee/${employee.employee_code}` },
         ],
       };
     });
@@ -2541,12 +2612,11 @@ module.exports.getOrgDocuments = async(req,res) => {
 }
 
 module.exports.createUser = async (req,res) => {
-  console.log('USer creation endpoint hit');
-  console.log(req.body);
+
   try{
-  const existingUser = await User.findOne({ where: { email:req.body.email } });
+  const existingUser = await User.findOne({ where: { email:req.body.email,employee_code : req.body.employee_code } });
     if (existingUser) {
-      return res.status(400).json({ error: 'User already exists.' });
+      return res.status(400).json({ message: 'User already exists.' });
   }
   const newUser = await User.create({
     ...req.body,
@@ -2611,23 +2681,41 @@ module.exports.getUsers = async (req,res) => {
          return res.status(500).json({error : 'Internal server error'});
      }
 }
-module.exports.grantRights = async (req,res) => {
-    console.log(req.body);
-    try{
-        await UserRole.create({
-          user_id : req.body.email,
-          sub_module_id : req.body.module,
-          feature_id : req.body.feature,
-          right : req.body.right
-        });
-        return res.status(200).json({message : 'User role created'});
+module.exports.grantRights = async (req, res) => {
+  console.log(req.body);
+  
+  try {
+    // Check if the user role already exists
+    const existingRole = await UserRole.findOne({
+      where: {
+        user_id: req.body.email,
+        sub_module_id: req.body.module,
+        feature_id: req.body.feature,
+        right: req.body.right
+      }
+    });
 
+    if (existingRole) {
+      console.log('role existss');
+      return res.status(400).json({ message: "User role already assigned!" });
     }
-    catch(err){
-      console.log(err);
-      return res.status(500).json({error : 'Internal server error'});
+
+    // Create a new user role if it does not exist
+    await UserRole.create({
+      user_id: req.body.email,
+      sub_module_id: req.body.module,
+      feature_id: req.body.feature,
+      right: req.body.right
+    });
+
+    return res.status(200).json({ message: "User role created" });
+
+  } catch (err) {
+    console.error("Error granting rights:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 module.exports.getUserRoles = async (req, res) => {
   const id = req.params.id;

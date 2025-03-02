@@ -10,9 +10,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
   const { modules, setSelectedModule, setSubFeature, setSubModule } = useModuleContext()
   const [isLoading, setIsLoading] = useState(true)
-  const { companyData } = useCompanyContext()
   const { user } = useSelector((state) => state.user)
-  const from = "/payroll"
 
   useEffect(() => {
     if (Array.isArray(modules) && modules.length > 0) {
@@ -21,10 +19,18 @@ const Dashboard = () => {
   }, [modules])
   
   const handleModuleSelect = (module) => {
+    try{
+        console.log(module);
     setSelectedModule(module)
     setSubFeature(null)
     setSubModule(null)
-    module.name === "Payroll" ? navigate(from) : navigate(`/hrms/${module.next_route}`)
+    console.log('navigatingg' ,module.next_route);
+    navigate(`/hrms/${module.next_route}`)
+    console.log('Could not ')
+    }
+  catch(err){
+    console.log(err);
+  }
   }
 
   if (isLoading) {

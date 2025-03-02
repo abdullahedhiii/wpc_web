@@ -14,7 +14,7 @@ const DesignationForm = () => {
    fetchDepartments();
   },[]);
   const [data, setData] = useState({
-    department_name: departmentData[0]['Department Name'],
+    department_name: departmentData.length > 0 ? departmentData[0]['Department Name'] : '',
     designation_name: "",
   });
 
@@ -42,16 +42,24 @@ const DesignationForm = () => {
         label: department["Department Name"],
         value: department["Department Name"],
       })),
+      required : true
+
     },
     {
       name: "designation_name",
       label: "Designation Name",
       type: "text",
+      required : true
+
     },
   ];
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(!designation_id && designationData.find((ele) => ele['Department Name'].toLowerCase() === data.department_name.toLowerCase() &&
+     ele['Designation'].toLowerCase() === data.designation_name.toLowerCase())){
+      alert ('The entered designation already exists in the entered department');
+      return;
+     }
     const isUpdate = Boolean(designation_id);
     const DataTosend = isUpdate ? {...data,isUpdate,designation_id} : {...data,isUpdate};
 

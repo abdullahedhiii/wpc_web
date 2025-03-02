@@ -26,20 +26,24 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
       case "select":
         return (
           <select
-            name={field.name}
-            value={data[field.name] || ""}
-            onChange={(e) => handleChange(e, field)}
-            className={`${baseInputStyles} pr-10 appearance-none bg-right bg-no-repeat cursor-pointer
-              bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22%3E%3Cpath stroke=%22%236B7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22m6 8 4 4 4-4%22/%3E%3C/svg%3E')]
-              bg-[length:1.5rem_1.5rem]
-            `}
-          >
-            {field.options?.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+  name={field.name}
+  value={data[field.name] || ""}
+  onChange={(e) => handleChange(e, field)}
+  disabled={field.readOnly} // Use disabled instead of readOnly
+  className={`${baseInputStyles} pr-10 appearance-none bg-right bg-no-repeat cursor-pointer
+    bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 fill=%22none%22 viewBox=%220 0 20 20%22%3E%3Cpath stroke=%22%236B7280%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 stroke-width=%221.5%22 d=%22m6 8 4 4 4-4%22/%3E%3C/svg%3E')]
+    bg-[length:1.5rem_1.5rem]
+  `}
+  required={field.required}
+>
+  <option value="" disabled>Select</option>
+  {field.options?.map((option) => (
+    <option key={option.value} value={option.value}>
+      {option.label}
+    </option>
+  ))}
+</select>
+
         )
       case "checkbox":
         return (
@@ -50,6 +54,9 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
               checked={data[field.name] || false}
               onChange={(e) => handleChange(e, field)}
               className="peer sr-only"
+              required = {field.required}
+              readOnly={field.readOnly}
+
             />
             <div
               className="h-6 w-6 rounded-md border border-gray-300 bg-white transition-all 
@@ -73,6 +80,8 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
               accept={field.accept}
               readOnly={field.readOnly}
               id={field.name}
+              required = {field.required}
+
             />
             <label htmlFor={field.name} className={`${baseInputStyles} flex items-center gap-2 cursor-pointer`}>
               <i className="las la-cloud-upload-alt text-xl text-yellow-500" />
@@ -89,6 +98,8 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
             className={`${baseInputStyles} min-h-[100px] ${field.readOnly ? "bg-gray-100" : ""}`}
             readOnly={field.readOnly}
             placeholder={field.placeholder}
+            required = {field.required}
+
           />
         )
       default:
@@ -101,6 +112,8 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
             className={`${baseInputStyles} ${field.readOnly ? "bg-gray-100" : ""}`}
             readOnly={field.readOnly}
             placeholder={field.placeholder}
+            required = {field.required}
+
           />
         )
     }

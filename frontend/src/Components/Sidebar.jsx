@@ -159,9 +159,9 @@ const Sidebar = ({ isOpen, setOpen }) => {
                   title="Main Dashboard"
                 >
                   <img
-                    src="/images/home.png"
+                    src="/images/home.jpg"
                     alt="home Icon"
-                    className="w-5 h-5"
+                    className="w-6 h-6"
                   />
                 </button>
                 
@@ -195,9 +195,9 @@ const Sidebar = ({ isOpen, setOpen }) => {
                   title="Main Dashboard"
                 >
                   <img
-                    src="/images/home.png"
+                    src="/images/home.jpg"
                     alt="home Icon"
-                    className="w-5 h-5"
+                    className="w-8 h-8"
                   />
                 </button>
                 

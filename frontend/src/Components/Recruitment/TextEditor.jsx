@@ -1,6 +1,89 @@
 import React from "react";
 import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; // Import styles
+import "react-quill/dist/quill.snow.css";
+import { motion } from "framer-motion";
+
+// Custom styles to be injected into the head
+const customStyles = `
+  .ql-toolbar.ql-snow {
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #FCD34D !important;
+    background: #FFFBEB;
+    padding: 12px;
+  }
+
+  .ql-container.ql-snow {
+    border-radius: 0 0 8px 8px;
+    border: 1px solid #FCD34D !important;
+    border-top: none !important;
+    background: #FFFFFF;
+    min-height: 200px;
+  }
+
+  .ql-editor {
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 16px;
+  }
+
+  .ql-editor:focus {
+    box-shadow: 0 0 0 2px #FEF3C7;
+  }
+
+  .ql-toolbar button {
+    margin: 0 2px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .ql-toolbar button:hover {
+    background-color: #FEF3C7;
+  }
+
+  .ql-toolbar button.ql-active,
+  .ql-toolbar button:focus {
+    background-color: #F59E0B;
+    color: white;
+  }
+
+  .ql-toolbar button.ql-active .ql-stroke,
+  .ql-toolbar button:focus .ql-stroke {
+    stroke: white !important;
+  }
+
+  .ql-toolbar button.ql-active .ql-fill,
+  .ql-toolbar button:focus .ql-fill {
+    fill: white !important;
+  }
+
+  .ql-formats {
+    margin-right: 12px !important;
+  }
+
+  .ql-tooltip {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #FCD34D !important;
+  }
+
+  .ql-tooltip input[type="text"] {
+    border-radius: 4px;
+    border: 1px solid #FCD34D;
+    padding: 4px 8px;
+  }
+
+  .ql-tooltip a.ql-action,
+  .ql-tooltip a.ql-remove {
+    color: #D97706;
+    font-weight: 500;
+  }
+
+  .ql-tooltip a.ql-action:hover,
+  .ql-tooltip a.ql-remove:hover {
+    text-decoration: underline;
+  }
+`;
 
 const modules = {
   toolbar: [
@@ -33,22 +116,49 @@ const formats = [
   "video",
 ];
 
-const TextEditor = ({ content, setContent }) => {
+const TextEditor = ({ content, setContent, label }) => {
+  // Inject custom styles
+  React.useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = customStyles;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
   return (
-    <div className="mt-4">
-      <ReactQuill
-        value={content} 
-        onChange={setContent}  
-        modules={modules}
-        formats={formats}
-        theme="snow"
-        style={{
-          minHeight: "100px", 
-          overflowY: "auto",  
-          width: "100%",
-        }}
-      />
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="w-full space-y-2"
+    >
+      {label && (
+        <label className="block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+      )}
+      <div className="relative rounded-lg shadow-sm">
+        <ReactQuill
+          value={content}
+          onChange={setContent}
+          modules={modules}
+          formats={formats}
+          theme="snow"
+          className="rounded-lg transition-all duration-200 hover:shadow-md focus-within:shadow-md focus-within:ring-2 focus-within:ring-yellow-200"
+          style={{
+            minHeight: "200px",
+            maxHeight: "600px",
+          }}
+        />
+        <div className="absolute bottom-3 right-3 text-xs text-gray-400">
+          {content?.length || 0} characters
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

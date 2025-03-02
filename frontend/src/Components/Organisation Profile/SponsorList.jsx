@@ -1,60 +1,105 @@
 
 import { motion } from "framer-motion";
 import { Building2, Users, Award, TrendingUp, MapPin, Shield, CheckCircle2, XCircle, RefreshCcw, Search, ChevronDown, ArrowUpDown } from 'lucide-react';
+import { useEffect,useState } from "react";
+import axios from 'axios';
 
 const SponsorList = () => {
+
+  const [sponsors,setSponsors] = useState([]);
+  const [values,setValues] = useState({
+      newCount : 0,
+      updatedCount : 0,
+  })
+  const fetchSponsors = async () => {
+      try{
+          const response = await axios.get(`/api/getSponsors`);
+          setSponsors(response.data.sponsors);
+          setValues({
+            newCount : response.data.newCount,
+            updatedCount : response.data.updatedCount
+          })
+      }catch(err){
+console.log(err);
+      }
+  }
+
+  useEffect(() => {
+     fetchSponsors();
+  },[]);
+
   const stats = [
     {
       title: "All Sponsors",
-      count: 234,
+      count: sponsors.length,
       icon: Building2,
-      trend: "+12% from last month",
       color: "from-yellow-400 to-amber-500",
     },
     {
       title: "New Sponsors",
-      count: 45,
+      count: values.newCount,
       icon: Users,
-      trend: "+5% from last month",
       color: "from-emerald-400 to-teal-500",
     },
     {
       title: "License Updates",
-      count: 28,
+      count: values.updatedCount,
       icon: Award,
-      trend: "+8% from last month",
       color: "from-blue-400 to-indigo-500",
     },
   ];
 
-  // Dummy data for sponsors table
-  const sponsors = [
-    {
-      id: 1,
-      company: "TechCorp Solutions",
-      location: "New York, USA",
-      licenseTier: "Enterprise",
-      status: "active",
-      lastUpdated: "2024-02-25",
-    },
-    {
-      id: 2,
-      company: "Global Innovations Ltd",
-      location: "London, UK",
-      licenseTier: "Professional",
-      status: "updated",
-      lastUpdated: "2024-02-24",
-    },
-    {
-      id: 3,
-      company: "Future Systems Inc",
-      location: "Tokyo, Japan",
-      licenseTier: "Enterprise",
-      status: "removed",
-      lastUpdated: "2024-02-23",
-    },
-    // Add more dummy data as needed
-  ];
+  const rowsPerPage = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [onDisplaySponsors, setDisplay] = useState([]);
+  
+  useEffect(() => {
+    if (sponsors.length > 0) {
+      setDisplay(sponsors.slice(0, rowsPerPage)); // Show first page initially
+    }
+  }, [sponsors]);
+  
+  const handleNext = () => {
+    if (currentPage < Math.ceil(sponsors.length / rowsPerPage)) {
+      const startIndex = currentPage * rowsPerPage;
+      setDisplay(sponsors.slice(startIndex, startIndex + rowsPerPage));
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      const startIndex = (currentPage - 2) * rowsPerPage;
+      setDisplay(sponsors.slice(startIndex, startIndex + rowsPerPage));
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
+  // // Dummy data for sponsors table
+  // const sponsors = [
+  //   {
+  //     id: 1,
+  //     company: "TechCorp Solutions",
+  //     location: "New York, USA",
+  //     licenseTier: "Enterprise",
+  //     status: "active",
+  //   },
+  //   {
+  //     id: 2,
+  //     company: "Global Innovations Ltd",
+  //     location: "London, UK",
+  //     licenseTier: "Professional",
+  //     status: "updated",
+  //   },
+  //   {
+  //     id: 3,
+  //     company: "Future Systems Inc",
+  //     location: "Tokyo, Japan",
+  //     licenseTier: "Enterprise",
+  //     status: "removed",
+  //   },
+  //   // Add more dummy data as needed
+  // ];
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -112,10 +157,7 @@ const SponsorList = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-500">{stat.title}</p>
                   <h3 className="text-3xl font-bold text-gray-800 mt-2">{stat.count}</h3>
-                  <p className="text-sm text-gray-500 mt-2 flex items-center">
-                    <TrendingUp className="w-4 h-4 text-emerald-500 mr-1" />
-                    {stat.trend}
-                  </p>
+                 
                 </div>
                 <div className={`rounded-full p-4 bg-gradient-to-br ${stat.color}`}>
                   <stat.icon className="w-6 h-6 text-white" />
@@ -181,16 +223,11 @@ const SponsorList = () => {
                       <ArrowUpDown className="w-4 h-4" />
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">
-                    <div className="flex items-center gap-2">
-                      Last Updated
-                      <ArrowUpDown className="w-4 h-4" />
-                    </div>
-                  </th>
+
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {sponsors.map((sponsor, index) => (
+                {onDisplaySponsors.length > 0 ? onDisplaySponsors.map((sponsor, index) => (
                   <motion.tr
                     key={sponsor.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -227,11 +264,9 @@ const SponsorList = () => {
                         {sponsor.status.charAt(0).toUpperCase() + sponsor.status.slice(1)}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(sponsor.lastUpdated).toLocaleDateString()}
-                    </td>
+                  
                   </motion.tr>
-                ))}
+                )) : null}
               </tbody>
             </table>
           </div>
@@ -242,10 +277,14 @@ const SponsorList = () => {
                 Showing 1 to {sponsors.length} of {sponsors.length} sponsors
               </div>
               <div className="flex items-center gap-2">
-                <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <button className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                 onClick={handlePrevious}
+                >
                   Previous
                 </button>
-                <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
+                  onClick={handleNext}
+                >
                   Next
                 </button>
               </div>

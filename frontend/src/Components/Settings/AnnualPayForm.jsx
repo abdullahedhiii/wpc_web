@@ -8,17 +8,17 @@ const AnnualPayForm = () => {
   const navigate = useNavigate();
   const {annual_id} = useParams();
   const {fetchPayGroups,fetchAnnualPays, payGroups,annualPays } = useCompanyContext();
-  
+  console.log(payGroups, ' ',annualPays);
   useEffect(() => {
-   fetchPayGroups();
+    fetchPayGroups();
    fetchAnnualPays()
   },[])
-  
+
   const [data, setData] = useState({
-    paygroup: payGroups[0]['Pay Group'],
+    paygroup: payGroups.length > 0 ? payGroups[0]['Pay Group'] : '',
     annual_pay: 0,
   });
-  
+  console.log(annualPays);
   useEffect(() => {
     if (annual_id) {
         const selectedAnnualPay = annualPays.find(
@@ -42,16 +42,22 @@ const AnnualPayForm = () => {
         label: group["Pay Group"],
         value: group["Pay Group"],
       })),
+      required: true,
     },
     {
       name: "annual_pay",
       label: "Annual Pay",
-      type: "text",
+      type: "text",      required: true,
+
     },
   ];
 
   const handleSubmit = async (e) => {
         e.preventDefault();
+        if(!annual_id && annualPays.find((ele) => ele['Pay Group'] === data.paygroup)){
+           alert('Annual pay with this pay group code is already added,try updating!');
+           return;
+        }
         const isUpdate = Boolean(annual_id);
         const data_send = isUpdate ? {...data,isUpdate,annual_id} : {...data,isUpdate};
         const group = payGroups.find((ele) => ele['Pay Group'] === data.paygroup);
