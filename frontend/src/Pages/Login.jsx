@@ -28,7 +28,7 @@ const Login = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post("/api/login", info);
+      const response = await axios.post("/https://hr-solutions-backend-chi.vercel.app/login", info);
       dispatch(login(response.data.user));
       fetchModules(response.data.user.id, response.data.user.isAdmin);
       fetchOrganisation(response.data.user.id, response.data.user.isAdmin);
