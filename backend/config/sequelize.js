@@ -104,7 +104,7 @@ Module.hasMany(SubModule, { as: 'subModules', foreignKey: 'module_id' });
 SubModule.belongsTo(Module, { as: 'module', foreignKey: 'module_id' });
 
 SubModule.hasMany(Feature, { as: 'features', foreignKey: 'submodule_id' });
-Feature.belongsTo(SubModule, { as: 'submodule', foreignKey: 'submodule_id' });
+Feature.belongsTo(SubModule, { as: 'submodule', foreignKey: 'submodule_id' })
 
 Organisation.hasMany(TradingHour, { as: 'tradingHours', foreignKey: 'organisation_id' });
 TradingHour.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
