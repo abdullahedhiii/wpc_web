@@ -93,8 +93,7 @@ const Profile = () => {
 
         <div className="space-y-8">
           <InfoCard title="Pay Details" icon="fas fa-money-bill-wave">
-            {/* Add pay details here when available */}
-          </InfoCard>
+                      </InfoCard>
 
           <InfoCard title="Bank Details" icon="fas fa-university">
             <InfoItem label="Bank Name" value={profileData.bank_details.bank_name} />

@@ -149,8 +149,7 @@ const LeaveApplication = () => {
             </select>
           </div>
 
-          {/* Leave In Hand (Disabled) */}
-          <div className="flex flex-col">
+                    <div className="flex flex-col">
             <label className="text-gray-700 font-medium">Leave In Hand</label>
             <input
               type="text"
@@ -162,8 +161,7 @@ const LeaveApplication = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
-          {/* From Date */}
-          <div className="flex flex-col">
+                    <div className="flex flex-col">
             <label className="text-gray-700 font-medium">From Date</label>
             <input
               type="date"
@@ -174,8 +172,7 @@ const LeaveApplication = () => {
             />
           </div>
 
-          {/* To Date */}
-          <div className="flex flex-col">
+                    <div className="flex flex-col">
             <label className="text-gray-700 font-medium">To Date</label>
             <input
               type="date"

@@ -179,7 +179,7 @@ data.forEach((row, index) => {
   
       stream.on('finish', () => {
         res.json({ 
-          pdf_url: `http://localhost:${process.env.PORT || 3000}/uploads/${organisation_id}/organisationReport.pdf` 
+          pdf_url: `${process.env.BACKEND_URL}/uploads/${organisation_id}/organisationReport.pdf` 
         });
       });
   
@@ -508,7 +508,7 @@ data.forEach((row, index) => {
       // Return the PDF URL when the stream is finished
       stream.on("finish", () => {
         res.json({
-          pdf_url: `http://localhost:${process.env.PORT || 3000}/uploads/${id}/staffReport.pdf`,
+          pdf_url: `${process.env.BACKEND_URL}/uploads/${id}/staffReport.pdf`,
           message: "Staff report generated successfully",
         })
       })

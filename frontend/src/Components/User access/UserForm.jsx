@@ -68,8 +68,7 @@ const UserForm = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* Header Section */}
-      <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+            <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
@@ -90,8 +89,7 @@ const UserForm = () => {
         </div>
       </div>
   
-      {/* Form Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -99,8 +97,7 @@ const UserForm = () => {
         >
           <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Employee Code */}
-              <div className="space-y-2">
+                            <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Employee Code
                 </label>
@@ -120,8 +117,7 @@ const UserForm = () => {
                 </select>
               </div>
   
-              {/* Employee Name */}
-              <div className="space-y-2">
+                            <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Employee Name
                 </label>
@@ -136,8 +132,7 @@ const UserForm = () => {
                 />
               </div>
   
-              {/* Email */}
-              <div className="space-y-2">
+                            <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Email
                 </label>
@@ -154,8 +149,7 @@ const UserForm = () => {
                 </div>
               </div>
   
-              {/* Password */}
-              <div className="space-y-2">
+                            <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   User Password
                 </label>
@@ -173,8 +167,7 @@ const UserForm = () => {
               </div>
             </div>
   
-            {/* Submit Button */}
-            <motion.div
+                        <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -191,8 +184,7 @@ const UserForm = () => {
           </div>
         </motion.div>
   
-        {/* Optional: Success Message */}
-        {showSuccess && (
+                {showSuccess && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

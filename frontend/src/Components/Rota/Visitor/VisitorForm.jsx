@@ -67,8 +67,7 @@ const VisitorForm = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
       <div className="container mx-auto px-4 py-8">
-        {/* Header Section */}
-        <motion.div
+                <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative flex flex-col items-center mb-12"
@@ -85,8 +84,7 @@ const VisitorForm = () => {
           </div>
         </motion.div>
 
-        {/* Form Section */}
-        <motion.div
+                <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -95,8 +93,7 @@ const VisitorForm = () => {
           <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden">
             <div className="p-8">
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Left Column */}
-                <div className="space-y-6">
+                                <div className="space-y-6">
                   <div>
                     <label className={labelClasses}>
                       <User className="w-4 h-4 text-yellow-500" />
@@ -175,8 +172,7 @@ const VisitorForm = () => {
                   </div>
                 </div>
 
-                {/* Right Column */}
-                <div className="space-y-6">
+                                <div className="space-y-6">
                   <div>
                     <label className={labelClasses}>
                       <Briefcase className="w-4 h-4 text-yellow-500" />
@@ -239,8 +235,7 @@ const VisitorForm = () => {
                   </div>
                 </div>
 
-                {/* Submit Button */}
-                <div className="md:col-span-2 flex justify-center">
+                                <div className="md:col-span-2 flex justify-center">
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
@@ -256,8 +251,7 @@ const VisitorForm = () => {
             </div>
           </div>
 
-          {/* Success Message */}
-          {showSuccess && (
+                    {showSuccess && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

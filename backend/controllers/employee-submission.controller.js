@@ -82,7 +82,7 @@ module.exports.addServiceDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     let existingServiceDetail = await ServiceDetail.findOne({
@@ -133,11 +133,11 @@ module.exports.addEducationalDetails = async (req, res) => {
     const file2 = req.files?.certificate_document ? req.files.certificate_document[0].filename : null;
 
     const f1 = file1
-      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${file1}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${file1}`
       : null;
 
     const f2 = file2
-      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${file2}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${file2}`
       : null;
 
     const { id, ...otherDetails } = req.body;
@@ -407,9 +407,7 @@ module.exports.addContact = async (req, res) => {
 
     // Construct file URL if a new file is uploaded
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     // Check if contact details exist
@@ -506,9 +504,7 @@ module.exports.addPassport = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : undefined;
 
     // Check if a PassportDetail record already exists
@@ -555,15 +551,11 @@ module.exports.addVisa = async (req, res) => {
     const [organisationId, employeeCode] = req.params.id.split(".");
 
     const frontUrl = frontFileName
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${frontFileName}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${frontFileName}`
       : null;
 
     const backUrl = backFileName
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${backFileName}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${backFileName}`
       : null;
 
     // Ensure employeeCode exists
@@ -610,9 +602,7 @@ module.exports.addEsus = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     let document = await EsusDetail.findOne({
@@ -647,9 +637,7 @@ module.exports.addDBS = async (req, res) => {
     const [organisationId, employeeCode] = req.params.id.split(".");
     console.log(req.body,employeeCode,'dbss ');
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     // Check if an entry already exists for the employee
@@ -690,7 +678,7 @@ module.exports.add_other_details = async (req, res) => {
     const { id, isDefault, ...otherDetails } = req.body;
 
     const fileUrl = req.file
-      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     let existingDetail;
@@ -755,9 +743,7 @@ module.exports.national_data = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
     const fileUrl = req.file
-      ? `http://localhost:${
-          process.env.PORT || 3000
-        }/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
 
@@ -803,7 +789,7 @@ module.exports.add_other_document = async (req, res) => {
 
     // Construct file URL if a new file is uploaded
     const fileUrl = req.file
-      ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+      ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
 
     let existingDocument;

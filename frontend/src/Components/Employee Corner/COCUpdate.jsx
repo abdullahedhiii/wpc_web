@@ -535,8 +535,7 @@ const nationalityOptions = [
                 </div>
               </div>
             ))}
-            {/* Add Submit Button */}
-            <div className="mt-6">
+                        <div className="mt-6">
               <button
                 type="submit"
                 className="w-full bg-yellow-600 text-white py-2 rounded-md text-lg hover:bg-yellow-700"

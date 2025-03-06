@@ -168,8 +168,7 @@ const StatisticsDashboard = ({ title }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* Header */}
-      <div className="relative h-64 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-b-[3rem] shadow-lg overflow-hidden">
+            <div className="relative h-64 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-b-[3rem] shadow-lg overflow-hidden">
         <div className="absolute inset-0 bg-[url('/path/to/pattern.png')] opacity-10" />
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative px-8 py-12">
@@ -192,8 +191,7 @@ const StatisticsDashboard = ({ title }) => {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="container mx-auto px-6 -mt-32 relative z-10 pb-12">
+            <div className="container mx-auto px-6 -mt-32 relative z-10 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

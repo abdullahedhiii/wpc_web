@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { useCompanyContext } from "../../contexts/CompanyContext";
-
+import { ChevronRight, Home } from 'lucide-react'
 import TextEditor from "./TextEditor";
 import axiosInstance from "../../../axiosInstance";
-import { data, useNavigate } from "react-router-dom";
+import { data, useNavigate,Link } from "react-router-dom";
 
 const JobListForm = () => {
   const { isSideBarOpen } = useSidebarContext();
@@ -95,12 +95,20 @@ const JobListForm = () => {
 
   return (
     <div className="m-12">
-      <p className="text-[12px] text-gray-600">
-        Home
-        <span className="mx-2">/</span>
-        Job List
-        <span className="mx-2 text-tt">/ New Job List</span>
-      </p>
+
+            <nav className="flex items-center space-x-1 text-sm font-medium text-gray-500 mb-6">
+        <Link to="/hrms/employeeDashboard" className="flex items-center gap-1.5 text-gray-500 hover:text-yellow-600 transition-colors">
+          <Home className="h-4 w-4" />
+          <span>Home</span>
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <Link to="/hrms/recruitmentdashboard" className="text-gray-500 hover:text-yellow-600 transition-colors">
+          Recruitment
+        </Link>
+        <ChevronRight className="h-4 w-4" />
+        <span className="text-gray-900">Job Listing Form</span>
+      </nav>
+
 
       <div
         className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
@@ -113,7 +121,7 @@ const JobListForm = () => {
         </div>
         <hr className="my-4 border-t-1 border-gray-200" />
 
-        <div className="p-4 mt-4">
+        <form onSubmit={handleJobPost} className="p-4 mt-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {formFields.map((field, index) => (
               <div key={index} className="flex flex-col">
@@ -159,9 +167,9 @@ const JobListForm = () => {
             />
           </div>
 
-            <button onClick={handleJobPost} className="rounded mt-2 px-4 py-2 bg-yellow-900 text-white">submit </button>
+            <button  type = "submit" className="rounded mt-2 px-4 py-2 bg-yellow-900 text-white">submit </button>
 
-        </div>
+        </form>
 
       </div>
     </div>

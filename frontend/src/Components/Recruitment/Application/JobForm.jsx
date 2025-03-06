@@ -83,8 +83,7 @@ export default function JobForm() {
   return (
     <motion.div initial="hidden" animate="visible" variants={containerVariants} className="mt-12 max-w-4xl mx-auto">
       <div className="relative">
-        {/* Gold accent bar */}
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-t-lg"></div>
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-t-lg"></div>
 
         <div className="p-8 pt-10 bg-gradient-to-b from-yellow-50 to-white shadow-xl rounded-lg border border-yellow-100">
           <motion.div variants={itemVariants} className="flex items-center space-x-2 mb-2">

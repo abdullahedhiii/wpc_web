@@ -570,9 +570,9 @@ const EmployeeForm = () => {
 
   useEffect(() => {
     if (formData.service_details.department) {
-      const dept = departmentData.find(
+      const dept =departmentData.length > 0? departmentData.find(
         (ele) => ele["Department Name"] === formData.service_details.department
-      );
+      ): null;
       if (dept) {
         setFormData((prev) => ({
           ...prev,
@@ -602,11 +602,11 @@ const EmployeeForm = () => {
     }
   }, [formData.service_details.designation]);
 
-  const departmentOptions = departmentData.map(
+  const departmentOptions = departmentData.length > 0 ? departmentData.map(
     (department) => department["Department Name"]
-  );
-  const typeOptions = employeeTypes.map((type) => type["Employment Type"]);
-  const payGroupoptions = payGroups.map((group) => group["Pay Group"]);
+  ) : null;
+  const typeOptions = employeeTypes.length > 0 ? employeeTypes.map((type) => type["Employment Type"]) : null;
+  const payGroupoptions = payGroups.length > 0 ? payGroups.map((group) => group["Pay Group"]) : null;
   const payment_type_options = paymentTypes.map((type) => type["Payment Type"]);
   const tax_options = taxMasters.map((opt) => opt["Tax Code"]);
   const bank_options = orgBanks.map((opt) => opt["Bank Name"]);
@@ -1357,7 +1357,26 @@ const EmployeeForm = () => {
       other_documents: updateDocument,
     }));
   };
-
+  const validatePage = (currentStep) => {
+    let isValid = true;
+    let errors = ""; // Store field validation errors
+  
+    if (currentStep === 1) {
+      const { employee_code, fname, lname, email, contact_1 } = formData.personal_details;
+      if (!fname) errors = errors + "Employee First name,";
+      if (!lname) errors =  errors + " Last name,";
+      if (!email) errors = errors +  " Email,";
+      if (!contact_1) errors = errors+  " and Primary contact(1) is required";
+    }
+  
+    if (errors.length > 0) {
+      alert(errors);
+      isValid = false;
+    }
+  
+    return isValid;
+  };
+  
   const handleOtherDetailsChange = (index, field, value) => {
     const otherDetails = [...formData.other_details];
     otherDetails[index][field] = value;
@@ -1414,9 +1433,13 @@ const EmployeeForm = () => {
             }
           }
         }
-        const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type).id;
 
-
+        const emplo_type = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type);
+        if(!emplo_type){
+          alert ('An error occured while processing employement type');
+          return;
+        }
+        serviceDetailsFormData.append('employment_type_id',emplo_type.id);
         await axiosInstance.post(`/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -1609,7 +1632,7 @@ const EmployeeForm = () => {
         });
 
     } catch (error) {
-       alert(error.response?.data?.message || 'An error occured');
+       alert(error.response?.data?.message || 'An error occured ' + error );
     }
   };
 
@@ -2546,7 +2569,10 @@ const EmployeeForm = () => {
           {currentPage < 8 ? (
             <button
               className="px-4 py-2 text-white bg-yellow-800 rounded"
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={() => {
+                if(!validatePage(currentPage)) return;  
+                setCurrentPage(currentPage + 1)
+              }}
             >
               Next
             </button>

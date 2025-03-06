@@ -118,7 +118,7 @@ import COCUpdateEmployee from "./Components/Employee Corner/COCUpdate";
 import LeaveReport from "./Components/LeaveManagement/LeaveReport";
 import LeaveReportEmployee from "./Components/LeaveManagement/LeaveReportEmployee";
 import ArchiveStaffReport from "./Components/Documents/ArchiveStaffReport";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../axiosInstance";
 import { useModuleContext } from "./contexts/ModuleContext";
 import { useCompanyContext } from "./contexts/CompanyContext";
@@ -129,20 +129,21 @@ import AbsentReport from "./Components/Attendance/AbsentReport";
 import SponsorList from "./Components/Organisation Profile/SponsorList";
 import GenerateOfferLetter from "./Components/Recruitment/GenerateLetterList";
 import PaymentPage from "./Pages/PaymentPage";
+
+import { FaBars } from "react-icons/fa"; // Import the hamburger menu icon
+
 const MainLayout = () => {
-  const {isSidebarOpen, setIsSidebarOpen} = useSidebarContext();
-  const [logoVisible, setLogoVisible] = useState(true);
-  const [isMobile,setMobile] = useState(false);
-  const location  = useLocation();
-  const isDashboard = location.pathname.includes('employeeDashboard');
+  const { isSidebarOpen, setIsSidebarOpen } = useSidebarContext();
+  const [isMobile, setMobile] = useState(false);
+  const location = useLocation();
+
   const handleResize = () => {
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
-      setLogoVisible(true);
-      setMobile(true)
+      setMobile(true);
     } else {
       setIsSidebarOpen(true);
-      setMobile(false)
+      setMobile(false);
     }
   };
 
@@ -153,55 +154,44 @@ const MainLayout = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  
+  const isDashboard = location.pathname.includes('/hrms/employeeDashboard');
   return (
     <div className="min-h-screen flex flex-col">
-      {/* <div
-        className={`fixed top-0 left-0 right-0 z-50 ${
-          isSidebarOpen && isMobile ? "pl-64" : "pl-0"
-        }`}
-      >${isDashboard ? 'pt-0' : 'pt-12'}
-        {!isDashboard && <Navbar
-          isOpen={isSidebarOpen}
-          isLogo={logoVisible}
-          closeSideBar={setIsSidebarOpen}
-          closeLogo={setLogoVisible}
-        />}
-      </div> */}
-  
-      <div className={`flex flex-1 `}>
+      {isMobile && !isSidebarOpen && (
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className={`absolute top-4 left-4 z-50 ${isDashboard ? "text-gray-600": "text-white"}`}
+        >
+          <FaBars size={24} />
+        </button>
+      )}
+
+      <div className="flex flex-1">
         <div
           className={`${
             isSidebarOpen && isMobile ? "fixed top-0 left-0 bottom-0" : "top-16"
           } z-40 bg-white shadow-lg overflow-y-auto transition-all duration-300`}
         >
-          {(!isMobile || isSidebarOpen) && (
-            <Sidebar
-              isOpen={isSidebarOpen}
-              setOpen={() => {
-                setIsSidebarOpen(true);
-                setLogoVisible(true);
-              }}
-            />
-          )}
+          {(!isMobile || isSidebarOpen) && <Sidebar isOpen={isSidebarOpen} />}
         </div>
-  
+
         <div
           className={`flex flex-col flex-grow transition-all duration-300 ${
-            isSidebarOpen ? "ml-64" : innerWidth > 1024 ? "ml-20" : "ml-0"
+            isSidebarOpen ? "ml-64" : window.innerWidth > 1024 ? "ml-20" : "ml-0"
           }`}
         >
           <main className="flex-grow">
             <Outlet />
           </main>
-  
           <Footer />
         </div>
       </div>
     </div>
   );
-  
 };
+
+
 
 const SimpleLayout = () => {
   return (
@@ -1110,6 +1100,7 @@ const router = createBrowserRouter([
 ]);
 function App() {
   const dispatch = useDispatch();
+  const {user} = useSelector((state) => state.user);
   const { fetchModules } = useModuleContext();
   const { fetchOrganisation } = useCompanyContext();
   const [loading, setLoading] = useState(true);

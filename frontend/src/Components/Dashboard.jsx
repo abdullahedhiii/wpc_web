@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
@@ -42,17 +41,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="text-yellow-600 text-2xl font-semibold">HR Dashboard</div>
-            <div className="text-gray-600 text-sm">
-              Welcome, {user.first_name} | {new Date().toLocaleDateString()}
-            </div>
-          </div>
-        </div>
-      </header> */}
-
+      
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-12 text-center">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">Welcome to Your HR Hub</h1>

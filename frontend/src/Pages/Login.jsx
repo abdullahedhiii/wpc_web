@@ -57,8 +57,7 @@ const Login = () => {
         className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden"
       >
         <div className="flex flex-col md:flex-row">
-          {/* Left Section */}
-          <div className="md:w-1/2 bg-yellow-500 p-8 md:p-12 text-white relative overflow-hidden">
+                    <div className="md:w-1/2 bg-yellow-500 p-8 md:p-12 text-white relative overflow-hidden">
             <div className="relative z-10">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -106,15 +105,13 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Decorative Elements */}
-            <div className="absolute top-0 left-0 w-full h-full">
+                        <div className="absolute top-0 left-0 w-full h-full">
               <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-400 rounded-full opacity-20 transform translate-x-1/2 -translate-y-1/2" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-yellow-400 rounded-full opacity-20 transform -translate-x-1/2 translate-y-1/2" />
             </div>
           </div>
 
-          {/* Right Section */}
-          <div className="md:w-1/2 p-8 md:p-12 bg-white">
+                    <div className="md:w-1/2 p-8 md:p-12 bg-white">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

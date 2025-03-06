@@ -127,4 +127,3 @@ cron.schedule("0 0 * * *", () => {
   console.log("Running scheduled CSV fetch...");
   downloadCSV();
 });
-

@@ -121,23 +121,21 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
-      {/* Breadcrumb */}
-      <nav className="flex items-center space-x-1 text-sm font-medium text-gray-500 mb-6">
-        <Link to="/home" className="flex items-center gap-1.5 text-gray-500 hover:text-yellow-600 transition-colors">
+            <nav className="flex items-center space-x-1 text-sm font-medium text-gray-500 mb-6">
+        <Link to="/hrms/employeeDashboard" className="flex items-center gap-1.5 text-gray-500 hover:text-yellow-600 transition-colors">
           <Home className="h-4 w-4" />
           <span>Home</span>
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <Link to="/home/department" className="text-gray-500 hover:text-yellow-600 transition-colors">
-          Department
+        <Link to="/hrms/settingsdashboard" className="text-gray-500 hover:text-yellow-600 transition-colors">
+          Settings
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <span className="text-gray-900">Add New</span>
+        <span className="text-gray-900">{title}</span>
       </nav>
 
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        {/* Header */}
-        <div className="border-b border-gray-200 bg-gradient-to-r from-yellow-50 to-yellow-100">
+                <div className="border-b border-gray-200 bg-gradient-to-r from-yellow-50 to-yellow-100">
           <div className="flex items-center gap-3 px-6 py-4">
             <i className={`${icon} text-yellow-600 text-2xl`} />
             <h1 className="text-xl font-bold text-gray-900">{title}</h1>

@@ -73,8 +73,7 @@ const UserRoleForm = () => {
     };
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* Header Section */}
-      <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+            <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
@@ -96,15 +95,13 @@ const UserRoleForm = () => {
       </div>
   
     
-        {/* Form Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="bg-white rounded-xl shadow-lg overflow-hidden"
           >
-            {/* Form Header */}
-            <div className="border-b border-gray-100 bg-yellow-50/50">
+                        <div className="border-b border-gray-100 bg-yellow-50/50">
               <div className="px-6 py-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-yellow-100 rounded-lg">
@@ -119,8 +116,7 @@ const UserRoleForm = () => {
     
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Select Module */}
-                <div className="space-y-2">
+                                <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Select Module
                   </label>
@@ -140,8 +136,7 @@ const UserRoleForm = () => {
                   </select>
                 </div>
     
-                {/* Menu */}
-                <div className="space-y-2">
+                                <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Menu
                   </label>
@@ -161,8 +156,7 @@ const UserRoleForm = () => {
                   </select>
                 </div>
     
-                {/* Rights */}
-                <div className="space-y-2">
+                                <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Rights
                   </label>
@@ -179,8 +173,7 @@ const UserRoleForm = () => {
                   </select>
                 </div>
     
-                {/* Select User ID */}
-                <div className="space-y-2">
+                                <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Select User ID
                   </label>
@@ -201,8 +194,7 @@ const UserRoleForm = () => {
                 </div>
               </div>
     
-              {/* Submit Button */}
-              <motion.div
+                            <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -219,8 +211,7 @@ const UserRoleForm = () => {
             </div>
           </motion.div>
     
-          {/* Optional: Success Message */}
-          {showSuccess && (
+                    {showSuccess && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

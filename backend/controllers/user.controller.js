@@ -221,7 +221,7 @@ module.exports.getModules = async (req, res) => {
       console.log('returningg ', isAdmin);
       
       return res.status(200).json(
-        modules.map((module) => ({
+        modules.filter((m) => ![16].includes(m.id)).map((module) => ({
           id: module.id,
           name: module.name,
           icon_image: module.icon_image,

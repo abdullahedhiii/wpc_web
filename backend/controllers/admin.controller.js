@@ -136,16 +136,16 @@ module.exports.submitCompanyForm = async (req, res) => {
       : null;
 
     const companyLogoPath = companyLogo
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${companyLogo}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${companyLogo}`
       : null;
     const authorizingProofIdPath = authorizingProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${authorizingProofId}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${authorizingProofId}`
       : null;
     const keyContactProofIdPath = keyContactProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${keyContactProofId}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${keyContactProofId}`
       : null;
     const level1ProofIdPath = level1ProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${level1ProofId}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${level1ProofId}`
       : null;
 
     // Create Organisation
@@ -308,16 +308,16 @@ module.exports.updateCompany = async (req, res) => {
       : null;
 
     const companyLogoPath = companyLogo
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${companyLogo}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${companyLogo}`
       : undefined; // Will be undefined if not updated
     const authorizingProofIdPath = authorizingProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${authorizingProofId}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${authorizingProofId}`
       : undefined; // Will be undefined if not updated
     const keyContactProofIdPath = keyContactProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${keyContactProofId}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${keyContactProofId}`
       : undefined; // Will be undefined if not updated
     const level1ProofIdPath = level1ProofId
-      ? `http://localhost:${process.env.PORT}/uploads/${Company_name}/${level1ProofId}`
+      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${level1ProofId}`
       : undefined;
 
     const existingCompany = await Organisation.findByPk(req.params.id);
@@ -446,7 +446,7 @@ module.exports.updateCompany = async (req, res) => {
 //     Penalty,
 //   } = req.body;
 
-//   const logoPath = req.file ? `http://localhost:${process.env.PORT}/uploads/${req.file.filename}` : null;
+//   const logoPath = req.file ? `${process.env.BACKEND_URL}/uploads/${req.file.filename}` : null;
 //   console.log(logoPath);
 //   const newOrganisation = await Organisation.create({
 //     Name,
@@ -1638,7 +1638,7 @@ module.exports.uploadDocuments = async (req, res) => {
     const { id } = req.params;
     const { documentType, Company_name } = req.body;
     const organisation_id = id;
-    const url = `http://localhost:${process.env.PORT}/uploads/${Company_name}/${req.file.filename}`;
+    const url = `${process.env.BACKEND_URL}/uploads/${Company_name}/${req.file.filename}`;
 
     // Create a new entry in OrgDocument
     const newDocument = await OrgDocument.create({
@@ -1784,7 +1784,7 @@ module.exports.getAllEmployees = async (req, res) => {
         "Job Type": employee.servicedetail?.type,
         "Job Title": employee.jobdetails?.title,
         "Employee Link": employeeLink
-          ? `http://localhost:5173/employeelink/${employeeLink}`
+          ? `${process.env.FRONTEND_URL}/employeelink/${employeeLink}`
           : "Form filled out already",
         Designation : employee.servicedetail?.designation,
         Designation_id : employee.servicedetail?.designation_id,

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const csvParser = require("csv-parser");
-const { Attendance, Shift, LatePolicy,Employee,PersonalDetail, ServiceDetail } = require("../config/sequelize"); // Import models
+const { Attendance, Shift, LatePolicy,Employee,PersonalDetail, ServiceDetail, Department, Designation } = require("../config/sequelize"); // Import models
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const moment = require("moment");
 
@@ -87,7 +87,37 @@ module.exports.submitCSV = async (req, res) => {
           console.warn(`Skipping invalid row: ${JSON.stringify(row)}`);
           continue;
         }
+        
+        const employee_check = await Employee.findOne({
+          where : {employee_code,organisation_id 
 
+          }
+        });
+
+        if(!employee_check){
+          console.warn(`Skipping row employee not found: ${JSON.stringify(row)}`);
+          continue;
+        }
+        
+        const shift_check = await Shift.findOne({
+           shift_code
+        });
+
+        if (!shift_check) {
+          console.warn(`Skipping row, shift not found: ${shift_code}`);
+          continue;
+        }
+        const dept_check = await Department.findOne({
+          where : {id : shift_check.department_id}
+        });
+
+        const desg_check = await Designation.findOne({
+          where : {id : shift_check.designation_id}
+        });
+        if(dept_check.organisation_id !== organisation_id || desg_check.organisation_id !== organisation_id){
+          console.warn(`Skipping row shift not found withint organisation: ${JSON.stringify(row)}`);
+          continue;
+        }
         const clockInTime = parseTimeString(clock_in);
         const clockOutTime = parseTimeString(clock_out);
 

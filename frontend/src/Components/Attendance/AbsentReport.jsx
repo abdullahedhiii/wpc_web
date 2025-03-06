@@ -85,8 +85,7 @@ const AbsentReport = () => {
   const columns = ['Employee Code','Employee Name','No. of working days','Month','No. of Present days','No. of absent days','Leaves Taken','No. of days salary deducted']
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-    {/* Header Section */}
-    <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+        <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col gap-1">
@@ -114,6 +113,7 @@ const AbsentReport = () => {
           isSideBarOpen ? "w-[800px]" : "w[1300px]"
         } `}
       >
+        <form onSubmit={handleGenerate}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
@@ -201,12 +201,12 @@ const AbsentReport = () => {
                     </option>
                 ))}
             </select>
-          </div>
+
+          </div>        
         </div>
-        <div className="flex space-x-3">
-          <button
+        <button
             className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
-            onClick={handleGenerate}
+            type="submit"
           >
             View
           </button>
@@ -221,10 +221,11 @@ const AbsentReport = () => {
               });
               setAttendance([]);
             }}
+            type="button"
           >
             Reset
           </button>
-        </div>
+        </form>
       </div>
       <div className="p-16">
         <DataTable

@@ -52,7 +52,7 @@ const DataTable = ({
       } else {
       }
     } catch (err) {
-      alert('Network error downloading pdf');
+      alert('Network error downloading pdf',err);
     }
   };
   
@@ -323,8 +323,8 @@ return (
                           ) : (field === "Visitor Link" || field === "Website" || field === "Employee Link" || field === "Job Link" || field === "View Letter") &&
                           row[field] ? (
                             row[field] === 'Job Closed' ?                             <span className="text-sm text-gray-600">{row[field]}</span>
-                            :
-                            <a
+                            :  row[field] === 'Form filled out already' ?  <span>-</span>
+:                            <a
                               href={row[field]}
                               target="_blank"
                               rel="noopener noreferrer"

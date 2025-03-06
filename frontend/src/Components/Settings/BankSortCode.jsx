@@ -19,8 +19,7 @@ const BankSortCode = () => {
     return (
         <>
             <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* Header Section */}
-      <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+            <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col gap-1">

@@ -105,8 +105,7 @@ const SubDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* Header Section */}
-      <div className="relative">
+            <div className="relative">
         <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-b-[3rem] shadow-lg pt-12 pb-32">
           <div className="container mx-auto px-6">
             <motion.h1
@@ -128,8 +127,7 @@ const SubDashboard = () => {
           </div>
         </div>
 
-        {/* Blank Reports Section */}
-        {isDocuments && (
+                {isDocuments && (
           <div className="container mx-auto px-6">
             <div className="relative -mt-16 mb-8">
               <motion.div
@@ -158,8 +156,7 @@ const SubDashboard = () => {
           </div>
         )}
 
-        {/* Dashboard Features Grid */}
-        <div className="container mx-auto px-6 -mt-16">
+                <div className="container mx-auto px-6 -mt-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {dashboard.map((feature, index) => (
               <FeatureCard

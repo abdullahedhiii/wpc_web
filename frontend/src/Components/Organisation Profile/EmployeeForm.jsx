@@ -516,7 +516,25 @@ const EmployeeFormOnline = () => {
     
   }, []);
 
-
+  const validatePage = (currentStep) => {
+    let isValid = true;
+    let errors = ""; // Store field validation errors
+  
+    if (currentStep === 1) {
+      const { employee_code, fname, lname, email, contact_1 } = formData.personal_details;
+      if (!fname) errors = errors + "Employee First name,";
+      if (!lname) errors =  errors + " Last name,";
+      if (!email) errors = errors +  " Email,";
+      if (!contact_1) errors = errors+  " and Primary contact(1) is required";
+    }
+  
+    if (errors.length > 0) {
+      alert(errors);
+      isValid = false;
+    }
+  
+    return isValid;
+  };
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     const section = name.split(".")[0];
@@ -2430,7 +2448,9 @@ const EmployeeFormOnline = () => {
           {currentPage < 8 ? (
             <button
               className="px-4 py-2 text-white bg-yellow-800 rounded"
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={() => {
+                if(!validatePage(currentPage)) return;
+                setCurrentPage(currentPage + 1)}}
             >
               Next
             </button>

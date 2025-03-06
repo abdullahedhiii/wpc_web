@@ -86,8 +86,7 @@ const PaymentPage = () => {
         transition={{ duration: 0.5 }}
         className="max-w-5xl mx-auto"
       >
-        {/* Header */}
-        <div className="text-center mb-12">
+                <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
             Complete Your Registration
           </h1>
@@ -97,8 +96,7 @@ const PaymentPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Payment Form */}
-          <motion.div
+                    <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -113,8 +111,7 @@ const PaymentPage = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Card Number */}
-              <div className="space-y-2">
+                            <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Card Number</label>
                 <div className="relative">
                   <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -130,8 +127,7 @@ const PaymentPage = () => {
                 </div>
               </div>
 
-              {/* Card Holder */}
-              <div className="space-y-2">
+                            <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Card Holder Name</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -148,8 +144,7 @@ const PaymentPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                {/* Expiry Date */}
-                <div className="space-y-2">
+                                <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">Expiry Date</label>
                   <div className="relative">
                     <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -165,8 +160,7 @@ const PaymentPage = () => {
                   </div>
                 </div>
 
-                {/* CVC */}
-                <div className="space-y-2">
+                                <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">CVC</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -205,8 +199,7 @@ const PaymentPage = () => {
             </form>
           </motion.div>
 
-          {/* Features Section */}
-          <motion.div
+                    <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
@@ -230,8 +223,7 @@ const PaymentPage = () => {
               </motion.div>
             ))}
 
-            {/* Package Details */}
-            <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white">
+                        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white">
               <h3 className="text-xl font-semibold mb-4">Enterprise Package Includes:</h3>
               <ul className="space-y-3">
                 {[

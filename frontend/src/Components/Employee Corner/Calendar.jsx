@@ -70,8 +70,7 @@ const HolidayCalendar = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
-      {/* Header Section */}
-      <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5 mb-8">
+            <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5 mb-8">
         <div className="absolute inset-0 bg-black/10" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <motion.div
@@ -92,8 +91,7 @@ const HolidayCalendar = () => {
         </div>
       </div>
 
-      {/* Calendar Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,8 +106,7 @@ const HolidayCalendar = () => {
           />
         </motion.div>
 
-        {/* Legend */}
-        <motion.div
+                <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}

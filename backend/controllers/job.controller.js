@@ -198,7 +198,7 @@ module.exports.getJobsPosted = async(req,res) => {
                 "Sl. No." : index+1,
                 "SOC Code": job.socCode,
                 "Job Title" : job.jobTitle,
-                "Job Link": isClosed? 'Job Closed' : `http://localhost:5173/careers/${hash}`,
+                "Job Link": isClosed? 'Job Closed' : `${process.env.FRONTEND_URL}/careers/${hash}`,
                 "Vacancy" : job.numVacancies,
                 "Job Location": job.jobLocation,
                 "Job Posted Date" : job.jobPostingDate,
@@ -244,11 +244,11 @@ module.exports.applyJob = async (req, res) => {
   const coverLetterFile = req.files?.coverLetter ? req.files.coverLetter[0].filename : null;
 
   const resumeUrl = resumeFile
-    ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${resumeFile}`
+    ? `${process.env.BACKEND_URL}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${resumeFile}`
     : null;
 
   const coverLetterUrl = coverLetterFile
-    ? `http://localhost:${process.env.PORT || 3000}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${coverLetterFile}`
+    ? `${process.env.BACKEND_URL}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${coverLetterFile}`
     : null;
 
   try {
@@ -543,7 +543,7 @@ module.exports.updateStatus = async (req, res) => {
         });
 
         // Update the offer letter URL in the database
-        updateData.offer_letter_url =  `http://localhost:${process.env.PORT || 3000}/uploads/${org.id}/JobCandidates/${candidate.job_id}/OfferLetter_${candidate.id}.pdf`;
+        updateData.offer_letter_url =  `${process.env.BACKEND_URL}/uploads/${org.id}/JobCandidates/${candidate.job_id}/OfferLetter_${candidate.id}.pdf`;
 
         } catch (error) {
           console.error("Error generating offer letter:", error);
