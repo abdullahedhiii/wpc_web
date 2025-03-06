@@ -29,12 +29,14 @@ const Login = () => {
     setIsSubmitting(true);
     try {
       const response = await axios.post("/https://hr-solutions-backend-chi.vercel.app/login", info);
+      console.log(response.data)
       dispatch(login(response.data.user));
       fetchModules(response.data.user.id, response.data.user.isAdmin);
       fetchOrganisation(response.data.user.id, response.data.user.isAdmin);
     } catch (err) {
+      console.log(err);
       setError(
-        err.response?.data?.error || "An unexpected error occurred. Please try again."
+         "An unexpected error occurred. Please try again."
       );
     } finally {
       setIsSubmitting(false);
