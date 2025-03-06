@@ -34,10 +34,10 @@ const Login = () => {
       fetchModules(response.data.user.id, response.data.user.isAdmin);
       fetchOrganisation(response.data.user.id, response.data.user.isAdmin);
     } catch (err) {
-      console.log(err);
       setError(
-         "An unexpected error occurred. Please try again."
-      );
+        "An unexpected error occurred. Please try again."
+      ); 
+      // err.response?.data?.error ||
     } finally {
       setIsSubmitting(false);
     }
