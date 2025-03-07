@@ -6,7 +6,7 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import {motion} from  'framer-motion';
 
 const JobList = () => {
-    const columns = ["Sl. No.", "SOC CODE", "Job Title", "Action"];
+    const columns = ["Sl. No.", "SOC CODE", "Job Title"];
     const {companyData} = useCompanyContext();
 
     const [jobsListed,setListed] = useState([]);

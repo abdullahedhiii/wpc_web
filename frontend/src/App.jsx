@@ -852,6 +852,10 @@ const router = createBrowserRouter([
         element : (<ProtectedRoute><JobListForm/></ProtectedRoute>)
       },
       {
+        path : "recruitment/add-job-list/:id",
+        element : (<ProtectedRoute><JobListForm/></ProtectedRoute>)
+      },
+      {
         path : "recruitment/offer-letter",
         element : (<ProtectedRoute><GenerateOfferLetter/></ProtectedRoute>)
       },
