@@ -24,14 +24,14 @@ app.use(cors({
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/',userRoutes);
-app.use('/',adminRoutes);
-app.use('/',visitorRoutes);
-app.use('/',employeeAdd);
-app.use('/',JobRoutes);
-app.use('/',AttendanceRoutes);
-app.use('/',PdfRoutes);
-app.use('/',employeeRoutes);
+app.use('/api',userRoutes);
+app.use('/api',adminRoutes);
+app.use('/api',visitorRoutes);
+app.use('/api',employeeAdd);
+app.use('/api',JobRoutes);
+app.use('/api',AttendanceRoutes);
+app.use('/api',PdfRoutes);
+app.use('/api',employeeRoutes);
 
 app.use('/uploads', express.static('uploads'));
 
