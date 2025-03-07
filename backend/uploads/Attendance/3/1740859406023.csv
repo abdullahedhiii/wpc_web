@@ -1,0 +1,6 @@
+Employee Code,Shift Code,Date,Clock in,Clock in location,Clock out,Clock out location
+MAR-001,SHIFT-001,2-2-2025,8:30 AM,Office,9:30 PM,heree
+MAR-001,SHIFT-001,3-2-2025,9:30 AM,Office,10:30 PM,heree
+MAR-001,SHIFT-001,4-2-2025,10:30 AM,Office,10:30 PM,heree
+MAR-001,SHIFT-001,5-2-2025,8:30 AM,Office,9:30 PM,heree
+MAR-001,SHIFT-001,6-2-2025,8:30 AM,Office,9:30 PM,heree
