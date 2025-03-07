@@ -99,25 +99,25 @@ module.exports.submitCSV = async (req, res) => {
           continue;
         }
         
-        const shift_check = await Shift.findOne({
-           shift_code
-        });
+        // const shift_check = await Shift.findOne({
+        //    shift_code
+        // });
 
-        if (!shift_check) {
-          console.warn(`Skipping row, shift not found: ${shift_code}`);
-          continue;
-        }
-        const dept_check = await Department.findOne({
-          where : {id : shift_check.department_id}
-        });
+        // if (!shift_check) {
+        //   console.warn(`Skipping row, shift not found: ${shift_code}`);
+        //   continue;
+        // }
+        // const dept_check = await Department.findOne({
+        //   where : {id : shift_check.department_id}
+        // });
 
-        const desg_check = await Designation.findOne({
-          where : {id : shift_check.designation_id}
-        });
-        if(dept_check.organisation_id !== organisation_id || desg_check.organisation_id !== organisation_id){
-          console.warn(`Skipping row shift not found withint organisation: ${JSON.stringify(row)}`);
-          continue;
-        }
+        // const desg_check = await Designation.findOne({
+        //   where : {id : shift_check.designation_id}
+        // });
+        // if(dept_check.organisation_id !== organisation_id || desg_check.organisation_id !== organisation_id){
+        //   console.warn(`Skipping row shift not found withint organisation: ${JSON.stringify(row)}`);
+        //   continue;
+        // }
         const clockInTime = parseTimeString(clock_in);
         const clockOutTime = parseTimeString(clock_out);
 
