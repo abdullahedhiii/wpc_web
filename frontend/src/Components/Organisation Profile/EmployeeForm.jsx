@@ -502,7 +502,7 @@ const EmployeeFormOnline = () => {
     const fetchFormInfo = async () => {
       try {
         const response = await axios.get(
-          `/api/getEmployeeFormInfoOnline/${id}`
+          `${import.meta.env.VITE_API_URL}/api/getEmployeeFormInfoOnline/${id}`
         );
         setCode(response.data.personal_details.employee_code);
         setFormData(response.data);
@@ -1331,7 +1331,7 @@ const EmployeeFormOnline = () => {
   const handleSubmit = async () => {
     try {
     
-      await axios.post(`/api/submit-personal-details/${formData.company_id}.${employee_code}`,formData.personal_details);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-personal-details/${formData.company_id}.${employee_code}`,formData.personal_details);
 
       formData.education_details.forEach(async (edu, index) => {
         const educationFormData = new FormData();
@@ -1352,7 +1352,7 @@ const EmployeeFormOnline = () => {
         educationFormData.append('isDefault', formData.education_details.length === 1);
 
         await axios.post(
-          `/api/submit-education-details/${formData.company_id}.${employee_code}`,
+          `${import.meta.env.VITE_API_URL}/api/submit-education-details/${formData.company_id}.${employee_code}`,
           educationFormData,
           {
             headers: {
@@ -1362,24 +1362,24 @@ const EmployeeFormOnline = () => {
         );
       });
 
-      await axios.post(`/api/submit-job-details/${formData.company_id}.${employee_code}`,formData.job_details);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-job-details/${formData.company_id}.${employee_code}`,formData.job_details);
 
       formData.key_responsibilities.forEach(async (res, index) => {
         res.isDefault = formData.key_responsibilities.length === 1;
 
         await axios.post(
-          `/api/submit-key-responsibilities/${formData.company_id}.${employee_code}`,
+          `${import.meta.env.VITE_API_URL}/api/submit-key-responsibilities/${formData.company_id}.${employee_code}`,
           res
         );
       });
 
       formData.training_details.forEach(async(training, index) => {
         const tt = training.employee_code ? training : {...training,employee_code :employee_code,isDefault : formData.training_details.length === 1}
-        await axios.post(`/api/submit-training-data/${formData.company_id}.${employee_code}`,tt)
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-training-data/${formData.company_id}.${employee_code}`,tt)
       });
 
-      await axios.post(`/api/submit-kin-details/${formData.company_id}.${employee_code}`, formData.kin_details);
-      await axios.post(`/api/submit-certifications/${formData.company_id}.${employee_code}`, formData.certification)
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-kin-details/${formData.company_id}.${employee_code}`, formData.kin_details);
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-certifications/${formData.company_id}.${employee_code}`, formData.certification)
 
         const contact_data = new FormData();
         for (const key in formData.contact_info) {
@@ -1387,13 +1387,13 @@ const EmployeeFormOnline = () => {
             contact_data.append(key, formData.contact_info[key]);
             }
         }
-        await axios.post(`/api/submit-contact/${formData.company_id}.${employee_code}`, contact_data, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-contact/${formData.company_id}.${employee_code}`, contact_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
       });
 
-      await axios.post(`/api/submit-pay-structure/${formData.company_id}.${employee_code}`, formData.pay_structure)
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-pay-structure/${formData.company_id}.${employee_code}`, formData.pay_structure)
 
         formData.other_details.forEach(async (other, index) => {
           const otherData = new FormData();
@@ -1410,7 +1410,7 @@ const EmployeeFormOnline = () => {
           }
           otherData.append('isDefault', formData.other_details.length === 1);
 
-          await axios.post(`/api/submit-other-data/${formData.company_id}.${employee_code}`, otherData, {
+          await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-other-data/${formData.company_id}.${employee_code}`, otherData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -1427,7 +1427,7 @@ const EmployeeFormOnline = () => {
             }
           }
         }
-        await axios.post(`/api/submit-national/${formData.company_id}.${employee_code}`, national_data, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-national/${formData.company_id}.${employee_code}`, national_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1443,7 +1443,7 @@ const EmployeeFormOnline = () => {
             }
           }
         }
-        await axios.post(`/api/submit-dbs/${formData.company_id}.${employee_code}`, dbs_data, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-dbs/${formData.company_id}.${employee_code}`, dbs_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1459,7 +1459,7 @@ const EmployeeFormOnline = () => {
             }
           }
         }
-        await axios.post(`/api/submit-esus/${formData.company_id}.${employee_code}`, esus_data, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-esus/${formData.company_id}.${employee_code}`, esus_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1475,7 +1475,7 @@ const EmployeeFormOnline = () => {
             }
           }
         }
-        await axios.post(`/api/submit-visa/${formData.company_id}.${employee_code}`, visa_data, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-visa/${formData.company_id}.${employee_code}`, visa_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1491,7 +1491,7 @@ const EmployeeFormOnline = () => {
             }
           }
         }
-        await axios.post(`/api/submit-passport/${formData.company_id}.${employee_code}`, passport_data, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-passport/${formData.company_id}.${employee_code}`, passport_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1511,13 +1511,13 @@ const EmployeeFormOnline = () => {
             }
           }          other_doc.append('isDefault',formData.other_documents.length === 1)
 
-          await axios.post(`/api/submit-otherdocument/${formData.company_id}.${employee_code}`, other_doc, {
+          await axios.post(`${import.meta.env.VITE_API_URL}/api/submit-otherdocument/${formData.company_id}.${employee_code}`, other_doc, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
         });
 
-        await axios.post(`/api/updateFormStatus/${employee_code}`);
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/updateFormStatus/${employee_code}`);
         });
 
     } catch (error) {

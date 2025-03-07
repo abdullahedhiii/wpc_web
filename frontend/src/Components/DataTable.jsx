@@ -42,8 +42,8 @@ const DataTable = ({
   }, [data, searchQuery]);
   
   const handleDownload = async () => {
-     const routee = selectedFeature ? `/api/${selectedFeature.download_api_route}/${companyData[0].id}`
-     : `/api/${subModule.download_api_route}/${companyData[0].id}`;
+     const routee = selectedFeature ? `${import.meta.env.VITE_API_URL}/api/${selectedFeature.download_api_route}/${companyData[0].id}`
+     : `${import.meta.env.VITE_API_URL}/api/${subModule.download_api_route}/${companyData[0].id}`;
      try {
       const response = await axiosInstance.get(routee);
 
@@ -127,7 +127,7 @@ const DataTable = ({
   const handleRequestUpdate = async (status, request_id) => {
     
     try {
-        await axiosInstance.post(`/api/updateLeaveRequest`, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/updateLeaveRequest`, {
             status: status,
             request_id: request_id
         });

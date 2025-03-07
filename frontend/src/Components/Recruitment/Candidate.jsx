@@ -27,7 +27,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
         payload.timeFrom = timeFrom;
         payload.timeTo = timeTo;
       }
-      await axiosInstance.post(`/api/updateCandidateStatus/${details.id}`, payload);
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/updateCandidateStatus/${details.id}`, payload);
      fetchAgain();
     } catch (err) {
       alert("Failed to update status");
@@ -124,7 +124,7 @@ const Candidate = () => {
 
   const fetchCandidateDetails = async () => {
     try {
-      const response = await axiosInstance.get(`/api/getCandidate/${candidate_id}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCandidate/${candidate_id}`);
       setDetails(response.data);
       setSelectedStatus(response.data.status); // Set the initial status
     } catch (err) {

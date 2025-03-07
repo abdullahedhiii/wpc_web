@@ -27,7 +27,7 @@ export default function JobForm() {
     const fetchJobDetails = async () => {
       setIsLoading(true)
       try {
-        const response = await axios.get(`/api/getJobData/${id}`)
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getJobData/${id}`)
         setJobData(response.data)
       } catch (err) {
         console.log("error getting job data", err)

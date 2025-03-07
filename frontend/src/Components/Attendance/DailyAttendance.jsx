@@ -73,7 +73,7 @@ const DailyAttendance = () => {
         }
         setAttendance([])
         try{
-           const response = await axiosInstance.get(`/api/getDailyAttendance`,{params : {data : formData}});
+           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getDailyAttendance`,{params : {data : formData}});
            setAttendance(response.data);
         }
         catch{

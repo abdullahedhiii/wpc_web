@@ -28,7 +28,7 @@ const LeaveApplication = () => {
   const fetchMyleave = async () => {
     try {
       const response = await axiosInstance.get(
-        `/api/getMyLeaves/${user.employee_code}.${formData.leaveType}`
+        `${import.meta.env.VITE_API_URL}/api/getMyLeaves/${user.employee_code}.${formData.leaveType}`
       );
       if(response.data.message){
         window.alert(response.data.message);
@@ -86,7 +86,7 @@ const LeaveApplication = () => {
       return;
     };
     try{
-       const response = await axiosInstance.post(`/api/applyLeave`,formData);
+       const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/applyLeave`,formData);
        if(response.data.message){
         window.alert(response.data.message);
         return;

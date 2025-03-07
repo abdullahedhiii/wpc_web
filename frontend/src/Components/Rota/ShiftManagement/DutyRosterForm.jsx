@@ -79,7 +79,7 @@ const DutyRosterForm = () => {
         const handleSubmit = async (e) => {
             e.preventDefault();
             try{
-                await axiosInstance.post(`/api/assignDuty`,formData);
+                await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/assignDuty`,formData);
                 navigate("/hrms/rota/add-duty-roster");
             }
             catch(err){

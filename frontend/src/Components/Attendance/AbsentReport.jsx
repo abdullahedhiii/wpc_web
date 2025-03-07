@@ -68,7 +68,7 @@ const AbsentReport = () => {
 
   const handleGenerate = async () => {
      try{
-         const response = await axiosInstance.get(`/api/absentReport`,
+         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/absentReport`,
             {
                 params : formData
             }

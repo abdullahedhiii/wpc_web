@@ -37,7 +37,7 @@ const EmployeeCOC = () => {
 
     const handleGenerate = async () => {
         try{
-            const response = await axiosInstance.get(`/api/getMyCOC/${user.employee_code}`);
+            const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getMyCOC/${user.employee_code}`);
             setData(response.data);
         }
         catch(err){

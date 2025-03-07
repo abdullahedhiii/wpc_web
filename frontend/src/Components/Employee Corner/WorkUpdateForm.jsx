@@ -66,7 +66,7 @@ const [data, setData] = useState({
   
     try {
       await axiosInstance.post(
-        `/api/updateWork/${user.company_id}.${user.employee_code}`,
+        `${import.meta.env.VITE_API_URL}/api/updateWork/${user.company_id}.${user.employee_code}`,
         formData,
         {
           headers: {

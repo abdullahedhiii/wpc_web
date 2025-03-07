@@ -79,7 +79,7 @@ const GenerateAttendance = () => {
     }
     try {
       const response = await axiosInstance.get(
-        `/api/getAttendance/${companyData[0].id}`,
+        `${import.meta.env.VITE_API_URL}/api/getAttendance/${companyData[0].id}`,
         { params: { data: formData } }
       );
       setAttendance(response.data);

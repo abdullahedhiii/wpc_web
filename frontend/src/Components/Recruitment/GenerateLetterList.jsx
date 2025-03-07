@@ -12,7 +12,7 @@ const GenerateOfferLetter = () => {
 
     const fetchCandidates = async () => {
         try{
-           const response = await axiosInstance.get(`/api/getCandidates/${companyData[0].id}`,{params : {status : 'Job Offered'}});
+           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCandidates/${companyData[0].id}`,{params : {status : 'Job Offered'}});
            setData(response.data);
         }
         catch(err){

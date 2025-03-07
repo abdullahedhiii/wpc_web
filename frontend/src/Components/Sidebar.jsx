@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
   
     const handleLogout = async() => {
       try{
-         await axiosInstance.post(`/api/logout`);
+         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/logout`);
          dispatch(logout());
          navigate("/");
       }

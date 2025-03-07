@@ -666,7 +666,7 @@ const CompanyForm = () => {
     const fetchDetails = async () => {
       try {
         if (company_id) {
-          const response = await axios.get("/api/getCompanyDetails", {
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getCompanyDetails`, {
             params: { id: company_id },
           });
           if (response.data) {
@@ -788,7 +788,7 @@ const CompanyForm = () => {
   
       // Submit company data first
       const response = await axios.post(
-        `/api/${company_id ? `updateCompany/${company_id}` : "submitCompanyForm"}`,
+        `${import.meta.env.VITE_API_URL}/api/${company_id ? `updateCompany/${company_id}` : "submitCompanyForm"}`,
         formDataToSend,
         {
           headers: {
@@ -809,7 +809,7 @@ const CompanyForm = () => {
           documentData.append("otherDetails", document.otherDetails);
           documentData.append("companyId", newCompanyId);  
   
-          return axios.post(`/api/uploadDocument/${newCompanyId}`, documentData, {
+          return axios.post(`${import.meta.env.VITE_API_URL}/api/uploadDocument/${newCompanyId}`, documentData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

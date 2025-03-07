@@ -23,7 +23,7 @@ const StatusSearch = () => {
   const fetchCandidates = async () => {
     try {
       const response = await axiosInstance.get(
-        `/api/getAllCandidates/${companyData[0].id}`
+        `${import.meta.env.VITE_API_URL}/api/getAllCandidates/${companyData[0].id}`
       );
       setCandidates(response.data);
     } catch (err) {

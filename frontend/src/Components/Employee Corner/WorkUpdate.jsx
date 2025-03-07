@@ -13,7 +13,7 @@ const WorkUpdate = () => {
 
     const fetchWork = async() => {
         try{
-           const response = await axiosInstance.get(`/api/getWorkUpdates/${user.employee_code}`);
+           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getWorkUpdates/${user.employee_code}`);
            setData(response.data);
         }
         catch(err){

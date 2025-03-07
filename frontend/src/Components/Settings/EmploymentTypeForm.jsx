@@ -38,7 +38,7 @@ const EmploymentTypeForm = () =>{
      const isUpdate = Boolean(type_id);
      const send_data = isUpdate ? {...data,isUpdate,type_id} : {...data,isUpdate};
      try{
-      const response = await axios.post(`/api/addEmployeeType/${companyData[0].id}`,send_data);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/addEmployeeType/${companyData[0].id}`,send_data);
       if(response.status === 201){
          navigate('/hrms/settings/vw-employment-type');
       }

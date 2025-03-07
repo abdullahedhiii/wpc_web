@@ -504,7 +504,7 @@ const UpdateProfile = () => {
     const fetchFormInfo = async () => {
       try {
         const response = await axiosInstance.get(
-          `/api/getEmployeeDetails/${user.employee_code}`
+          `${import.meta.env.VITE_API_URL}/api/getEmployeeDetails/${user.employee_code}`
         );
         setCode(response.data.personal_details.employee_code);
 
@@ -1316,7 +1316,7 @@ const UpdateProfile = () => {
   const handleSubmit = async () => {
     try {
     
-      await axiosInstance.post(`/api/submit-personal-details/${user.company_id}.${employee_code}`,formData.personal_details);
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-personal-details/${user.company_id}.${employee_code}`,formData.personal_details);
 
       formData.education_details.forEach(async (edu, index) => {
         const educationFormData = new FormData();
@@ -1337,7 +1337,7 @@ const UpdateProfile = () => {
         educationFormData.append('isDefault',formData.education_details.length === 1)
 
         await axiosInstance.post(
-          `/api/submit-education-details/${user.company_id}.${employee_code}`,
+          `${import.meta.env.VITE_API_URL}/api/submit-education-details/${user.company_id}.${employee_code}`,
           educationFormData,
           {
             headers: {
@@ -1347,24 +1347,24 @@ const UpdateProfile = () => {
         );
       });
 
-      await axiosInstance.post(`/api/submit-job-details/${user.company_id}.${employee_code}`,formData.job_details);
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-job-details/${user.company_id}.${employee_code}`,formData.job_details);
 
       formData.key_responsibilities.forEach(async (res, index) => {
         res.isDefault = formData.key_responsibilities.length === 1;
 
         await axiosInstance.post(
-          `/api/submit-key-responsibilities/${user.company_id}.${employee_code}`,
+          `${import.meta.env.VITE_API_URL}/api/submit-key-responsibilities/${user.company_id}.${employee_code}`,
           res
         );
       });
 
       formData.training_details.forEach(async(training, index) => {
         const tt = training.employee_code ? training : {...training,employee_code :employee_code,isDefault : formData.training_details.length === 1}
-        await axiosInstance.post(`/api/submit-training-data/${user.company_id}.${employee_code}`,tt)
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-training-data/${user.company_id}.${employee_code}`,tt)
       });
 
-      await axiosInstance.post(`/api/submit-kin-details/${user.company_id}.${employee_code}`, formData.kin_details);
-      await axiosInstance.post(`/api/submit-certifications/${user.company_id}.${employee_code}`, formData.certification)
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-kin-details/${user.company_id}.${employee_code}`, formData.kin_details);
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-certifications/${user.company_id}.${employee_code}`, formData.certification)
 
         const contact_data = new FormData();
         for (const key in formData.contact_info) {
@@ -1372,13 +1372,13 @@ const UpdateProfile = () => {
             contact_data.append(key, formData.contact_info[key]);
             }
         }
-        await axiosInstance.post(`/api/submit-contact/${user.company_id}.${employee_code}`, contact_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-contact/${user.company_id}.${employee_code}`, contact_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
       });
 
-      await axiosInstance.post(`/api/submit-pay-structure/${user.company_id}.${employee_code}`, formData.pay_structure)
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-pay-structure/${user.company_id}.${employee_code}`, formData.pay_structure)
 
         formData.other_details.forEach(async (other, index) => {
           const otherData = new FormData();
@@ -1395,7 +1395,7 @@ const UpdateProfile = () => {
           }
           otherData.append('isDefault', formData.other_details.length === 1);
 
-          await axiosInstance.post(`/api/submit-other-data/${user.company_id}.${employee_code}`, otherData, {
+          await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-other-data/${user.company_id}.${employee_code}`, otherData, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },
@@ -1412,7 +1412,7 @@ const UpdateProfile = () => {
             }
           }
         }
-        await axiosInstance.post(`/api/submit-national/${user.company_id}.${employee_code}`, national_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-national/${user.company_id}.${employee_code}`, national_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1428,7 +1428,7 @@ const UpdateProfile = () => {
             }
           }
         }
-        await axiosInstance.post(`/api/submit-dbs/${user.company_id}.${employee_code}`, dbs_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-dbs/${user.company_id}.${employee_code}`, dbs_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1444,7 +1444,7 @@ const UpdateProfile = () => {
             }
           }
         }
-        await axiosInstance.post(`/api/submit-esus/${user.company_id}.${employee_code}`, esus_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-esus/${user.company_id}.${employee_code}`, esus_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1460,7 +1460,7 @@ const UpdateProfile = () => {
             }
           }
         }
-        await axiosInstance.post(`/api/submit-visa/${user.company_id}.${employee_code}`, visa_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-visa/${user.company_id}.${employee_code}`, visa_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1476,7 +1476,7 @@ const UpdateProfile = () => {
             }
           }
         }
-        await axiosInstance.post(`/api/submit-passport/${user.company_id}.${employee_code}`, passport_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-passport/${user.company_id}.${employee_code}`, passport_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -1496,7 +1496,7 @@ const UpdateProfile = () => {
             }
           }          other_doc.append('isDefault',formData.other_documents.length === 1)
 
-          await axiosInstance.post(`/api/submit-otherdocument/${user.company_id}.${employee_code}`, other_doc, {
+          await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-otherdocument/${user.company_id}.${employee_code}`, other_doc, {
             headers: {
               'Content-Type': 'multipart/form-data',
             },

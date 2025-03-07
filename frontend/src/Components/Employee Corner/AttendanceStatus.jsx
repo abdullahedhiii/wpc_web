@@ -21,7 +21,7 @@ const AttendanceStatus = () => {
      const [attendance,setAttendance] = useState([]);
     const handleView = async(e) => {
         try{
-           const response  = await axiosInstance.get(`/api/getMyAttendance`,{
+           const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getMyAttendance`,{
             params : formData
            });
            setAttendance(response.data);

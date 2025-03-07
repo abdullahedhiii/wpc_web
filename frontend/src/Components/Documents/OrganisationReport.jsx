@@ -23,7 +23,7 @@ const OrganisationReport = () => {
 
       const id = companyData[0].id;
       try {
-         const response = await axiosInstance.get(`/api/getOrganisationDocuments/${id}`);
+         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getOrganisationDocuments/${id}`);
          setDocuments(response.data);
          const opt = response.data.map((ele) => ({
             label: ele.document_type,

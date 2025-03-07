@@ -94,7 +94,7 @@ const LeaveRuleForm = () => {
     const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === data.employee_type).id;
     const data_to = isUpdate ? {...data,leave_type_id,employment_type_id,rule_id,isUpdate} : {...data,leave_type_id,employment_type_id,isUpdate};
     try{
-          await axiosInstance.post(`/api/addLeaveRule/${companyData[0].id}`,data_to);
+          await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addLeaveRule/${companyData[0].id}`,data_to);
           navigate('/hrms/leave-management/leave-rule-listing');
     } 
     catch(err){

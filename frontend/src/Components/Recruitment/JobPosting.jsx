@@ -15,7 +15,7 @@ const JobPosting = () => {
     useEffect(( ) => {
            const fetchPosted = async() => {
                    try{
-                    const response = await axiosInstance.get(`/api/getJobsPosted/${companyData[0].id}`);
+                    const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getJobsPosted/${companyData[0].id}`);
                     setPosted(response.data);
                    }
                    catch(err){

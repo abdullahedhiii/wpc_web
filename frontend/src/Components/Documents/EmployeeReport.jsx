@@ -22,7 +22,7 @@ const EmployeeReport = () => {
   },[]);
   const fetchDocuments = async(req,res) => {
      try{
-       const response = await axiosInstance.get(`/api/getEmployeeDocuments/${formData.employee_code}`);
+       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getEmployeeDocuments/${formData.employee_code}`);
        setDocuments(response.data);
      }
      catch(err){

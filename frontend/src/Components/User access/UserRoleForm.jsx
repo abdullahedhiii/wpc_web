@@ -18,7 +18,7 @@ const UserRoleForm = () => {
 
     const fetchUsers = async () => {
       try{
-           const response  = await axiosInstance.get(`/api/getUsers/${companyData[0].id}`);
+           const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUsers/${companyData[0].id}`);
            setUsers(response.data);
       }
       catch(err){
@@ -64,7 +64,7 @@ const UserRoleForm = () => {
     
     const handleSubmit = async (e) => {
        try{
-          const response = await axiosInstance.post(`/api/grantRights`,formData);
+          const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/grantRights`,formData);
           navigate('/hrms/role/view-users-role');
        }
        catch(err){

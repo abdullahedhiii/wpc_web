@@ -12,7 +12,7 @@ const ChangeOfCircumstances = () => {
        const fetchData = async () => {
             try{
 
-            const response  = await axiosInstance.get(`/api/getCOCTable/${companyData[0].id}`);
+            const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCOCTable/${companyData[0].id}`);
             setData(response.data);
             }
             catch(err){

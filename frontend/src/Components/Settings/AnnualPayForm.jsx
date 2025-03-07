@@ -61,7 +61,7 @@ const AnnualPayForm = () => {
         const data_send = isUpdate ? {...data,isUpdate,annual_id} : {...data,isUpdate};
         const group = payGroups.find((ele) => ele['Pay Group'] === data.paygroup);
         try{
-           const response = await axiosInstance.post(`/api/addAnnualPay/${group.id}`,data_send);
+           const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addAnnualPay/${group.id}`,data_send);
            if(response.status === 201){
                navigate('/hrms/settings/vw-annualpay');
            }

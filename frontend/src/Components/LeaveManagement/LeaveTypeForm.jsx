@@ -65,7 +65,7 @@ const LeaveTypeForm = () => {
     const dataTo = isUpdate ? {...data, leave_id} : {...data};
 
     try {
-        await axiosInstance.post(`/api/addLeaveType/${companyData[0].id}`, dataTo);
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addLeaveType/${companyData[0].id}`, dataTo);
         navigate('/hrms/leave-management/leave-type-listing');
     } catch (err) {
     }

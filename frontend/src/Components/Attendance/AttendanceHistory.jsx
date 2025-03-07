@@ -73,7 +73,7 @@ const AttendanceHistory = () => {
         }
         setAttendance([])
         try{
-           const response = await axiosInstance.get(`/api/getAttendanceHistory`,{params : {data : formData}});
+           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getAttendanceHistory`,{params : {data : formData}});
            setAttendance(response.data);
         }
         catch{

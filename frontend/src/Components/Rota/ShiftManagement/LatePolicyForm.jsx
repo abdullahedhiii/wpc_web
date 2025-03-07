@@ -163,7 +163,7 @@ const LatePolicyForm = () => {
             return;
         }
         try{
-            const response = await axiosInstance.post(`/api/addLatePolicy/${companyData[0].id}`,{data,dep_id : s_dep.id,des_id : s_des.id});
+            const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addLatePolicy/${companyData[0].id}`,{data,dep_id : s_dep.id,des_id : s_des.id});
             if(response.status === 200){
                 navigate('/hrms/rota/late-policy');
             }

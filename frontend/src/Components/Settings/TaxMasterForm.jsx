@@ -66,7 +66,7 @@ const TaxMasterForm = () => {
        const isUpdate = Boolean(tax_id);
        const send_data = isUpdate ? {...data,isUpdate,tax_id} : {...data,isUpdate};
        try{
-           const response = await axiosInstance.post(`/api/addTaxMaster/${companyData[0].id}`,send_data);
+           const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addTaxMaster/${companyData[0].id}`,send_data);
            if(response.status === 201){
               navigate('/hrms/settings/vw-tax');
            }

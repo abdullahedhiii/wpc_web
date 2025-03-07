@@ -1106,7 +1106,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get("/api/check-session")
+    axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/check-session`)
       .then(response => {
         if(!response.data.found) return;
         if (response.data?.user) {  

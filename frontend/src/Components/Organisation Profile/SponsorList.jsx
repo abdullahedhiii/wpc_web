@@ -36,7 +36,7 @@ const SponsorList = () => {
 
   const fetchSponsors = async () => {
     try {
-      const response = await axios.get(`/api/getSponsors`)
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getSponsors`)
       setSponsors(response.data.sponsors)
       setValues({
         newCount: response.data.newCount,

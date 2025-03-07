@@ -37,7 +37,7 @@ const UploadAttendance = () => {
         const formData = new FormData();
         formData.append("attendance", file);
         try{
-             const response = await axiosInstance.post(`/api/submitCSV/${companyData[0].id}`,formData);
+             const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submitCSV/${companyData[0].id}`,formData);
              alert(response.data.message);
         }
         catch(err){

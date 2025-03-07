@@ -157,7 +157,7 @@ const nationalityOptions = [
     useEffect(() => {
        const fetchEmployees = async () => {
           try {
-             const response = await axiosInstance.get(`/api/getCOCDetails/${companyData[0].id}`);
+             const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCOCDetails/${companyData[0].id}`);
              setEmployees(response.data);
              setEmployeeCodes(response.data.map((emp) => emp.employee.full_name)); // Store in state
           } catch (err) {
@@ -351,7 +351,7 @@ const nationalityOptions = [
             contact_data.append(key, formData.contact_info[key]);
             }
         } 
-        await axiosInstance.post(`/api/submit-contact/${companyData[0].id}.${employee_code}`, contact_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-contact/${companyData[0].id}.${employee_code}`, contact_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -367,7 +367,7 @@ const nationalityOptions = [
             }
           }
         }     
-        await axiosInstance.post(`/api/submit-national/${companyData[0].id}.${employee_code}`, national_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-national/${companyData[0].id}.${employee_code}`, national_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -383,7 +383,7 @@ const nationalityOptions = [
             }
           }
         } 
-        await axiosInstance.post(`/api/submit-dbs/${companyData[0].id}.${employee_code}`, dbs_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-dbs/${companyData[0].id}.${employee_code}`, dbs_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -399,7 +399,7 @@ const nationalityOptions = [
             }
           }
         }
-        await axiosInstance.post(`/api/submit-esus/${companyData[0].id}.${employee_code}`, esus_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-esus/${companyData[0].id}.${employee_code}`, esus_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -415,7 +415,7 @@ const nationalityOptions = [
             }
           }
         }
-        await axiosInstance.post(`/api/submit-visa/${companyData[0].id}.${employee_code}`, visa_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-visa/${companyData[0].id}.${employee_code}`, visa_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -431,13 +431,13 @@ const nationalityOptions = [
             }
           }
         }
-        await axiosInstance.post(`/api/submit-passport/${companyData[0].id}.${employee_code}`, passport_data, {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-passport/${companyData[0].id}.${employee_code}`, passport_data, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
       });
 
-      await axiosInstance.post(`/api/submit-other-coc-details/${companyData[0].id}.${employee_code}`, formData.other_details,); 
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-other-coc-details/${companyData[0].id}.${employee_code}`, formData.other_details,); 
      }
      catch(err){
 

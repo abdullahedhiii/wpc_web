@@ -40,7 +40,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchLeavesAllocated = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getLeavesAllocated/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeavesAllocated/${id_to}`);
       if (response.status === 200) {
         setAllocated(response.data);
       }
@@ -50,7 +50,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchLeaveRules = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getLeaveRules/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeaveRules/${id_to}`);
       if (response.status === 200) {
         setLeaveRules(response.data);
 
@@ -61,7 +61,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchLeaveTypes = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getLeaveTypes/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeaveTypes/${id_to}`);
       if (response.status === 200) {
         setLeaveTypes(response.data);
       }
@@ -70,7 +70,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchEmployeesLink = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getEmployees/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getEmployees/${id_to}`);
       if (response.status === 200) {
         setEmployees(response.data);
       }
@@ -81,7 +81,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchPolicies = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getLatePolicies/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLatePolicies/${id_to}`);
       if (response.status === 200) {
         setPolicies(response.data);
       }
@@ -92,7 +92,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchShifts = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getShifts/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getShifts/${id_to}`);
       if (response.status === 200) {
         setShifts(response.data);
       }
@@ -102,7 +102,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchVisitors = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getVisitors/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getVisitors/${id_to}`);
       if (response.status === 200) {
         setVisitors(response.data);
       }
@@ -112,7 +112,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchHolidayList = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getHolidayList/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getHolidayList/${id_to}`);
       //console.log(response.data , 'tax m codes');
       setHolidayList(response.data);
     } catch (err) {
@@ -123,7 +123,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchHolidays = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getHolidayTypes/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getHolidayTypes/${id_to}`);
       //console.log(response.data , 'tax m codes');
       setHolidays(response.data);
     } catch (err) {
@@ -134,7 +134,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchPaymentTypes = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getPaymentTypes/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getPaymentTypes/${id_to}`);
       //console.log(response.data , 'tax m codes');
       setTypes(response.data);
     } catch (err) {
@@ -145,7 +145,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchTaxMasters = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getTaxMasters/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getTaxMasters/${id_to}`);
       //console.log(response.data , 'tax m codes');
       setTaxMasters(response.data);
     } catch (err) {
@@ -156,7 +156,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchCodes = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getBankCodes/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getBankCodes/${id_to}`);
       // console.log(response.data , 'sort codes');
       setCodes(response.data);
     } catch (err) {
@@ -167,7 +167,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchBanks = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getCompanyBanks/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompanyBanks/${id_to}`);
       setorgBanks(response.data);
     } catch (err) {
       setorgBanks([]);
@@ -177,7 +177,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchAnnualPays = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getAnnualPays/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getAnnualPays/${id_to}`);
       setAnnualPays(response.data);
     } catch (err) {
       setAnnualPays([]);
@@ -187,7 +187,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchPayGroups = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getPayGroups/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getPayGroups/${id_to}`);
       setpayGroups(response.data);
     } catch (err) {
       setpayGroups([]);
@@ -198,7 +198,7 @@ export const CompanyProvider = ({ children }) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
       const response = await axiosInstance.get(
-        `/api/getEmployeeTypes/${id_to}`
+        `${import.meta.env.VITE_API_URL}/api/getEmployeeTypes/${id_to}`
       );
       setEmployeeTypes(response.data);
     } catch (err) {
@@ -209,7 +209,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchDepartments = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getDepartments/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getDepartments/${id_to}`);
       setDepartmentData(response.data);
     } catch (err) {
       setDepartmentData([]);
@@ -218,7 +218,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchDesignations = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`/api/getDesignations/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getDesignations/${id_to}`);
       //  console.log(response.data);
       setDesignationData(response.data);
     } catch (err) {
@@ -229,7 +229,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchDetails = async (company_id) => {
     try {
       if (company_id) {
-        const response = await axiosInstance.get("/api/getCompanyDetails", {
+        const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompanyDetails`, {
           params: { id: company_id },
         });
         if (response.data) {
@@ -257,7 +257,7 @@ export const CompanyProvider = ({ children }) => {
   const fetchOrganisation = async (id,isAdmin) => {
     try {   
       if(isAdmin){
-      const response = await axiosInstance.get(`/api/getOrganisation/${id}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getOrganisation/${id}`);
       setCompanyData([response.data]);
       fetchDetails(response.data.id);
       // fetchDepartments(response.data.id);
@@ -281,7 +281,7 @@ export const CompanyProvider = ({ children }) => {
    
     }
     else{
-      const response = await axiosInstance.get(`/api/getUserOrganisation/${id}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserOrganisation/${id}`);
       setCompanyData([response.data])
     }
     } catch (err) {

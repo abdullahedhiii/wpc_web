@@ -15,7 +15,7 @@ const LeaveReport = () => {
 
     const handleGenerate = async () => {
         try{
-           const response  = await axiosInstance.get(`/api/getCompleteLeaveReport/${companyData[0].id}`,{
+           const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompleteLeaveReport/${companyData[0].id}`,{
             params : {year}
            });
            const pdfUrl = response.data.url;

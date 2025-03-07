@@ -63,7 +63,7 @@ const PaymentTypeForm = () => {
        const isUpdate = Boolean(p_id);
        const send_data = isUpdate ? {...data,isUpdate,p_id} : {...data,isUpdate};
        try{
-           const response = await axiosInstance.post(`/api/addPaymentType/${companyData[0].id}`,send_data);
+           const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addPaymentType/${companyData[0].id}`,send_data);
            if(response.status === 201){
               navigate('/hrms/settings/vw-pay-type');
            }

@@ -32,7 +32,7 @@ const TaskList = () => {
         e.preventDefault();
         setData([]);
         try{
-            const tasks = await axiosInstance.get(`/api/getTasks`,{
+            const tasks = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getTasks`,{
                 params : formData
             });
             setData(tasks.data);

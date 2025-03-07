@@ -57,7 +57,7 @@ const PayGroupForm = () => {
     const isUpdate = Boolean(group_id);
     const send_data = isUpdate ? {...data,isUpdate,group_id} : {...data,isUpdate};
     try{
-       const response = await axiosInstance.post(`/api/addPayGroup/${companyData[0].id}`,send_data);
+       const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addPayGroup/${companyData[0].id}`,send_data);
        if(response.status === 201){
         setData({});
         navigate('/hrms/settings/vw-paygroup');

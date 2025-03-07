@@ -66,7 +66,7 @@ const DutyRoster = () => {
         e.preventDefault();
         setData([])
         try{
-            const response = await axiosInstance.get(`/api/getDutiesAssigned`,{
+            const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getDutiesAssigned`,{
                 params : formData
             });
             setData(response.data);

@@ -12,7 +12,7 @@ export const ModuleProvider = ({ children }) => {
 
   const fetchModules = async (id,isAdmin) => {
        try{
-          const response = await axios.get(`/api/getModules/${id}`, {params : {isAdmin : isAdmin}}) ;
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getModules/${id}`, {params : {isAdmin : isAdmin}}) ;
           setModules(response.data);
        }
        catch(err){

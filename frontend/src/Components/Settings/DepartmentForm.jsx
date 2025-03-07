@@ -36,7 +36,7 @@ const DepartmentForm = () =>{
     try {
       const isUpdate = Boolean(department_id);
       const requestData = department_id ? { ...data, isUpdate, department_id} : {...data,isUpdate}; 
-      const response = await axios.post(`/api/addDepartment/${companyData[0].id}`, requestData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/addDepartment/${companyData[0].id}`, requestData);
       
       if (response.status === 201) {
         setData({});

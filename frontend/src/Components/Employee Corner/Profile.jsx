@@ -8,7 +8,7 @@ const Profile = () => {
 
   const fetchDetails = async () => {
     try {
-      const response = await axiosInstance.get(`/api/fetchMyProfile/${user.employee_code}`, {
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/fetchMyProfile/${user.employee_code}`, {
         params: { user_id: user.id }
       });
       setData(response.data);

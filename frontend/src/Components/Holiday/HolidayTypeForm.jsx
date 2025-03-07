@@ -40,7 +40,7 @@ const HolidayTypeForm = () => {
       const isUpdate = Boolean(h_id);
       const send_data = isUpdate ? {...data,isUpdate,h_id} : {...data,isUpdate};
       try{
-         const response = await axiosInstance.post(`/api/addHolidayType/${companyData[0].id}`,send_data);
+         const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addHolidayType/${companyData[0].id}`,send_data);
          if(response.status === 201){
             navigate('/hrms/holiday-type');
          } 

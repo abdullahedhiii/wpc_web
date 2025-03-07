@@ -22,7 +22,7 @@ const EditLeaveAllocation = () => {
   useEffect(() => {
     const fetchData = async () => {
         try{
-            const response = await axiosInstance.get(`/api/getLeaveAllocation/${allocation_id}`);
+            const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeaveAllocation/${allocation_id}`);
             setData(response.data);
         }
         catch(err){
@@ -77,7 +77,7 @@ const EditLeaveAllocation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
-       const response =  await axiosInstance.post(`/api/allocateLeave/${companyData[0].id}`,data);
+       const response =  await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/allocateLeave/${companyData[0].id}`,data);
        navigate('/hrms/leave-management/leave-allocation-listing')
     }
     catch(err){

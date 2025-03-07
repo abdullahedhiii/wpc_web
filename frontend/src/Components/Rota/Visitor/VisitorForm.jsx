@@ -37,7 +37,7 @@ const VisitorForm = () => {
     setIsSubmitting(true)
     try {
       const send_data = { ...formData, key: hashKey }
-      const response = await axios.post("/api/registerVisitor", send_data)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/registerVisitor`, send_data)
       if (response.status === 201) {
         setShowSuccess(true)
         setTimeout(() => setShowSuccess(false), 5000)

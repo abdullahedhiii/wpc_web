@@ -67,7 +67,7 @@ const DesignationForm = () => {
       (ele) => ele["Department Name"] === data.department_name
     );
     try {
-      const response = await axios.post(`/api/addDesignation/${d_id.id}`, DataTosend);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/addDesignation/${d_id.id}`, DataTosend);
       if (response.status === 201) {
         setData({ department_name: "", designation_name: "" });
         navigate(`/hrms/settings/vw-designation`);

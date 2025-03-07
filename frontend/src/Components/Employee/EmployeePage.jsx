@@ -30,7 +30,7 @@ const EmployeePage = () => {
       hasFetched.current = true;
 
       try {
-        const response = await axiosInstance.get(`/api/getEmployeePage/${companyData[0].id}`); 
+        const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getEmployeePage/${companyData[0].id}`); 
         setEmployeeDetails(response.data); 
       } catch (error) {
         setEmployeeDetails([]); 

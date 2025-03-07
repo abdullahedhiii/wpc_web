@@ -58,7 +58,7 @@ const BankSortCodeForm = () => {
         const send_data = isUpdate ? {...data,isUpdate,sortcode_id} : {...data,isUpdate};
         const bank = orgBanks.find((ele) => ele['Bank Name'] === data.bank_name);
         try{
-           const response = await axiosInstance.post(`/api/addBankSortCode/${bank.id}`,send_data);
+           const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addBankSortCode/${bank.id}`,send_data);
            if(response.status === 201){
                navigate('/hrms/settings/vw-bank-sortcode')
            }

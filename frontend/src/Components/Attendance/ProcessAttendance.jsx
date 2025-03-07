@@ -65,7 +65,7 @@ const ProcessAttendance = () => {
 
   const handleGenerate = async () => {
      try{
-         const response = await axiosInstance.get(`/api/processAttendance`,
+         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/processAttendance`,
             {
                 params : formData
             }

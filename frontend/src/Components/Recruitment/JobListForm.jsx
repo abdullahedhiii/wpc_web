@@ -14,7 +14,7 @@ const JobListForm = () => {
   useEffect(( ) => {
          const fetchListed = async() => {
                  try{
-                  const response = await axiosInstance.get(`/api/getJobsListed/${companyData[0].id}`);
+                  const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getJobsListed/${companyData[0].id}`);
                   setListed(response.data);
                  }
                  catch(err){
@@ -85,7 +85,7 @@ const JobListForm = () => {
        return;
       }
     try{
-       const response = await axiosInstance.post(`/api/addJobListed/${companyData[0].id}`,{formData,content});
+       const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addJobListed/${companyData[0].id}`,{formData,content});
        if(response.status === 200)
           navigate('/hrms/recruitment/job-list');
     }

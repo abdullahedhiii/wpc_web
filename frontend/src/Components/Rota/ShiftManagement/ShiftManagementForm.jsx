@@ -146,7 +146,7 @@ const ShiftManagementForm = () => {
     }
     try {
       const response = await axiosInstance.post(
-        `/api/addShift/${companyData[0].id}`,
+        `${import.meta.env.VITE_API_URL}/api/addShift/${companyData[0].id}`,
         { data, dep_id: dep_id.id, des_id: des_id.id }
       );
       if (response.status === 201) {

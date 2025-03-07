@@ -16,7 +16,7 @@ const RoleManagement = () => {
       const [data,setData] = useState([]);
       const fetchRoles = async () => {
           try{
-                const response  = await axiosInstance.get(`/api/getUserRoles/${companyData[0].id}`);
+                const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserRoles/${companyData[0].id}`);
                 setData(response.data);
           }
           catch(err){

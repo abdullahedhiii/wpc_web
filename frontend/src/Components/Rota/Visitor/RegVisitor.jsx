@@ -15,9 +15,9 @@ const RegVisitor = () => {
   useEffect(() => {
     const fetchHashKey = async () => {
       try {
-        const response = await axios.get(`/api/getKey/${companyData[0].id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getKey/${companyData[0].id}`);
         console.log('response of key ', response.data.key);
-        const generatedUrl ='http://localhost:5173' + `/visitor/${response.data.key}`;
+        const generatedUrl = `${import.meta.env.VITE_FRONTEND_URL}` + `/visitor/${response.data.key}`;
         console.log(generatedUrl, 'generated ');  
         setUrl(generatedUrl);  
       } catch (err) {

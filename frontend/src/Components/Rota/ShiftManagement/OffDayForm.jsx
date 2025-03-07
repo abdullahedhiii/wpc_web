@@ -195,7 +195,7 @@ const OffDayForm = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try{
-        const response = await axiosInstance.post(`/api/setOffDays/${companyData[0].id}`,{data : data});
+        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/setOffDays/${companyData[0].id}`,{data : data});
         if(response.status === 201){
             navigate('/hrms/rota/offday');
         }

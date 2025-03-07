@@ -24,7 +24,7 @@ const UserForm = () => {
   
   const fetchUser = async(req,res) => {
       try{
-        const response = await axiosInstance.get(`/api/getUserData/${id}`);
+        const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserData/${id}`);
         setFormData(response.data);
       }
       catch(err){
@@ -57,7 +57,7 @@ const UserForm = () => {
   
   const handleSubmit = async(e) =>{
      try{
-        const response = await axiosInstance.post(`/api/createUser/${companyData[0].id}`,formData);
+        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/createUser/${companyData[0].id}`,formData);
         navigate('/hrms/role/vw-users');
         
      }

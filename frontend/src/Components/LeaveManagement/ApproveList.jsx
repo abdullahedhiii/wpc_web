@@ -15,7 +15,7 @@ const ApproveList  = () => {
     const {companyData} = useCompanyContext();
     const fetchLeaveList = async() =>{
       try{
-          const response  = await axiosInstance.get(`/api/getLeavesList/${companyData[0].id}`);
+          const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeavesList/${companyData[0].id}`);
           setLeaves(response.data);
       }
       catch(err){

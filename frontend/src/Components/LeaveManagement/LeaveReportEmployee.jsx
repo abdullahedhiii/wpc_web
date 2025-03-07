@@ -29,7 +29,7 @@ const LeaveReportEmployee = () =>{
 
     const handleView = async() => {
        try{
-          const response = await axiosInstance.get(`/api/getLeaveReportEmployee`,{
+          const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeaveReportEmployee`,{
             params : formData
           });
           setReport(response.data);
