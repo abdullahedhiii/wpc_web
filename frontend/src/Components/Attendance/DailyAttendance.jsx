@@ -67,6 +67,7 @@ const DailyAttendance = () => {
       };
     
     const handleGenerate = async () => {
+      e.preventDefault();
         if(!formData.department || !formData.designation || !formData.employeeCode || !formData.date){
             window.alert('all fields are required');
             return;
@@ -190,7 +191,6 @@ const DailyAttendance = () => {
         <div className="flex space-x-3"> 
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
-          onClick={handleGenerate}
           type="submit"
         >
           View

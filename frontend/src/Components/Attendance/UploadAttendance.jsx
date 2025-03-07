@@ -41,7 +41,7 @@ const UploadAttendance = () => {
              alert(response.data.message);
         }
         catch(err){
-        alert(err.message );
+        alert(err.response.data.message );
         }
     }
 
