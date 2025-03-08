@@ -87,6 +87,10 @@ const HolidayListForm = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
+  //     if(holidayList.find((ele) => ele['Holiday Type'] === data.holiday_type)){
+  //       alert('Holiday type is already listed try updating!');
+  //       return;
+  //  }
       const isUpdate = Boolean(ho_id);
       const send_data = ho_id ? {...data,isUpdate,ho_id} : {...data,isUpdate};
       try{

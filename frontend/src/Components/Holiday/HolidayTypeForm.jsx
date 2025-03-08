@@ -37,6 +37,10 @@ const HolidayTypeForm = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
+      if(holidayData.find((ele) => ele['Holiday Type'] === data.holiday_type)){
+           alert('Holiday type with this name already exists');
+           return;
+      }
       const isUpdate = Boolean(h_id);
       const send_data = isUpdate ? {...data,isUpdate,h_id} : {...data,isUpdate};
       try{
