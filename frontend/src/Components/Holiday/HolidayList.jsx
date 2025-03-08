@@ -14,7 +14,7 @@ const HolidayList = () => {
         "Day of Week",
         "Holiday Type",
         "Edit",
-        "Delete"
+        // "Delete"
       ];
 
     const {holidayList,fetchHolidayList} = useCompanyContext();
