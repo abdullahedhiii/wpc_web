@@ -42,11 +42,7 @@ const CompanyForm = () => {
           value: "Company_name",
           type: "text",
           required: true,
-          additionalElement: (
-            <button className="px-2 py-1 bg-background text-white rounded-md text-sm w-auto">
-              Find
-            </button>
-          ),
+         
           readOnly: true,
 
         },
@@ -62,11 +58,7 @@ const CompanyForm = () => {
           value: "Company_RegNo",
           type: "text",
           required: true,
-          additionalElement: (
-            <button className="px-2 py-1 bg-yellow-600 text-white rounded-md text-sm w-auto">
-              Find
-            </button>
-          ),
+       
         },
         {
           label: "Contact No.",
