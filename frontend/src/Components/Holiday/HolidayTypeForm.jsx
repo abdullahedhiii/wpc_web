@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 
 const HolidayTypeForm = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const {companyData,fetchholidayData,holidayData} = useCompanyContext();
   const {h_id} = useParams();
 

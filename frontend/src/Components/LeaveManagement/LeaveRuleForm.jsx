@@ -90,17 +90,34 @@ const LeaveRuleForm = () => {
     e.preventDefault();
 
     const isUpdate = Boolean(rule_id);
+    const currentYear = new Date().getFullYear();
+
+    const check_if_exists = leaveRules.find((ele) => 
+        ele['Leave Type'] === data.leave_type && 
+        ele['Employment Type'] === data.employee_type &&
+        new Date(ele['Effective From']).getFullYear() === currentYear 
+    );
+
+    if (!isUpdate && check_if_exists) {
+        alert('Leave Rule for this leave type and employment type already exists for this year, try updating by clicking the edit option on the Leave Rule Page');
+        return;
+    }
+
     const leave_type_id = leaveTypes.find((ele) => ele['Leave Type'] === data.leave_type).id;
     const employment_type_id = employeeTypes.find((ele) => ele['Employment Type'] === data.employee_type).id;
-    const data_to = isUpdate ? {...data,leave_type_id,employment_type_id,rule_id,isUpdate} : {...data,leave_type_id,employment_type_id,isUpdate};
-    try{
-          await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addLeaveRule/${companyData[0].id}`,data_to);
-          navigate('/hrms/leave-management/leave-rule-listing');
-    } 
-    catch(err){
-    }    
 
+    const data_to = isUpdate 
+        ? { ...data, leave_type_id, employment_type_id, rule_id, isUpdate } 
+        : { ...data, leave_type_id, employment_type_id, isUpdate };
+
+    try {
+        await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addLeaveRule/${companyData[0].id}`, data_to);
+        navigate('/hrms/leave-management/leave-rule-listing');
+    } catch (err) {
+        console.error("Error submitting leave rule:", err);
+    }    
 };
+
 
 
   return (

@@ -9,18 +9,21 @@ import axios from "axios";
 
 const LeaveAllocationForm = () => {
   const navigate = useNavigate();
-  const {fetchEmployeesLink,fetchTypes,fetchLeaveTypes,employeeTypes,employees,fetchLeavesAllocated,leaveTypes,companyData} = useCompanyContext();
+  const {fetchEmployeesLink,fetchTypes,fetchLeaveTypes,employeeTypes,employees,
+    fetchLeavesAllocated,leaveTypes,companyData,leavesAllocated} = useCompanyContext();
   
   useEffect(() => {
      fetchLeaveTypes();
      fetchTypes();
      fetchEmployeesLink();
+     fetchLeavesAllocated()
   },[]);
   const [empOptions,setEmpOptions] = useState([]);
   const [data, setData] = useState({
       employment_type : '',
       employee_code : '',
       year: `01/${new Date().getFullYear()}`,
+      leave_type_id : '',
   });
   const [tableData,setTableData] = useState([]);
 
@@ -95,6 +98,11 @@ const LeaveAllocationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const leaveT = leaveTypes.find((ele) => ele.id === data.leave_type_id);
+    if(leavesAllocated.find((ele) => ele["Employee Code"] === data.employee_code && ele["Leave Type"] === leaveT['Leave Type'] && data.year === ele['Effective Year'])){
+      alert('Leave type has been already allocated to this employee, try updating!');
+      return;
+    }
     try{
         const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/allocateLeave/${companyData[0].id}`,data);
         setTableData([response.data]);    
