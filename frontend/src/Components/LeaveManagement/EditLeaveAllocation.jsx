@@ -64,6 +64,7 @@ const EditLeaveAllocation = () => {
         label : 'Leave in Hand.',
         name: "leave_in_hand",
         type : 'text',
+        
     },
     {
         name : 'year',
