@@ -3,6 +3,7 @@ const csvParser = require("csv-parser");
 const { Attendance, Shift, LatePolicy,Employee,PersonalDetail, ServiceDetail, Department, Designation } = require("../config/sequelize"); // Import models
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const moment = require("moment");
+const { default: HolidayList } = require("../../frontend/src/Components/Holiday/HolidayList");
 
 function parseTimeString(timeString) {
     const dateTimeString = `1970-01-01 ${timeString}`;
@@ -42,7 +43,6 @@ module.exports.submitCSV = async (req, res) => {
     const filePath = req.file.path;
     let recordCount = 0;
 
-    // Define required CSV headers
     const requiredHeaders = [
       "Employee Code",
       "Shift Code",
@@ -52,14 +52,16 @@ module.exports.submitCSV = async (req, res) => {
       "Clock out location",
       "Clock in location"
     ];
-
+ // Fetch all holidays for this organization
+ const holidayList = await HolidayList.findAll({
+  where: { organisation_id }
+});
     let headersChecked = false;
 
     const stream = fs.createReadStream(filePath).pipe(csvParser());
 
     for await (const row of stream) {
       if (!headersChecked) {
-        // Validate headers in the first row
         const csvHeaders = Object.keys(row);
         const missingHeaders = requiredHeaders.filter(header => !csvHeaders.includes(header));
 
@@ -69,7 +71,7 @@ module.exports.submitCSV = async (req, res) => {
           });
         }
 
-        headersChecked = true; // Set flag to avoid rechecking headers
+        headersChecked = true;
       }
 
       try {
@@ -87,7 +89,16 @@ module.exports.submitCSV = async (req, res) => {
           console.warn(`Skipping invalid row: ${JSON.stringify(row)}`);
           continue;
         }
-        
+        const isHoliday = holidayList.some(holiday => {
+          const holidayStart = new Date(holiday.start_date);
+          const holidayEnd = new Date(holiday.end_date);
+          return parsedDate >= holidayStart && parsedDate <= holidayEnd;
+        });
+
+        if (isHoliday) {
+          console.warn(`Skipping row due to holiday: ${JSON.stringify(row)}`);
+          continue;
+        }
         const employee_check = await Employee.findOne({
           where : {employee_code,organisation_id 
 
