@@ -103,7 +103,7 @@ const LeaveRuleForm = () => {
         ele['Employment Type'] === data.employee_type &&
         new Date(ele['Effective From']).getFullYear() === currentYear 
     );
-    console.log('In leave rule ',check_if_exists,currentYear, new Date(ele['Effective From']).getFullYear());
+    console.log('In leave rule ',check_if_exists,currentYear);
     if (!isUpdate && check_if_exists) {
         alert('Leave Rule for this leave type and employment type already exists for this year, try updating by clicking the edit option on the Leave Rule Page');
         return;
