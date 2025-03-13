@@ -50,22 +50,24 @@ const UploadAttendance = () => {
         document.getElementById("fileInput").value = "";
     };
     const handleDownloadSample = () => {
-        const sampleData = [
-          ["Employee Code", "Shift Code", "Date", "Clock in", "Clock out", "Clock in location", "Clock out location"],
-          ["MAR-001", "SHIFT-001", "2-1-2025", "08:00 AM", "17:00 PM", "Office", "Office"],
-          ["MAR-002", "SHIFT-002", "3-1-2025", "09:00 AM", "18:00 PM", "Remote", "Remote"],
-        ];
+      const sampleData = [
+        ["Employee Code", "Shift Code", "Date", "Clock in", "Clock out", "Clock in location", "Clock out location"],
+        ["MAR-001", "SHIFT-001", "'2-1-2025", "08:00 AM", "17:00 PM", "Office", "Office"], // Add an apostrophe
+        ["MAR-002", "SHIFT-002", "'3-1-2025", "09:00 AM", "18:00 PM", "Remote", "Remote"], // Add an apostrophe
+      ];
     
-        let csvContent =
-          "data:text/csv;charset=utf-8," +
-          sampleData.map((e) => e.join(",")).join("\n");
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "sample_attendance.csv");
-        document.body.appendChild(link);
-        link.click();
-      };
+      let csvContent =
+        "data:text/csv;charset=utf-8," +
+        sampleData.map((e) => e.map(field => `"${field}"`).join(",")).join("\n"); // Wrap all fields in quotes
+    
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "sample_attendance.csv");
+      document.body.appendChild(link);
+      link.click();
+    };
+    
     return (
     
             <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 flex flex-col items-center">

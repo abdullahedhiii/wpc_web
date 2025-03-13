@@ -13,6 +13,21 @@ function parseTimeString(timeString) {
   return date.getTime();
 }
 
+function parseDateString(dateString) {
+  const formats = [
+      "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY", 
+      "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
+  ];
+
+  // Ensure the input contains only dashes and digits
+  if (!/^\d{2,4}-\d{2}-\d{2,4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
+      return null; // Reject formats with slashes or invalid structures
+  }
+
+  const parsedDate = moment(dateString, formats, true);
+  return parsedDate.isValid() ? parsedDate.toDate() : null;
+}
+
 module.exports.submitCSV = async (req, res) => {
   try {
       console.log("Attendance submission hit", req.body, req.params.id);
@@ -69,11 +84,12 @@ module.exports.submitCSV = async (req, res) => {
                   continue;
               }
 
-              const parsedDate = new Date(date);
-              if (isNaN(parsedDate.getTime())) {
-                  console.warn(`Skipping row due to invalid date format: ${JSON.stringify(row)}`);
-                  continue;
-              }
+              const parsedDate = parseDateString(date);
+              if (!parsedDate) {
+                 console.warn(`Skipping row due to invalid or incorrect date format (only dashes allowed): ${JSON.stringify(row)}`);
+                 continue;
+               }
+
 
               const isHoliday = holidayList.some(holiday => {
                   const holidayStart = new Date(holiday.start_date);
@@ -163,7 +179,7 @@ module.exports.submitCSV = async (req, res) => {
 
       if (recordCount === 0) {
           console.log("No valid records were found in CSV");
-          return res.status(400).json({ error: "No valid records found in CSV" });
+          return res.status(400).json({ message: "No valid records found in CSV" });
       }
 
       console.log(`CSV processed successfully. Total records inserted: ${recordCount}`);
@@ -171,7 +187,7 @@ module.exports.submitCSV = async (req, res) => {
 
   } catch (error) {
       console.error("Error handling CSV upload:", error);
-      return res.status(500).json({ error: "Server error", errm: error });
+      return res.status(500).json({ error: "Server error", message: error });
   }
 };
 
