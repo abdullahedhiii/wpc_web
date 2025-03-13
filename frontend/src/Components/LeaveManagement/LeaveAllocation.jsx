@@ -6,7 +6,7 @@ import {motion} from 'framer-motion';
 
 const LeaveAllocation = () => {
   const columns = ["Sl. No.", "Employee Type","Employee Name","Employee Code",
-    "Leave Type", "Max. No Of Leave","Leave In Hand","Effective Year", "Action"];
+    "Leave Type", "Max. No Of Leave","Leave In Hand","Effective Year"];
   const {leavesAllocated,fetchLeavesAllocated} = useCompanyContext();
 
   useEffect(() => {

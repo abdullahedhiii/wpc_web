@@ -2657,7 +2657,6 @@ module.exports.getLeavesAllocated = async (req, res) => {
     for (const employee of employees) {
       const employee_code = employee.employee_code;
 
-      // Fetch all leave allocations for the employee for all years
       const leave_allocations = await LeaveAllocation.findAll({
         where: { employee_code: employee_code },
       });
@@ -2667,16 +2666,25 @@ module.exports.getLeavesAllocated = async (req, res) => {
       for (const leave_allocated of leave_allocations) {
         const leave_type = await LeaveType.findOne({
           where: { id: leave_allocated.leave_type_id },
-          include: [
-            {
-              model: LeaveRule,
-              as: "leaverules",
-              attributes: ["max"],
-            },
-          ],
         });
+        const currentYear = new Date().getFullYear();
 
-        console.log(leave_type?.leaverules);
+        const rule = await LeaveRule.findOne({
+          where: {
+            leave_type_id: leave_allocated.leave_type_id,
+            [Op.and]: [
+              Sequelize.where(
+                Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"from\"")),
+                currentYear
+              ),
+              Sequelize.where(
+                Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"to\"")),
+                currentYear
+              ),
+            ],
+          },
+        });
+        
 
         const employee_type = await EmploymentType.findOne({
           where: { id: leave_allocated.employment_type_id },
@@ -2695,7 +2703,7 @@ module.exports.getLeavesAllocated = async (req, res) => {
           ]
             .filter(Boolean)
             .join(" "),
-          "Max. No Of Leave": leave_type?.leaverules?.[0]?.max || 0, // Fixed accessing `.max`
+          "Max. No Of Leave": rule.max || 0, // Fixed accessing `.max`
           "Leave In Hand": leave_allocated.leave_in_hand,
           "Effective Year": "01/" + leave_allocated.year,
           Action: "Edit",
