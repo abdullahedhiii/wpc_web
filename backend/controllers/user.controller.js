@@ -90,11 +90,14 @@ module.exports.Login = async (req, res) => {
       { expiresIn: '1h' } 
     );
     
-    res.cookie('access_token', token, {
-      httpOnly: true,  
-      secure: false,  
-      maxAge: 24 * 60 * 60 * 1000,  
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 24 * 60 * 60 * 1000,
     });
+    
+    
     const response  = isAdmin ? {...userDetails, profile_image : org?.Company_Logo || null,isAdmin} :
     {
            company_name : employee.organisation.Company_name,
@@ -111,7 +114,6 @@ module.exports.Login = async (req, res) => {
     };
     return res.status(200).json({
       user: response, 
-      token,
     });
   } catch (error) {
     console.error('Login error:', error);
@@ -123,7 +125,8 @@ module.exports.logout = async (req, res) => {
   try {
     res.clearCookie("access_token", {
       httpOnly: true,
-      secure: false, // Set to true if using HTTPS
+      secure: true,  
+      sameSite: "None",  
     });
 
     return res.status(200).json({ message: "Logged out successfully" });
