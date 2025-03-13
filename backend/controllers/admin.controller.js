@@ -2376,10 +2376,8 @@ module.exports.getLeaveTypes = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 module.exports.addLeaveRule = async (req, res) => {
   const id = req.params.id;
-
   const {
     rule_id,
     isUpdate,
@@ -2392,6 +2390,8 @@ module.exports.addLeaveRule = async (req, res) => {
   } = req.body;
 
   try {
+    const currentYear = new Date().getFullYear(); // ✅ Moved to the beginning
+
     if (isUpdate) {
       const type = await LeaveRule.findOne({
         where: {
@@ -2409,9 +2409,6 @@ module.exports.addLeaveRule = async (req, res) => {
         type.employment_type_id = employment_type_id;
         await type.save();
 
-        const currentYear = new Date().getFullYear();
-
-        // Query employees who took leave in the current year
         const employees_who_took_the_leave = await LeaveRequest.findAll({
           attributes: [
             "employeeCode",
@@ -2421,15 +2418,14 @@ module.exports.addLeaveRule = async (req, res) => {
             leave_type_id,
             status: "approved",
             applicationDate: {
-              [Op.gte]: new Date(`${currentYear}-01-01`), // Start of the current year
-              [Op.lte]: new Date(`${currentYear}-12-31`), // End of the current year
+              [Op.gte]: new Date(`${currentYear}-01-01`),
+              [Op.lte]: new Date(`${currentYear}-12-31`),
             },
           },
           group: ["employeeCode"],
           raw: true,
         });
 
-        // Update leave_in_hand for employees for the **current year**
         for (const employee of employees_who_took_the_leave) {
           const { employeeCode, total_days_taken } = employee;
 
@@ -2461,11 +2457,11 @@ module.exports.addLeaveRule = async (req, res) => {
           employment_type_id,
           [Op.and]: [
             Sequelize.where(
-              Sequelize.fn("YEAR", Sequelize.col("from")),
+              Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"from\"")),
               currentYear
             ),
             Sequelize.where(
-              Sequelize.fn("YEAR", Sequelize.col("to")),
+              Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"to\"")),
               currentYear
             ),
           ],
@@ -2473,13 +2469,12 @@ module.exports.addLeaveRule = async (req, res) => {
       });
 
       if (check_if_exists) {
-        return res
-          .status(400)
-          .json({
-            message:
-              "Leave rule for this leave type already exists for the current year",
-          });
+        return res.status(400).json({
+          message:
+            "Leave rule for this leave type already exists for the current year",
+        });
       }
+
       const newRule = await LeaveRule.create({
         organisation_id: id,
         leave_type_id,
@@ -2500,6 +2495,7 @@ module.exports.addLeaveRule = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 module.exports.getLeaveRules = async (req, res) => {
   const id = req.params.id;
