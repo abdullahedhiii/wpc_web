@@ -5,12 +5,12 @@ const { Sequelize, DataTypes, Op } = require('sequelize');
 const moment = require("moment");
 
 function parseTimeString(timeString) {
-  const date = new Date(`1970-01-01T${timeString}`);
-  if (isNaN(date.getTime())) {
+  const parsedTime = moment(timeString, ["h:mm A", "hh:mm A"], true);
+  if (!parsedTime.isValid()) {
       console.error(`Invalid time format: ${timeString}`);
       return null;
   }
-  return date.getTime();
+  return parsedTime.toDate().getTime(); // Returns timestamp
 }
 
 function parseDateString(dateString) {
@@ -19,23 +19,21 @@ function parseDateString(dateString) {
       "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
   ];
 
-  // Ensure the input contains only dashes and digits
   if (!/^\d{2,4}-\d{2}-\d{2,4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
-      return "Invalid"; // Reject formats with slashes or invalid structures
-  }
-
+  return "Invalid";
+}
   const parsedDate = moment(dateString, formats, true);
   
-  if (!parsedDate.isValid()) return null; // Ensure valid date
+  if (!parsedDate.isValid()) return "Invalid"; 
   
-  // Check if date is greater than today's date
   const today = moment().startOf("day");
   if (parsedDate.isAfter(today)) {
-      return null; // Date is in the future
+      return "Invalid"; 
   }
 
-  return parsedDate.toDate(); // Return valid parsed date
+  return parsedDate.format("YYYY-MM-DD"); // Convert to PostgreSQL format
 }
+
 
 
 module.exports.submitCSV = async (req, res) => {
@@ -55,9 +53,9 @@ module.exports.submitCSV = async (req, res) => {
           "Shift Code",
           "Date",
           "Clock in",
+          "Clock in location",
           "Clock out",
           "Clock out location",
-          "Clock in location"
       ];
 
       const holidayList = await Holiday.findAll({ where: { organisation_id } });
@@ -84,9 +82,10 @@ module.exports.submitCSV = async (req, res) => {
                   "Shift Code": shift_code, 
                   "Date": date, 
                   "Clock in": clock_in, 
+                  "Clock in location": clock_in_location
+,
                   "Clock out": clock_out,
                   "Clock out location": clock_out_location,
-                  "Clock in location": clock_in_location
               } = row;
 
               if (!employee_code || !shift_code || !date || !clock_in || !clock_out) {
@@ -95,7 +94,7 @@ module.exports.submitCSV = async (req, res) => {
               }
 
               const parsedDate = parseDateString(date);
-              if (!parsedDate) {
+              if (parsedDate === 'Invalid') {
                  console.warn(`Skipping row due to invalid or incorrect date format (only dashes allowed): ${JSON.stringify(row)}`);
                  continue;
                }
@@ -133,7 +132,7 @@ module.exports.submitCSV = async (req, res) => {
         const desg_check = await Designation.findOne({
           where : {id : shift_check.designation_id}
         });
-        if(dept_check || desg_check){
+        if(!dept_check || !desg_check){
           console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
           continue;
         }
@@ -428,6 +427,8 @@ module.exports.submitCSV = async (req, res) => {
   
       const records = await Attendance.findAll({
         where: whereCondition,
+        order: [["date", "ASC"]], 
+
       });
   
       const employeeCodes = records.map(record => record.employee_code);
@@ -478,6 +479,8 @@ module.exports.submitCSV = async (req, res) => {
           employee_code: data.employeeCode,
           date: data.date, // Ensure data.date is a string in 'YYYY-MM-DD' format
         },
+        order: [["date", "ASC"]], 
+
       });
       
   
@@ -531,6 +534,8 @@ module.exports.submitCSV = async (req, res) => {
             [Op.between]: [fromDate, toDate], 
           },
         },
+        order: [["date", "ASC"]], 
+
       });
   
       const personal = await PersonalDetail.findOne({
