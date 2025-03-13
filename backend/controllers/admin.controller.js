@@ -1,6 +1,6 @@
 const { type } = require("os");
 const { Op, BOOLEAN } = require("sequelize"); // Import Sequelize operators
-const {Sequelize} = require('sequelize')
+const { Sequelize } = require("sequelize");
 const moment = require("moment");
 
 const {
@@ -482,7 +482,7 @@ module.exports.updateCompany = async (req, res) => {
 module.exports.getOrganisations = async (req, res) => {
   try {
     const organisation = await Organisation.findOne({
-      where: { admin_id : req.params.id},
+      where: { admin_id: req.params.id },
     });
     if (!organisation) {
       return res.status(200).json({
@@ -495,18 +495,21 @@ module.exports.getOrganisations = async (req, res) => {
       id: organisation.id,
       "Sl. No.": 1,
       "Organisation Name": organisation.Company_name,
-      "Organisation Address":
-       [organisation.Address_Line1 ,
-        organisation.Address_Line2 ,
-        organisation.Address_Line3 ,
-        organisation.Address_City_County ,
-        organisation.Address_Postcode ,
-        organisation.Address_Country].filter(Boolean).join(' '),
+      "Organisation Address": [
+        organisation.Address_Line1,
+        organisation.Address_Line2,
+        organisation.Address_Line3,
+        organisation.Address_City_County,
+        organisation.Address_Postcode,
+        organisation.Address_Country,
+      ]
+        .filter(Boolean)
+        .join(" "),
       Website: organisation.Company_Website,
       "Email ID": organisation.Company_OrganisationEmail,
       "Phone No.": organisation.Company_Contact,
       Action: "Edit",
-      year_created: new Date(organisation.createdAt).getFullYear()
+      year_created: new Date(organisation.createdAt).getFullYear(),
     };
     return res.status(200).json(responseData);
   } catch (error) {
@@ -696,7 +699,7 @@ module.exports.getDesignations = async (req, res) => {
         {
           model: Department,
           as: "department",
-          attributes: ["department_name", "organisation_id","id"],
+          attributes: ["department_name", "organisation_id", "id"],
           where: { organisation_id: companyId },
         },
       ],
@@ -706,7 +709,7 @@ module.exports.getDesignations = async (req, res) => {
       console.log(designation.department.id);
       return {
         id: designation.id,
-        department_id : designation.department.id,
+        department_id: designation.department.id,
         "Sl. No.": index + 1,
         "Department Name": designation.department.department_name,
         Designation: designation.designation_name,
@@ -1418,12 +1421,12 @@ module.exports.getShifts = async (req, res) => {
         {
           model: Department,
           as: "department",
-          attributes: ["department_name","id"],
+          attributes: ["department_name", "id"],
         },
         {
           model: Designation,
           as: "designation",
-          attributes: ["designation_name","id"],
+          attributes: ["designation_name", "id"],
         },
       ],
     });
@@ -1451,7 +1454,7 @@ module.exports.getShifts = async (req, res) => {
           "Break Time To": shift.break_end,
           Action: "",
           "Designation ID": shift.designation_id,
-          "Department_id" : shift.department.id,
+          Department_id: shift.department.id,
           "Shift Name": shift.shift_code + "(" + shift.description + ")",
           "Off Days": offDay
             ? {
@@ -1464,7 +1467,7 @@ module.exports.getShifts = async (req, res) => {
                 Sunday: offDay.sunday,
               }
             : {},
-          "Action" : "Edit",
+          Action: "Edit",
         };
 
         return shiftDetail;
@@ -1482,7 +1485,7 @@ module.exports.getShifts = async (req, res) => {
 
 module.exports.addLatePolicy = async (req, res) => {
   const { data, dep_id, des_id } = req.body;
-  console.log('Adding late policy:', data, dep_id, des_id);
+  console.log("Adding late policy:", data, dep_id, des_id);
 
   try {
     // Check if a policy already exists
@@ -1502,7 +1505,7 @@ module.exports.addLatePolicy = async (req, res) => {
         salary_days: data.salary_days,
       });
 
-      console.log('Late policy updated');
+      console.log("Late policy updated");
       return res.status(200).json({
         message: "Late policy updated successfully",
         policy: existingPolicy,
@@ -1518,14 +1521,14 @@ module.exports.addLatePolicy = async (req, res) => {
         salary_days: data.salary_days,
       });
 
-      console.log('Late policy created');
+      console.log("Late policy created");
       return res.status(201).json({
         message: "New late policy created successfully",
         policy: newPolicy,
       });
     }
   } catch (error) {
-    console.error('Error in late policy:', error);
+    console.error("Error in late policy:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1632,7 +1635,6 @@ module.exports.addOffDay = async (req, res) => {
   }
 };
 
-
 module.exports.uploadDocuments = async (req, res) => {
   try {
     const { id } = req.params;
@@ -1709,7 +1711,6 @@ const generateLink = (employee_code) => {
   }
 };
 
-
 module.exports.getAllEmployees = async (req, res) => {
   console.log("get employees hit ", req.params.id);
   const org_id = req.params.id;
@@ -1732,13 +1733,20 @@ module.exports.getAllEmployees = async (req, res) => {
         {
           model: ServiceDetail,
           as: "servicedetail",
-          attributes: ["type", "department","designation_id","department_id","designation","employment_type_id"],
+          attributes: [
+            "type",
+            "department",
+            "designation_id",
+            "department_id",
+            "designation",
+            "employment_type_id",
+          ],
           where: {
             [Op.or]: [
               { end_if: null }, // Employees still active with no end date
-              { end_if: { [Op.gte]: today } } // Employees with a future end date
-            ]
-          }
+              { end_if: { [Op.gte]: today } }, // Employees with a future end date
+            ],
+          },
         },
         {
           model: Organisation,
@@ -1755,11 +1763,12 @@ module.exports.getAllEmployees = async (req, res) => {
       ],
     });
 
-
-   console.log(emp);
+    console.log(emp);
     const formattedResponse = emp.map((employee, index) => {
-   //   console.log(employee,index,'indexxx')
-      const employeeLink = employee.has_filled_out_form ? null : generateLink(employee.employee_code);
+      //   console.log(employee,index,'indexxx')
+      const employeeLink = employee.has_filled_out_form
+        ? null
+        : generateLink(employee.employee_code);
 
       return {
         "Sl. No.": index + 1,
@@ -1786,11 +1795,11 @@ module.exports.getAllEmployees = async (req, res) => {
         "Employee Link": employeeLink
           ? `${process.env.FRONTEND_URL}/employeelink/${employeeLink}`
           : "Form filled out already",
-        Designation : employee.servicedetail?.designation,
-        Designation_id : employee.servicedetail?.designation_id,
-        Department_id : employee.servicedetail?.department_id,
-        employment_type_id : employee.servicedetail?.employment_type_id,
-        employee_code : employee.employee_code
+        Designation: employee.servicedetail?.designation,
+        Designation_id: employee.servicedetail?.designation_id,
+        Department_id: employee.servicedetail?.department_id,
+        employment_type_id: employee.servicedetail?.employment_type_id,
+        employee_code: employee.employee_code,
       };
     });
 
@@ -2013,9 +2022,9 @@ module.exports.getEmployeeData = async (req, res) => {
 
 module.exports.getCOCData = async (req, res) => {
   const id = req.params.id;
-  console.log('coc data hit  ',id);
+  console.log("coc data hit  ", id);
   try {
-    console.log('executing this ? ');
+    console.log("executing this ? ");
     const employees = await Employee.findAll({
       where: { organisation_id: id },
       include: [
@@ -2025,30 +2034,53 @@ module.exports.getCOCData = async (req, res) => {
           attributes: ["title"],
         },
         {
-          model : PersonalDetail,
-          as : "personaldetail",
-          attributes : ['fname','lname','mname','contact_1','Nationality','nationality_no']
-        }
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: [
+            "fname",
+            "lname",
+            "mname",
+            "contact_1",
+            "Nationality",
+            "nationality_no",
+          ],
+        },
       ],
     });
-    console.log('error here??????')
+    console.log("error here??????");
     const employeesWithDetails = await Promise.all(
       employees.map(async (emp) => {
         const employee_code = emp.employee_code;
-        const employee ={
-           full_name : [emp.personaldetail.fname,emp.personaldetail.lname].filter(Boolean).join(' ') + '(' + employee_code + ')' ,
-           employee_code ,
-           name: [emp.personaldetail?.fname,emp.personaldetail?.mname,emp.personaldetail?.lname].filter(Boolean).join(' '),
-           fname :emp.personaldetail?.fname ,
-           lname:emp.personaldetail?.lname,
-           mname: emp.personaldetail?.mname,
-           title : emp.jobdetails?.title,
-           contact_1 : emp.personaldetail.contact_1,
-           Nationality : emp.personaldetail.Nationality,
-           nationality_no: emp.personaldetail.nationality_no
-          };
-        const contact_info = await ContactInfo.findOne({where: { employee_code }});
-        const passport_details = await PassportDetail.findOne({where: { employee_code },});
+        const employee = {
+          full_name:
+            [emp.personaldetail.fname, emp.personaldetail.lname]
+              .filter(Boolean)
+              .join(" ") +
+            "(" +
+            employee_code +
+            ")",
+          employee_code,
+          name: [
+            emp.personaldetail?.fname,
+            emp.personaldetail?.mname,
+            emp.personaldetail?.lname,
+          ]
+            .filter(Boolean)
+            .join(" "),
+          fname: emp.personaldetail?.fname,
+          lname: emp.personaldetail?.lname,
+          mname: emp.personaldetail?.mname,
+          title: emp.jobdetails?.title,
+          contact_1: emp.personaldetail.contact_1,
+          Nationality: emp.personaldetail.Nationality,
+          nationality_no: emp.personaldetail.nationality_no,
+        };
+        const contact_info = await ContactInfo.findOne({
+          where: { employee_code },
+        });
+        const passport_details = await PassportDetail.findOne({
+          where: { employee_code },
+        });
         const esus = await EsusDetail.findOne({ where: { employee_code } });
         const dbs = await DBSDetail.findOne({ where: { employee_code } });
         const visa = await VisaDetail.findOne({ where: { employee_code } });
@@ -2089,62 +2121,61 @@ module.exports.getCOCTable = async (req, res) => {
       include: [
         {
           model: COCOtherDetail,
-          as: 'cocdetails',
-          attributes: ['changeDate', 'remarks', 'awareContact', 'awareInterview'],
-        },
-        {
-          model: PersonalDetail,
-          as: 'personaldetail',
+          as: "cocdetails",
           attributes: [
-            'Nationality',
-            'fname',
-            'lname',
-            'mname','contact_1'
+            "changeDate",
+            "remarks",
+            "awareContact",
+            "awareInterview",
           ],
         },
         {
-            model : ContactInfo,
-            as : 'contact',
-            attributes : [
-              'line1',
-              'line2',
-              'line3',
-              'country',
-              'city',]
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: ["Nationality", "fname", "lname", "mname", "contact_1"],
+        },
+        {
+          model: ContactInfo,
+          as: "contact",
+          attributes: ["line1", "line2", "line3", "country", "city"],
         },
         {
           model: ServiceDetail,
-          as: 'servicedetail',
-          attributes: ['type'],
+          as: "servicedetail",
+          attributes: ["type"],
         },
         {
           model: JobDetail,
-          as: 'jobdetails',
-          attributes: ['title'],
+          as: "jobdetails",
+          attributes: ["title"],
         },
         {
           model: VisaDetail,
-          as: 'visadetail',
-          attributes: ['visa_no', 'expiry_date'],
+          as: "visadetail",
+          attributes: ["visa_no", "expiry_date"],
         },
         {
           model: PassportDetail,
-          as: 'passportdetail',
-          attributes: ['passport_no'],
+          as: "passportdetail",
+          attributes: ["passport_no"],
         },
       ],
     });
 
     const formattedData = data.map((emp) => {
       return {
-        'Updated Date': emp.cocdetails?.changeDate,
-        'Employment Type': emp.servicedetail?.type,
-        'Employee ID': emp.employee_code,
-        'Name Of Member Of The Staff': [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname]
+        "Updated Date": emp.cocdetails?.changeDate,
+        "Employment Type": emp.servicedetail?.type,
+        "Employee ID": emp.employee_code,
+        "Name Of Member Of The Staff": [
+          emp.personaldetail.fname,
+          emp.personaldetail.mname,
+          emp.personaldetail.lname,
+        ]
           .filter(Boolean)
-          .join(' '),
-        'Job Title': emp.jobdetails?.title,
-        'Address': [
+          .join(" "),
+        "Job Title": emp.jobdetails?.title,
+        Address: [
           emp.contact?.line1,
           emp.contact?.line2,
           emp.contact?.line3,
@@ -2152,29 +2183,31 @@ module.exports.getCOCTable = async (req, res) => {
           emp.contact?.country,
         ]
           .filter(Boolean)
-          .join(' '),
-        'Contact Number': emp.personaldetail.contact_1,
+          .join(" "),
+        "Contact Number": emp.personaldetail.contact_1,
         Nationality: emp.personaldetail.Nationality,
-        'BRP Number': emp.visadetail?.visa_no,
-        'Visa Expired': emp.visadetail?.expiry_date,
-        'Remarks/Restriction to work': emp.cocdetails?.remarks,
-        'Passport No': emp.passportdetail?.passport_no,
-        'ESUS Details': 'no',
-        'DBS Details': 'no',
-        'National Id Details': 'no',
-        'Other Documents': 'no',
-        'Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?':
-          emp.cocdetails?.awareContact ? 'Yes' : 'No',
-        'Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?':
-          emp.cocdetails?.awareInterview ? 'Yes' : 'No',
-        Action: '', // Add the necessary action if required
+        "BRP Number": emp.visadetail?.visa_no,
+        "Visa Expired": emp.visadetail?.expiry_date,
+        "Remarks/Restriction to work": emp.cocdetails?.remarks,
+        "Passport No": emp.passportdetail?.passport_no,
+        "ESUS Details": "no",
+        "DBS Details": "no",
+        "National Id Details": "no",
+        "Other Documents": "no",
+        "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?":
+          emp.cocdetails?.awareContact ? "Yes" : "No",
+        "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?":
+          emp.cocdetails?.awareInterview ? "Yes" : "No",
+        Action: "", // Add the necessary action if required
       };
     });
 
     return res.status(200).json(formattedData);
   } catch (err) {
-    console.log(err,'coc');
-    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    console.log(err, "coc");
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
@@ -2182,118 +2215,118 @@ module.exports.getCOCEmployee = async (req, res) => {
   const id = req.params.id;
   try {
     const emp = await Employee.findOne({
-      where: { 
+      where: {
         organisation_id: id,
-        employee_code : req.query.data
+        employee_code: req.query.data,
       },
       include: [
         {
           model: COCOtherDetail,
-          as: 'cocdetails',
-          attributes: ['changeDate', 'remarks', 'awareContact', 'awareInterview'],
-        },
-        {
-          model: PersonalDetail,
-          as: 'personaldetail',
+          as: "cocdetails",
           attributes: [
-            'Nationality',
-            'fname',
-            'lname',
-            'mname','contact_1'
+            "changeDate",
+            "remarks",
+            "awareContact",
+            "awareInterview",
           ],
         },
         {
-            model : ContactInfo,
-            as : 'contact',
-            attributes : [
-              'line1',
-              'line2',
-              'line3',
-              'country',
-              'city',]
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: ["Nationality", "fname", "lname", "mname", "contact_1"],
+        },
+        {
+          model: ContactInfo,
+          as: "contact",
+          attributes: ["line1", "line2", "line3", "country", "city"],
         },
         {
           model: ServiceDetail,
-          as: 'servicedetail',
-          attributes: ['type'],
+          as: "servicedetail",
+          attributes: ["type"],
         },
         {
           model: JobDetail,
-          as: 'jobdetails',
-          attributes: ['title'],
+          as: "jobdetails",
+          attributes: ["title"],
         },
         {
           model: VisaDetail,
-          as: 'visadetail',
-          attributes: ['visa_no', 'expiry_date'],
+          as: "visadetail",
+          attributes: ["visa_no", "expiry_date"],
         },
         {
           model: PassportDetail,
-          as: 'passportdetail',
-          attributes: ['passport_no'],
+          as: "passportdetail",
+          attributes: ["passport_no"],
         },
       ],
     });
 
     const formattedData = {
-        'Updated Date': emp.cocdetails?.changeDate,
-        'Employment Type': emp.servicedetail?.type,
-        'Employee ID': emp.employee_code,
-        'Name Of Member Of The Staff': [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname]
-          .filter(Boolean)
-          .join(' '),
-        'Job Title': emp.jobdetails?.title,
-        'Address': [
-          emp.contact?.line1,
-          emp.contact?.line2,
-          emp.contact?.line3,
-          emp.contact?.city,
-          emp.contact?.country,
-        ]
-          .filter(Boolean)
-          .join(' '),
-        'Contact Number': emp.personaldetail.contact_1,
-        Nationality: emp.personaldetail.Nationality,
-        'BRP Number': emp.visadetail?.visa_no,
-        'Visa Expired': emp.visadetail?.expiry_date,
-        'Remarks/Restriction to work': emp.cocdetails?.remarks,
-        'Passport No': emp.passportdetail?.passport_no,
-        'ESUS Details': 'no',
-        'DBS Details': 'no',
-        'National Id Details': 'no',
-        'Other Documents': 'no',
-        'Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?':
-          emp.cocdetails?.awareContact ? 'Yes' : 'No',
-        'Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?':
-          emp.cocdetails?.awareInterview ? 'Yes' : 'No',
-        "Annual Reminder Date": '', 
+      "Updated Date": emp.cocdetails?.changeDate,
+      "Employment Type": emp.servicedetail?.type,
+      "Employee ID": emp.employee_code,
+      "Name Of Member Of The Staff": [
+        emp.personaldetail.fname,
+        emp.personaldetail.mname,
+        emp.personaldetail.lname,
+      ]
+        .filter(Boolean)
+        .join(" "),
+      "Job Title": emp.jobdetails?.title,
+      Address: [
+        emp.contact?.line1,
+        emp.contact?.line2,
+        emp.contact?.line3,
+        emp.contact?.city,
+        emp.contact?.country,
+      ]
+        .filter(Boolean)
+        .join(" "),
+      "Contact Number": emp.personaldetail.contact_1,
+      Nationality: emp.personaldetail.Nationality,
+      "BRP Number": emp.visadetail?.visa_no,
+      "Visa Expired": emp.visadetail?.expiry_date,
+      "Remarks/Restriction to work": emp.cocdetails?.remarks,
+      "Passport No": emp.passportdetail?.passport_no,
+      "ESUS Details": "no",
+      "DBS Details": "no",
+      "National Id Details": "no",
+      "Other Documents": "no",
+      "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?":
+        emp.cocdetails?.awareContact ? "Yes" : "No",
+      "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?":
+        emp.cocdetails?.awareInterview ? "Yes" : "No",
+      "Annual Reminder Date": "",
     };
 
     return res.status(200).json([formattedData]);
   } catch (err) {
-    console.log(err,'coc');
-    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+    console.log(err, "coc");
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: err.message });
   }
 };
 
-
-module.exports.addLeaveType = async(req,res) => {
+module.exports.addLeaveType = async (req, res) => {
   const id = req.params.id;
 
-  const { leave_type, isUpdate, remarks,sort_code,leave_type_id } = req.body;
+  const { leave_type, isUpdate, remarks, sort_code, leave_type_id } = req.body;
 
   try {
     if (isUpdate) {
       const type = await LeaveType.findOne({
         where: {
           id: leave_type_id,
-          organisation_id : id
+          organisation_id: id,
         },
       });
       if (type) {
         type.leave_type = leave_type;
-        type.remarks = remarks || "N/A"
-        type.sort_code = sort_code
+        type.remarks = remarks || "N/A";
+        type.sort_code = sort_code;
         await type.save();
         return res.status(201).json({
           message: "leave type updated successfully",
@@ -2305,7 +2338,9 @@ module.exports.addLeaveType = async(req,res) => {
     } else {
       const newLeave = await LeaveType.create({
         organisation_id: id,
-        leave_type,sort_code,remarks
+        leave_type,
+        sort_code,
+        remarks,
       });
 
       return res.status(201).json({
@@ -2317,65 +2352,143 @@ module.exports.addLeaveType = async(req,res) => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-module.exports.getLeaveTypes = async (req,res) => {
-     const id = req.params.id;
-     try{
-        const leaveTypes = await LeaveType.findAll({
-        where : {organisation_id : id}
-     });
-       const formattedResponse = leaveTypes.map((leave,index) => {
-          return {
-             "id" : leave.id,
-             "Sl. No." : index+1,
-             "Leave Type" : leave.leave_type,
-             "Remarks" : leave.remarks || "N/A",
-             "Leave Type Sort Code" : leave.sort_code,
-             "Action" : "Edit"
-          }
-       })
-       return res.status(200).json(formattedResponse);
-     }
-     catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-}
+module.exports.getLeaveTypes = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const leaveTypes = await LeaveType.findAll({
+      where: { organisation_id: id },
+    });
+    const formattedResponse = leaveTypes.map((leave, index) => {
+      return {
+        id: leave.id,
+        "Sl. No.": index + 1,
+        "Leave Type": leave.leave_type,
+        Remarks: leave.remarks || "N/A",
+        "Leave Type Sort Code": leave.sort_code,
+        Action: "Edit",
+      };
+    });
+    return res.status(200).json(formattedResponse);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-module.exports.addLeaveRule = async(req,res) => {
+module.exports.addLeaveRule = async (req, res) => {
   const id = req.params.id;
 
-  const {rule_id,isUpdate,leave_type_id,employment_type_id,leave_type,max,from,to} = req.body;
+  const {
+    rule_id,
+    isUpdate,
+    leave_type_id,
+    employment_type_id,
+    leave_type,
+    max,
+    from,
+    to,
+  } = req.body;
 
   try {
     if (isUpdate) {
       const type = await LeaveRule.findOne({
         where: {
           id: rule_id,
-          organisation_id : id
+          organisation_id: id,
         },
       });
+
       if (type) {
-        type.leave_type = leave_type 
-        type.max = max
-        type.from = from
-        type.to = to
-        type.leave_type_id = leave_type_id
-        type.employment_type_id = employment_type_id
+        type.leave_type = leave_type;
+        type.max = max;
+        type.from = from;
+        type.to = to;
+        type.leave_type_id = leave_type_id;
+        type.employment_type_id = employment_type_id;
         await type.save();
-        return res.status(201).json({
-          message: "leave rule updated successfully",
-          type,
+
+        const currentYear = new Date().getFullYear();
+
+        // Query employees who took leave in the current year
+        const employees_who_took_the_leave = await LeaveRequest.findAll({
+          attributes: [
+            "employeeCode",
+            [Sequelize.fn("SUM", Sequelize.col("days")), "total_days_taken"],
+          ],
+          where: {
+            leave_type_id,
+            status: "approved",
+            applicationDate: {
+              [Op.gte]: new Date(`${currentYear}-01-01`), // Start of the current year
+              [Op.lte]: new Date(`${currentYear}-12-31`), // End of the current year
+            },
+          },
+          group: ["employeeCode"],
+          raw: true,
         });
+
+        // Update leave_in_hand for employees for the **current year**
+        for (const employee of employees_who_took_the_leave) {
+          const { employeeCode, total_days_taken } = employee;
+
+          await LeaveAllocation.update(
+            {
+              leave_in_hand: Sequelize.literal(
+                `GREATEST(leave_in_hand - ${total_days_taken}, 0)`
+              ),
+            },
+            {
+              where: {
+                employeeCode,
+                leave_type_id,
+                year: currentYear,
+              },
+            }
+          );
+        }
+
+        return res.status(200).json({ message: "Leave rule updated" });
       } else {
         return res.status(404).json({ message: "leave rule not found" });
       }
     } else {
+      const check_if_exists = await LeaveRule.findOne({
+        where: {
+          organisation_id: id,
+          leave_type_id,
+          employment_type_id,
+          [Op.and]: [
+            Sequelize.where(
+              Sequelize.fn("YEAR", Sequelize.col("from")),
+              currentYear
+            ),
+            Sequelize.where(
+              Sequelize.fn("YEAR", Sequelize.col("to")),
+              currentYear
+            ),
+          ],
+        },
+      });
+
+      if (check_if_exists) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Leave rule for this leave type already exists for the current year",
+          });
+      }
       const newRule = await LeaveRule.create({
         organisation_id: id,
-        leave_type_id,employment_type_id,leave_type,max,from,to
-            });
+        leave_type_id,
+        employment_type_id,
+        leave_type,
+        max,
+        from,
+        to,
+      });
 
       return res.status(201).json({
         message: "new rule created successfully",
@@ -2386,7 +2499,7 @@ module.exports.addLeaveRule = async(req,res) => {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 module.exports.getLeaveRules = async (req, res) => {
   const id = req.params.id;
@@ -2396,9 +2509,9 @@ module.exports.getLeaveRules = async (req, res) => {
       include: [
         {
           model: LeaveType,
-          as: 'leavetype',
-          attributes: ['leave_type'],
-          foreignKey : 'leave_type_id',
+          as: "leavetype",
+          attributes: ["leave_type"],
+          foreignKey: "leave_type_id",
         },
       ],
     });
@@ -2413,7 +2526,7 @@ module.exports.getLeaveRules = async (req, res) => {
         return {
           id: rule.id,
           "Sl. No.": index + 1,
-          "Employee Type": employeetypes?.employment_type,  // Use optional chaining to avoid null errors
+          "Employee Type": employeetypes?.employment_type, // Use optional chaining to avoid null errors
           "Leave Type": rule.leavetype.leave_type,
           "Max. No.": rule.max,
           "Effective From": rule.from,
@@ -2431,17 +2544,19 @@ module.exports.getLeaveRules = async (req, res) => {
 };
 
 module.exports.allocateLeave = async (req, res) => {
-  console.log('hit allocated leave ');
+  console.log("hit allocated leave ");
   const id = req.params.id;
 
   try {
-    const [a, b] = req.body.year.includes('/') ? req.body.year.split('/') : [null, null];
-    
+    const [a, b] = req.body.year.includes("/")
+      ? req.body.year.split("/")
+      : [null, null];
+
     const leave_type = await LeaveType.findOne({
-      where: { id: req.body.leave_type_id }
+      where: { id: req.body.leave_type_id },
     });
     const leave_rule = await LeaveRule.findOne({
-      where: { leave_type_id: req.body.leave_type_id }
+      where: { leave_type_id: req.body.leave_type_id },
     });
     const year = b ? b : req.body.year;
 
@@ -2450,8 +2565,8 @@ module.exports.allocateLeave = async (req, res) => {
       where: {
         employee_code: req.body.employee_code,
         leave_type_id: req.body.leave_type_id,
-        year: year
-      }
+        year: year,
+      },
     });
 
     if (existingLeave) {
@@ -2467,19 +2582,19 @@ module.exports.allocateLeave = async (req, res) => {
         employment_type_id: req.body.employment_type_id,
         leave_type_id: req.body.leave_type_id,
         year: year,
-        leave_in_hand: leave_rule.max
+        leave_in_hand: leave_rule.max,
       });
     }
 
     // Construct response
     const response = {
-      'Select': '-',
-      'Employment Type': req.body.employment_type,
-      'Employee Code': req.body.employee_code,
-      'Leave Name': leave_type?.leave_type,
-      'Maximum No.': leave_rule.max,
-      'Leave in hand': leave_rule.max,
-      'Effective Year': req.body.year
+      Select: "-",
+      "Employment Type": req.body.employment_type,
+      "Employee Code": req.body.employee_code,
+      "Leave Name": leave_type?.leave_type,
+      "Maximum No.": leave_rule.max,
+      "Leave in hand": leave_rule.max,
+      "Effective Year": req.body.year,
     };
 
     return res.status(existingLeave ? 200 : 201).json(response);
@@ -2489,152 +2604,155 @@ module.exports.allocateLeave = async (req, res) => {
   }
 };
 
-
-
-module.exports.getLeaveAllocated = async(req,res) => {
-    const allocation_id = req.params.id;
-    try{
-       const leave_allocated = await LeaveAllocation.findOne({
-        where : {id : allocation_id}
-       });
-       const leave_type = await LeaveType.findOne({
-        where : {id : leave_allocated.leave_type_id},
-        include : [
-          {
-            model : LeaveRule,
-            as : 'leaverules',
-            attributes :['max']
-          }
-        ]
-       });
-       const employee_type = await EmploymentType.findOne({where : {id : leave_allocated.employment_type_id}})
-       const data = {
-           leave_type : leave_type.leave_type,
-           employee_code : leave_allocated.employee_code,
-           max : leave_type.leaverules[0].max,
-           employee_type: employee_type.employment_type,
-           leave_in_hand : leave_allocated.leave_in_hand,
-           year : '01/'+leave_allocated.year,
-           employment_type_id : leave_allocated.employment_type_id,
-       };
-       return res.status(200).json(data);
-    }
-    catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
-    }
+module.exports.getLeaveAllocated = async (req, res) => {
+  const allocation_id = req.params.id;
+  try {
+    const leave_allocated = await LeaveAllocation.findOne({
+      where: { id: allocation_id },
+    });
+    const leave_type = await LeaveType.findOne({
+      where: { id: leave_allocated.leave_type_id },
+      include: [
+        {
+          model: LeaveRule,
+          as: "leaverules",
+          attributes: ["max"],
+        },
+      ],
+    });
+    const employee_type = await EmploymentType.findOne({
+      where: { id: leave_allocated.employment_type_id },
+    });
+    const data = {
+      leave_type: leave_type.leave_type,
+      employee_code: leave_allocated.employee_code,
+      max: leave_type.leaverules[0].max,
+      employee_type: employee_type.employment_type,
+      leave_in_hand: leave_allocated.leave_in_hand,
+      year: "01/" + leave_allocated.year,
+      employment_type_id: leave_allocated.employment_type_id,
+    };
+    return res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 module.exports.getLeavesAllocated = async (req, res) => {
   const id = req.params.id;
-  console.log('id in leaves:', id);
+  console.log("id in leaves:", id);
 
   try {
-      const employees = await Employee.findAll({
-          where: { organisation_id: id },
-          include: [
-              {
-                  model: PersonalDetail, 
-                  as: 'personaldetail',
-                  attributes: ['fname', 'mname', 'lname']
-              }
-          ]
+    const employees = await Employee.findAll({
+      where: { organisation_id: id },
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: ["fname", "mname", "lname"],
+        },
+      ],
+    });
+
+    const records = [];
+    let index = 1;
+
+    for (const employee of employees) {
+      const employee_code = employee.employee_code;
+
+      // Fetch all leave allocations for the employee for all years
+      const leave_allocations = await LeaveAllocation.findAll({
+        where: { employee_code: employee_code },
       });
 
-      const records = [];
-      let index = 1;
+      console.log(leave_allocations);
 
-      for (const employee of employees) {
-          const employee_code = employee.employee_code;
+      for (const leave_allocated of leave_allocations) {
+        const leave_type = await LeaveType.findOne({
+          where: { id: leave_allocated.leave_type_id },
+          include: [
+            {
+              model: LeaveRule,
+              as: "leaverules",
+              attributes: ["max"],
+            },
+          ],
+        });
 
-          // Fetch all leave allocations for the employee for all years
-          const leave_allocations = await LeaveAllocation.findAll({
-              where: { employee_code: employee_code }
-          });
+        console.log(leave_type?.leaverules);
 
-          console.log(leave_allocations);
+        const employee_type = await EmploymentType.findOne({
+          where: { id: leave_allocated.employment_type_id },
+        });
 
-          for (const leave_allocated of leave_allocations) {
-              const leave_type = await LeaveType.findOne({
-                  where: { id: leave_allocated.leave_type_id },
-                  include: [
-                      {
-                          model: LeaveRule,
-                          as: 'leaverules',
-                          attributes: ['max']
-                      }
-                  ]
-              });
-
-              console.log(leave_type?.leaverules);
-
-              const employee_type = await EmploymentType.findOne({
-                  where: { id: leave_allocated.employment_type_id }
-              });
-
-              records.push({
-                   id : leave_allocated.id,
-                  "Sl. No.": index++,
-                  "Employee Type": employee_type?.employment_type || 'N/A',
-                  "Employee Code": employee_code,
-                  "Leave Type": leave_type?.leave_type || 'N/A',
-                  "Employee Name": [employee.personaldetail.fname, employee.personaldetail.mname, employee.personaldetail.lname]
-                      .filter(Boolean)
-                      .join(' '),
-                  "Max. No Of Leave": leave_type?.leaverules?.[0]?.max || 0, // Fixed accessing `.max`
-                  "Leave In Hand": leave_allocated.leave_in_hand,
-                  "Effective Year": '01/' + leave_allocated.year,
-                  "Action": "Edit",
-                  employment_type_id : leave_allocated.employment_type_id
-              });
-          }
+        records.push({
+          id: leave_allocated.id,
+          "Sl. No.": index++,
+          "Employee Type": employee_type?.employment_type || "N/A",
+          "Employee Code": employee_code,
+          "Leave Type": leave_type?.leave_type || "N/A",
+          "Employee Name": [
+            employee.personaldetail.fname,
+            employee.personaldetail.mname,
+            employee.personaldetail.lname,
+          ]
+            .filter(Boolean)
+            .join(" "),
+          "Max. No Of Leave": leave_type?.leaverules?.[0]?.max || 0, // Fixed accessing `.max`
+          "Leave In Hand": leave_allocated.leave_in_hand,
+          "Effective Year": "01/" + leave_allocated.year,
+          Action: "Edit",
+          employment_type_id: leave_allocated.employment_type_id,
+        });
       }
+    }
 
-      return res.status(200).json(records);
+    return res.status(200).json(records);
   } catch (err) {
-      console.error("Error fetching leaves allocated:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error fetching leaves allocated:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+module.exports.getOrgDocuments = async (req, res) => {
+  const id = req.params.id;
 
-module.exports.getOrgDocuments = async(req,res) => {
-     const id = req.params.id;
-
-     try{
-         const documents = await OrgDocument.findAll({where : {organisation_id : id}});
-         return res.status(200).json(documents);
-     }
-     catch (err) {
-      console.error("Error fetching documents:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+  try {
+    const documents = await OrgDocument.findAll({
+      where: { organisation_id: id },
+    });
+    return res.status(200).json(documents);
+  } catch (err) {
+    console.error("Error fetching documents:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
-module.exports.createUser = async (req,res) => {
-
-  try{
-  const existingUser = await User.findOne({ where: { email:req.body.email,employee_code : req.body.employee_code } });
+module.exports.createUser = async (req, res) => {
+  try {
+    const existingUser = await User.findOne({
+      where: { email: req.body.email, employee_code: req.body.employee_code },
+    });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists.' });
+      return res.status(400).json({ message: "User already exists." });
+    }
+    const newUser = await User.create({
+      ...req.body,
+      organisation_id: req.params.id,
+    });
+    return res
+      .status(201)
+      .json({ message: "User registered successfully.", newUser });
+  } catch (error) {
+    console.error("Error in user creation:", error);
+    return res
+      .status(500)
+      .json({ error: "An error occurred. Please try again later." });
   }
-  const newUser = await User.create({
-    ...req.body,
-    organisation_id : req.params.id,
-  }); 
-  return res.status(201).json({ message: 'User registered successfully.',newUser});
-  } 
-  catch (error) {
-    console.error('Error in user creation:', error);
-    return res.status(500).json({ error: 'An error occurred. Please try again later.' });
-  }
-
 };
 
-module.exports.updateUser = async (req,res) => {
-
-};
-
+module.exports.updateUser = async (req, res) => {};
 
 // const columns = [
 //   "Sl. No.",
@@ -2645,45 +2763,53 @@ module.exports.updateUser = async (req,res) => {
 //   "Action"
 // ];
 
-module.exports.getUserData = async (req,res) => {
-    const id = req.params.id;
-    try{
-       const user = await User.findOne({where : {id : id}});
-       const response = {id : user.id,employee_code : user.employee_code, email : user.email,password : '***', employee_name : user.employee_name};
-       return res.status(200).json(response);
-    }
-    catch(err){
-      return res.status(500).json({message : 'Internal Server Error'});
-    }
+module.exports.getUserData = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await User.findOne({ where: { id: id } });
+    const response = {
+      id: user.id,
+      employee_code: user.employee_code,
+      email: user.email,
+      password: "***",
+      employee_name: user.employee_name,
+    };
+    return res.status(200).json(response);
+  } catch (err) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
-module.exports.getUsers = async (req,res) => {
-     const id = req.params.id;
-     try{
-          const users = await User.findAll({where : {organisation_id : id}});
-          const formattedResponse = await Promise.all(
-            users.map(async (user, index) => {
-              const details = await PersonalDetail.findOne({where: {employee_code : user.employee_code }})
-                return{
-                    id : user.id,
-                    "Sl. No." : index+1,
-                    "Employee Code" : user.employee_code,
-                    "Name" : [details.fname,details.mname,details.lname].filter(Boolean).join(' '),
-                    "Email" : user.email,
-                    "Password" : "****",
-                    "Action" :"Edit"
-                }
-            }));
-            return res.status(200).json(formattedResponse);
-
-     }
-     catch(err){
-         return res.status(500).json({error : 'Internal server error'});
-     }
-}
+module.exports.getUsers = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const users = await User.findAll({ where: { organisation_id: id } });
+    const formattedResponse = await Promise.all(
+      users.map(async (user, index) => {
+        const details = await PersonalDetail.findOne({
+          where: { employee_code: user.employee_code },
+        });
+        return {
+          id: user.id,
+          "Sl. No.": index + 1,
+          "Employee Code": user.employee_code,
+          Name: [details.fname, details.mname, details.lname]
+            .filter(Boolean)
+            .join(" "),
+          Email: user.email,
+          Password: "****",
+          Action: "Edit",
+        };
+      })
+    );
+    return res.status(200).json(formattedResponse);
+  } catch (err) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 module.exports.grantRights = async (req, res) => {
   console.log(req.body);
-  
+
   try {
     // Check if the user role already exists
     const existingRole = await UserRole.findOne({
@@ -2691,12 +2817,12 @@ module.exports.grantRights = async (req, res) => {
         user_id: req.body.email,
         sub_module_id: req.body.module,
         feature_id: req.body.feature,
-        right: req.body.right
-      }
+        right: req.body.right,
+      },
     });
 
     if (existingRole) {
-      console.log('role existss');
+      console.log("role existss");
       return res.status(400).json({ message: "User role already assigned!" });
     }
 
@@ -2705,17 +2831,15 @@ module.exports.grantRights = async (req, res) => {
       user_id: req.body.email,
       sub_module_id: req.body.module,
       feature_id: req.body.feature,
-      right: req.body.right
+      right: req.body.right,
     });
 
     return res.status(200).json({ message: "User role created" });
-
   } catch (err) {
     console.error("Error granting rights:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 module.exports.getUserRoles = async (req, res) => {
   const id = req.params.id;
@@ -2725,16 +2849,16 @@ module.exports.getUserRoles = async (req, res) => {
       include: [
         {
           model: UserRole,
-          as: 'roles',
+          as: "roles",
           include: [
             {
               model: Feature,
-              as: 'feature',
+              as: "feature",
             },
             {
               model: SubModule,
-              as: 'submodule',
-            }
+              as: "submodule",
+            },
           ],
         },
       ],
@@ -2742,12 +2866,12 @@ module.exports.getUserRoles = async (req, res) => {
 
     const formattedResponse = data.flatMap((user, index) =>
       user.roles.map((role) => ({
-        "Sl. No.": index + 1,  
+        "Sl. No.": index + 1,
         "User Id": user.email,
         "Module Name": role.submodule ? role.submodule.name : "N/A",
-        "Menu": role.feature ? role.feature.name : "N/A",
-        "Rights": role.right,
-        "Action": "Delete", 
+        Menu: role.feature ? role.feature.name : "N/A",
+        Rights: role.right,
+        Action: "Delete",
       }))
     );
 
@@ -2758,25 +2882,26 @@ module.exports.getUserRoles = async (req, res) => {
   }
 };
 
-
 module.exports.getJobOpen = async (req, res) => {
   try {
-      const { id } = req.params; // Assuming organisation_id is passed in request params
-      const today = new Date(); // Get today's date
+    const { id } = req.params; // Assuming organisation_id is passed in request params
+    const today = new Date(); // Get today's date
 
-      const jobs = await Job.findAll({
-          where: {
-              [Op.and]: [
-                  { organisation_id: id },
-                  { jobClosingDate: { [Op.gt]: today } } // Check if closing date is greater than today
-              ]
-          }
-      });
+    const jobs = await Job.findAll({
+      where: {
+        [Op.and]: [
+          { organisation_id: id },
+          { jobClosingDate: { [Op.gt]: today } }, // Check if closing date is greater than today
+        ],
+      },
+    });
 
-      res.status(200).json({ message: "Jobs retrieved successfully", jobs });
+    res.status(200).json({ message: "Jobs retrieved successfully", jobs });
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Internal server error", error: err.message });
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
@@ -2803,91 +2928,104 @@ module.exports.addForm = async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal server error", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
+module.exports.getForms = async (req, res) => {
+  const id = req.params.id;
+  const today = new Date(); // Get today's date
 
-module.exports.getForms = async(req,res) => {
-    const id = req.params.id;
-    const today = new Date(); // Get today's date
-
-    try{
-         const jobs = await Job.findAll({
-          where : {
-            [Op.and]: [
-              { organisation_id: id },
-              { jobClosingDate: { [Op.gt]: today } } // Check if closing date is greater than today
-          ]
-          },
-          include : [
-           { 
-            model: InterviewForm,
-            as : "form"
-          }
-          ]
-         });
-         console.log(jobs);
-         const formattedData = jobs.map((job,index) => (
-          job.form ? {
-            id : job.form?.id,
-            job_id : job.form?.job_id,
-            "Sl. No." : index+1,
-            "Job Title" : job.jobTitle,
-            "Form Name" : job.form?.form_name,
-            "Industry" : job.form?.industry,
-            "Scaling" : job.form?.scaling,
-            "Action" : "Edit"
-          } : null
-         ));
-         return res.status(200).json(formattedData);
-    }
-
-    catch(err){
-      console.error(err);
-      res.status(500).json({ message: "Internal server error", error: err.message });
-    }
-};
-
-module.exports.getJobForm = async (req,res) => {
-   try{
-       const form = await InterviewForm.findOne({
-        where : {id : req.params.id}
-       });
-       const job = await Job.findOne({
-        where : {id : form.job_id}
-       });
-       form.job_position = job.jobTitle;
-       return res.status(200).json(form);
-      }
-  
-      catch(err){
-        console.error(err);
-        res.status(500).json({ message: "Internal server error", error: err.message });
-      }
-};
-
-module.exports.assignDuty = async(req,res) => {
-    try{
-      await Duty.create({
-        ...req.body
+  try {
+    const jobs = await Job.findAll({
+      where: {
+        [Op.and]: [
+          { organisation_id: id },
+          { jobClosingDate: { [Op.gt]: today } }, // Check if closing date is greater than today
+        ],
+      },
+      include: [
+        {
+          model: InterviewForm,
+          as: "form",
+        },
+      ],
     });
-    res.status(200).json({ message: "form added"});
-    }
-    catch(err){
-      console.error(err);
-      res.status(500).json({ message: "Internal server error", error: err.message });
-    }
-}
+    console.log(jobs);
+    const formattedData = jobs.map((job, index) =>
+      job.form
+        ? {
+            id: job.form?.id,
+            job_id: job.form?.job_id,
+            "Sl. No.": index + 1,
+            "Job Title": job.jobTitle,
+            "Form Name": job.form?.form_name,
+            Industry: job.form?.industry,
+            Scaling: job.form?.scaling,
+            Action: "Edit",
+          }
+        : null
+    );
+    return res.status(200).json(formattedData);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
+
+module.exports.getJobForm = async (req, res) => {
+  try {
+    const form = await InterviewForm.findOne({
+      where: { id: req.params.id },
+    });
+    const job = await Job.findOne({
+      where: { id: form.job_id },
+    });
+    form.job_position = job.jobTitle;
+    return res.status(200).json(form);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
+
+module.exports.assignDuty = async (req, res) => {
+  try {
+    await Duty.create({
+      ...req.body,
+    });
+    res.status(200).json({ message: "form added" });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+};
 module.exports.getDuties = async (req, res) => {
   try {
-    const { department_id, designation_id, fromDate, toDate, employee_code } = req.query;
-    
-    const employee_detail = employee_code ? await ServiceDetail.findOne({
-      where : {employee_code : employee_code}
-    }) : null;
+    const { department_id, designation_id, fromDate, toDate, employee_code } =
+      req.query;
 
-    console.log("Request Params:", { department_id, designation_id, fromDate, toDate, employee_code });
+    const employee_detail = employee_code
+      ? await ServiceDetail.findOne({
+          where: { employee_code: employee_code },
+        })
+      : null;
+
+    console.log("Request Params:", {
+      department_id,
+      designation_id,
+      fromDate,
+      toDate,
+      employee_code,
+    });
 
     const dutyWhereClause = {
       fromDate: { [Op.gte]: fromDate },
@@ -2902,30 +3040,38 @@ module.exports.getDuties = async (req, res) => {
     let duties;
     duties = await Duty.findAll({ where: dutyWhereClause });
     console.log("Duties Retrieved:", duties);
-    if(employee_code && duties.length === 0){
-      console.log('employee code hut duties null')    
+    if (employee_code && duties.length === 0) {
+      console.log("employee code hut duties null");
       duties = await Duty.findAll({
-            where : {
-              fromDate: { [Op.gte]: fromDate },
-              toDate: { [Op.lte]: toDate },
-              department_id : employee_detail.department_id,
-              designation_id: employee_detail.designation_id,
-            }
-          });
-          console.log(duties);
+        where: {
+          fromDate: { [Op.gte]: fromDate },
+          toDate: { [Op.lte]: toDate },
+          department_id: employee_detail.department_id,
+          designation_id: employee_detail.designation_id,
+        },
+      });
+      console.log(duties);
     }
 
     const shift = await Shift.findOne({
       where: { department_id, designation_id },
       include: [
-        { model: Department, as: "department", attributes: ["id", "department_name"] },
-        { model: Designation, as: "designation", attributes: ["id", "designation_name"] },
+        {
+          model: Department,
+          as: "department",
+          attributes: ["id", "department_name"],
+        },
+        {
+          model: Designation,
+          as: "designation",
+          attributes: ["id", "designation_name"],
+        },
       ],
     });
 
     console.log("Shift Retrieved:", shift);
 
-    const employeeWhereClause = employee_code ? { employee_code } : {  };
+    const employeeWhereClause = employee_code ? { employee_code } : {};
     console.log(employeeWhereClause);
     const employeeRecords = await Employee.findAll({
       where: employeeWhereClause,
@@ -2945,19 +3091,26 @@ module.exports.getDuties = async (req, res) => {
 
     console.log("Employee Records Retrieved:", employeeRecords);
 
-
     // Step 4: Format Duties Per Employee
     const formattedDuties = duties.map((duty) => {
       const employeeDetails =
-        employeeRecords.find((emp) => emp.personaldetail?.employee_code === duty.employee_code) ||
-        employeeRecords[0] || {}; // If no match, use first available employee
+        employeeRecords.find(
+          (emp) => emp.personaldetail?.employee_code === duty.employee_code
+        ) ||
+        employeeRecords[0] ||
+        {}; // If no match, use first available employee
 
       return {
         Department: shift?.department?.department_name || "N/A",
         Designation: shift?.designation?.designation_name || "N/A",
-        "Employee Name": [employeeDetails.personaldetail?.fname, employeeDetails.personaldetail?.mname, employeeDetails.personaldetail?.lname]
-          .filter(Boolean)
-          .join(" ") || "N/A",
+        "Employee Name":
+          [
+            employeeDetails.personaldetail?.fname,
+            employeeDetails.personaldetail?.mname,
+            employeeDetails.personaldetail?.lname,
+          ]
+            .filter(Boolean)
+            .join(" ") || "N/A",
         EmployeeCode: employeeDetails.personaldetail?.employee_code || "N/A",
         "Shift Code": shift?.shift_code || "N/A",
         "Work In Time": shift?.work_in || "N/A",
@@ -2973,61 +3126,63 @@ module.exports.getDuties = async (req, res) => {
     return res.status(200).json(formattedDuties);
   } catch (err) {
     console.error("Error:", err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
-
 module.exports.getTasks = async (req, res) => {
-    const { employee_code, fromDate, toDate } = req.query;
+  const { employee_code, fromDate, toDate } = req.query;
 
-    try {
-        const employee = await Employee.findOne({
-            where: { employee_code },
-            include: [
-                {
-                    model: PersonalDetail,
-                    as: "personaldetail",
-                    attributes: ["fname", "mname", "lname", "employee_code"],
-                },
-            ],
-        });
+  try {
+    const employee = await Employee.findOne({
+      where: { employee_code },
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: ["fname", "mname", "lname", "employee_code"],
+        },
+      ],
+    });
 
-        if (!employee) {
-            return res.status(404).json({ error: "Employee not found" });
-        }
-
-        const tasks = await WorkUpdate.findAll({
-            where: {
-                employee_code,
-                update_date: { [Op.gte]: fromDate },
-                update_date :{ [Op.lte]: toDate },
-            },
-        });
-
-        const formattedTasks = tasks.map((task, index) => ({
-            "Sl No": index + 1,
-            "Employee Name": `${employee.personaldetail.fname} ${employee.personaldetail.mname || ""} ${employee.personaldetail.lname}`.trim(),
-            "Date": task.update_date,
-            "From Time": task.fromTime, 
-            "To Time": task.toTime, 
-            "Task Performed": task.update || "N/A",
-            "Task Update": task.update || "N/A",
-            "Uploaded File": task.file || "N/A", 
-        }));
-
-        // Return response
-        return res.status(200).json(formattedTasks);
-    } catch (err) {
-        console.error("Error fetching tasks:", err);
-        res.status(500).json({ error: "Internal server error" });
+    if (!employee) {
+      return res.status(404).json({ error: "Employee not found" });
     }
-};
 
+    const tasks = await WorkUpdate.findAll({
+      where: {
+        employee_code,
+        update_date: { [Op.gte]: fromDate },
+        update_date: { [Op.lte]: toDate },
+      },
+    });
+
+    const formattedTasks = tasks.map((task, index) => ({
+      "Sl No": index + 1,
+      "Employee Name": `${employee.personaldetail.fname} ${
+        employee.personaldetail.mname || ""
+      } ${employee.personaldetail.lname}`.trim(),
+      Date: task.update_date,
+      "From Time": task.fromTime,
+      "To Time": task.toTime,
+      "Task Performed": task.update || "N/A",
+      "Task Update": task.update || "N/A",
+      "Uploaded File": task.file || "N/A",
+    }));
+
+    // Return response
+    return res.status(200).json(formattedTasks);
+  } catch (err) {
+    console.error("Error fetching tasks:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 module.exports.getLeavesRequested = async (req, res) => {
   try {
-    console.log('Oragnisation id ',req.params.id);
+    console.log("Oragnisation id ", req.params.id);
     const leaves = await Employee.findAll({
       where: {
         organisation_id: req.params.id,
@@ -3036,25 +3191,25 @@ module.exports.getLeavesRequested = async (req, res) => {
         {
           model: PersonalDetail,
           as: "personaldetail",
-          foreignKey : 'employee_code',
+          foreignKey: "employee_code",
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
-          foreignKey : 'employee_code'
+          foreignKey: "employee_code",
         },
         {
           model: LeaveRequest,
           as: "leave_requests",
-          foreignKey: "employeeCode", 
+          foreignKey: "employeeCode",
         },
       ],
     });
-console.log(leaves);
+    console.log(leaves);
     const formattedTasks = await Promise.all(
       leaves.flatMap((leave, index) =>
         leave.leave_requests.map(async (leaveRequest) => {
- console.log(leaveRequest);
+          console.log(leaveRequest);
           const leave_type = await LeaveType.findOne({
             where: {
               id: leaveRequest.leave_type_id,
@@ -3066,7 +3221,11 @@ console.log(leaves);
             "Sl. No.": index + 1,
             "Employment Type": leave.servicedetail?.type || "N/A",
             "Employee Code": leaveRequest.employeeCode, // Use correct column
-            "Name": [leave.personaldetail?.fname, leave.personaldetail?.mname, leave.personaldetail?.lname]
+            Name: [
+              leave.personaldetail?.fname,
+              leave.personaldetail?.mname,
+              leave.personaldetail?.lname,
+            ]
               .filter(Boolean)
               .join(" "),
             "Leave Type": leave_type?.leave_type || "N/A",
@@ -3074,16 +3233,17 @@ console.log(leaves);
             "To Date": leaveRequest.toDate,
             "Date Of Application": leaveRequest.applicationDate,
             "No. Of Leave": leaveRequest.days,
-            "Status": leaveRequest.status,
-            "Action" : [
-              {label : 'approve',route :'Approved'},
-              {label :'reject',route :'Rejected'}]
+            Status: leaveRequest.status,
+            Action: [
+              { label: "approve", route: "Approved" },
+              { label: "reject", route: "Rejected" },
+            ],
           };
         })
       )
     );
 
-    res.status(200).json(formattedTasks );
+    res.status(200).json(formattedTasks);
   } catch (err) {
     console.error("Error fetching leave requests:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -3106,7 +3266,9 @@ module.exports.updateLeaveRequest = async (req, res) => {
     });
 
     if (!updatedRequest) {
-      return res.status(404).json({ message: "Updated leave request not found" });
+      return res
+        .status(404)
+        .json({ message: "Updated leave request not found" });
     }
 
     const num_days = updatedRequest.days;
@@ -3119,20 +3281,21 @@ module.exports.updateLeaveRequest = async (req, res) => {
 
     // Check if leaveType exists
     if (!leaveType) {
-      return res.status(404).json({ message: "Leave allocation record not found" });
+      return res
+        .status(404)
+        .json({ message: "Leave allocation record not found" });
     }
 
-    if(req.body.status !== 'rejected'){
-          await LeaveAllocation.update(
-      { leave_in_hand: leaveType.leave_in_hand - num_days },
-      {
-        where: {
-          employee_code: updatedRequest.employeeCode,
-          leave_type_id: updatedRequest.leave_type_id,
-        },
-      }
-    );
-
+    if (req.body.status !== "rejected") {
+      await LeaveAllocation.update(
+        { leave_in_hand: leaveType.leave_in_hand - num_days },
+        {
+          where: {
+            employee_code: updatedRequest.employeeCode,
+            leave_type_id: updatedRequest.leave_type_id,
+          },
+        }
+      );
     }
 
     return res.status(200).json({ message: "Request updated successfully" });
@@ -3146,7 +3309,9 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
   const { year, employee_code } = req.query;
 
   if (!year || !employee_code) {
-    return res.status(400).json({ error: "Year and employee_code are required" });
+    return res
+      .status(400)
+      .json({ error: "Year and employee_code are required" });
   }
 
   try {
@@ -3158,13 +3323,13 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
         employeeCode: employee_code, // Make sure column name matches DB schema
         [Op.or]: [
           { fromDate: { [Op.between]: [startDate, endDate] } },
-          { toDate: { [Op.between]: [startDate, endDate] } }
-        ]
-      }
+          { toDate: { [Op.between]: [startDate, endDate] } },
+        ],
+      },
     });
 
     const emp = await PersonalDetail.findOne({
-      where: { employee_code : employee_code }
+      where: { employee_code: employee_code },
     });
 
     if (!emp) {
@@ -3174,18 +3339,20 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
     const formattedData = await Promise.all(
       records.map(async (record, index) => {
         const leave_type = await LeaveType.findOne({
-          where: { id: record.leave_type_id }
+          where: { id: record.leave_type_id },
         });
 
         return {
           "Sl No.": index + 1,
           "Employee Code": record.employeeCode,
-          "Employee Name": [emp.fname, emp.mname, emp.lname].filter(Boolean).join(" "),
+          "Employee Name": [emp.fname, emp.mname, emp.lname]
+            .filter(Boolean)
+            .join(" "),
           "Leave Type": leave_type ? leave_type.leave_type : "Unknown",
           "Date of Application": record.applicationDate,
           "Date(s)": `${record.fromDate} - ${record.toDate}`,
           "Duration (Days)": record.days,
-          "Status": record.status
+          Status: record.status,
         };
       })
     );
@@ -3197,7 +3364,6 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
   }
 };
 
-
 module.exports.getPastStaffData = async (req, res) => {
   const id = req.params.id;
   const today = new Date();
@@ -3208,10 +3374,31 @@ module.exports.getPastStaffData = async (req, res) => {
     const staff = await Employee.findAll({
       where: { organisation_id: id },
       include: [
-        { model: PersonalDetail, as: "personaldetail", attributes: ["fname", "mname", "lname", "dob", "nationality_no", "Nationality", "contact_1"] },
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          attributes: [
+            "fname",
+            "mname",
+            "lname",
+            "dob",
+            "nationality_no",
+            "Nationality",
+            "contact_1",
+          ],
+        },
         { model: JobDetail, as: "jobdetails", attributes: ["start"] },
-        { model: ServiceDetail, as: "servicedetail", attributes: ["end_if"], where: { end_if: { [Op.lt]: today } } }, // Filter past employees
-        { model: VisaDetail, as: "visadetail", attributes: ["expiry_date", "review_date"] },
+        {
+          model: ServiceDetail,
+          as: "servicedetail",
+          attributes: ["end_if"],
+          where: { end_if: { [Op.lt]: today } },
+        }, // Filter past employees
+        {
+          model: VisaDetail,
+          as: "visadetail",
+          attributes: ["expiry_date", "review_date"],
+        },
         { model: PassportDetail, as: "passportdetail" },
         { model: EsusDetail, as: "esusdetail", attributes: ["expiry"] },
         { model: DBSDetail, as: "dbsdetail", attributes: ["expiry"] },
@@ -3222,20 +3409,48 @@ module.exports.getPastStaffData = async (req, res) => {
 
     const formattedData = staff.map((emp, index) => ({
       "Staff Code": emp.employee_code || "=",
-      "Staff Name": [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname].filter(Boolean).join(" "),
-      "Address": [emp.contact.line1, emp.contact.line2, emp.contact.line3, emp.contact.city, emp.contact.country, emp.contact.post_code].filter(Boolean).join(" "),
-      "DOB": emp.personaldetail.dob,
+      "Staff Name": [
+        emp.personaldetail.fname,
+        emp.personaldetail.mname,
+        emp.personaldetail.lname,
+      ]
+        .filter(Boolean)
+        .join(" "),
+      Address: [
+        emp.contact.line1,
+        emp.contact.line2,
+        emp.contact.line3,
+        emp.contact.city,
+        emp.contact.country,
+        emp.contact.post_code,
+      ]
+        .filter(Boolean)
+        .join(" "),
+      DOB: emp.personaldetail.dob,
       "Job Start Date": emp.jobdetails?.start || "N/A",
       "Service End Date": emp.servicedetail?.end_if || "N/A", // Display when they left
-      "Telephone": emp.personaldetail.contact_1,
-      "Nationality": emp.personaldetail.Nationality || emp.nationaldetail?.nationality || "N/A",
+      Telephone: emp.personaldetail.contact_1,
+      Nationality:
+        emp.personaldetail.Nationality ||
+        emp.nationaldetail?.nationality ||
+        "N/A",
       "NI Number": emp.nationaldetail?.national_id || "N/A",
-      "Visa Expiry": emp.visadetail?.expiry_date ? `Expires on ${emp.visadetail.expiry_date}` : "N/A",
-      "Visa Review": emp.visadetail?.review_date ? `Review on ${emp.visadetail.review_date}` : "N/A",
+      "Visa Expiry": emp.visadetail?.expiry_date
+        ? `Expires on ${emp.visadetail.expiry_date}`
+        : "N/A",
+      "Visa Review": emp.visadetail?.review_date
+        ? `Review on ${emp.visadetail.review_date}`
+        : "N/A",
       "Passport No": emp.passportdetail?.passport_no || "N/A",
-      "Passport Expiry Date": emp.passportdetail?.expiry_date ? `Expires on ${emp.passportdetail.expiry_date}` : "N/A",
-      "EUSS Details": emp.esusdetail?.expiry ? `Expires on ${emp.esusdetail.expiry}` : "N/A",
-      "DBS Details": emp.dbsdetail?.expiry ? `Expires on ${emp.dbsdetail.expiry}` : "N/A",
+      "Passport Expiry Date": emp.passportdetail?.expiry_date
+        ? `Expires on ${emp.passportdetail.expiry_date}`
+        : "N/A",
+      "EUSS Details": emp.esusdetail?.expiry
+        ? `Expires on ${emp.esusdetail.expiry}`
+        : "N/A",
+      "DBS Details": emp.dbsdetail?.expiry
+        ? `Expires on ${emp.dbsdetail.expiry}`
+        : "N/A",
     }));
 
     res.status(200).json(formattedData);
@@ -3245,21 +3460,21 @@ module.exports.getPastStaffData = async (req, res) => {
   }
 };
 
-
 module.exports.processAttendance = async (req, res) => {
   try {
-    const { department_id, designation_id, fromDate, toDate, employee_code } = req.query;
+    const { department_id, designation_id, fromDate, toDate, employee_code } =
+      req.query;
     const Dept = await Department.findOne({
-      where : {id : department_id}
+      where: { id: department_id },
     });
 
     const Desg = await Designation.findOne({
-      where : {id : designation_id}
-    })
+      where: { id: designation_id },
+    });
     const workingArray = [];
     const leaveArray = [];
     const absentArray = [];
-    const presentArray = []
+    const presentArray = [];
     const shift = await Shift.findOne({
       where: { department_id, designation_id },
     });
@@ -3299,7 +3514,11 @@ module.exports.processAttendance = async (req, res) => {
       const leaveStart = moment(leave.fromDate, "YYYY-MM-DD");
       const leaveEnd = moment(leave.toDate, "YYYY-MM-DD");
 
-      for (let date = leaveStart.clone(); date.isSameOrBefore(leaveEnd); date.add(1, "day")) {
+      for (
+        let date = leaveStart.clone();
+        date.isSameOrBefore(leaveEnd);
+        date.add(1, "day")
+      ) {
         leaveDates.add(date.format("YYYY-MM-DD"));
       }
     });
@@ -3315,16 +3534,20 @@ module.exports.processAttendance = async (req, res) => {
     employee_attendance.forEach((record) => {
       attendedDates.set(moment(record.date).format("YYYY-MM-DD"), {
         status: record.status,
-        grace_period_exceeded: record.grace_period_exceeded
+        grace_period_exceeded: record.grace_period_exceeded,
       });
     });
-    
 
-    let workingDays = 0,salary_deducted = 0;
+    let workingDays = 0,
+      salary_deducted = 0;
 
-    for (let date = startDate.clone(); date.isSameOrBefore(endDate); date.add(1, "day")) {
+    for (
+      let date = startDate.clone();
+      date.isSameOrBefore(endDate);
+      date.add(1, "day")
+    ) {
       const formattedDate = date.format("YYYY-MM-DD");
-      const dayName = date.format("dddd").toLowerCase(); 
+      const dayName = date.format("dddd").toLowerCase();
 
       if (shiftOffDays[dayName]) {
         continue;
@@ -3336,34 +3559,40 @@ module.exports.processAttendance = async (req, res) => {
       if (leaveDates.has(formattedDate)) {
         leaveArray.push(formattedDate);
       } else if (!attendedDates.has(formattedDate)) {
-        absentArray.push(formattedDate); 
+        absentArray.push(formattedDate);
       } else {
-        const {status,grace_period_exceeded} = attendedDates.get(formattedDate);
+        const { status, grace_period_exceeded } =
+          attendedDates.get(formattedDate);
         if (status !== "Present" && status !== "Incomplete Hours") {
-          absentArray.push(formattedDate); 
-        }else presentArray.push(formattedDate);
-        if(grace_period_exceeded) salary_deducted++;
+          absentArray.push(formattedDate);
+        } else presentArray.push(formattedDate);
+        if (grace_period_exceeded) salary_deducted++;
       }
     }
     const emp = await PersonalDetail.findOne({
-      where : {employee_code}
-    })
-    const response = [{
-      'Department' : Dept.department_name, 
-      'Designation': Desg.designation_name,
-      'Employee Code' : employee_code,
-      'Employee Name': [emp.fname,emp.mname,emp.lname].filter(BOOLEAN).join(' '),
-      'No. of working days' : workingDays,
-      'No. of Present days' : presentArray.length,
-      'No. of absent days' : absentArray.length,
-      'Leaves Taken' : leaveArray.length,
-      'No. of days salary deducted' : salary_deducted
-    }]
+      where: { employee_code },
+    });
+    const response = [
+      {
+        Department: Dept.department_name,
+        Designation: Desg.designation_name,
+        "Employee Code": employee_code,
+        "Employee Name": [emp.fname, emp.mname, emp.lname]
+          .filter(BOOLEAN)
+          .join(" "),
+        "No. of working days": workingDays,
+        "No. of Present days": presentArray.length,
+        "No. of absent days": absentArray.length,
+        "Leaves Taken": leaveArray.length,
+        "No. of days salary deducted": salary_deducted,
+      },
+    ];
     return res.status(200).json(response);
-
   } catch (err) {
     console.error("Error processing attendance:", err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 module.exports.processAbsentReport = async (req, res) => {
@@ -3376,13 +3605,17 @@ module.exports.processAbsentReport = async (req, res) => {
 
     const Dept = await Department.findOne({ where: { id: department_id } });
     const Desg = await Designation.findOne({ where: { id: designation_id } });
-    const shift = await Shift.findOne({ where: { department_id, designation_id } });
+    const shift = await Shift.findOne({
+      where: { department_id, designation_id },
+    });
 
     if (!shift) {
       return res.status(404).json({ message: "Shift not found" });
     }
 
-    const shiftOffDays = await ShiftOffDay.findOne({ where: { shift_code: shift.shift_code } });
+    const shiftOffDays = await ShiftOffDay.findOne({
+      where: { shift_code: shift.shift_code },
+    });
 
     if (!shiftOffDays) {
       return res.status(404).json({ message: "Shift off days not found" });
@@ -3397,7 +3630,9 @@ module.exports.processAbsentReport = async (req, res) => {
     const reportData = [];
 
     for (let month = 0; month < monthsToProcess; month++) {
-      const startDate = moment(`${year}-${month + 1}-01`, "YYYY-MM-DD").startOf("month");
+      const startDate = moment(`${year}-${month + 1}-01`, "YYYY-MM-DD").startOf(
+        "month"
+      );
       const endDate = moment(startDate).endOf("month");
 
       const leaveArray = [];
@@ -3412,8 +3647,22 @@ module.exports.processAbsentReport = async (req, res) => {
           employee_code,
           status: "Approved",
           [Op.or]: [
-            { fromDate: { [Op.between]: [startDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD")] } },
-            { toDate: { [Op.between]: [startDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD")] } },
+            {
+              fromDate: {
+                [Op.between]: [
+                  startDate.format("YYYY-MM-DD"),
+                  endDate.format("YYYY-MM-DD"),
+                ],
+              },
+            },
+            {
+              toDate: {
+                [Op.between]: [
+                  startDate.format("YYYY-MM-DD"),
+                  endDate.format("YYYY-MM-DD"),
+                ],
+              },
+            },
           ],
         },
       });
@@ -3424,7 +3673,11 @@ module.exports.processAbsentReport = async (req, res) => {
         const leaveStart = moment(leave.fromDate, "YYYY-MM-DD");
         const leaveEnd = moment(leave.toDate, "YYYY-MM-DD");
 
-        for (let date = leaveStart.clone(); date.isSameOrBefore(leaveEnd); date.add(1, "day")) {
+        for (
+          let date = leaveStart.clone();
+          date.isSameOrBefore(leaveEnd);
+          date.add(1, "day")
+        ) {
           leaveDates.add(date.format("YYYY-MM-DD"));
         }
       });
@@ -3433,7 +3686,12 @@ module.exports.processAbsentReport = async (req, res) => {
       const employee_attendance = await Attendance.findAll({
         where: {
           employee_code,
-          date: { [Op.between]: [startDate.format("YYYY-MM-DD"), endDate.format("YYYY-MM-DD")] },
+          date: {
+            [Op.between]: [
+              startDate.format("YYYY-MM-DD"),
+              endDate.format("YYYY-MM-DD"),
+            ],
+          },
         },
       });
 
@@ -3446,7 +3704,11 @@ module.exports.processAbsentReport = async (req, res) => {
         });
       });
 
-      for (let date = startDate.clone(); date.isSameOrBefore(endDate); date.add(1, "day")) {
+      for (
+        let date = startDate.clone();
+        date.isSameOrBefore(endDate);
+        date.add(1, "day")
+      ) {
         const formattedDate = date.format("YYYY-MM-DD");
         const dayName = date.format("dddd").toLowerCase();
 
@@ -3461,7 +3723,8 @@ module.exports.processAbsentReport = async (req, res) => {
         } else if (!attendedDates.has(formattedDate)) {
           absentArray.push(formattedDate);
         } else {
-          const { status, grace_period_exceeded } = attendedDates.get(formattedDate);
+          const { status, grace_period_exceeded } =
+            attendedDates.get(formattedDate);
           if (status !== "Present" && status !== "Incomplete Hours") {
             absentArray.push(formattedDate);
           } else {
@@ -3474,20 +3737,24 @@ module.exports.processAbsentReport = async (req, res) => {
 
       // Store the formatted row for the current month
       reportData.push({
-        "Employee Code" : employee_code,
-       "Employee Name": [emp?.fname, emp?.mname, emp?.lname].filter(Boolean).join(" "),
-        "Month":startDate.format("MMMM"), // Full month name
+        "Employee Code": employee_code,
+        "Employee Name": [emp?.fname, emp?.mname, emp?.lname]
+          .filter(Boolean)
+          .join(" "),
+        Month: startDate.format("MMMM"), // Full month name
         "No. of working days": workingDays,
-       "No. of Present days": presentArray.length,
-       "No. of absent days":  absentArray.length,
-       "Leaves Taken": leaveArray.length,
-       "No. of days salary deducted": salary_deducted,
-    });
+        "No. of Present days": presentArray.length,
+        "No. of absent days": absentArray.length,
+        "Leaves Taken": leaveArray.length,
+        "No. of days salary deducted": salary_deducted,
+      });
     }
 
     return res.status(200).json(reportData);
   } catch (err) {
     console.error("Error processing AbsentReport:", err);
-    return res.status(500).json({ message: "Internal server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
