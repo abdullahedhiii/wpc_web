@@ -21,12 +21,22 @@ function parseDateString(dateString) {
 
   // Ensure the input contains only dashes and digits
   if (!/^\d{2,4}-\d{2}-\d{2,4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
-      return null; // Reject formats with slashes or invalid structures
+      return "Invalid"; // Reject formats with slashes or invalid structures
   }
 
   const parsedDate = moment(dateString, formats, true);
-  return parsedDate.isValid() ? parsedDate.toDate() : null;
+  
+  if (!parsedDate.isValid()) return null; // Ensure valid date
+  
+  // Check if date is greater than today's date
+  const today = moment().startOf("day");
+  if (parsedDate.isAfter(today)) {
+      return null; // Date is in the future
+  }
+
+  return parsedDate.toDate(); // Return valid parsed date
 }
+
 
 module.exports.submitCSV = async (req, res) => {
   try {
