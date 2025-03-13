@@ -66,7 +66,7 @@ const DailyAttendance = () => {
         }));
       };
     
-    const handleGenerate = async () => {
+    const handleGenerate = async (e) => {
       e.preventDefault();
         if(!formData.department || !formData.designation || !formData.employeeCode || !formData.date){
             window.alert('all fields are required');

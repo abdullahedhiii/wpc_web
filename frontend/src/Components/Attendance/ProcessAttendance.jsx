@@ -63,7 +63,9 @@ const ProcessAttendance = () => {
   };
   const [attendance, setAttendance] = useState([]);
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (e) => {
+    e.preventDefault();
+
      try{
          const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/processAttendance`,
             {

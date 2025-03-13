@@ -131,10 +131,10 @@ module.exports.submitCSV = async (req, res) => {
         });
 
         const desg_check = await Designation.findOne({
-          where : {id : shift_check.designation_id,organisation_id : organisation_id}
+          where : {id : shift_check.designation_id}
         });
         if(dept_check || desg_check){
-          console.warn(`Skipping row shift not found withint organisation: ${JSON.stringify(row)}`);
+          console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
           continue;
         }
               const clockInTime = parseTimeString(clock_in);

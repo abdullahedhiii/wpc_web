@@ -66,7 +66,9 @@ const AttendanceHistory = () => {
         }));
       };
     
-    const handleGenerate = async () => {
+    const handleGenerate = async (e) => {
+      e.preventDefault();
+
         if(!formData.department || !formData.designation || !formData.employeeCode || !formData.fromDate || !formData.toDate){
             window.alert('all fields are required');
             return;

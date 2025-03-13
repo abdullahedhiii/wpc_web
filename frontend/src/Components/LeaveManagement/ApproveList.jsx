@@ -29,7 +29,7 @@ const ApproveList  = () => {
     },[]);
     
     useEffect(() => {
-      if(setAgain){
+      if(fetchAgain){
         fetchLeaveList();
         setAgain(false)
       }
