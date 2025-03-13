@@ -22,7 +22,8 @@ const DataTable = ({
   buttonEmployee,
   employeePath,
   setData,
-  action_route
+  action_route,
+  setAgain
 }) => {
   const { selectedFeature,subModule } = useModuleContext();
   const {companyData} = useCompanyContext();
@@ -133,6 +134,7 @@ const DataTable = ({
             status: status,
             request_id: request_id
         });
+        setAgain(true)
         setData(prevData => 
             prevData.map(request => 
                 request.id === request_id ? { ...request, status: status } : request

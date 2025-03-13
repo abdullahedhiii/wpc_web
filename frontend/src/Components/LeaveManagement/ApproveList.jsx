@@ -6,6 +6,7 @@ import {motion} from 'framer-motion';
 
 const ApproveList  = () => {
     const [leaves,setLeaves] = useState([]);
+    const [fetchAgain,setAgain] = useState(false);
     const columns = ['Sl. No.','Employment Type',
         'Employee Code','Name','Leave Type','From Date',
         'To Date','Date Of Application',
@@ -27,6 +28,12 @@ const ApproveList  = () => {
         fetchLeaveList();
     },[]);
     
+    useEffect(() => {
+      if(setAgain){
+        fetchLeaveList();
+        setAgain(false)
+      }
+    },[setAgain]);
     return(
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
@@ -63,6 +70,7 @@ const ApproveList  = () => {
           addMore={false}
           buttonTitle = "Add New Leave Allocation"
           setData={setLeaves}
+          setAgain = {setAgain}
         />
         </div>
       </div>

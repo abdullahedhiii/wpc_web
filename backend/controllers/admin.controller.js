@@ -3092,18 +3092,15 @@ console.log(leaves);
 
 module.exports.updateLeaveRequest = async (req, res) => {
   try {
-    // Update the leave request status
     const updatedRows = await LeaveRequest.update(
       { status: req.body.status },
       { where: { id: req.body.request_id } }
     );
 
-    // Check if any row was updated
     if (updatedRows[0] === 0) {
       return res.status(404).json({ message: "Leave request not found" });
     }
 
-    // Fetch the updated request details
     const updatedRequest = await LeaveRequest.findOne({
       where: { id: req.body.request_id },
     });
@@ -3125,8 +3122,8 @@ module.exports.updateLeaveRequest = async (req, res) => {
       return res.status(404).json({ message: "Leave allocation record not found" });
     }
 
-    // Update the leave allocation
-    await LeaveAllocation.update(
+    if(req.body.status !== 'rejected'){
+          await LeaveAllocation.update(
       { leave_in_hand: leaveType.leave_in_hand - num_days },
       {
         where: {
@@ -3135,6 +3132,8 @@ module.exports.updateLeaveRequest = async (req, res) => {
         },
       }
     );
+
+    }
 
     return res.status(200).json({ message: "Request updated successfully" });
   } catch (err) {
