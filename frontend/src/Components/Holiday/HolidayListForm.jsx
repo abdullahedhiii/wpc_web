@@ -43,6 +43,22 @@ const HolidayListForm = () => {
        }
   },[]);
 
+  useEffect(() => {
+    if (data.start_date!== '' && data.end_date!== '') {
+      const startDate = new Date(data.start_date);
+      const endDate = new Date(data.end_date);
+
+      const differenceInTime = endDate - startDate;
+
+      const differenceInDays = differenceInTime / (1000 * 60 * 60 * 24);
+
+      setData((prev) => ({
+        ...prev,
+        num_days : differenceInDays
+      }))
+    }
+  },[data.start_date,data.end_date]);
+  
   const fields = [
     {
         label: "From Date",

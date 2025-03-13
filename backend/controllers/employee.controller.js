@@ -401,8 +401,40 @@ module.exports.getInHand = async (req, res) => {
 module.exports.applyLeave = async (req, res) => {
   try {
     const { employeeCode, leaveType, fromDate, toDate } = req.body;
+    
+    const check_if_already_applied = await LeaveRequest.findOne({
+      where: {
+        employeeCode,
+        leave_type_id: leaveType,
+        [Op.or]: [
+          {
+            fromDate: {
+              [Op.between]: [req.body.fromDate, req.body.toDate],
+            },
+          },
+          {
+            toDate: {
+              [Op.between]: [req.body.fromDate, req.body.toDate],
+            },
+          },
+          {
+            [Op.and]: [
+              {
+                fromDate: { [Op.lte]: req.body.fromDate },
+              },
+              {
+                toDate: { [Op.gte]: req.body.toDate },
+              },
+            ],
+          },
+        ],
+      },
+    });
 
-    // Fetch the employee's service detail to get the employment type
+    if(check_if_already_applied){
+        return res.status(200).json({message : 'You have already applied for the same leave type,during the same period'});
+
+    }
     const serviceDetail = await ServiceDetail.findOne({
       where: { employee_code: employeeCode },
       attributes: ['employment_type_id']
@@ -412,7 +444,6 @@ module.exports.applyLeave = async (req, res) => {
       return res.status(404).json({ message: "Service detail not found" });
     }
 
-    // Fetch the leave rule for the employee's employment type and leave type
     const leaveRule = await LeaveRule.findOne({
       where: {
         leave_type_id : leaveType,

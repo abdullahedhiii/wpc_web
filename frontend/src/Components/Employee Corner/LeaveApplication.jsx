@@ -85,6 +85,7 @@ const LeaveApplication = () => {
       window.alert('You dont have enough leaves left for this holiday type');
       return;
     };
+
     try{
        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/applyLeave`,formData);
        if(response.data.message){
@@ -95,7 +96,7 @@ const LeaveApplication = () => {
        handleReset()
     }
     catch(err){
-
+        window.alert(err.response.data.message);
     }
   }
  
