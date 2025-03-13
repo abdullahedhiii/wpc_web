@@ -44,6 +44,10 @@ const LeaveApplication = () => {
 
   useEffect(() => {
     if (formData.leaveType !== "") {
+      setFormData((prev) => ({
+        ...prev,
+        leave_in_hand : 0,
+      }))
       fetchMyleave();
     }
   }, [formData.leaveType]);
