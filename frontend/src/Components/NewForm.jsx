@@ -1,7 +1,8 @@
 import { ChevronRight, Home } from 'lucide-react'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset,isLeaveFrom =false }) => {
+   const navigate = useNavigate();
   const handleChange = (e, field) => {
     const { name, value, checked, type } = e.target
 
@@ -121,18 +122,33 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8">
-            <nav className="flex items-center space-x-1 text-sm font-medium text-gray-500 mb-6">
-        <Link to="/hrms/employeeDashboard" className="flex items-center gap-1.5 text-gray-500 hover:text-yellow-600 transition-colors">
-          <Home className="h-4 w-4" />
-          <span>Home</span>
-        </Link>
-        <ChevronRight className="h-4 w-4" />
-        <Link to={!isLeaveFrom ? "/hrms/settingsdashboard" : "/hrms/leave-management"} className="text-gray-500 hover:text-yellow-600 transition-colors">
-          {!isLeaveFrom ?  "Settings" : "Leave Management"}
-        </Link>
-        <ChevronRight className="h-4 w-4" />
-        <span className="text-gray-900">{title}</span>
-      </nav>
+         <nav className="flex items-center space-x-1 text-sm font-medium text-gray-500 mb-6">
+  {/* Home Link */}
+  <Link to="/hrms/employeeDashboard" className="flex items-center gap-1.5 text-gray-500 hover:text-yellow-600 transition-colors">
+    <Home className="h-4 w-4" />
+    <span>Home</span>
+  </Link>
+
+  <ChevronRight className="h-4 w-4" />
+
+  {/* Middle Breadcrumb - Go Back */}
+  <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      window.history.back();
+    }}
+    className="text-gray-500 hover:text-yellow-600 transition-colors"
+  >
+    {isLeaveFrom ? 'Leave Management' : 'Settings'}
+  </a>
+
+  <ChevronRight className="h-4 w-4" />
+
+  {/* Current Page Title */}
+  <span className="text-gray-900">{title}</span>
+</nav>
+
 
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                 <div className="border-b border-gray-200 bg-gradient-to-r from-yellow-50 to-yellow-100">
