@@ -268,7 +268,7 @@ Candidate.belongsTo(Job,{as : 'job',foreignKey:'id'});
 Job.hasOne(InterviewForm,{as : 'form',foreignKey : 'job_id'});
 InterviewForm.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
 
-module.exports = {Sponsor, sequelize, Admin,Organisation, Module,
+module.exports = {sequelize,Sponsor, Admin,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
                    PayGroup,AnnualPay,Bank,BankSortCode,

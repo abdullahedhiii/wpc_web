@@ -1,7 +1,8 @@
-const {User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole, Sponsor} = require('../config/sequelize');
+const {sequelize,User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole, Sponsor} = require('../config/sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
+const {Sequelize} = require('sequelize');
 
 module.exports.Register = async (req, res) => {
  
@@ -44,7 +45,8 @@ module.exports.Register = async (req, res) => {
       return res.status(201).json({ message: 'User registered successfully.' });
     
     }  catch (error) {
-     if (err instanceof Sequelize.UniqueConstraintError) {
+      console.log('errror ', error);
+     if (error instanceof Sequelize.UniqueConstraintError) {
       return res.status(400).json({ 
         message: "The entered email or phone number has been registered already" 
       });

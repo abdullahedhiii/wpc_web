@@ -13,12 +13,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       Company_Type: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
         defaultValue: "Private Company Limited by shares",
       },
       Company_RegNo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Company_Contact: {
         type: DataTypes.STRING,
