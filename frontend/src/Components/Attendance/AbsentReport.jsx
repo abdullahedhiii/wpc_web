@@ -86,7 +86,7 @@ const AbsentReport = () => {
   const {isSideBarOpen} = useSidebarContext();
   const columns = ['Employee Code','Employee Name','No. of working days','Month','No. of Present days','No. of absent days','Leaves Taken','No. of days salary deducted']
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+    <div className="min-h-screen bg-white">
         <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -112,7 +112,7 @@ const AbsentReport = () => {
     </div>
       <div
         className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
-          isSideBarOpen ? "w-[800px]" : "w[1300px]"
+          isSideBarOpen ? "w-[700px]" : "w[1350px]"
         } `}
       >
         <form onSubmit={handleGenerate}>

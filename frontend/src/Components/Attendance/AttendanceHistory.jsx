@@ -109,7 +109,7 @@ const AttendanceHistory = () => {
       </div>
       <div 
          className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
-          isSideBarOpen ? "w-[800px]" : "w-[1300px]"
+          isSideBarOpen ? "w-[700px]" : "w-[1350px]"
         } `}
       >
         <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
