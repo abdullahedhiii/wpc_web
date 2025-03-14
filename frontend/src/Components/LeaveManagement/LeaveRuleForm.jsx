@@ -136,6 +136,8 @@ const LeaveRuleForm = () => {
         data={data}
         setData={setData}
         onSubmit={handleSubmit}
+        isLeaveFrom = {true}
+
       />
     </div>
   );

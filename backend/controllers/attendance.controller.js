@@ -118,25 +118,31 @@ module.exports.submitCSV = async (req, res) => {
                   console.warn(`Skipping row employee not found: ${JSON.stringify(row)}`);
                   continue;
               }
-        const shift_check = await Shift.findOne({
-           shift_code
-        });
+              const shift_check = await Shift.findOne({ where: { shift_code } });
 
-        if (!shift_check) {
-          console.warn(`Skipping row, shift not found: ${shift_code}`);
-          continue;
-        }
-        const dept_check = await Department.findOne({
-          where : {id : shift_check.department_id,organisation_id : organisation_id}
-        });
-
-        const desg_check = await Designation.findOne({
-          where : {id : shift_check.designation_id}
-        });
-        if(!dept_check || !desg_check){
-          console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
-          continue;
-        }
+              if (!shift_check) {
+                console.warn(`Skipping row, shift not found: ${shift_code}`);
+                continue;
+              }
+              
+              console.log("Shift found:", shift_check);
+              
+              const dept_check = await Department.findOne({
+                where: { id: shift_check.department_id, organisation_id }
+              });
+              
+              const desg_check = await Designation.findOne({
+                where: { id: shift_check.designation_id }
+              });
+              
+              console.log("Department check:", dept_check);
+              console.log("Designation check:", desg_check);
+              
+              if (!dept_check || !desg_check) {
+                console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
+                continue;
+              }
+              
               const clockInTime = parseTimeString(clock_in);
               const clockOutTime = parseTimeString(clock_out);
 

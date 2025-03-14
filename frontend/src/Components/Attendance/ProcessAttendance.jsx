@@ -112,6 +112,7 @@ const ProcessAttendance = () => {
           isSideBarOpen ? "w-[700px]" : "w-[1350px]"
         } `}
       >
+        <form onSubmit = {handleGenerate}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
@@ -210,12 +211,13 @@ const ProcessAttendance = () => {
         <div className="flex space-x-3">
           <button
             className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
-            onClick={handleGenerate}
-          >
+            type="submit"
+>
             View
           </button>
           <button
             className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
+            type ="button"
             onClick={() => {
               setFormData({
                 department: "",
@@ -229,7 +231,10 @@ const ProcessAttendance = () => {
             Reset
           </button>
         </div>
+        </form>
+
       </div>
+
       <div className="p-16">
         <DataTable
           title="Process Attendance"

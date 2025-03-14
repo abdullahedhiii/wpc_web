@@ -121,6 +121,8 @@ const LeaveAllocationForm = () => {
         data={data}
         setData={setData}
         onSubmit={handleSubmit}
+        isLeaveFrom = {true}
+
       />
        <DataTable
         title="Leaves Allocated"

@@ -96,6 +96,7 @@ const EditLeaveAllocation = () => {
         data={data}
         setData={setData}
         onSubmit={handleSubmit}
+        isLeaveFrom = {true}
       />
     </div>
   );
