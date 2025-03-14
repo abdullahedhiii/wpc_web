@@ -14,15 +14,28 @@ module.exports.Register = async (req, res) => {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const newUser = await Admin.create({
-        company_name: companyName,
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phone_number: contactNumber,
-        password,
-      });
+    const transaction = await sequelize.transaction();
 
+  const newUser = await Admin.create(
+    {
+      company_name: companyName,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone_number: contactNumber,
+      password,
+    },
+    { transaction }
+  );
+
+  const newOrganisation = await Organisation.create(
+    {
+      admin_id: newUser.id,
+    },
+    { transaction }
+  );
+
+  await transaction.commit();
     return res.status(201).json({
       message: 'User registered successfully.',
     });

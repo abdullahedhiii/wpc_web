@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       Company_name: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Company_Type: {
         type: DataTypes.STRING,
@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       Company_Contact: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Company_OrganisationEmail: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Company_Website: {
         type: DataTypes.STRING,
@@ -38,117 +38,117 @@ module.exports = (sequelize, DataTypes) => {
       },
       Company_TradingName: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Company_Period: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
         defaultValue: "Over 12 to 18 months",
       },
       Company_Sector: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
         defaultValue: "Other service activities",
       },
       Company_NameChanged: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
         defaultValue: "No",
       },
       Company_Penalty: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
         defaultValue: "No",
       },
       Company_Logo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_fname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_lname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_designation: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_proof_id: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Authorizing_history: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
 
       KeyContact_fname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       KeyContact_lname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       KeyContact_designation: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       KeyContact_email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       KeyContact_phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       KeyContact_proof_id: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       KeyContact_history: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
 
       Level1_fname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Level1_lname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Level1_designation: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Level1_email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Level1_phone: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Level1_proof_id: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       Level1_history: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
 
       Address_Postcode: {
@@ -202,7 +202,7 @@ module.exports = (sequelize, DataTypes) => {
 
       admin_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        // allowNull: false,
         references: {
           model: "Admins",
           key: "id",
