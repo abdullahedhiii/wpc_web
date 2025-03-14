@@ -83,7 +83,7 @@ const AttendanceHistory = () => {
     };
 
     return(
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+      <div className="min-h-screen bg-white">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -107,8 +107,12 @@ const AttendanceHistory = () => {
         </div>
         
       </div>
-      <div className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "w-[800px]" : "w[1300px]"} `}>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div 
+         className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
+          isSideBarOpen ? "w-[800px]" : "w-[1300px]"
+        } `}
+      >
+        <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
               Department
