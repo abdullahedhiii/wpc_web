@@ -19,9 +19,8 @@ function parseDateString(dateString) {
       "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
   ];
 
-  if (!/^\d{2,4}-\d{2}-\d{2,4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
-  return "Invalid";
-}
+  if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString))  return "Invalid";
+
   const parsedDate = moment(dateString, formats, true);
   
   if (!parsedDate.isValid()) return "Invalid"; 
