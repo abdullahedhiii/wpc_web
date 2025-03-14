@@ -2416,7 +2416,7 @@ module.exports.addLeaveRule = async (req, res) => {
           ],
           where: {
             leave_type_id,
-            status: "approved",
+            status: "Approved",
             applicationDate: {
               [Op.gte]: new Date(`${currentYear}-01-01`),
               [Op.lte]: new Date(`${currentYear}-12-31`),
@@ -2432,12 +2432,12 @@ module.exports.addLeaveRule = async (req, res) => {
           await LeaveAllocation.update(
             {
               leave_in_hand: Sequelize.literal(
-                `GREATEST(leave_in_hand - ${total_days_taken}, 0)`
+                `GREATEST(max - ${total_days_taken}, 0)`
               ),
             },
             {
               where: {
-                employeeCode,
+                employee_code : employeeCode,
                 leave_type_id,
                 year: currentYear,
               },
@@ -3290,9 +3290,9 @@ module.exports.updateLeaveRequest = async (req, res) => {
         .json({ message: "Leave allocation record not found" });
     }
 
-    if (req.body.status !== "rejected") {
+    if (req.body.status !== "Rejected") {
       await LeaveAllocation.update(
-        { leave_in_hand: leaveType.leave_in_hand - num_days },
+        { leave_in_hand: max(leaveType.leave_in_hand - num_days,0) },
         {
           where: {
             employee_code: updatedRequest.employeeCode,
