@@ -48,14 +48,12 @@ const PaymentPage = () => {
     e.preventDefault();
     setIsProcessing(true);
 
-    // Simulate payment processing
     setTimeout(() => {
       setIsProcessing(false);
       setPaymentSuccess(true);
       
-      // Redirect after showing success message
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/login");
       }, 2000);
     }, 2000);
   };

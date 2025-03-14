@@ -4,42 +4,46 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
 
 module.exports.Register = async (req, res) => {
-  try {
-
+ 
 
     const { companyName,firstName, lastName, email, contactNumber,password } = req.body;
-
-    const existingUser = await Admin.findOne({ where: { email,phone_number : contactNumber } });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists.' });
-    }
-
-    const transaction = await sequelize.transaction();
-
-  const newUser = await Admin.create(
-    {
-      company_name: companyName,
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      phone_number: contactNumber,
-      password,
-    },
-    { transaction }
-  );
-
-  const newOrganisation = await Organisation.create(
-    {
-      admin_id: newUser.id,
-    },
-    { transaction }
-  );
-
-  await transaction.commit();
-    return res.status(201).json({
-      message: 'User registered successfully.',
-    });
-  } catch (error) {
+    let transaction;  // Declare transaction outside try block
+    try {
+      
+      transaction = await sequelize.transaction();
+    
+      const existingUser = await Admin.findOne({ 
+        where: { email, phone_number: contactNumber }, 
+        attributes: { exclude: ['password'] } 
+      });
+    
+      if (existingUser) {
+        return res.status(400).json({ error: 'User already exists.' });
+      }
+    
+      const newUser = await Admin.create(
+        {
+          company_name: companyName,
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          phone_number: contactNumber,
+          password,
+        },
+        { transaction }
+      );
+    
+      await Organisation.create(
+        {
+          admin_id: newUser.id,
+        },
+        { transaction }
+      );
+    
+      await transaction.commit();
+      return res.status(201).json({ message: 'User registered successfully.' });
+    
+    }  catch (error) {
      if (err instanceof Sequelize.UniqueConstraintError) {
       return res.status(400).json({ 
         message: "The entered email or phone number has been registered already" 
