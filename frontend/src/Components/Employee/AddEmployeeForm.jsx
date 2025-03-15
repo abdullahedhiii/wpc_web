@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { useSelector } from "react-redux";
 
@@ -318,6 +318,7 @@ const currency_options = [
 ];
 
 const EmployeeForm = () => {
+  const navigate = useNavigate();
   let { id } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
   const {user} = useSelector((state) => state.user);
@@ -1367,6 +1368,13 @@ const EmployeeForm = () => {
       if (!lname) errors =  errors + " Last name,";
       if (!email) errors = errors +  " Email,";
       if (!contact_1) errors = errors+  " and Primary contact(1) is required";
+      
+      const {department,designation} = formData.service_details;
+      if(department !== "" && designation === ""){
+        errors = errors + 'Since a department is selected, designation must also be selected'
+      }
+
+
     }
   
     if (errors.length > 0) {
@@ -1630,6 +1638,8 @@ const EmployeeForm = () => {
             },
         });
         });
+    alert( id? 'Employee Updated' : 'Employee Created Successfully');
+    navigate("/hrms/employees");
 
     } catch (error) {
        alert(error.response?.data?.message || 'An error occured ' + error );

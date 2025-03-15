@@ -13,29 +13,42 @@ function parseTimeString(timeString) {
   return parsedTime.toDate().getTime(); // Returns timestamp
 }
 
+// function parseDateString(dateString) {
+//   const formats = [
+//       "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY", 
+//       "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
+//   ];
+
+//   if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
+//     return "Invalid";
+// }
+
+//   const parsedDate = moment(dateString, formats, true);
+  
+//   if (!parsedDate.isValid()) return "Invalid"; 
+  
+//   const today = moment().startOf("day");
+//   if (parsedDate.isAfter(today)) {
+//       return "Invalid"; 
+//   }
+
+//   return parsedDate.format("YYYY-MM-DD"); // Convert to PostgreSQL format
+// }
+
 function parseDateString(dateString) {
-  const formats = [
-      "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY", 
-      "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
-  ];
+  if (!dateString) return "Invalid";
 
-  if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
-    return "Invalid";
-}
+  let cleanedDate = dateString.trim();
 
-  const parsedDate = moment(dateString, formats, true);
-  
-  if (!parsedDate.isValid()) return "Invalid"; 
-  
+  const parsedDate = moment(new Date(cleanedDate));  
+
+  if (!parsedDate.isValid()) return "Invalid";
+
   const today = moment().startOf("day");
-  if (parsedDate.isAfter(today)) {
-      return "Invalid"; 
-  }
+  if (parsedDate.isAfter(today)) return "Invalid"; 
 
-  return parsedDate.format("YYYY-MM-DD"); // Convert to PostgreSQL format
+  return parsedDate.format("YYYY-MM-DD"); 
 }
-
-
 
 module.exports.submitCSV = async (req, res) => {
   try {

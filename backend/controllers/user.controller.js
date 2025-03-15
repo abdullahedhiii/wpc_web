@@ -36,6 +36,7 @@ module.exports.Register = async (req, res) => {
     
       await Organisation.create(
         {
+          Company_name: companyName,
           admin_id: newUser.id,
         },
         { transaction }

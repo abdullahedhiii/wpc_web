@@ -2736,7 +2736,12 @@ module.exports.getOrgDocuments = async (req, res) => {
 module.exports.createUser = async (req, res) => {
   try {
     const existingUser = await User.findOne({
-      where: { email: req.body.email, employee_code: req.body.employee_code },
+      where: {
+        [Op.or]: [
+          { email: req.body.email },
+          { employee_code: req.body.employee_code }
+        ]
+      }
     });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists." });
