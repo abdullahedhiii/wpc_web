@@ -37,7 +37,7 @@ const Login = () => {
       fetchOrganisation(response.data.user.id, response.data.user.isAdmin);
     } catch (err) {
       setError(
-        "An unexpected error occurred. Please try again."
+       err.response.data.error
       ); 
       // err.response?.data?.error ||
     } finally {
