@@ -215,7 +215,9 @@ const LandingPage = () => {
                   </div>
                 ))}
               </div>
-              <button className="w-full bg-yellow-500 text-white mt-8 py-4 rounded-xl font-medium hover:bg-yellow-600 transition-all transform hover:scale-105 shadow-lg">
+              <button className="w-full bg-yellow-500 text-white mt-8 py-4 rounded-xl font-medium hover:bg-yellow-600 transition-all transform hover:scale-105 shadow-lg"
+               onClick={() => navigate('/login')}
+              >
                 Get Started Now
               </button>
             </div>

@@ -13,42 +13,42 @@ function parseTimeString(timeString) {
   return parsedTime.toDate().getTime(); // Returns timestamp
 }
 
-// function parseDateString(dateString) {
-//   const formats = [
-//       "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY", 
-//       "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
-//   ];
-
-//   if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
-//     return "Invalid";
-// }
-
-//   const parsedDate = moment(dateString, formats, true);
-  
-//   if (!parsedDate.isValid()) return "Invalid"; 
-  
-//   const today = moment().startOf("day");
-//   if (parsedDate.isAfter(today)) {
-//       return "Invalid"; 
-//   }
-
-//   return parsedDate.format("YYYY-MM-DD"); // Convert to PostgreSQL format
-// }
-
 function parseDateString(dateString) {
-  if (!dateString) return "Invalid";
+  const formats = [
+      "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY", 
+      "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
+  ];
 
-  let cleanedDate = dateString.trim();
-
-  const parsedDate = moment(new Date(cleanedDate));  
-
-  if (!parsedDate.isValid()) return "Invalid";
-
-  const today = moment().startOf("day");
-  if (parsedDate.isAfter(today)) return "Invalid"; 
-
-  return parsedDate.format("YYYY-MM-DD"); 
+  if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
+    return "Invalid";
 }
+
+  const parsedDate = moment(dateString, formats, true);
+  
+  if (!parsedDate.isValid()) return "Invalid"; 
+  
+  const today = moment().startOf("day");
+  if (parsedDate.isAfter(today)) {
+      return "Invalid"; 
+  }
+
+  return parsedDate.format("YYYY-MM-DD"); // Convert to PostgreSQL format
+}
+
+// function parseDateString(dateString) {
+//   if (!dateString) return "Invalid";
+
+//   let cleanedDate = dateString.trim();
+
+//   const parsedDate = moment(new Date(cleanedDate));  
+
+//   if (!parsedDate.isValid()) return "Invalid";
+
+//   const today = moment().startOf("day");
+//   if (parsedDate.isAfter(today)) return "Invalid"; 
+
+//   return parsedDate.format("YYYY-MM-DD"); 
+// }
 
 module.exports.submitCSV = async (req, res) => {
   try {
@@ -109,7 +109,7 @@ module.exports.submitCSV = async (req, res) => {
 
               const parsedDate = parseDateString(date);
               if (parsedDate === 'Invalid') {
-                 console.warn(`Skipping row due to invalid or incorrect date format (only dashes allowed): ${JSON.stringify(row)}`);
+                 console.warn(`Skipping row due to invalid  date ): ${JSON.stringify(row)}`);
                  continue;
                }
 
@@ -185,7 +185,17 @@ module.exports.submitCSV = async (req, res) => {
 
               const dutyHoursMet = duty_hours >= requiredDutyHours;
               const status = dutyHoursMet ? "Present" : "Incomplete Hours";
-
+              
+              if(await Attendance.findOne({
+                where :{
+                  organisation_id,
+                  employee_code,
+                  date : parsedDate
+                }
+              })){
+                console.warn('Attendance record for this day and this employee already exists');
+                continue;
+              }
               await Attendance.create({
                   organisation_id,
                   employee_code,
