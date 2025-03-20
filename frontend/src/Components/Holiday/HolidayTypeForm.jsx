@@ -63,6 +63,8 @@ const HolidayTypeForm = () => {
         data={data}
         setData={setData}
         onSubmit={handleSubmit}
+        isHolidayFrom = {true}
+
       />
     </div>
   );

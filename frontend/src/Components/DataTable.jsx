@@ -43,11 +43,11 @@ const DataTable = ({
   }, [data, searchQuery]);
   
   const handleDownload = async () => {
-    console.log(selectedFeature);
+    // console.log(selectedFeature);
      const routee = selectedFeature ? `${import.meta.env.VITE_API_URL}/api/${selectedFeature.download_api_route}/${companyData[0].id}`
      : `${import.meta.env.VITE_API_URL}/api/${subModule.download_api_route}/${companyData[0].id}`;
      try {
-      console.log(routee);
+      // console.log(routee);
       const response = await axiosInstance.get(routee);
 
       if (response.data.pdf_url) {

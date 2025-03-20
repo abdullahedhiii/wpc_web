@@ -1369,6 +1369,14 @@ const EmployeeForm = () => {
       if (!email) errors = errors +  " Email,";
       if (!contact_1) errors = errors+  " and Primary contact(1) is required";
       
+      if(fname.length < 3 || lname.length < 3){
+        alert('Please enter valid names')
+        return
+      }
+      if(contact_1.length < 10 ){
+        alert('Please enter a valid phone number')
+        return
+      }
       const {department,designation,start,end_if} = formData.service_details;
       if(department !== "" && designation === ""){
         alert('Since a department is selected, designation must also be selected')
