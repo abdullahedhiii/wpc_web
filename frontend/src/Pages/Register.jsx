@@ -42,9 +42,20 @@ const Register = () => {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
-
+    if (formData.firstName.length < 3 || formData.lastName.length < 3){
+      setError("Please enter a valid name")
+      return
+    }
+    else if (formData.contactNumber.length < 10){
+      setError("Please enter a valid phone number")
+      return
+    }
+    else if(formData.password.length < 8){
+      setError("Password must be atleast of length 8")
+      return
+    }
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, formData)
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, formData)
       setFormData({
         companyName: "",
         firstName: "",

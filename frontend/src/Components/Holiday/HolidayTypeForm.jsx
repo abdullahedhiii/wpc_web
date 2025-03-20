@@ -6,11 +6,11 @@ import axiosInstance from "../../../axiosInstance";
 
 const HolidayTypeForm = () => {
   const navigate = useNavigate();
-  const {companyData,fetchholidayData,holidayData} = useCompanyContext();
+  const {companyData,fetchHolidays,holidayData} = useCompanyContext();
   const {h_id} = useParams();
 
   useEffect(() => {
-    fetchholidayData();
+    fetchHolidays();
   },[]);
 
   const [data, setData] = useState({

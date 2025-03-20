@@ -367,7 +367,7 @@ module.exports.getInHand = async (req, res) => {
         leave_type_id: id,
       }
     });
-
+    
     const leaveRule = await LeaveRule.findOne({
       where: {
         leave_type_id: id,
@@ -387,10 +387,19 @@ module.exports.getInHand = async (req, res) => {
       return res.status(200).json({ message: "Cannot apply for this leave as it is not effective right now." });
     }
 
+    const if_requested = await LeaveRequest.findAll({
+      where: {
+        employeeCode: code,
+        leave_type_id: id,
+      },
+      attributes: [[Sequelize.fn("SUM", Sequelize.col("days")), "total_days"]],
+      raw: true, 
+    });
+
     if (!leaveAllocation) {
       return res.status(200).json(0);
     } else {
-      return res.status(200).json(leaveAllocation.leave_in_hand);
+      return res.status(200).json(Math.max(leaveAllocation.leave_in_hand - (if_requested?.total_days || 0), 0));
     }
   } catch (err) {
     return res.status(500).json({ error: "Server error", details: err.message });
@@ -435,6 +444,7 @@ module.exports.applyLeave = async (req, res) => {
         return res.status(200).json({message : 'You have already applied for the same leave type,during the same period'});
 
     }
+    
     const serviceDetail = await ServiceDetail.findOne({
       where: { employee_code: employeeCode },
       attributes: ['employment_type_id']
@@ -450,10 +460,7 @@ module.exports.applyLeave = async (req, res) => {
         employment_type_id: serviceDetail.employment_type_id,
       }
     });
-
-    if (!leaveRule) {
-      return res.status(404).json({ message: "Leave rule not found" });
-    }
+   
 
     const requestedFromDate = new Date(fromDate);
     const requestedToDate = new Date(toDate);
@@ -463,8 +470,7 @@ module.exports.applyLeave = async (req, res) => {
     if (requestedFromDate < ruleFromDate || requestedToDate > ruleToDate) {
       return res.status(200).json({ message: "Cannot apply for this leave as it is not effective during the requested period." });
     }
-
-    // Create the leave request
+ 
     await LeaveRequest.create({
       ...req.body,
       leave_type_id : leaveType,

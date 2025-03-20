@@ -89,6 +89,11 @@ const LeaveApplication = () => {
       window.alert('You dont have enough leaves left for this holiday type');
       return;
     };
+    const current_year = new Date().getFullYear()
+    const from = new Date(formData.fromDate).getFullYear()
+    if (from != current_year){
+      alert('You can apply for past leaves in the current year only');
+    }
 
     try{
        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/applyLeave`,formData);

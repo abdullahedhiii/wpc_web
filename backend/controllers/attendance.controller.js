@@ -109,7 +109,7 @@ module.exports.submitCSV = async (req, res) => {
 
               const parsedDate = parseDateString(date);
               if (parsedDate === 'Invalid') {
-                 console.warn(`Skipping row due to invalid  date ): ${JSON.stringify(row)}`);
+                 console.warn(`Skipping row due to invalid  date : ${JSON.stringify(row)}`);
                  continue;
                }
 

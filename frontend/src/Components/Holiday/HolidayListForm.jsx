@@ -19,7 +19,7 @@ const HolidayListForm = () => {
     start_date : '',
     end_date : '',
     description : '',
-    holiday_type : holidayData[0]['Holiday Type'],
+    holiday_type : Array.isArray(holidayData) && holidayData.length > 0 ? holidayData[0]['Holiday Type'] : '',
     num_days : NaN
   });
 

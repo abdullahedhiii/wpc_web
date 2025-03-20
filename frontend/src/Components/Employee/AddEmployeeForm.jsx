@@ -1369,14 +1369,40 @@ const EmployeeForm = () => {
       if (!email) errors = errors +  " Email,";
       if (!contact_1) errors = errors+  " and Primary contact(1) is required";
       
-      const {department,designation} = formData.service_details;
+      const {department,designation,start,end_if} = formData.service_details;
       if(department !== "" && designation === ""){
-        errors = errors + 'Since a department is selected, designation must also be selected'
+        alert('Since a department is selected, designation must also be selected')
+        return false
       }
-
-
+      const startDate = new Date(start);
+      const endDate = new Date(end_if);
+      if(isNaN(startDate) && !isNaN(endDate)){
+            alert('You must provide start date of the contract');
+            return false
+      }
+      else if(!isNaN(startDate) && !isNaN(endDate)){
+          if(endDate < startDate ){
+            alert('Please enter valid contract dates');
+            return false
+          }
+      }
     }
-  
+    else if(currentStep === 3){
+      for (const detail of formData.training_details) {
+        const startDate = new Date(detail.start);
+        const endDate = new Date(detail.end);
+    
+        if (isNaN(startDate) || isNaN(endDate)) {
+            alert("Please enter valid dates.");
+            return false;
+        }
+    
+        if (endDate < startDate) {
+            alert("Please enter valid training info. Start date cannot be after end date.");
+            return false;
+        }
+    }    
+    }
     if (errors.length > 0) {
       alert(errors);
       isValid = false;
