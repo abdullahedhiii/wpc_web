@@ -69,7 +69,7 @@ module.exports.generateOrganisationReport = async (req, res) => {
       const rowHeight = 25;
       let currentY = startY;
   
-      // Draw Table Headers
+      
       doc.fillColor('#3057BE')
          .rect(startX, currentY, colWidth[0], rowHeight).fill()
          .rect(startX + colWidth[0], currentY, colWidth[1], rowHeight).fill()
@@ -101,7 +101,7 @@ module.exports.generateOrganisationReport = async (req, res) => {
         ['Authorised Person Designation', 'Authorizing officer'],
         ['Authorised Person Email', organisation.Authorizing_email],
     
-        // Key Contact Information
+        
         ['Key Contact Name', `${organisation.KeyContact_fname || ''} ${organisation.KeyContact_lname || ''}`],
         ['Key Contact Designation', organisation.KeyContact_designation],
         ['Key Contact Email', organisation.KeyContact_email],
@@ -109,7 +109,7 @@ module.exports.generateOrganisationReport = async (req, res) => {
         ['Key Contact Proof ID', organisation.KeyContact_proof_id ? 'uploaded' : ''],
         ['Key Contact History', organisation.KeyContact_history],
     
-        // Level 1 Contact Information
+        
         ['Level 1 Contact Name', `${organisation.Level1_fname || ''} ${organisation.Level1_lname || ''}`],
         ['Level 1 Designation', organisation.Level1_designation],
         ['Level 1 Email', organisation.Level1_email],
@@ -159,7 +159,7 @@ data.forEach((row, index) => {
         doc.heightOfString(row[0], { width: colWidth[1] - 10 }),
         doc.heightOfString(row[1] || '', { width: colWidth[2] - 10 })
     ];
-    const maxTextHeight = Math.max(...textHeights, rowHeight); // Ensure a minimum row height
+    const maxTextHeight = Math.max(...textHeights, rowHeight); 
 
     const isEvenRow = index % 2 === 0;
     doc.fillColor(isEvenRow ? '#F0F0F0' : 'white')
@@ -262,24 +262,24 @@ data.forEach((row, index) => {
       if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true })
       if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath)
   
-      // Create PDF document with landscape orientation for more space
+      
       const doc = new PDFDocument({
         margin: 30,
         layout: "landscape",
-        size: "A3", // Using A3 for more space
-        bufferPages: true, // Enable page buffering for footer
+        size: "A3", 
+        bufferPages: true, 
       })
   
       const stream = fs.createWriteStream(pdfPath)
       doc.pipe(stream)
   
-      // Define consistent font sizes
+      
       const TITLE_FONT_SIZE = 16
       const SUBTITLE_FONT_SIZE = 12
       const HEADER_FONT_SIZE = 9
       const CONTENT_FONT_SIZE = 8
   
-      // Add organization logo if available
+      
       if (organisation.Company_Logo) {
         const logoFilename = path.basename(organisation.Company_Logo)
         const logoPath = path.join(__dirname, `../uploads/${organisation.Company_name}/`, logoFilename)
@@ -295,7 +295,7 @@ data.forEach((row, index) => {
         }
       }
   
-      // Add organization header
+      
       doc
         .fontSize(TITLE_FONT_SIZE)
         .font("Helvetica-Bold")
@@ -310,7 +310,7 @@ data.forEach((row, index) => {
         .text("Staff Report", { align: "center" })
         .moveDown(1)
   
-      // Define table headers
+      
       const headers = [
         "Sl. No.",
         "Staff Code",
@@ -328,7 +328,7 @@ data.forEach((row, index) => {
         "DBS Details",
       ]
   
-      // Prepare data for width calculation
+      
       const tableData = staff.map((emp, index) => [
         (index + 1).toString(),
         emp.employee_code || "-",
@@ -348,20 +348,20 @@ data.forEach((row, index) => {
         emp.dbsdetail?.expiry ? `Expires on ${formatDate(emp.dbsdetail.expiry)}` : "-",
       ])
   
-      // Calculate optimal column widths based on content
+      
       const colWidths = calculateColumnWidths(doc, headers, tableData, HEADER_FONT_SIZE, CONTENT_FONT_SIZE)
   
-      // Calculate total table width
+      
       const tableWidth = colWidths.reduce((sum, width) => sum + width, 0)
   
-      // Calculate margins to center the table
+      
       const pageWidth = doc.page.width - 2 * doc.page.margins.left
       const startX = doc.page.margins.left + (pageWidth - tableWidth) / 2
   
-      // Set initial position
+      
       let currentY = doc.y
   
-      // Add page numbers
+      
       const totalPages = doc.bufferedPageRange().count
       const addPageNumbers = () => {
         const pages = doc.bufferedPageRange()
@@ -373,14 +373,14 @@ data.forEach((row, index) => {
         }
       }
   
-      // Draw table header
+      
       const drawTableHeader = (y) => {
         let x = startX
   
-        // Header background
+        
         doc.fillColor("#3057BE").rect(startX, y, tableWidth, 30).fill()
   
-        // Header text
+        
         doc.fillColor("white").fontSize(HEADER_FONT_SIZE).font("Helvetica-Bold")
   
         headers.forEach((header, i) => {
@@ -392,39 +392,39 @@ data.forEach((row, index) => {
           x += colWidths[i]
         })
   
-        return y + 30 // Return the new Y position
+        return y + 30 
       }
   
-      // Draw table rows
+      
       const drawTableRow = (data, index, y) => {
         const rowHeight = calculateRowHeight(doc, data, colWidths, CONTENT_FONT_SIZE)
         let x = startX
   
-        // Row background
+        
         const isEvenRow = index % 2 === 0
         doc
           .fillColor(isEvenRow ? "#F0F0F0" : "white")
           .rect(startX, y, tableWidth, rowHeight)
           .fill()
   
-        // Row data
+        
         doc.fillColor("black").fontSize(CONTENT_FONT_SIZE).font("Helvetica")
   
-        // Calculate the maximum height needed for any cell in this row
+        
         let maxCellHeight = 0
   
-        // First pass: calculate heights
+        
         data.forEach((text, i) => {
           const cellHeight = calculateCellHeight(doc, text, colWidths[i] - 6, CONTENT_FONT_SIZE)
           maxCellHeight = Math.max(maxCellHeight, cellHeight)
         })
   
-        // Second pass: draw text
+        
         data.forEach((text, i) => {
-          // Ensure text is a string and handle null/undefined
+          
           const cellText = text ? text.toString() : "-"
   
-          // For numeric columns, align right, otherwise align left
+          
           const align = i === 0 ? "center" : isNumeric(cellText) ? "right" : "left"
   
           doc.text(cellText, x + 3, y + 5, {
@@ -435,7 +435,7 @@ data.forEach((row, index) => {
           x += colWidths[i]
         })
   
-        // Draw cell borders
+        
         x = startX
         data.forEach((_, i) => {
           doc
@@ -447,7 +447,7 @@ data.forEach((row, index) => {
           x += colWidths[i]
         })
   
-        // Draw the last vertical line
+        
         doc
           .strokeColor("#CCCCCC")
           .lineWidth(0.5)
@@ -455,7 +455,7 @@ data.forEach((row, index) => {
           .lineTo(x, y + rowHeight)
           .stroke()
   
-        // Draw horizontal line at the bottom of the row
+        
         doc
           .strokeColor("#CCCCCC")
           .lineWidth(0.5)
@@ -463,13 +463,13 @@ data.forEach((row, index) => {
           .lineTo(startX + tableWidth, y + rowHeight)
           .stroke()
   
-        return y + rowHeight // Return the new Y position
+        return y + rowHeight 
       }
   
-      // Draw the table
+      
       currentY = drawTableHeader(currentY)
   
-      // Draw horizontal line below header
+      
       doc
         .strokeColor("#000000")
         .lineWidth(1)
@@ -477,9 +477,9 @@ data.forEach((row, index) => {
         .lineTo(startX + tableWidth, currentY)
         .stroke()
   
-      // Draw table rows
+      
       tableData.forEach((rowData, index) => {
-        // Check if we need a new page
+        
         const rowHeight = calculateRowHeight(doc, rowData, colWidths, CONTENT_FONT_SIZE)
   
         if (currentY + rowHeight > doc.page.height - doc.page.margins.bottom - 20) {
@@ -487,7 +487,7 @@ data.forEach((row, index) => {
           currentY = doc.page.margins.top
           currentY = drawTableHeader(currentY)
   
-          // Draw horizontal line below header on new page
+          
           doc
             .strokeColor("#000000")
             .lineWidth(1)
@@ -499,13 +499,13 @@ data.forEach((row, index) => {
         currentY = drawTableRow(rowData, index, currentY)
       })
   
-      // Add page numbers
+      
       addPageNumbers()
   
-      // Finalize the PDF
+      
       doc.end()
   
-      // Return the PDF URL when the stream is finished
+      
       stream.on("finish", () => {
         res.json({
           pdf_url: `${process.env.BACKEND_URL}/uploads/${id}/staffReport.pdf`,
@@ -518,19 +518,19 @@ data.forEach((row, index) => {
     }
   }
   
-  // Helper function to calculate optimal column widths
+  
   function calculateColumnWidths(doc, headers, data, headerFontSize, contentFontSize) {
-    // Set minimum and maximum column widths
+    
     const MIN_COL_WIDTH = 40
     const MAX_COL_WIDTH = 150
   
-    // Initialize widths based on headers
+    
     doc.fontSize(headerFontSize)
     const headerWidths = headers.map((header) =>
       Math.min(MAX_COL_WIDTH, Math.max(MIN_COL_WIDTH, doc.widthOfString(header) + 10)),
     )
   
-    // Calculate widths based on data
+    
     doc.fontSize(contentFontSize)
     const dataWidths = Array(headers.length).fill(MIN_COL_WIDTH)
   
@@ -542,29 +542,29 @@ data.forEach((row, index) => {
       })
     })
   
-    // Use the maximum of header width and data width for each column
+    
     const finalWidths = headerWidths.map((width, i) => Math.max(width, dataWidths[i]))
   
-    // Adjust widths based on content importance
-    // Give more space to name and address columns
+    
+    
     const nameIndex = headers.findIndex((h) => h === "Staff Name")
     const addressIndex = headers.findIndex((h) => h === "Address")
   
     if (nameIndex !== -1) finalWidths[nameIndex] = Math.max(finalWidths[nameIndex], 120)
     if (addressIndex !== -1) finalWidths[addressIndex] = Math.max(finalWidths[addressIndex], 150)
   
-    // Ensure serial number column is narrow
+    
     const slNoIndex = headers.findIndex((h) => h === "Sl. No.")
     if (slNoIndex !== -1) finalWidths[slNoIndex] = 40
   
     return finalWidths
   }
   
-  // Helper function to calculate row height based on content
+  
   function calculateRowHeight(doc, rowData, colWidths, fontSize) {
     doc.fontSize(fontSize)
   
-    let maxHeight = 20 // Minimum row height
+    let maxHeight = 20 
   
     rowData.forEach((cell, i) => {
       const cellText = cell ? cell.toString() : "-"
@@ -572,10 +572,10 @@ data.forEach((row, index) => {
       maxHeight = Math.max(maxHeight, cellHeight)
     })
   
-    return maxHeight + 10 // Add padding
+    return maxHeight + 10 
   }
   
-  // Helper function to calculate cell height
+  
   function calculateCellHeight(doc, text, width, fontSize) {
     doc.fontSize(fontSize)
   
@@ -584,18 +584,18 @@ data.forEach((row, index) => {
     const textWidth = doc.widthOfString(text)
     if (textWidth <= width) return doc.currentLineHeight()
   
-    // Estimate number of lines
+    
     const lines = Math.ceil(textWidth / width)
     return lines * doc.currentLineHeight()
   }
   
-  // Helper function to format dates
+  
   function formatDate(dateString) {
     if (!dateString) return "-"
   
     try {
       const date = new Date(dateString)
-      if (isNaN(date.getTime())) return "-" // Invalid date
+      if (isNaN(date.getTime())) return "-" 
   
       return date.toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -607,7 +607,7 @@ data.forEach((row, index) => {
     }
   }
   
-  // Helper function to check if a string is numeric
+  
   function isNumeric(str) {
     if (typeof str !== "string") return false
     return !isNaN(str) && !isNaN(Number.parseFloat(str))
@@ -635,7 +635,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
 
     const leaveTypes = await LeaveType.findAll({ where: { organisation_id: id } });
 
-    // Create PDF with A3 landscape for better fit
+    
     const doc = new PDFDocument({ 
       margin: 30, 
       size: "A3", 
@@ -646,7 +646,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     const writeStream = fs.createWriteStream(filePath);
     doc.pipe(writeStream);
 
-    // Helper function to draw table cell
+    
     const drawTableCell = (text, x, y, width, height, options = {}) => {
       const defaultOptions = {
         align: 'left',
@@ -682,14 +682,14 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
         lineBreak: true
       };
 
-      // Calculate vertical centering
+      
       const textHeight = doc.heightOfString(text, textOptions);
       const textY = y + (height - textHeight) / 2;
 
       doc.text(text, x + opts.padding, textY, textOptions);
     };
 
-    // Add logo and header
+    
     if (organisation.Company_Logo) {
       const logoFilename = path.basename(organisation.Company_Logo);
       const logoPath = path.join(__dirname, `../uploads/${organisation.Company_name}/`, logoFilename);
@@ -703,7 +703,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       }
     }
 
-    // Header text
+    
     doc.fontSize(16)
        .font('Helvetica-Bold')
        .text(organisation.Company_name.toUpperCase(), { align: 'center' })
@@ -717,12 +717,12 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
        .text('EMPLOYEE LEAVE REPORT', { align: 'center' })
        .moveDown(2);
 
-    // Table configuration
+    
     const pageWidth = doc.page.width - 60;
     const startX = 30;
     let startY = 200;
     
-    // Calculate column widths
+    
     const fixedColumns = [
       { width: 40, title: "Sl. No" },
       { width: 100, title: "Employee ID" },
@@ -735,10 +735,10 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       (pageWidth - fixedColumns.reduce((sum, col) => sum + col.width, 0)) / leaveTypes.length
     );
 
-    // Draw table headers
+    
     let currentX = startX;
     
-    // Draw fixed columns headers
+    
     fixedColumns.forEach(column => {
       drawTableCell(
         column.title,
@@ -757,7 +757,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       currentX += column.width;
     });
 
-    // Draw leave type headers
+    
     leaveTypes.forEach(leave => {
       drawTableCell(
         leave.leave_type,
@@ -793,7 +793,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       currentX = startX;
       const rowHeight = 25;
     
-      // Draw fixed columns data
+      
       drawTableCell(String(i + 1), currentX, startY, fixedColumns[0].width, rowHeight, { align: "center" });
       currentX += fixedColumns[0].width;
     
@@ -820,7 +820,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       );
       currentX += fixedColumns[3].width;
     
-      // Draw leave data using for...of
+      
       for (const leave of leaveTypes) {
         const allocatedLeave = leaveMap.get(leave.id);
         let maxLeave = 0;
@@ -848,12 +848,12 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     
       startY += rowHeight;
     
-      // Add new page if needed
+      
       if (startY > doc.page.height - 50) {
         doc.addPage();
         startY = 50;
     
-        // Redraw headers on new page
+        
         currentX = startX;
         fixedColumns.forEach(column => {
           drawTableCell(column.title, currentX, startY, column.width, 30, {
@@ -878,7 +878,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     }
     
 
-    // Add page numbers
+    
     let pages = doc.bufferedPageRange();
     for (let i = 0; i < pages.count; i++) {
       doc.switchToPage(i);
@@ -896,7 +896,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     writeStream.on("finish", () => {
       res.status(200).json({ 
         message: "Leave report generated successfully", 
-        filePath 
+        url : `${process.env.BACKEND_URL}/uploads/${id}/LeaveReportAll.pdf` 
         ,
       });
     });

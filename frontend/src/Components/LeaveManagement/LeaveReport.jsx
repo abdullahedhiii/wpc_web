@@ -12,13 +12,15 @@ const LeaveReport = () => {
     const startYear = companyData[0]?.year_created || new Date().getFullYear();
     const currentYear = new Date().getFullYear();
 
-    const handleGenerate = async () => {
+    const handleGenerate = async (e) => {
+      e.preventDefault()
         try{
            const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompleteLeaveReport/${companyData[0].id}`,{
             params : {year}
            });
-           console.log(pdfUrl,'From backend')
            const pdfUrl = response.data.url;
+           console.log(pdfUrl,'From backend')
+
            if (pdfUrl) {
                window.open(pdfUrl, "_blank");
            }        
