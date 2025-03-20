@@ -17,6 +17,7 @@ const LeaveReport = () => {
            const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompleteLeaveReport/${companyData[0].id}`,{
             params : {year}
            });
+           console.log(pdfUrl,'From backend')
            const pdfUrl = response.data.url;
            if (pdfUrl) {
                window.open(pdfUrl, "_blank");
@@ -53,6 +54,7 @@ const LeaveReport = () => {
         </div>
 
             <div className={`mt-16 mr-16 ml-16 border-l-4 border-yellow-600 bg-white rounded-lg shadow-md p-6 ${isSideBarOpen ? "max-w-[1200px]" : "max-w-[1300px]"}`}>
+                <form onSubmit={handleGenerate}>
                 <div className="flex flex-col space-y-2">
                     <label className="text-gray-700 font-semibold">Choose Year</label>
                     <select 
@@ -70,13 +72,15 @@ const LeaveReport = () => {
                     </select>
                 </div>
                 <button
-                  className="rounded-xl text-white text-[12px] px-2 py-2 bg-yellow-400 mt-4"
-                  onClick={handleGenerate}
+                  className="rounded-xl text-white text-[12px] px-2 py-2 bg-yellow-400 hover:bg-yellow-500 mt-4"
+                  type="submit"
                 >
 
                     View Report
                 </button>
+                </form>
             </div>
+            
         </div>
     );
 }
