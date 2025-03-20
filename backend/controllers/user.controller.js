@@ -306,40 +306,42 @@ module.exports.getModules = async (req, res) => {
     const formattedModules = modules.map((module) => {
       let moduleHasAccess = false;
     
-      const subModules = module.subModules.map((subModule) => {
-        let subModuleHasAccess = false;
+      const subModules = module.subModules
+        .map((subModule) => {
+          let subModuleHasAccess = userSubModuleAccess.has(subModule.id);
     
-        const features = subModule.features.map((feature) => {
-          const featureId = String(feature.id); 
-          let featureAccess = userFeatureAccess.get(featureId) || { can_add: false, can_edit: false };
-          let can_access = !!userFeatureAccess.has(featureId);
+          const features = subModule.features
+            .map((feature) => {
+              const featureId = String(feature.id);
+              let featureAccess = userFeatureAccess.get(featureId) || { can_add: false, can_edit: false };
+              let can_access = !!userFeatureAccess.has(featureId);
     
-          if (module.name === "Employee Corner") {
-            moduleHasAccess = true;
+              if (module.name === "Employee Corner") {
+                moduleHasAccess = true;
+                subModuleHasAccess = true;
+                can_access = true;
+                featureAccess = { ...featureAccess, can_add: true };
+              }
+    
+              return { ...feature.get(), ...featureAccess, can_access };
+            })
+            .filter((feature) => feature.can_access); 
+    
+          if (features.length > 0) {
             subModuleHasAccess = true;
-            can_access = true;
-            featureAccess = { ...featureAccess, can_add: true }; 
           }
     
-          return { ...feature.get(), ...featureAccess, can_access };
-        });
+          if (subModuleHasAccess) moduleHasAccess = true;
     
-        if (module.name === "Employee Corner") {
-          subModuleHasAccess = true;
-        } else if (!subModuleHasAccess) {
-          subModuleHasAccess = userSubModuleAccess.has(subModule.id);
-        }
+          return subModuleHasAccess ? { ...subModule.get(), features, can_access: true } : null;
+        })
+        .filter(Boolean); 
     
-        if (subModuleHasAccess) moduleHasAccess = true;
-    
-        return { ...subModule.get(), features, can_access: subModuleHasAccess };
-      });
-    
-      return { ...module.get(), subModules, can_access: moduleHasAccess };
-    });
+      return moduleHasAccess ? { ...module.get(), subModules, can_access: true } : null;
+    }).filter(Boolean); 
     
     
-    res.status(200).json(formattedModules);
+    return res.status(200).json(formattedModules);
     
   } catch (error) {
     console.error("Error fetching modules:", error);

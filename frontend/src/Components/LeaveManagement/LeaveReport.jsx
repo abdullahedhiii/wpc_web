@@ -9,7 +9,6 @@ const LeaveReport = () => {
     const [year, setYear] = useState(2025);
     const { isSideBarOpen } = useSidebarContext();
 
-    // Get starting year from company data (fallback to current year if undefined)
     const startYear = companyData[0]?.year_created || new Date().getFullYear();
     const currentYear = new Date().getFullYear();
 
@@ -24,7 +23,7 @@ const LeaveReport = () => {
            }        
     }
         catch(err){
-
+             console.log(err);
         }
     }
     return (
@@ -62,7 +61,7 @@ const LeaveReport = () => {
                         className="w-64 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 hover:bg-gray-50 transition"
                         required 
                     >
-                        <option value="">Choose Year</option>
+                        <option value="" disabled>Choose Year</option>
                         {Array.from({ length: currentYear - startYear + 1 }, (_, i) => (
                             <option key={i} value={startYear + i}>
                                 {startYear + i}
