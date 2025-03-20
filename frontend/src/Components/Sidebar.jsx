@@ -110,6 +110,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                             toggleFeatures(module.id, subModule.id)
                           } else {
                             setSubModule(subModule)
+                            setSubFeature(null)
                             navigate(`/hrms/${subModule.main_route}`)
                           }
                         }}

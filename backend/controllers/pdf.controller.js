@@ -97,12 +97,12 @@ module.exports.generateOrganisationReport = async (req, res) => {
         ['Trading Name', organisation.Company_TradingName],
         ['Trading Period', '0 to 6 months'],
         ['Name Of Sector', organisation.Company_Sector],
-        ['Authorised Person Name', `${organisation.Authorizing_fname} ${organisation.Authorizing_lname}`],
+        ['Authorised Person Name', `${organisation.Authorizing_fname || ''} ${organisation.Authorizing_lname || ''}`],
         ['Authorised Person Designation', 'Authorizing officer'],
         ['Authorised Person Email', organisation.Authorizing_email],
     
         // Key Contact Information
-        ['Key Contact Name', `${organisation.KeyContact_fname} ${organisation.KeyContact_lname}`],
+        ['Key Contact Name', `${organisation.KeyContact_fname || ''} ${organisation.KeyContact_lname || ''}`],
         ['Key Contact Designation', organisation.KeyContact_designation],
         ['Key Contact Email', organisation.KeyContact_email],
         ['Key Contact Phone', organisation.KeyContact_phone],
@@ -110,7 +110,7 @@ module.exports.generateOrganisationReport = async (req, res) => {
         ['Key Contact History', organisation.KeyContact_history],
     
         // Level 1 Contact Information
-        ['Level 1 Contact Name', `${organisation.Level1_fname} ${organisation.Level1_lname}`],
+        ['Level 1 Contact Name', `${organisation.Level1_fname || ''} ${organisation.Level1_lname || ''}`],
         ['Level 1 Designation', organisation.Level1_designation],
         ['Level 1 Email', organisation.Level1_email],
         ['Level 1 Phone', organisation.Level1_phone],
