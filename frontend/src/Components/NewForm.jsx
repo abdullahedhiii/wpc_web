@@ -1,7 +1,7 @@
 import { ChevronRight, Home } from 'lucide-react'
 import { Link, useNavigate } from "react-router-dom"
 
-const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset,isLeaveFrom =false,isFromHoliday = false}) => {
+const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset,isLeaveFrom =false,isFromHoliday = false,isFromShift = false}) => {
    const navigate = useNavigate();
   const handleChange = (e, field) => {
     const { name, value, checked, type } = e.target
@@ -140,7 +140,7 @@ const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleRe
     }}
     className="text-gray-500 hover:text-yellow-600 transition-colors"
   >
-    {isLeaveFrom ? 'Leave Management' : isFromHoliday ? 'Holiday' : 'Settings'}
+    {isLeaveFrom ? 'Leave Management' : isFromHoliday ? 'Holiday' : isFromShift ? 'Shift Management' : 'Settings'}
   </a>
 
   <ChevronRight className="h-4 w-4" />

@@ -184,6 +184,8 @@ const ShiftManagementForm = () => {
         onSubmit={handleSubmit}
         reset={true}
         handleReset={handleReset}
+        isFromShift = {true}
+
       />
     </div>
   );

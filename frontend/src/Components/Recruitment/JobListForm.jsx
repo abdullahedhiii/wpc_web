@@ -84,6 +84,10 @@ const JobListForm = () => {
        alert('A job with this title is already listed,try updating');
        return;
       }
+    else if(content.length  == 0){
+      alert('Job Description is required')
+      return
+    }
     try{
        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addJobListed/${companyData[0].id}`,{formData,content});
        if(response.status === 200)

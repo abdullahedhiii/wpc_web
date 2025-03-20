@@ -183,6 +183,7 @@ const LatePolicyForm = () => {
                 onSubmit={handleSubmit}
                 reset={true}
                 handleReset={handleReset}
+                isFromShift = {true}
             />
         </div>
     );

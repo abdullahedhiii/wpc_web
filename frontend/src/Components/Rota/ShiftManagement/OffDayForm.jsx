@@ -216,6 +216,8 @@ const OffDayForm = () => {
         onSubmit={handleSubmit}
         reset={true}
         handleReset={handleReset}
+        isFromShift = {true}
+
       />
     </div>
   );
