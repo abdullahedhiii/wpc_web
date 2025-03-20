@@ -183,13 +183,12 @@ const nationalityOptions = [
     });
 
     useEffect(() => {
-        if (employees.length > 0 && formData.employee.full_name) {
+        if (employees.length > 0 && formData.employee.full_name !== '') {
           const selected_employee = employees.find(
             (emp) => emp.employee.full_name === formData.employee.full_name
           );
       
           if (selected_employee) {
-            // Transform the backend response before updating state
             const transformedEmployee = {
               ...selected_employee,
               other_details: {
@@ -205,7 +204,8 @@ const nationalityOptions = [
             }));
           }
         }
-      }, [formData.employee.full_name]);
+      }, [employees,formData.employee.full_name]);
+
    const FormSections = [
     {
         title : 'Employee details',
