@@ -11,7 +11,7 @@ import {
   GraduationCap,
   Users,
   Globe,
-  DollarSign,
+  PoundSterling ,
   ChevronRight,
   Award,
   Building,
@@ -184,7 +184,7 @@ export default function JobForm() {
               className="p-5 bg-white rounded-lg border border-yellow-100 shadow-sm hover:shadow-md transition-shadow"
             >
               <h2 className="text-lg font-semibold mb-3 flex items-center text-yellow-800">
-                <DollarSign className="w-5 h-5 mr-1 text-yellow-500" />
+                <PoundSterling  className="w-5 h-5 mr-1 text-yellow-500" />
                 Salary:
               </h2>
               <p className="text-gray-700 font-medium">{jobData.salary}</p>
