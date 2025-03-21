@@ -140,6 +140,7 @@ const DataTable = ({
                 request.id === request_id ? { ...request, status: status } : request
             )
         );
+        alert(`Leave Request ${status}`)
     } catch (err) {
     }
 };

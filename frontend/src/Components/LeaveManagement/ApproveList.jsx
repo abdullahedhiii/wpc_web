@@ -33,7 +33,8 @@ const ApproveList  = () => {
         fetchLeaveList();
         setAgain(false)
       }
-    },[setAgain]);
+    },[fetchAgain]);
+
     return(
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
