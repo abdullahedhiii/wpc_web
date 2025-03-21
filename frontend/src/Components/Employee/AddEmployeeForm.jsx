@@ -443,108 +443,24 @@ const EmployeeForm = () => {
       proof: null,
     },
     other_documents: [{ type: "", doc: null }],
-    passport_details: {
-      passport_no: "",
-      nationality: "",
-      place: "",
-      issued_by: "",
-      issue_date: "",
-      expiry_date: "",
-      review_date: "",
-      picture: null,
-      current: true,
-      remarks: "",
+    passport_details: {passport_no: "",nationality: "",place: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",picture: null,current: true,remarks: "",
     },
-    visa: {
-      visa_no: 0,
-      nationality: "",
-      country: "",
-      issued_by: "",
-      issue_date: "",
-      expiry_date: "",
-      review_date: "",
-      front: null,
-      back: null,
-      current: true,
-      remarks: "",
+    visa: {visa_no: 0,nationality: "",country: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",front: null,back: null,current: true,remarks: "",
     },
-    esus: {
-      refernece: 0,
-      nationality: "",
-      issued: "",
-      expiry: "",
-      review_date: "",
-      remarks: "",
-      document: null,
-      current: false,
+    esus: {refernece: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,
     },
-    dbs: {
-      type: "",
-      reference: 0,
-      nationality: "",
-      issued: "",
-      expiry: "",
-      review_date: "",
-      remarks: "",
-      document: null,
-      current: false,
+    dbs: {type: "",reference: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,
     },
-    national: {
-      national_id: "",
-      nationality: "",
-      country: "",
-      issued: "",
-      expiry: "",
-      review_date: "",
-      remarks: "",
-      document: null,
-      current: false,
+    national: {national_id: "",nationality: "",country: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,
     },
     other_details: [
-      {
-        name: "",
-        reference: "",
-        nationality: "",
-        issued: "",
-        expiry: "",
-        review_date: "",
-        document: null,
-        current: false,
-        remarks: "",
-      },
+      {name: "",reference: "",nationality: "",issued: "",expiry: "",review_date: "",document: null,current: false,remarks: "",},
     ],
-    pay_details: {
-      group: "",
-      pay: "",
-      wedges: "",
-      payment_type: "",
-      basic_wedges: "",
-      min_hours: 0,
-      rate: 0,
-      tax_code: "",
-      tax_reference: "",
-      tax_percentage: 0,
-      pay_mode: "",
-      bank_name: "",
-      branch_name: "",
-      account_no: "",
-      sort_code: "",
-      currency: "",
-    },
+    pay_details: {group: "",pay: "",wedges: "",payment_type: "",basic_wedges: "",min_hours: 0,rate: 0,tax_code: "",tax_reference: "",tax_percentage: 0,pay_mode: "",bank_name: "",branch_name: "",account_no: "",sort_code: "",currency: ""},
     pay_structure: {
-      payments: {
-        dearnessAllowance: false,
-        houseRentAllowance: false,
-        conveyanceAllowance: false,
-        performanceAllowance: false,
-        monthlyFixedAllowance: false,
+      payments: {dearnessAllowance: false,houseRentAllowance: false,conveyanceAllowance: false,performanceAllowance: false,monthlyFixedAllowance: false,
       },
-      deductions: {
-        niDeduction: false,
-        incomeTaxDeduction: false,
-        incomeTaxCess: false,
-        esi: false,
-        profTax: false,
+      deductions: {niDeduction: false,incomeTaxDeduction: false,incomeTaxCess: false,esi: false,profTax: false,
       },
     },
   });
@@ -1368,7 +1284,11 @@ const EmployeeForm = () => {
       if (!lname) errors =  errors + " Last name,";
       if (!email) errors = errors +  " Email,";
       if (!contact_1) errors = errors+  " and Primary contact(1) is required";
-      
+      if (errors.length > 0) {
+        alert(errors);
+       return false;
+
+      }
       if(fname.length < 3 || lname.length < 3){
         alert('Please enter valid names')
         return
@@ -1399,7 +1319,7 @@ const EmployeeForm = () => {
       for (const detail of formData.training_details) {
         const startDate = new Date(detail.start);
         const endDate = new Date(detail.end);
-    
+        if (isNaN(startDate) && isNaN(endDate)) continue;    
         if (isNaN(startDate) || isNaN(endDate)) {
             alert("Please enter valid dates.");
             return false;
@@ -1411,12 +1331,9 @@ const EmployeeForm = () => {
         }
     }    
     }
-    if (errors.length > 0) {
-      alert(errors);
-      isValid = false;
-    }
+
   
-    return isValid;
+    return true;
   };
   
   const handleOtherDetailsChange = (index, field, value) => {
