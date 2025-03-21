@@ -28,7 +28,8 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
         payload.timeTo = timeTo;
       }
       await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/updateCandidateStatus/${details.id}`, payload);
-     fetchAgain();
+      fetchAgain();
+      alert(`Candidate status updated to ${payload.status}`)
     } catch (err) {
       alert("Failed to update status");
     }

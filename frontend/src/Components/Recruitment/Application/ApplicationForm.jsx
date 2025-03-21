@@ -66,7 +66,15 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
         }
       }
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/applyJob/${formData.organisation_id}.${formData.job_id}.${formData.email}`, candidate, {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/applyJob/${formData.job_id}`,
+        candidate,
+        {
+          params: {
+            organisation_id: formData.organisation_id,
+            job_id: formData.job_id,
+            email: formData.email
+          },     
         headers: {
           "Content-Type": "multipart/form-data",
         },
