@@ -66,15 +66,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
         }
       }
 
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/applyJob/${formData.job_id}`,
-        candidate,
-        {
-          params: {
-            organisation_id: formData.organisation_id,
-            job_id: formData.job_id,
-            email: formData.email
-          },     
+      const str = `${formData.organisation_id}.${formData.job_id}.${formData.email}`
+
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/applyJob/${str}`, candidate, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -201,9 +195,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                   required
                 >
                   <option value="" disabled>Select Gender</option>
-                  <option value="male/female">Male/Female</option>
-                  <option value="female">Male</option>
-                  <option value="male">Female</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="male/female">Other</option>
                 </select>
               </div>
 

@@ -239,7 +239,8 @@ module.exports.getJobDetails = async (req, res) => {
 
 
 module.exports.applyJob = async (req, res) => {
-  const {organisationId, job_id, email} = req.query
+  const [organisationId, job_id, email] = req.params.id.split('.');
+
   const resumeFile = req.files?.resume ? req.files.resume[0].filename : null;
   const coverLetterFile = req.files?.coverLetter ? req.files.coverLetter[0].filename : null;
 
