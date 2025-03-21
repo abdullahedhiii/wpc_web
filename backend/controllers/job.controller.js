@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 const moment = require('moment');
+const {Sequelize} = require('sequelize')
 
 const generateLink = (job_id) => {
   try {
@@ -255,7 +256,7 @@ module.exports.applyJob = async (req, res) => {
     const candidate = await Candidate.create({
       organisation_id: organisationId,
       job_id,
-      email, // Ensure email is explicitly passed
+      email, 
       coverLetter: coverLetterUrl,
       resume: resumeUrl,
       ...req.body, 
@@ -265,7 +266,6 @@ module.exports.applyJob = async (req, res) => {
   } catch (err) {
     console.error("Error applying for job:", err);
 
-    // Handle unique constraint error
     if (err instanceof Sequelize.UniqueConstraintError) {
       return res.status(400).json({ 
         message: "You have already applied for this job with this email." 

@@ -11,7 +11,7 @@ import {
   Briefcase,
   GraduationCap,
   MapPin,
-  DollarSign,
+  PoundSterling,
   FileText,
   Send,
 } from "lucide-react"
@@ -316,7 +316,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
 
             <motion.div variants={itemVariants}>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                <DollarSign className="w-4 h-4 inline-block mr-1" />
+                <PoundSterling className="w-4 h-4 inline-block mr-1" />
                 Expected salary/CTC
               </label>
               <input
