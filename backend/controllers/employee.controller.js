@@ -17,7 +17,7 @@ module.exports.setFormStatus = async (req, res) => {
 
     res.status(200).json({ message: "Form status updated successfully" });
   } catch (err) {
-    console.error("Error updating form status:", err);
+    
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -48,7 +48,7 @@ const decryptLink = (encryptedData) => {
 
     return decrypted;
   } catch (error) {
-    console.error("Decryption Error:", error.message);
+    
     return null;
   }
 };
@@ -168,7 +168,7 @@ module.exports.getLinkFormDetails = async (req,res) => {
   
       return res.status(200).json(response);
     } catch (err) {
-      console.error("Error fetching employee data:", err);
+      
       return res
         .status(500)
         .json({ message: "Internal Server Error", error: err.message,decrypted_code : code });
@@ -286,7 +286,7 @@ module.exports.addWorkUpdate = async(req,res) => {
       return res.status(200).json({message : 'Update added'});
     }
     catch(err){
-        console.log('errorr ',err);
+        
         return res.status(500).json({message : 'Internal server error'});
     }
 }
@@ -345,7 +345,7 @@ module.exports.getAttendance = async(req,res) =>{
   
       return res.status(200).json(formattedResponse);
     } catch (err) {
-      console.error("Error fetching attendance", err);
+      
       return res.status(500).json({ error: "Server error", details: err.message });
     }
 }
@@ -414,7 +414,7 @@ module.exports.getApplications = async (req, res) => {
       where: { employeeCode: employee_code },
       order: [['applicationDate', 'DESC']],
     });
-
+    
     const formattedLeaves = await Promise.all(
       requests.map(async (request) => {
         const leaveType = await LeaveType.findOne({
@@ -432,9 +432,9 @@ module.exports.getApplications = async (req, res) => {
       })
     );
 
-    res.json({ success: true, data: formattedLeaves });
+    return res.status(200).json(formattedLeaves);
   } catch (error) {
-    console.error("Error fetching applications:", error);
+    
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
@@ -512,7 +512,7 @@ module.exports.applyLeave = async (req, res) => {
     return res.status(200).json({ message: "Leave request submitted successfully" });
 
   } catch (err) {
-    console.error("Error applying for leave:", err);
+    
     return res.status(500).json({ error: "Server error", details: err.message });
   }
 };
@@ -609,7 +609,7 @@ module.exports.getCOC = async (req, res) => {
 
     return res.status(200).json([formattedData]);
   } catch (err) {
-    console.log(err,'coc');
+    
     return res.status(500).json({ message: 'Internal Server Error', error: err.message });
   }
 };
@@ -757,7 +757,7 @@ module.exports.getCOC = async (req, res) => {
   
       return res.status(200).json(formattedData);
     } catch (err) {
-      console.log(err,'coc');
+      
       return res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
   };

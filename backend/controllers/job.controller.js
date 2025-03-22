@@ -240,7 +240,7 @@ module.exports.getJobDetails = async (req, res) => {
 
 module.exports.applyJob = async (req, res) => {
   const [organisationId, job_id, email] = req.params.id.split('.');
-
+   console.log('In job apply ',job_id);
   const resumeFile = req.files?.resume ? req.files.resume[0].filename : null;
   const coverLetterFile = req.files?.coverLetter ? req.files.coverLetter[0].filename : null;
 
@@ -253,6 +253,7 @@ module.exports.applyJob = async (req, res) => {
     : null;
 
   try {
+    console.log('trying to create candidate ,',job_id,organisationId,...req.body)
     const candidate = await Candidate.create({
       organisation_id: organisationId,
       job_id,

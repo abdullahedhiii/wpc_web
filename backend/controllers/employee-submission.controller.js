@@ -31,7 +31,7 @@ const isValidDate = (date) => {
 
 module.exports.addPersonalDetails = async (req, res) => {
   try {
-    console.log(req.body);
+    
     const [organisationId, employeeCode] = req.params.id.split(".");
 
     const [employee, created] = await Employee.findOrCreate({
@@ -117,13 +117,13 @@ module.exports.addServiceDetails = async (req, res) => {
     return res.status(200).json({ message, serviceDetail });
 
   } catch (err) {
-    console.error("Error adding or updating service details:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 
 module.exports.addEducationalDetails = async (req, res) => {
-  console.log("Educational hit ", req.params.id, req.body);
+  
 
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
@@ -200,14 +200,14 @@ module.exports.addEducationalDetails = async (req, res) => {
     return res.status(200).json({ message, document });
 
   } catch (err) {
-    console.error("Error adding or updating document:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
 module.exports.addJobDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
-    console.log(req.body);
+    
 
     const jobData = {
       employee_code: employeeCode,
@@ -231,7 +231,7 @@ module.exports.addJobDetails = async (req, res) => {
       return res.status(201).json({ message: "Job detail added", jobDetail });
     }
   } catch (err) {
-    console.error("Error processing job details:", err);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -286,7 +286,7 @@ module.exports.addKeyResponsibility = async (req, res) => {
       keyResponsibility,
     });
   } catch (err) {
-    console.error("Error adding or updating key responsibility:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -340,7 +340,7 @@ module.exports.addTrainingData = async (req, res) => {
       trainingDetail,
     });
   } catch (err) {
-    console.error("Error adding or updating training detail:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -363,7 +363,7 @@ module.exports.addKinData = async (req, res) => {
     return res.status(201).json({ message: "Kin detail added" });
 
   } catch (err) {
-    console.error("Error adding/updating kin details:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -396,7 +396,7 @@ module.exports.addCertification = async (req, res) => {
     return res.status(201).json("Certification detail added");
 
   } catch (err) {
-    console.error("Error adding/updating certification details:", err);
+    
     return res.status(500).json("Internal server error");
   }
 };
@@ -433,7 +433,7 @@ module.exports.addContact = async (req, res) => {
     return res.status(201).json({ message: "Contact detail added", document });
 
   } catch (err) {
-    console.error("Error processing contact details:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -462,14 +462,14 @@ module.exports.addPayDetails = async (req, res) => {
     return res.status(201).json("Pay detail added");
 
   } catch (err) {
-    console.error("Error processing pay details:", err);
+    
     return res.status(500).json("Internal server error");
   }
 };
 
 
   module.exports.addPayStructure = async (req, res) => {
-    console.log("structure hit ", req.params.id, req.body);
+    
     try {
       const [organisationId, employeeCode] = req.params.id.split(".");
       const { payments, deductions } = req.body;
@@ -494,7 +494,7 @@ module.exports.addPayDetails = async (req, res) => {
       
   
     } catch (err) {
-      console.error("Error processing pay structure:", err);
+      
       return res.status(500).json("Internal server error");
     }
   };
@@ -625,7 +625,7 @@ module.exports.addEsus = async (req, res) => {
       return res.status(201).json({ message: "Esus detail added", document });
     }
   } catch (err) {
-    console.error("Error adding/updating Esus detail:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err });
@@ -635,7 +635,7 @@ module.exports.addEsus = async (req, res) => {
 module.exports.addDBS = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
-    console.log(req.body,employeeCode,'dbss ');
+    
     const fileUrl = req.file
       ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
@@ -666,7 +666,7 @@ module.exports.addDBS = async (req, res) => {
         .json({ message: "DBS detail added", document: newDocument });
     }
   } catch (err) {
-    console.error("Error handling DBS detail:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err });
@@ -733,7 +733,7 @@ module.exports.add_other_details = async (req, res) => {
       document,
     });
   } catch (err) {
-    console.error("Error adding/updating other details:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -776,7 +776,7 @@ module.exports.national_data = async (req, res) => {
         .json({ message: "National details added", document });
     }
   } catch (err) {
-    console.error("Error adding/updating national details:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -844,7 +844,7 @@ module.exports.add_other_document = async (req, res) => {
       document,
     });
   } catch (err) {
-    console.error("Error adding/updating other document:", err);
+    
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -877,7 +877,7 @@ module.exports.addOtherCocDetail = async(req,res)=>{
           .json({ message: "coc other details added", document });
       }
     } catch (err) {
-      console.error("Error adding/updating cocother  details:", err);
+      
       return res
         .status(500)
         .json({ message: "Internal server error", error: err.message });
@@ -982,7 +982,7 @@ module.exports.getDocuments = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    console.error("Error fetching documents:", err);
+    
     return res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 };

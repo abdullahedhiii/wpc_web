@@ -86,7 +86,7 @@ module.exports.generateOrganisationReport = async (req, res) => {
         doc.document_type,
         'uploaded'
     ]);
-    console.log(documentData);
+    
       const data = [
         ['Organisation Name', organisation.Company_name],
         ['Type of Organisation', organisation.Company_Type],
@@ -134,7 +134,7 @@ module.exports.generateOrganisationReport = async (req, res) => {
         ...documentData
     ];
     
-    console.log(data.length);
+    
     const pageHeight = doc.page.height - 50; 
 
 data.forEach((row, index) => {
@@ -184,7 +184,7 @@ data.forEach((row, index) => {
       });
   
     } catch (err) {
-      console.error(err);
+      
       res.status(500).json({ message: "Internal server error", error: err.message });
     }
   };
@@ -227,7 +227,7 @@ data.forEach((row, index) => {
       res.status(200).json(formattedData);
     }
     catch(err){
-      console.log('errorrr ',err);
+      
       res.status(500).json({message : 'Internal server error'});
     }
   }
@@ -902,7 +902,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error generating leave report:", error);
+    
     return res.status(500).json({
       message: "Error generating leave report",
       error: error.message,

@@ -7,7 +7,7 @@ const moment = require("moment");
 function parseTimeString(timeString) {
   const parsedTime = moment(timeString, ["h:mm A", "hh:mm A"], true);
   if (!parsedTime.isValid()) {
-      console.error(`Invalid time format: ${timeString}`);
+      
       return null;
   }
   return parsedTime.toDate().getTime(); // Returns timestamp
@@ -52,7 +52,7 @@ function parseDateString(dateString) {
 
 module.exports.submitCSV = async (req, res) => {
   try {
-      console.log("Attendance submission hit", req.body, req.params.id);
+      
 
       const organisation_id = req.params.id;
       if (!req.file) {
@@ -138,7 +138,7 @@ module.exports.submitCSV = async (req, res) => {
                 continue;
               }
               
-              console.log("Shift found:", shift_check);
+              
               
               const dept_check = await Department.findOne({
                 where: { id: shift_check.department_id, organisation_id }
@@ -148,8 +148,8 @@ module.exports.submitCSV = async (req, res) => {
                 where: { id: shift_check.designation_id }
               });
               
-              console.log("Department check:", dept_check);
-              console.log("Designation check:", desg_check);
+              
+              
               
               if (!dept_check || !desg_check) {
                 console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
@@ -212,20 +212,20 @@ module.exports.submitCSV = async (req, res) => {
 
               recordCount++;
           } catch (rowError) {
-              console.error("Error processing row:", rowError);
+              
           }
       }
 
       if (recordCount === 0) {
-          console.log("No valid records were found in CSV");
+          
           return res.status(400).json({ message: "No valid records found in CSV" });
       }
 
-      console.log(`CSV processed successfully. Total records inserted: ${recordCount}`);
+      
       return res.status(200).json({ message: `Attendance records uploaded successfully, Valid row count ${recordCount}` });
 
   } catch (error) {
-      console.error("Error handling CSV upload:", error);
+      
       return res.status(500).json({ error: "Server error", message: error });
   }
 };
@@ -234,7 +234,7 @@ module.exports.submitCSV = async (req, res) => {
 //     const dateTimeString = `1970-01-01 ${timeString}`;
 //     const date = new Date(dateTimeString);
 //     if (isNaN(date.getTime())) {
-//       console.error(`Invalid time format: ${timeString}`);
+//       
 //       return null;
 //     }
 //     return date.getTime();
@@ -242,13 +242,13 @@ module.exports.submitCSV = async (req, res) => {
 // function parseDateString(dateString) {
 //     const parts = dateString.split("-");
 //     if (parts.length !== 3) {
-//       console.error(`Invalid date format: ${dateString}`);
+//       
 //       return null;
 //     }
     
 //     const [day, month, year] = parts.map(Number); 
 //     if (!day || !month || !year) {
-//       console.error(`Invalid date values: ${dateString}`);
+//       
 //       return null;
 //     }
   
@@ -258,7 +258,7 @@ module.exports.submitCSV = async (req, res) => {
 
 // module.exports.submitCSV = async (req, res) => {
 //   try {
-//     console.log("Attendance submission hit", req.body, req.params.id);
+//     
 
 //     const organisation_id = req.params.id;
 //     if (!req.file) {
@@ -406,31 +406,31 @@ module.exports.submitCSV = async (req, res) => {
 
 //         recordCount++;
 //       } catch (rowError) {
-//         console.error("Error processing row:", rowError);
+//         
 //       }
 //     }
 
 //     if (recordCount === 0) {
-//       console.log("No valid records were found in CSV");
+//       
 //       return res.status(400).json({ error: "No valid records found in CSV" });
 //     }
 
-//     console.log(`CSV processed successfully. Total records inserted: ${recordCount}`);
+//     
 //     return res.status(200).json({ message: `Attendance records uploaded successfully ,Valid row count ${recordCount}` });
 
 //   } catch (error) {
-//     console.error("Error handling CSV upload:", error);
+//     
 //     return res.status(500).json({ error: "Server error", errm: error });
 //   }
 // };
 
  
   module.exports.getAttendance = async (req, res) => {
-    console.log(req.query, req.params.id);
+    
     const { data } = req.query;
     
     try {
-      console.log(data.shift, data.employeeCode);
+      
       
       const fromDate = data.fromDate ? new Date(data.fromDate) : null;
       const toDate = data.toDate ? new Date(data.toDate) : null;
@@ -493,7 +493,7 @@ module.exports.submitCSV = async (req, res) => {
   
       return res.status(200).json(formattedResponse); 
     } catch (err) {
-      console.error("Error fetching attendance", err);
+      
       return res.status(500).json({ error: "Server error", errm: err });
     }
   };
@@ -501,8 +501,8 @@ module.exports.submitCSV = async (req, res) => {
 
   module.exports.getDailyAttendance = async (req, res) => {
     const { data } = req.query;
-    console.log("dataa ", data);
-    console.log(new Date(data.date));
+    
+    
     try {
       const record = await Attendance.findOne({
         where: {
@@ -544,17 +544,17 @@ module.exports.submitCSV = async (req, res) => {
         },
       ];}
   
-      console.log("Formatted Response: ", formattedResponse);
+      
       return res.status(200).json(formattedResponse);
     } catch (err) {
-      console.error("Error fetching attendance", err);
+      
       return res.status(500).json({ error: "Server error", details: err.message });
     }
   };
   
   module.exports.getAttendanceHistory = async (req, res) => {
     const { employeeCode, fromDate, toDate } = req.query.data;
-    console.log("Received Data:", req.query);
+    
   
     try {
       const records = await Attendance.findAll({
@@ -598,10 +598,10 @@ module.exports.submitCSV = async (req, res) => {
         }));
       }
   
-      console.log("Formatted Response: ", formattedResponse);
+      
       return res.status(200).json(formattedResponse);
     } catch (err) {
-      console.error("Error fetching attendance", err);
+      
       return res.status(500).json({ error: "Server error", details: err.message });
     }
   };

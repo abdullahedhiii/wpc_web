@@ -26,7 +26,7 @@ module.exports.gethashykey = (req, res) => {
   if (!company_id) {
     return res.status(400).json({ error: "Company ID is required" });
   }
-  console.log('trying to encrypt ');
+  
   try {
     const encryptedKey = encryptKey(company_id);
     res.status(201).json({
@@ -34,7 +34,7 @@ module.exports.gethashykey = (req, res) => {
       key: encryptedKey
     });
   } catch (err) {
-    console.error("Error during encryption:", err);
+    
     res.status(500).json({ error: err.message });
   }
 };
@@ -59,12 +59,12 @@ const decryptKey = (encryptedKey) => {
 };
 
 module.exports.registerVisit = async (req, res) => {
-    console.log('register hitt ',req.body);
+    
   const { name,email,contact,address,description,designation,date,time,reference, key } = req.body;
-  console.log('register hitt ',req.body);
+  
   try {
     const decryptedId = decryptKey(key);
-    console.log('Decrypted ID:', decryptedId, 'organisation  '); 
+     
     
     const newVisitor = await Visitor.create({
       organisation_id: decryptedId, 
@@ -77,7 +77,7 @@ module.exports.registerVisit = async (req, res) => {
       visitor: newVisitor
     });
   } catch (err) {
-    console.error("Error registering visitor:", err);
+    
     res.status(500).json({ error: "An error occurred while registering the visitor" });
   }
 };

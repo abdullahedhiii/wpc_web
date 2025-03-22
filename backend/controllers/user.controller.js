@@ -46,7 +46,7 @@ module.exports.Register = async (req, res) => {
       return res.status(201).json({ message: 'User registered successfully.' });
     
     }  catch (error) {
-      console.log('errror ', error);
+      
      if (error instanceof Sequelize.UniqueConstraintError) {
       return res.status(400).json({ 
         message: "The entered email or phone number has been registered already" 
@@ -57,7 +57,7 @@ module.exports.Register = async (req, res) => {
 };
 
 module.exports.Login = async (req, res) => {
-  console.log('Login endpoint hit', req.body);
+  
   try {
     const { email, password } = req.body;
     let existingUser ,isAdmin;
@@ -69,13 +69,13 @@ module.exports.Login = async (req, res) => {
     }
     
     if(!existingUser){
-      console.log('Error: email error');
+      
       return res.status(400).json({ error: 'Email not found, try again' });
     }
 
     const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
     if (!isPasswordValid) {
-      console.log('Error: incorrect password');
+      
       return res.status(400).json({ error: 'Incorrect password, try again' });
     }
 
@@ -136,7 +136,7 @@ module.exports.Login = async (req, res) => {
       user: response, 
     });
   } catch (error) {
-    console.error('Login error:', error);
+    
     return res.status(500).json({ error: 'An error occurred' });
   }
 };
@@ -151,13 +151,13 @@ module.exports.logout = async (req, res) => {
 
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
-    console.error("Logout error:", error);
+    
     return res.status(500).json({ error: "An error occurred while logging out" });
   }
 };
 
 module.exports.getSponsors = async (req, res) => {
-  console.log('get sponsors hit');
+  
   try {
     const sponsors = await Sponsor.findAll();
 
@@ -189,7 +189,7 @@ module.exports.getSponsors = async (req, res) => {
 
 
 module.exports.getModules = async (req, res) => {
-  console.log("Modules endpoint hit");
+  
   const { isAdmin } = req.query;
   const userId = req.params.id;
 
@@ -241,7 +241,7 @@ module.exports.getModules = async (req, res) => {
     });
 
     if (isAdmin === 'true') {
-      console.log('returningg ', isAdmin);
+      
       
       return res.status(200).json(
         modules.filter((m) => ![16].includes(m.id)).map((module) => ({
@@ -344,7 +344,7 @@ module.exports.getModules = async (req, res) => {
     return res.status(200).json(formattedModules);
     
   } catch (error) {
-    console.error("Error fetching modules:", error);
+    
     res.status(500).json({ error: "Internal Server Error", err: error });
   }
 };
@@ -411,12 +411,12 @@ module.exports.retrieveCookie = async (req, res) => {
         };
         return res.status(200).json({found:true,user : response});
       } catch (err) {
-        console.error('Database error:', err);
+        
         return res.status(500).json({ message: 'Internal server error' }); 
       }
     });
   } catch (err) {
-    console.error('Unexpected error:', err);
+    
     return res.status(500).json({ message: 'Internal server error' }); 
   }
 };
@@ -456,7 +456,7 @@ module.exports.getUserOrganisation = async(req,res) => {
     return res.status(200).json(responseData);
     }
     catch(err){
-      console.error('Unexpected error:', err);
+      
       return res.status(500).json({ message: 'Internal server error' }); 
     }
 }
