@@ -71,7 +71,7 @@ const ApproveList  = () => {
           addMore={false}
           buttonTitle = "Add New Leave Allocation"
           setData={setLeaves}
-          setAgain = {setAgain}
+          setFetch = {() =>setAgain(true)}
         />
         </div>
       </div>

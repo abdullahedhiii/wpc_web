@@ -21,7 +21,10 @@ const LeaveApplicationList = () => {
         }
       );
       setApplications(response.data);
-    } catch (err) {}
+    } catch (err) {
+
+      
+    }
   };
 
   useEffect(() => {

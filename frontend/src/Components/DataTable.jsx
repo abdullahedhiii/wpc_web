@@ -23,7 +23,7 @@ const DataTable = ({
   employeePath,
   setData,
   action_route,
-  setAgain
+  setFetch
 }) => {
   const { selectedFeature,subModule } = useModuleContext();
   const {companyData} = useCompanyContext();
@@ -134,13 +134,13 @@ const DataTable = ({
             status: status,
             request_id: request_id
         });
-        setAgain(true)
-        setData(prevData => 
-            prevData.map(request => 
-                request.id === request_id ? { ...request, status: status } : request
-            )
-        );
-        alert(`Leave Request ${status}`)
+        setFetch()
+        // setData(prevData => 
+        //     prevData.map(request => 
+        //         request.id === request_id ? { ...request, status: status } : request
+        //     )
+        // );
+        alert(`Leave Request updated to ${status}`)
     } catch (err) {
     }
 };
