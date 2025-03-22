@@ -1398,8 +1398,7 @@ const EmployeeForm = () => {
           alert ('An error occured while processing employement type');
           return;
         }
-        if(!serviceDetailsFormData.employment_type_id)
-        serviceDetailsFormData.append('employment_type_id',emplo_type.id);
+        serviceDetailsFormData.set('employment_type_id', emplo_type.id);
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
