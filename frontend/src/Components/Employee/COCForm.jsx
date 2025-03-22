@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../axiosInstance";
 import { useCompanyContext } from "../../contexts/CompanyContext";
+import { useNavigate } from "react-router-dom";
 
 const nationalityOptions = [
     "Afghanistan",
@@ -150,6 +151,7 @@ const nationalityOptions = [
   ];
 
   const COCForm = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [employees, setEmployees] = useState([]);
     const [employee_codes, setEmployeeCodes] = useState([]);
@@ -438,9 +440,11 @@ const nationalityOptions = [
       });
 
       await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-other-coc-details/${companyData[0].id}.${employee_code}`, formData.other_details,); 
-     }
+      alert('Employee COC updated')
+      navigate(-1) 
+    }
      catch(err){
-
+        alert(err);
      }
   }
   return (
