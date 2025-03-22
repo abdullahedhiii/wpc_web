@@ -48,7 +48,7 @@ const LeaveAllocationForm = () => {
       name: "employee_code",
       label: "Employee Code",
       type: "select",
-      options: empOptions,
+      options: [],
       required: true,
     },
     {
@@ -86,15 +86,14 @@ const LeaveAllocationForm = () => {
     }
   }, [employeeTypes]);
 
-  // Track employment_type separately for immediate updates
   useEffect(() => {
     if (data.employment_type !== selectedEmploymentType) {
       setSelectedEmploymentType(data.employment_type);
     }
   }, [data.employment_type]);
 
-  // Update employee options and leave type options when employment type changes
   useEffect(() => {
+    console.log(selectedEmploymentType);
     if (!selectedEmploymentType || employeeTypes.length === 0 || employees.length === 0 || leaveTypes.length === 0) {
       setEmpOptions([]);
       setFields((prevFields) =>
@@ -109,11 +108,11 @@ const LeaveAllocationForm = () => {
       ...prev,
       leave_type_id: "",
     }));
-
+    
     const employmentTypeObj = employeeTypes.find(
       (ele) => ele["Employment Type"].toLowerCase() === selectedEmploymentType.toLowerCase()
     );
-
+console.log(employmentTypeObj);
     if (employmentTypeObj) {
       setData((prev) => ({
         ...prev,
@@ -127,15 +126,20 @@ const LeaveAllocationForm = () => {
           value: ele.employee_code,
         }));
 
-      setEmpOptions(filteredEmployees);
-
+      // setEmpOptions(filteredEmployees);
+      setFields((prevFields) =>
+        prevFields.map((field) =>
+          field.name === "employee_code" ? { ...field, options: filteredEmployees } : field
+        )
+      );
+      console.log(filteredEmployees);
       const filteredLeaveTypes = leaveTypes
         .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
         .map((leave) => ({
           label: leave["Leave Type"],
           value: leave.id,
         }));
-
+console.log(filteredLeaveTypes)
       setFields((prevFields) =>
         prevFields.map((field) =>
           field.name === "leave_type_id" ? { ...field, options: filteredLeaveTypes } : field

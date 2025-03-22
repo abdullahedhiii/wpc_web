@@ -1,8 +1,13 @@
 import { ChevronRight, Home } from 'lucide-react'
+import { useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom"
 
 const NewForm = ({ icon, title, fields, data, setData, onSubmit, reset, handleReset,isLeaveFrom =false,isFromHoliday = false,isFromShift = false}) => {
    const navigate = useNavigate();
+
+   useEffect(() => {
+
+   },[fields]);
   const handleChange = (e, field) => {
     const { name, value, checked, type } = e.target
 
