@@ -131,6 +131,7 @@ import GenerateOfferLetter from "./Components/Recruitment/GenerateLetterList";
 import PaymentPage from "./Pages/PaymentPage";
 
 import { FaBars } from "react-icons/fa"; // Import the hamburger menu icon
+import LeaveApplicationList from "./Components/Employee Corner/LeaveApplicationList";
 
 const MainLayout = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebarContext();
@@ -1078,6 +1079,10 @@ const router = createBrowserRouter([
         path : "employee-corner/attendance-status",
         element : (<ProtectedRoute><AttendanceStatus/></ProtectedRoute>)
 
+      },
+      {
+        path : "employee-corner/leave-applications",
+        element: (<ProtectedRoute><LeaveApplicationList/></ProtectedRoute>)
       },
       {
         path : "employee-corner/leave-apply",

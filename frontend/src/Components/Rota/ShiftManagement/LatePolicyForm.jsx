@@ -101,8 +101,10 @@ const LatePolicyForm = () => {
             type: 'select',
             name: 'shift_code',
             options: filteredShifts.map(shift => ({
-                label: shift['Shift Code'] + '(' + shift['Shift Description'] + ')',
-                value: shift['Shift Code'],
+                label: [shift['Shift Code'], '(', shift['Shift Description'], ')']
+                .filter(Boolean) 
+                .join(' ')
+                ,value: shift['Shift Code'],
             })),
             required :true,
             readOnly : policy_id ? true : false

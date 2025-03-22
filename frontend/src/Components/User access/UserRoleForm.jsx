@@ -113,7 +113,7 @@ const UserRoleForm = () => {
                 </div>
               </div>
             </div>
-    
+    <form onSubmit={handleSubmit}>
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 <div className="space-y-2">
@@ -201,7 +201,7 @@ const UserRoleForm = () => {
                 className="mt-6 flex justify-end"
               >
                 <button
-                  onClick={handleSubmit}
+                  type="submit"
                   className="inline-flex items-center gap-2 px-6 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 transform hover:scale-105"
                 >
                   <Save className="w-4 h-4" />
@@ -209,6 +209,7 @@ const UserRoleForm = () => {
                 </button>
               </motion.div>
             </div>
+            </form>
           </motion.div>
     
                     {showSuccess && (

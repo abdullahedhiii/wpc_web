@@ -1,4 +1,4 @@
-const {Employee, PersonalDetail, ServiceDetail, ContactInfo, NationalDetail, PassportDetail, PayDetail, UserRole, JobDetail, Department, Designation, VisaDetail, WorkUpdate, Attendance, LeaveAllocation, LeaveRequest, COCOtherDetail, EsusDetail, DBSDetail, LeaveRule, User, EducationDetail, KeyResponsibility, TrainingDetail, KinDetail, Certification, PayStructure, EmployeeOtherDocument, EmployeeOtherDetail}= require("../config/sequelize");
+const {Employee, PersonalDetail, ServiceDetail, ContactInfo, NationalDetail, PassportDetail, PayDetail, UserRole, JobDetail, Department, Designation, VisaDetail, WorkUpdate, Attendance, LeaveAllocation, LeaveRequest, COCOtherDetail, EsusDetail, DBSDetail, LeaveRule, User, EducationDetail, KeyResponsibility, TrainingDetail, KinDetail, Certification, PayStructure, EmployeeOtherDocument, EmployeeOtherDetail, LeaveType}= require("../config/sequelize");
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const crypto = require('crypto');
 
@@ -406,6 +406,38 @@ module.exports.getInHand = async (req, res) => {
   }
 };
 
+module.exports.getApplications = async (req, res) => {
+  try {
+    const { employee_code } = req.query;
+
+    const requests = await LeaveRequest.findAll({
+      where: { employeeCode: employee_code },
+      order: [['applicationDate', 'DESC']],
+    });
+
+    const formattedLeaves = await Promise.all(
+      requests.map(async (request) => {
+        const leaveType = await LeaveType.findOne({
+          where: { id: request.leave_type_id },
+          attributes: ['leave_type'],
+        });
+
+        return {
+          "Leave Type": leaveType ? leaveType.leave_type : "N/A",
+          "Requested On": request.applicationDate,
+          "Number of days": request.days,
+          "Dates": `${request.fromDate} to ${request.toDate}`,
+          "Status": request.status,
+        };
+      })
+    );
+
+    res.json({ success: true, data: formattedLeaves });
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
 
 module.exports.applyLeave = async (req, res) => {
   try {

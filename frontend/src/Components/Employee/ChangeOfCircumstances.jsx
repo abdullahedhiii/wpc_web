@@ -26,7 +26,7 @@ const ChangeOfCircumstances = () => {
     },[]);
 
     const columns = [
-        "Updated Date",
+        // "Updated Date",
         "Employment Type",
         "Employee ID",
         "Name Of Member Of The Staff",

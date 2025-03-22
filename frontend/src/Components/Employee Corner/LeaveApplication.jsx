@@ -11,7 +11,7 @@ const LeaveApplication = () => {
   useEffect(() => {
     fetchLeaveTypes();
   }, []);
-
+  
   const [formData, setFormData] = useState({
     company_id : user.company_id,
     employmentType: user.type,

@@ -2,7 +2,8 @@ const express = require('express');
 const { getProfile, addWorkUpdate, getWorkUpdates, getAttendance, getInHand, applyLeave, 
     getCOC,getCOCFormEmp, 
     getLinkFormDetails,
-    setFormStatus} = require('../controllers/employee.controller');
+    setFormStatus,
+    getApplications} = require('../controllers/employee.controller');
 const router = express.Router();
 const {empUpload} = require('../config/multerConfig');
 
@@ -17,4 +18,5 @@ router.get('/getMyCOC/:id',getCOC);
 router.get('/getCOCDetailsEmp/:id',getCOCFormEmp);
 router.get('/getEmployeeFormInfoOnline/:id',getLinkFormDetails);
 router.post('/updateFormStatus/:id',setFormStatus);
+router.get('/fetchMyApplications',getApplications)
 module.exports = router;
