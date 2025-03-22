@@ -30,6 +30,10 @@ const LeaveAllocationForm = () => {
   useEffect(() => {
   
     if (data.employment_type !== '') {
+      setData((prev) => ({
+        ...prev,
+        leave_type_id : '',
+      }))
       const employmentTypeObj = employeeTypes.find(
         (ele) => ele["Employment Type"].toLowerCase() === data.employment_type.toLowerCase()
       );
