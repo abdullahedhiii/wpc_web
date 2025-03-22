@@ -4,7 +4,6 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import DataTable from "../DataTable";
-import axios from "axios";
 
 
 const LeaveAllocationForm = () => {
@@ -18,6 +17,8 @@ const LeaveAllocationForm = () => {
      fetchEmployeesLink();
      fetchLeavesAllocated()
   },[]);
+
+
   const [empOptions,setEmpOptions] = useState([]);
   const [data, setData] = useState({
       employment_type : '',
@@ -61,8 +62,24 @@ const LeaveAllocationForm = () => {
   ]);
   
   useEffect(() => {
+    if (employeeTypes.length > 0) {
+      setFields((prevFields) =>
+        prevFields.map((field) =>
+          field.name === "employment_type"
+            ? {
+                ...field,
+                options: employeeTypes.map((type) => ({
+                  label: type["Employment Type"],
+                  value: type["Employment Type"],
+                })),
+              }
+            : field
+        )
+      );
+    }
+  }, [employeeTypes]);
+  useEffect(() => {
     if (data.employment_type !== '') {
-      // Reset leave_type_id when employment_type changes
       setData((prev) => ({
         ...prev,
         leave_type_id: '',
@@ -78,7 +95,6 @@ const LeaveAllocationForm = () => {
           employment_type_id: employmentTypeObj.id,
         }));
   
-        // Filter employees based on employment type
         const filteredEmployees = employees
           .filter((ele) => ele.employment_type_id === employmentTypeObj.id)
           .map((ele) => ({
@@ -87,7 +103,6 @@ const LeaveAllocationForm = () => {
           }));
         setEmpOptions(filteredEmployees);
   
-        // Filter leave types based on employment type
         const filteredLeaveTypes = leaveTypes
           .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
           .map((leave) => ({
@@ -95,7 +110,6 @@ const LeaveAllocationForm = () => {
             value: leave.id,
           }));
   
-        // Update fields dynamically with the new leave type options
         setFields((prevFields) =>
           prevFields.map((field) =>
             field.name === "leave_type_id"
