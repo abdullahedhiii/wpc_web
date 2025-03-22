@@ -25,6 +25,7 @@ const LeaveAllocationForm = () => {
       employee_code : '',
       year: `01/${new Date().getFullYear()}`,
       leave_type_id : '',
+      employment_type_id : null,
   });
   const [tableData,setTableData] = useState([]);
   const [fields, setFields] = useState([
@@ -78,6 +79,7 @@ const LeaveAllocationForm = () => {
       );
     }
   }, [employeeTypes]);
+
   useEffect(() => {
     if (data.employment_type !== '') {
       setData((prev) => ({
@@ -94,29 +96,6 @@ const LeaveAllocationForm = () => {
           ...prev,
           employment_type_id: employmentTypeObj.id,
         }));
-  
-        const filteredEmployees = employees
-          .filter((ele) => ele.employment_type_id === employmentTypeObj.id)
-          .map((ele) => ({
-            label: ele.employee_code,
-            value: ele.employee_code,
-          }));
-        setEmpOptions(filteredEmployees);
-  
-        const filteredLeaveTypes = leaveTypes
-          .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
-          .map((leave) => ({
-            label: leave["Leave Type"],
-            value: leave.id,
-          }));
-  
-        setFields((prevFields) =>
-          prevFields.map((field) =>
-            field.name === "leave_type_id"
-              ? { ...field, options: filteredLeaveTypes }
-              : field
-          )
-        );
       } else {
         setEmpOptions([]);
         setFields((prevFields) =>
@@ -126,7 +105,34 @@ const LeaveAllocationForm = () => {
         );
       }
     }
-  }, [data.employment_type, employeeTypes, employees, leaveTypes]);
+  }, [data.employment_type, employeeTypes]);
+  
+  useEffect(() => {
+    if (data.employment_type_id) {
+      const filteredEmployees = employees
+        .filter((ele) => ele.employment_type_id === data.employment_type_id)
+        .map((ele) => ({
+          label: ele.employee_code,
+          value: ele.employee_code,
+        }));
+      setEmpOptions(filteredEmployees);
+  
+      const filteredLeaveTypes = leaveTypes
+        .filter((leave) => leave.employment_type_id === data.employment_type_id)
+        .map((leave) => ({
+          label: leave["Leave Type"],
+          value: leave.id,
+        }));
+  
+      setFields((prevFields) =>
+        prevFields.map((field) =>
+          field.name === "leave_type_id"
+            ? { ...field, options: filteredLeaveTypes }
+            : field
+        )
+      );
+    }
+  }, [data.employment_type_id, employees, leaveTypes]);
   
   
 
