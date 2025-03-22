@@ -16,7 +16,6 @@ const COCView = () => {
     fetchTypes();
     },[]);
     const columns = [
-        "Updated Date",
         "Employment Type",
         "Employee ID",
         "Name Of Member Of The Staff",

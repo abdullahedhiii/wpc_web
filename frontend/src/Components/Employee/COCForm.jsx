@@ -540,7 +540,8 @@ const nationalityOptions = [
                             </label>
                           </div>
                         ) : (
-                          <input
+                          <>
+                           <input
                             type={field.type}
                             id={field.value}
                             name={field.value}
@@ -550,6 +551,18 @@ const nationalityOptions = [
                             required={field.required}
                             readOnly={field.readOnly}
                           />
+                          {field.type === 'file' && fieldValue ? (
+                            <a
+                              href={fieldValue}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-green-400 text-sm"
+                            >
+                              <i className="fas fa-download"></i>
+                            </a>
+                          ):null}
+                          </>
+                         
                         )}
                       </div>
                     );
