@@ -224,7 +224,7 @@ module.exports.submitCompanyForm = async (req, res) => {
       tradingHours: tradingHoursData,
     });
   } catch (error) {
-    console.error("Error inserting data:", error);
+    
     res.status(500).json({
       message: "Failed to create Organisation or Trading Hours.",
       error: error.message,
@@ -233,7 +233,7 @@ module.exports.submitCompanyForm = async (req, res) => {
 };
 
 module.exports.updateCompany = async (req, res) => {
-  console.log("in update ", req.params.id);
+  
   try {
     const {
       Company_admin_id,
@@ -418,7 +418,7 @@ module.exports.updateCompany = async (req, res) => {
       tradingHours: tradingHours || [],
     });
   } catch (error) {
-    console.error("Error updating data:", error);
+    
     res.status(500).json({
       message: "Failed to update company information.",
       error: error.message,
@@ -427,7 +427,7 @@ module.exports.updateCompany = async (req, res) => {
 };
 
 // try {
-//   console.log("Organisation form endpoint hit", req.body);
+//   
 
 //   const {
 //     admin_id,
@@ -447,7 +447,7 @@ module.exports.updateCompany = async (req, res) => {
 //   } = req.body;
 
 //   const logoPath = req.file ? `${process.env.BACKEND_URL}/uploads/${req.file.filename}` : null;
-//   console.log(logoPath);
+//   
 //   const newOrganisation = await Organisation.create({
 //     Name,
 //     Type,
@@ -471,7 +471,7 @@ module.exports.updateCompany = async (req, res) => {
 //     organisation: newOrganisation,
 //   });
 // } catch (error) {
-//   console.error("Error registering organisation:", error.message);
+//   
 
 //   return res.status(500).json({
 //     error: "An error occurred while registering the organisation",
@@ -513,7 +513,7 @@ module.exports.getOrganisations = async (req, res) => {
     };
     return res.status(200).json(responseData);
   } catch (error) {
-    console.error("Error fetching organisations:", error.message);
+    
     return res.status(500).json({
       error: "An error occurred while fetching the organisations",
       details: error.message,
@@ -549,7 +549,7 @@ module.exports.getFormDetails = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (err) {
-    console.error("Error fetching company details:", err);
+    
     return res.status(500).json({ message: "Server error" });
   }
 };
@@ -588,7 +588,7 @@ module.exports.addDepartment = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -610,7 +610,7 @@ module.exports.getDepartments = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -650,7 +650,7 @@ module.exports.addDesignation = async (req, res) => {
       });
     }
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -663,10 +663,10 @@ module.exports.addDesignation = async (req, res) => {
 //         }
 //     });
 //         if (department) {
-//           console.log('updating department ',department);
+//           
 //             department.department_name = department_name;
 //             await department.save();
-//             console.log('department updatedd');
+//             
 //             return res.status(201).json({
 //                 message: 'Department updated successfully',
 //                 department,
@@ -686,7 +686,7 @@ module.exports.addDesignation = async (req, res) => {
 //         });
 //     }
 // } catch (error) {
-//     console.error(error);
+//     
 //     return res.status(500).json({ message: 'Internal server error' });
 // }
 
@@ -706,7 +706,7 @@ module.exports.getDesignations = async (req, res) => {
       order: [["id", "ASC"]],
     });
     const formattedData = designations.map((designation, index) => {
-      console.log(designation.department.id);
+      
       return {
         id: designation.id,
         department_id: designation.department.id,
@@ -719,7 +719,7 @@ module.exports.getDesignations = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -758,7 +758,7 @@ module.exports.addEmployeeType = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -780,7 +780,7 @@ module.exports.getEmployeeTypes = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -820,7 +820,7 @@ module.exports.addPayGroup = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -843,7 +843,7 @@ module.exports.getPayGroups = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -880,7 +880,7 @@ module.exports.addAnnualPay = async (req, res) => {
       });
     }
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -912,7 +912,7 @@ module.exports.getAnnualPays = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -934,7 +934,7 @@ module.exports.getCompanyBanks = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -972,7 +972,7 @@ module.exports.addCompanyBank = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1003,7 +1003,7 @@ module.exports.getBankSortCodes = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1042,7 +1042,7 @@ module.exports.addBankSortCode = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1066,7 +1066,7 @@ module.exports.getTaxMasters = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1108,7 +1108,7 @@ module.exports.addTaxMaster = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1132,7 +1132,7 @@ module.exports.getPaymentTypes = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1174,7 +1174,7 @@ module.exports.addPaymentType = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1211,7 +1211,7 @@ module.exports.addHolidayType = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1232,7 +1232,7 @@ module.exports.getHolidayTypes = async (req, res) => {
     });
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1282,7 +1282,7 @@ module.exports.addHoliday = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1309,7 +1309,7 @@ module.exports.getHolidayList = async (req, res) => {
     });
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1335,7 +1335,7 @@ module.exports.getVisitors = async (req, res) => {
     });
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1380,7 +1380,7 @@ module.exports.addShift = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1476,7 +1476,7 @@ module.exports.getShifts = async (req, res) => {
 
     return res.status(200).json(shiftDetails);
   } catch (error) {
-    console.error("Error fetching shifts:", error);
+    
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });
@@ -1485,7 +1485,7 @@ module.exports.getShifts = async (req, res) => {
 
 module.exports.addLatePolicy = async (req, res) => {
   const { data, dep_id, des_id } = req.body;
-  console.log("Adding late policy:", data, dep_id, des_id);
+  
 
   try {
     // Check if a policy already exists
@@ -1505,7 +1505,7 @@ module.exports.addLatePolicy = async (req, res) => {
         salary_days: data.salary_days,
       });
 
-      console.log("Late policy updated");
+      
       return res.status(200).json({
         message: "Late policy updated successfully",
         policy: existingPolicy,
@@ -1521,14 +1521,14 @@ module.exports.addLatePolicy = async (req, res) => {
         salary_days: data.salary_days,
       });
 
-      console.log("Late policy created");
+      
       return res.status(201).json({
         message: "New late policy created successfully",
         policy: newPolicy,
       });
     }
   } catch (error) {
-    console.error("Error in late policy:", error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1580,7 +1580,7 @@ module.exports.getLatePolicies = async (req, res) => {
 
     res.status(200).json(result);
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -1630,7 +1630,7 @@ module.exports.addOffDay = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Error in adding/updating shift off days:", error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1654,7 +1654,7 @@ module.exports.uploadDocuments = async (req, res) => {
       document: newDocument,
     });
   } catch (error) {
-    console.error("Error uploading document:", error);
+    
     res.status(500).json({
       message: "Error uploading document",
       error: error.message,
@@ -1687,12 +1687,12 @@ const generateLink = (employee_code) => {
     const secretKey = process.env.EMP_SECRET_KEY;
 
     if (!secretKey || secretKey.length !== 64) {
-      console.log("key error it is");
+      
       throw new Error(
         "Secret key must be 64 hex characters (32 bytes in length)"
       );
     }
-    console.log("trying to encrypttt");
+    
 
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(
@@ -1706,13 +1706,13 @@ const generateLink = (employee_code) => {
 
     return iv.toString("hex") + encrypted;
   } catch (error) {
-    console.error("Encryption Error:", error.message);
+    
     return null;
   }
 };
 
 module.exports.getAllEmployees = async (req, res) => {
-  console.log("get employees hit ", req.params.id);
+  
   const org_id = req.params.id;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -1763,7 +1763,7 @@ module.exports.getAllEmployees = async (req, res) => {
       ],
     });
 
-    console.log(emp);
+    
     const formattedResponse = emp.map((employee, index) => {
       //   console.log(employee,index,'indexxx')
       const employeeLink = employee.has_filled_out_form
@@ -1805,7 +1805,7 @@ module.exports.getAllEmployees = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    console.error("Error fetching employees:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -1813,7 +1813,7 @@ module.exports.getAllEmployees = async (req, res) => {
 };
 
 module.exports.getEmployeePage = async (req, res) => {
-  console.log("get employees hit ", req.params.id);
+  
   const org_id = req.params.id;
 
   try {
@@ -1858,7 +1858,7 @@ module.exports.getEmployeePage = async (req, res) => {
     });
 
     const formattedResponse = emp.map((employee, index) => {
-      console.log(employee);
+      
       return {
         "Employee ID": employee.employee_code,
         "Employee Name": [
@@ -1895,7 +1895,7 @@ module.exports.getEmployeePage = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    console.error("Error fetching employees:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2022,7 +2022,7 @@ module.exports.getEmployeeData = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (err) {
-    console.error("Error fetching employee data:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2031,9 +2031,9 @@ module.exports.getEmployeeData = async (req, res) => {
 
 module.exports.getCOCData = async (req, res) => {
   const id = req.params.id;
-  console.log("coc data hit  ", id);
+  
   try {
-    console.log("executing this ? ");
+    
     const employees = await Employee.findAll({
       where: { organisation_id: id },
       include: [
@@ -2056,7 +2056,7 @@ module.exports.getCOCData = async (req, res) => {
         },
       ],
     });
-    console.log("error here??????");
+    
     const employeesWithDetails = await Promise.all(
       employees.map(async (emp) => {
         const employee_code = emp.employee_code;
@@ -2099,23 +2099,26 @@ module.exports.getCOCData = async (req, res) => {
         const other_details = await COCOtherDetail.findOne({
           where: { employee_code },
         });
-
+ 
         return {
           employee,
-          contact_info,
-          passport_details,
-          esus,
-          dbs,
-          visa,
-          national,
-          other_details,
-        };
-      })
+          contact_info : contact_info ? contact_info : {post_code: "",address: "",line1: "",line2: "",line3: "",city: "",country: "",proof: null,},
+          passport_details: passport_details ? passport_details : {passport_no: "",nationality: "",place: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",picture: null,current: true,remarks: "",
+          },
+          esus : esus ? esus : {refernece: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
+          dbs : dbs ? dbs :  {type: "",reference: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
+          visa : visa ? visa : {visa_no: 0,nationality: "",country: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",front: null,back: null,current: true,remarks: "",},
+          national : national ? national : {national_id: "",nationality: "",country: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
+          other_details: other_details ? other_details :  [
+            {name: "",reference: "",nationality: "",issued: "",expiry: "",review_date: "",document: null,current: false,remarks: "",},
+          ]
+          }
+        })
     );
 
     return res.status(200).json(employeesWithDetails);
   } catch (err) {
-    console.error("???????????????????Error fetching employee COC data:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2213,7 +2216,7 @@ module.exports.getCOCTable = async (req, res) => {
 
     return res.status(200).json(formattedData);
   } catch (err) {
-    console.log(err, "coc");
+    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2312,7 +2315,7 @@ module.exports.getCOCEmployee = async (req, res) => {
 
     return res.status(200).json([formattedData]);
   } catch (err) {
-    console.log(err, "coc");
+    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2358,7 +2361,7 @@ module.exports.addLeaveType = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2381,7 +2384,7 @@ module.exports.getLeaveTypes = async (req, res) => {
     });
     return res.status(200).json(formattedResponse);
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2500,7 +2503,7 @@ module.exports.addLeaveRule = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2543,13 +2546,13 @@ module.exports.getLeaveRules = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports.allocateLeave = async (req, res) => {
-  console.log("hit allocated leave ");
+  
   const id = req.params.id;
 
   try {
@@ -2604,7 +2607,7 @@ module.exports.allocateLeave = async (req, res) => {
 
     return res.status(existingLeave ? 200 : 201).json(response);
   } catch (error) {
-    console.error("Error in allocateLeave:", error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2639,14 +2642,14 @@ module.exports.getLeaveAllocated = async (req, res) => {
     };
     return res.status(200).json(data);
   } catch (error) {
-    console.error(error);
+    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports.getLeavesAllocated = async (req, res) => {
   const id = req.params.id;
-  console.log("id in leaves:", id);
+  
 
   try {
     const employees = await Employee.findAll({
@@ -2670,7 +2673,7 @@ module.exports.getLeavesAllocated = async (req, res) => {
         where: { employee_code: employee_code },
       });
 
-      console.log(leave_allocations);
+      
 
       for (const leave_allocated of leave_allocations) {
         const leave_type = await LeaveType.findOne({
@@ -2723,7 +2726,7 @@ module.exports.getLeavesAllocated = async (req, res) => {
 
     return res.status(200).json(records);
   } catch (err) {
-    console.error("Error fetching leaves allocated:", err);
+    
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -2737,7 +2740,7 @@ module.exports.getOrgDocuments = async (req, res) => {
     });
     return res.status(200).json(documents);
   } catch (err) {
-    console.error("Error fetching documents:", err);
+    
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -2763,7 +2766,7 @@ module.exports.createUser = async (req, res) => {
       .status(201)
       .json({ message: "User registered successfully.", newUser });
   } catch (error) {
-    console.error("Error in user creation:", error);
+    
     return res
       .status(500)
       .json({ error: "An error occurred. Please try again later." });
@@ -2826,7 +2829,7 @@ module.exports.getUsers = async (req, res) => {
   }
 };
 module.exports.grantRights = async (req, res) => {
-  console.log(req.body);
+  
 
   try {
     // Check if the user role already exists
@@ -2840,7 +2843,7 @@ module.exports.grantRights = async (req, res) => {
     });
 
     if (existingRole) {
-      console.log("role existss");
+      
       return res.status(400).json({ message: "User role already assigned!" });
     }
 
@@ -2854,7 +2857,7 @@ module.exports.grantRights = async (req, res) => {
 
     return res.status(200).json({ message: "User role created" });
   } catch (err) {
-    console.error("Error granting rights:", err);
+    
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -2895,7 +2898,7 @@ module.exports.getUserRoles = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    console.error("Error fetching user roles:", err);
+    
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -2916,7 +2919,7 @@ module.exports.getJobOpen = async (req, res) => {
 
     res.status(200).json({ message: "Jobs retrieved successfully", jobs });
   } catch (err) {
-    console.error(err);
+    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -2945,7 +2948,7 @@ module.exports.addForm = async (req, res) => {
       return res.status(201).json({ message: "Form added successfully" });
     }
   } catch (err) {
-    console.error(err);
+    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -2971,7 +2974,7 @@ module.exports.getForms = async (req, res) => {
         },
       ],
     });
-    console.log(jobs);
+    
     const formattedData = jobs.map((job, index) =>
       job.form
         ? {
@@ -2988,7 +2991,7 @@ module.exports.getForms = async (req, res) => {
     );
     return res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3006,7 +3009,7 @@ module.exports.getJobForm = async (req, res) => {
     form.job_position = job.jobTitle;
     return res.status(200).json(form);
   } catch (err) {
-    console.error(err);
+    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3020,7 +3023,7 @@ module.exports.assignDuty = async (req, res) => {
     });
     res.status(200).json({ message: "form added" });
   } catch (err) {
-    console.error(err);
+    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3054,12 +3057,12 @@ module.exports.getDuties = async (req, res) => {
 
     if (employee_code) dutyWhereClause.employee_code = employee_code;
 
-    console.log("Duty Query:", dutyWhereClause);
+    
     let duties;
     duties = await Duty.findAll({ where: dutyWhereClause });
-    console.log("Duties Retrieved:", duties);
+    
     if (employee_code && duties.length === 0) {
-      console.log("employee code hut duties null");
+      
       duties = await Duty.findAll({
         where: {
           fromDate: { [Op.gte]: fromDate },
@@ -3068,7 +3071,7 @@ module.exports.getDuties = async (req, res) => {
           designation_id: employee_detail.designation_id,
         },
       });
-      console.log(duties);
+      
     }
 
     const shift = await Shift.findOne({
@@ -3087,10 +3090,10 @@ module.exports.getDuties = async (req, res) => {
       ],
     });
 
-    console.log("Shift Retrieved:", shift);
+    
 
     const employeeWhereClause = employee_code ? { employee_code } : {};
-    console.log(employeeWhereClause);
+    
     const employeeRecords = await Employee.findAll({
       where: employeeWhereClause,
       include: [
@@ -3107,7 +3110,7 @@ module.exports.getDuties = async (req, res) => {
       ],
     });
 
-    console.log("Employee Records Retrieved:", employeeRecords);
+    
 
     // Step 4: Format Duties Per Employee
     const formattedDuties = duties.map((duty) => {
@@ -3143,7 +3146,7 @@ module.exports.getDuties = async (req, res) => {
     // Step 5: Send response
     return res.status(200).json(formattedDuties);
   } catch (err) {
-    console.error("Error:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3193,14 +3196,14 @@ module.exports.getTasks = async (req, res) => {
     // Return response
     return res.status(200).json(formattedTasks);
   } catch (err) {
-    console.error("Error fetching tasks:", err);
+    
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 module.exports.getLeavesRequested = async (req, res) => {
   try {
-    console.log("Oragnisation id ", req.params.id);
+    
     const leaves = await Employee.findAll({
       where: {
         organisation_id: req.params.id,
@@ -3223,11 +3226,11 @@ module.exports.getLeavesRequested = async (req, res) => {
         },
       ],
     });
-    console.log(leaves);
+    
     const formattedTasks = await Promise.all(
       leaves.flatMap((leave, index) =>
         leave.leave_requests.map(async (leaveRequest) => {
-          console.log(leaveRequest);
+          
           const leave_type = await LeaveType.findOne({
             where: {
               id: leaveRequest.leave_type_id,
@@ -3263,7 +3266,7 @@ module.exports.getLeavesRequested = async (req, res) => {
 
     res.status(200).json(formattedTasks);
   } catch (err) {
-    console.error("Error fetching leave requests:", err);
+    
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -3318,7 +3321,7 @@ module.exports.updateLeaveRequest = async (req, res) => {
 
     return res.status(200).json({ message: "Request updated successfully" });
   } catch (err) {
-    console.error("Error updating leave request:", err);
+    
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -3377,7 +3380,7 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -3473,7 +3476,7 @@ module.exports.getPastStaffData = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    console.error("Error:", err);
+    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -3607,7 +3610,7 @@ module.exports.processAttendance = async (req, res) => {
     ];
     return res.status(200).json(response);
   } catch (err) {
-    console.error("Error processing attendance:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3770,7 +3773,7 @@ module.exports.processAbsentReport = async (req, res) => {
 
     return res.status(200).json(reportData);
   } catch (err) {
-    console.error("Error processing AbsentReport:", err);
+    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
