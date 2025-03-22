@@ -140,6 +140,7 @@ const LeaveApplication = () => {
         </p>
       </div>
 
+<form onSubmit={handleApply}>
       <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div className="flex flex-col">
@@ -149,13 +150,15 @@ const LeaveApplication = () => {
               value={formData.leaveType}
               onChange={handleChange}
               className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
+            required
             >
-              <option value="">Select Leave Type</option>
+              <option value="" disabled>Select Leave Type</option>
               {leaveTypes.map((holiday) => (
                 <option key={holiday.id} value={holiday.id}>
                   {holiday["Leave Type"]}
                 </option>
               ))}
+
             </select>
           </div>
 
@@ -165,6 +168,7 @@ const LeaveApplication = () => {
               type="text"
               disabled
               value={formData.leave_in_hand}
+              require
               className="mt-1 px-4 py-2 border border-gray-300 bg-gray-100 rounded-xl w-full"
             />
           </div>
@@ -178,6 +182,7 @@ const LeaveApplication = () => {
               name="fromDate"
               value={formData.fromDate}
               onChange={handleChange}
+              required
               className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
             />
           </div>
@@ -189,6 +194,7 @@ const LeaveApplication = () => {
               name="toDate"
               value={formData.toDate}
               onChange={handleChange}
+              required
               className="mt-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full"
             />
           </div>
@@ -206,11 +212,12 @@ const LeaveApplication = () => {
 
         <div className="flex gap-4">
           <button className="bg-yellow-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-yellow-700 transition duration-300"
-            onClick={handleApply}
-          >
+           type="submit"
+>
             Apply
           </button>
           <button
+          type="button"
             onClick={handleReset}
             className="bg-gray-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-700 transition duration-300"
           >
@@ -218,6 +225,7 @@ const LeaveApplication = () => {
           </button>
         </div>
       </div>
+      </form>
     </div>
   );
 };

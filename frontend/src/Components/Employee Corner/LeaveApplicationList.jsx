@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../axiosInstance";
-import {motion} from 'framer-motion';
+import { motion } from "framer-motion";
 import DataTable from "../DataTable";
+import { useNavigate } from "react-router-dom";
 
 const LeaveApplicationList = () => {
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const [applications, setApplications] = useState([]);
 
@@ -38,7 +40,7 @@ const LeaveApplicationList = () => {
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
       <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col gap-1">
+          <div className="flex justify-between items-center">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -46,9 +48,16 @@ const LeaveApplicationList = () => {
             >
               View your Leave Applications
             </motion.h1>
+            <button
+              className="px-4 py-2 bg-yellow-100 border border-yellow-200 text-[14px] font-semibold rounded-lg"
+              onClick={() => navigate(`/hrms/employee-corner/leave-apply`)}
+            >
+              Apply For Leave
+            </button>
           </div>
         </div>
       </div>
+
       <div className="p-16">
         <DataTable
           title="Your Leave Applications"
@@ -60,12 +69,6 @@ const LeaveApplicationList = () => {
           addMore={false}
         />
       </div>
-      <button
-        className="mr-16 mt-16 ml-16 px-3 py-3 rounded-xl bg-yellow-100 border text-[12px] font-semibold  border-yellow-200"
-        onClick={() => navigate(`/hrms/employee-corner/leave-apply`)}
-      >
-        Apply For Leave
-      </button>
     </div>
   );
 };
