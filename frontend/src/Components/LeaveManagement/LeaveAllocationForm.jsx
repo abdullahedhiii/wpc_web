@@ -1,42 +1,47 @@
 import { useEffect, useState } from "react";
 import NewForm from "../NewForm";
 import { useCompanyContext } from "../../contexts/CompanyContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import DataTable from "../DataTable";
 
-
 const LeaveAllocationForm = () => {
   const navigate = useNavigate();
-  const {fetchEmployeesLink,fetchTypes,fetchLeaveTypes,employeeTypes,employees,
-    fetchLeavesAllocated,leaveTypes,companyData,leavesAllocated} = useCompanyContext();
-  
+  const {
+    fetchEmployeesLink,
+    fetchTypes,
+    fetchLeaveTypes,
+    employeeTypes,
+    employees,
+    fetchLeavesAllocated,
+    leaveTypes,
+    companyData,
+    leavesAllocated
+  } = useCompanyContext();
+
   useEffect(() => {
-     fetchLeaveTypes();
-     fetchTypes();
-     fetchEmployeesLink();
-     fetchLeavesAllocated()
-  },[]);
+    fetchLeaveTypes();
+    fetchTypes();
+    fetchEmployeesLink();
+    fetchLeavesAllocated();
+  }, []);
 
-
-  const [empOptions,setEmpOptions] = useState([]);
+  const [empOptions, setEmpOptions] = useState([]);
+  const [selectedEmploymentType, setSelectedEmploymentType] = useState("");
   const [data, setData] = useState({
-      employment_type : '',
-      employee_code : '',
-      year: `01/${new Date().getFullYear()}`,
-      leave_type_id : '',
-      employment_type_id : null,
+    employment_type: "",
+    employee_code: "",
+    year: `01/${new Date().getFullYear()}`,
+    leave_type_id: "",
   });
-  const [tableData,setTableData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+
   const [fields, setFields] = useState([
     {
       name: "employment_type",
       label: "Employment Type",
       type: "select",
-      options: employeeTypes.map((type) => ({
-        label: type["Employment Type"],
-        value: type["Employment Type"],
-      })),
+      options: [],
       required: true,
     },
     {
@@ -57,11 +62,12 @@ const LeaveAllocationForm = () => {
       name: "leave_type_id",
       label: "Leave Type",
       type: "select",
-      options: [], // Initially empty, dynamically updated
+      options: [],
       required: true,
     },
   ]);
-  
+
+  // Set employment type options when `employeeTypes` is available
   useEffect(() => {
     if (employeeTypes.length > 0) {
       setFields((prevFields) =>
@@ -80,80 +86,107 @@ const LeaveAllocationForm = () => {
     }
   }, [employeeTypes]);
 
+  // Track employment_type separately for immediate updates
   useEffect(() => {
-    if (data.employment_type !== '') {
+    if (data.employment_type !== selectedEmploymentType) {
+      setSelectedEmploymentType(data.employment_type);
+    }
+  }, [data.employment_type]);
+
+  // Update employee options and leave type options when employment type changes
+  useEffect(() => {
+    if (!selectedEmploymentType || employeeTypes.length === 0 || employees.length === 0 || leaveTypes.length === 0) {
+      setEmpOptions([]);
+      setFields((prevFields) =>
+        prevFields.map((field) =>
+          field.name === "leave_type_id" ? { ...field, options: [] } : field
+        )
+      );
+      return;
+    }
+
+    setData((prev) => ({
+      ...prev,
+      leave_type_id: "",
+    }));
+
+    const employmentTypeObj = employeeTypes.find(
+      (ele) => ele["Employment Type"].toLowerCase() === selectedEmploymentType.toLowerCase()
+    );
+
+    if (employmentTypeObj) {
       setData((prev) => ({
         ...prev,
-        leave_type_id: '',
+        employment_type_id: employmentTypeObj.id,
       }));
-  
-      const employmentTypeObj = employeeTypes.find(
-        (ele) => ele["Employment Type"].toLowerCase() === data.employment_type.toLowerCase()
-      );
-  
-      if (employmentTypeObj) {
-        setData((prev) => ({
-          ...prev,
-          employment_type_id: employmentTypeObj.id,
-        }));
-      } else {
-        setEmpOptions([]);
-        setFields((prevFields) =>
-          prevFields.map((field) =>
-            field.name === "leave_type_id" ? { ...field, options: [] } : field
-          )
-        );
-      }
-    }
-  }, [data.employment_type, employeeTypes]);
-  
-  useEffect(() => {
-    if (data.employment_type_id) {
+
       const filteredEmployees = employees
-        .filter((ele) => ele.employment_type_id === data.employment_type_id)
+        .filter((ele) => ele.employment_type_id === employmentTypeObj.id)
         .map((ele) => ({
           label: ele.employee_code,
           value: ele.employee_code,
         }));
+
       setEmpOptions(filteredEmployees);
-  
+
       const filteredLeaveTypes = leaveTypes
-        .filter((leave) => leave.employment_type_id === data.employment_type_id)
+        .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
         .map((leave) => ({
           label: leave["Leave Type"],
           value: leave.id,
         }));
-  
+
       setFields((prevFields) =>
         prevFields.map((field) =>
-          field.name === "leave_type_id"
-            ? { ...field, options: filteredLeaveTypes }
-            : field
+          field.name === "leave_type_id" ? { ...field, options: filteredLeaveTypes } : field
+        )
+      );
+    } else {
+      setEmpOptions([]);
+      setFields((prevFields) =>
+        prevFields.map((field) =>
+          field.name === "leave_type_id" ? { ...field, options: [] } : field
         )
       );
     }
-  }, [data.employment_type_id, employees, leaveTypes]);
-  
-  
+  }, [selectedEmploymentType, employeeTypes, employees, leaveTypes]);
 
-  const columns = ['Select','Employment Type','Employee Code','Leave Name','Maximum No.','Leave in hand','Effective Year'];
-  
+  const columns = [
+    "Select",
+    "Employment Type",
+    "Employee Code",
+    "Leave Name",
+    "Maximum No.",
+    "Leave in hand",
+    "Effective Year",
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const leaveT = leaveTypes.find((ele) => ele.id === data.leave_type_id);
-    if(leavesAllocated.find((ele) => ele["Employee Code"] === data.employee_code && ele["Leave Type"] === leaveT['Leave Type'] && data.year === ele['Effective Year'])){
-      alert('Leave type has been already allocated to this employee, try updating!');
+
+    if (
+      leavesAllocated.find(
+        (ele) =>
+          ele["Employee Code"] === data.employee_code &&
+          ele["Leave Type"] === leaveT["Leave Type"] &&
+          data.year === ele["Effective Year"]
+      )
+    ) {
+      alert("Leave type has been already allocated to this employee, try updating!");
       return;
     }
-    try{
-        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/allocateLeave/${companyData[0].id}`,data);
-        setTableData([response.data]);    
-    }
-    catch(err){
-    }
-};
 
+    try {
+      const response = await axiosInstance.post(
+        `${import.meta.env.VITE_API_URL}/api/allocateLeave/${companyData[0].id}`,
+        data
+      );
+      setTableData([response.data]);
+    } catch (err) {
+      console.error("Error allocating leave:", err);
+    }
+  };
 
   return (
     <div className="flex grid grid-cols-1 space-y-8 m-8 pt-12">
@@ -164,10 +197,9 @@ const LeaveAllocationForm = () => {
         data={data}
         setData={setData}
         onSubmit={handleSubmit}
-        isLeaveFrom = {true}
-
+        isLeaveFrom={true}
       />
-       <DataTable
+      <DataTable
         title="Leaves Allocated"
         fields={columns}
         data={tableData}
