@@ -26,79 +26,98 @@ const LeaveAllocationForm = () => {
       leave_type_id : '',
   });
   const [tableData,setTableData] = useState([]);
-
-  useEffect(() => {
-  
-    if (data.employment_type !== '') {
-      setData((prev) => ({
-        ...prev,
-        leave_type_id : '',
-      }))
-      const employmentTypeObj = employeeTypes.find(
-        (ele) => ele["Employment Type"].toLowerCase() === data.employment_type.toLowerCase()
-      );
-      setData((prev) => ({
-        ...prev,
-        employment_type_id :employmentTypeObj.id
-      }));
-      if (employmentTypeObj) {
-        const filteredOpt = employees
-          .filter((ele) => ele.employment_type_id === employmentTypeObj.id) // Use .filter() instead of .find()
-          .map((ele) => ({
-            label: ele.employee_code,
-            value: ele.employee_code,
-          }));
-  
-        setEmpOptions(filteredOpt);
-      } else {
-        setEmpOptions([]); 
-      }
-    }
-  }, [data.employment_type, employeeTypes, employees]);
-  
-
-  const columns = ['Select','Employment Type','Employee Code','Leave Name','Maximum No.','Leave in hand','Effective Year'];
-  const fields = [
+  const [fields, setFields] = useState([
     {
       name: "employment_type",
       label: "Employment Type",
-      type : 'select',
-      options : employeeTypes.map((type) => ({
-        label : type['Employment Type'],
-        value : type["Employment Type"]
+      type: "select",
+      options: employeeTypes.map((type) => ({
+        label: type["Employment Type"],
+        value: type["Employment Type"],
       })),
-      required : true
-
+      required: true,
     },
     {
       name: "employee_code",
       label: "Employee Code",
       type: "select",
-      options : empOptions,
-      required : true
-
+      options: empOptions,
+      required: true,
     },
     {
       name: "year",
       label: "Choose Year",
       type: "text",
-      readOnly :true,
-      required : true
-
+      readOnly: true,
+      required: true,
     },
     {
       name: "leave_type_id",
       label: "Leave Type",
       type: "select",
-      options : leaveTypes.map((leave) => ({
-         label : leave['Leave Type'],
-         value : leave.id
-      })),
-      required : true
-
+      options: [], // Initially empty, dynamically updated
+      required: true,
     },
-    
-  ];
+  ]);
+  
+  useEffect(() => {
+    if (data.employment_type !== '') {
+      // Reset leave_type_id when employment_type changes
+      setData((prev) => ({
+        ...prev,
+        leave_type_id: '',
+      }));
+  
+      const employmentTypeObj = employeeTypes.find(
+        (ele) => ele["Employment Type"].toLowerCase() === data.employment_type.toLowerCase()
+      );
+  
+      if (employmentTypeObj) {
+        setData((prev) => ({
+          ...prev,
+          employment_type_id: employmentTypeObj.id,
+        }));
+  
+        // Filter employees based on employment type
+        const filteredEmployees = employees
+          .filter((ele) => ele.employment_type_id === employmentTypeObj.id)
+          .map((ele) => ({
+            label: ele.employee_code,
+            value: ele.employee_code,
+          }));
+        setEmpOptions(filteredEmployees);
+  
+        // Filter leave types based on employment type
+        const filteredLeaveTypes = leaveTypes
+          .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
+          .map((leave) => ({
+            label: leave["Leave Type"],
+            value: leave.id,
+          }));
+  
+        // Update fields dynamically with the new leave type options
+        setFields((prevFields) =>
+          prevFields.map((field) =>
+            field.name === "leave_type_id"
+              ? { ...field, options: filteredLeaveTypes }
+              : field
+          )
+        );
+      } else {
+        setEmpOptions([]);
+        setFields((prevFields) =>
+          prevFields.map((field) =>
+            field.name === "leave_type_id" ? { ...field, options: [] } : field
+          )
+        );
+      }
+    }
+  }, [data.employment_type, employeeTypes, employees, leaveTypes]);
+  
+  
+
+  const columns = ['Select','Employment Type','Employee Code','Leave Name','Maximum No.','Leave in hand','Effective Year'];
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
