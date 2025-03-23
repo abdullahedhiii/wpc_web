@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
           allowNull:false,
       },
       min_hours:{
-        type : DataTypes.INTEGER,
+        type : DataTypes.FLOAT,
         allowNull:false,
       },
       rate:{

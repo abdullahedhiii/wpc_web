@@ -1,4 +1,4 @@
-const {Employee, PersonalDetail, ServiceDetail, ContactInfo, NationalDetail, PassportDetail, PayDetail, UserRole, JobDetail, Department, Designation, VisaDetail, WorkUpdate, Attendance, LeaveAllocation, LeaveRequest, COCOtherDetail, EsusDetail, DBSDetail, LeaveRule, User, EducationDetail, KeyResponsibility, TrainingDetail, KinDetail, Certification, PayStructure, EmployeeOtherDocument, EmployeeOtherDetail, LeaveType}= require("../config/sequelize");
+const {Employee, PersonalDetail, ServiceDetail, ContactInfo, NationalDetail, PassportDetail, PayDetail, UserRole, JobDetail, Department, Designation, VisaDetail, WorkUpdate, Attendance, LeaveAllocation, LeaveRequest, COCOtherDetail, EsusDetail, DBSDetail, LeaveRule, User, EducationDetail, KeyResponsibility, TrainingDetail, KinDetail, Certification, PayStructure, EmployeeOtherDocument, EmployeeOtherDetail, LeaveType, Holiday}= require("../config/sequelize");
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const crypto = require('crypto');
 
@@ -446,43 +446,54 @@ module.exports.applyLeave = async (req, res) => {
   try {
     const { employeeCode, leaveType, fromDate, toDate } = req.body;
     
+    // const org = await Employee.findOne({
+    //   where: { employee_code: employeeCode }
+    // });
+
+    // if (!org) {
+    //   return res.status(404).json({ message: "Employee not found" });
+    // }
+
+    // const org_id = org.organisation_id;
+    
+    // const company_holidays = await Holiday.findAll({
+    //   where: { organisation_id: org_id }
+    // });
+
+    // for (let holiday of company_holidays) {
+    //   if (
+    //     (new Date(fromDate) >= new Date(holiday.startDate) && new Date(fromDate) <= new Date(holiday.endDate)) ||
+    //     (new Date(toDate) >= new Date(holiday.startDate) && new Date(toDate) <= new Date(holiday.endDate)) ||
+    //     (new Date(fromDate) <= new Date(holiday.startDate) && new Date(toDate) >= new Date(holiday.endDate))
+    //   ) {
+    //     return res.status(400).json({ message: `${holiday.holiday_type} occurs during the requested leave period` });
+    //   }
+    // }
+
     const check_if_already_applied = await LeaveRequest.findOne({
       where: {
         employeeCode,
         leave_type_id: leaveType,
         [Op.or]: [
-          {
-            fromDate: {
-              [Op.between]: [req.body.fromDate, req.body.toDate],
-            },
-          },
-          {
-            toDate: {
-              [Op.between]: [req.body.fromDate, req.body.toDate],
-            },
-          },
+          { fromDate: { [Op.between]: [fromDate, toDate] } },
+          { toDate: { [Op.between]: [fromDate, toDate] } },
           {
             [Op.and]: [
-              {
-                fromDate: { [Op.lte]: req.body.fromDate },
-              },
-              {
-                toDate: { [Op.gte]: req.body.toDate },
-              },
+              { fromDate: { [Op.lte]: fromDate } },
+              { toDate: { [Op.gte]: toDate } }
             ],
           },
         ],
       },
     });
 
-    if(check_if_already_applied){
-        return res.status(200).json({message : 'You have already applied for the same leave type,during the same period'});
-
+    if (check_if_already_applied) {
+      return res.status(400).json({ message: "You have already applied for the same leave type during the same period" });
     }
-    
+
     const serviceDetail = await ServiceDetail.findOne({
       where: { employee_code: employeeCode },
-      attributes: ['employment_type_id']
+      attributes: ["employment_type_id"]
     });
 
     if (!serviceDetail) {
@@ -491,11 +502,14 @@ module.exports.applyLeave = async (req, res) => {
 
     const leaveRule = await LeaveRule.findOne({
       where: {
-        leave_type_id : leaveType,
+        leave_type_id: leaveType,
         employment_type_id: serviceDetail.employment_type_id,
       }
     });
-   
+
+    if (!leaveRule) {
+      return res.status(400).json({ message: "Leave rule not found for this leave type and employment type" });
+    }
 
     const requestedFromDate = new Date(fromDate);
     const requestedToDate = new Date(toDate);
@@ -503,19 +517,18 @@ module.exports.applyLeave = async (req, res) => {
     const ruleToDate = new Date(leaveRule.to);
 
     if (requestedFromDate < ruleFromDate || requestedToDate > ruleToDate) {
-      return res.status(200).json({ message: "Cannot apply for this leave as it is not effective during the requested period." });
+      return res.status(400).json({ message: "Cannot apply for this leave as it is not effective during the requested period." });
     }
- 
+
     await LeaveRequest.create({
       ...req.body,
-      leave_type_id : leaveType,
+      leave_type_id: leaveType,
       applicationDate: new Date()
     });
 
     return res.status(200).json({ message: "Leave request submitted successfully" });
 
   } catch (err) {
-    
     return res.status(500).json({ error: "Server error", details: err.message });
   }
 };

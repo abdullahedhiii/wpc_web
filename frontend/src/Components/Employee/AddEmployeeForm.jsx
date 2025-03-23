@@ -669,14 +669,14 @@ const EmployeeForm = () => {
           label: "Department",
           value: "service_details.department",
           type: "select",
-          required: false,
+          required: true,
           options: departmentOptions,
         },
         {
           label: "Designation",
           value: "service_details.designation",
           type: "select",
-          required: false,
+          required: true,
           options: filteredDesignations,
         },
         {
@@ -689,7 +689,7 @@ const EmployeeForm = () => {
           label: "Employment Type",
           value: "service_details.type",
           type: "select",
-          required: false,
+          required: true,
           options: typeOptions,
         },
         {
@@ -1297,9 +1297,9 @@ const EmployeeForm = () => {
         alert('Please enter a valid phone number')
         return
       }
-      const {department,designation,start,end_if} = formData.service_details;
-      if(department !== "" && designation === ""){
-        alert('Since a department is selected, designation must also be selected')
+      const {department,designation,start,end_if,type} = formData.service_details;
+      if(department === "" || designation === "" || type === ""){
+        alert('Employee Department,Designation, and Employment Type are required')
         return false
       }
       const startDate = new Date(start);
