@@ -183,7 +183,7 @@ const LeaveAllocationForm = () => {
     const leaveT = leaveTypes.find((ele) => ele.id === data.leave_type_id);
 
     if (
-      leavesAllocated.find(
+      leaveT && leavesAllocated.find(
         (ele) =>
           ele["Employee Code"] === data.employee_code &&
           ele["Leave Type"] === leaveT["Leave Type"] &&
