@@ -124,7 +124,7 @@ const LeaveApplication = () => {
         <h1 className="text-3xl font-semibold text-gray-800">Leave Application</h1>
         <div className="flex items-center text-green-600 font-medium cursor-pointer">
           <Calendar size={20} />
-          <span className="ml-2">Holiday Calendar</span>
+         <a target="_blank" href="/hrms/employee-corner/holiday"> <span className="ml-2">Holiday Calendar</span> </a>
         </div>
       </div>
 

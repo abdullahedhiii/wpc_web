@@ -96,7 +96,6 @@ const LeaveAllocationForm = () => {
   }, [data.employment_type]);
 
   useEffect(() => {
-    console.log("Selected Employment Type:", selectedEmploymentType);
   
     if (!selectedEmploymentType || employeeTypes.length === 0 || employees.length === 0 || leaveTypes.length === 0) {
       setFields((prevFields) =>
@@ -109,7 +108,6 @@ const LeaveAllocationForm = () => {
       return;
     }
   
-    // Reset `leave_type_id` when employment type changes
     setData((prev) => ({
       ...prev,
       leave_type_id: "",
@@ -119,7 +117,6 @@ const LeaveAllocationForm = () => {
       (ele) => ele["Employment Type"].toLowerCase() === selectedEmploymentType.toLowerCase()
     );
   
-    console.log("Matching Employment Type Object:", employmentTypeObj);
   
     if (employmentTypeObj) {
       setData((prev) => ({
@@ -134,7 +131,6 @@ const LeaveAllocationForm = () => {
           value: ele.employee_code,
         }));
   
-      console.log("Filtered Employees:", filteredEmployees);
   
       setFields((prevFields) =>
         prevFields.map((field) =>
@@ -142,7 +138,6 @@ const LeaveAllocationForm = () => {
         )
       );
   
-      // Ensure `leaveRules` is defined before filtering
       if (typeof leaveRules !== "undefined") {
         const filteredLeaveTypes = leaveRules
           .filter((leave) => leave["Employee Type"] === selectedEmploymentType)
@@ -152,7 +147,7 @@ const LeaveAllocationForm = () => {
               ? { label: leave["Leave Type"], value: matchedLeaveType.id }
               : null;
           })
-          .filter(Boolean); // Remove `null` values if `leaveTypes.find()` didn't match
+          .filter(Boolean); 
   
         console.log("Filtered Leave Types:", filteredLeaveTypes);
   
@@ -171,7 +166,7 @@ const LeaveAllocationForm = () => {
         )
       );
     }
-  }, [selectedEmploymentType, employeeTypes, employees, leaveTypes, leaveRules]); // Added `leaveRules` dependency
+  }, [selectedEmploymentType, employeeTypes, employees, leaveTypes, leaveRules]); 
   
   const columns = [
     "Select",
@@ -205,6 +200,7 @@ const LeaveAllocationForm = () => {
         data
       );
       setTableData([response.data]);
+      alert('Leave Allocated, view below')
     } catch (err) {
       console.error("Error allocating leave:", err);
     }

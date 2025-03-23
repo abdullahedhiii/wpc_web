@@ -162,12 +162,12 @@ const Login = () => {
                     />
                     <span className="ml-2 text-sm text-gray-600">Remember me</span>
                   </label>
-                  <a
+                  {/* <a
                     href="#"
                     className="text-sm text-yellow-600 hover:text-yellow-700 hover:underline"
                   >
                     Forgot password?
-                  </a>
+                  </a> */}
                 </div>
 
                 <div className="flex justify-center">
