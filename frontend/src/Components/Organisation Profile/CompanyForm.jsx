@@ -888,6 +888,7 @@ const CompanyForm = () => {
                         }
                         className="w-full px-3 py-2 border rounded-md bg-white focus:border-tt"
                       >
+                        <option value = "" disabled>View options</option>
                         <option value="Open">Open</option>
                         <option value="Closed">Closed</option>
                       </select>
@@ -907,6 +908,8 @@ const CompanyForm = () => {
                         } w-full px-3 py-2 border rounded-md focus:border-tt`}
                         disabled={row.status === "Closed"}
                       >
+                                                <option value = "" disabled>View options</option>
+
                         <option value="1:00">1:00</option>
                         <option value="2:00">2:00</option>
                         <option value="3:00">3:00</option>
@@ -948,6 +951,8 @@ const CompanyForm = () => {
                         } w-full px-3 py-2 border rounded-md focus:border-tt`}
                         disabled={row.status === "Closed"}
                       >
+                                              <option value = "" disabled>View options</option>
+
                         <option value="1:00">1:00</option>
                         <option value="2:00">2:00</option>
                         <option value="3:00">3:00</option>
@@ -994,7 +999,7 @@ const CompanyForm = () => {
                           }
                           className="w-full px-2 py-1 border rounded-md text-[14px] focus:border-tt focus:border-b-2"
                         >
-                          <option value="">Select Document Type</option>
+                          <option value="" disabled>Select Document Type</option>
                           {options.map((option, idx) => (
                             <option key={idx} value={option}>
                               {option}
@@ -1111,6 +1116,8 @@ const CompanyForm = () => {
                           className="w-full px-3 py-2 border rounded-md  focus:border-tt focus:border-b-2 bg-white"
                           required={field.required}
                         >
+                                                  <option value = "" disabled>View options</option>
+
                           {field.options.map((option, idx) => (
                             <option key={idx} value={option}>
                               {option}
