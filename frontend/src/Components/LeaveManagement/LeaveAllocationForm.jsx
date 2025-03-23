@@ -10,13 +10,15 @@ const LeaveAllocationForm = () => {
   const {
     fetchEmployeesLink,
     fetchTypes,
+    leaveRules,
     fetchLeaveTypes,
     employeeTypes,
     employees,
     fetchLeavesAllocated,
     leaveTypes,
     companyData,
-    leavesAllocated
+    leavesAllocated,
+    fetchLeaveRules
   } = useCompanyContext();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ const LeaveAllocationForm = () => {
     fetchTypes();
     fetchEmployeesLink();
     fetchLeavesAllocated();
+    fetchLeaveRules()
   }, []);
 
   const [empOptions, setEmpOptions] = useState([]);
@@ -93,69 +96,83 @@ const LeaveAllocationForm = () => {
   }, [data.employment_type]);
 
   useEffect(() => {
-    console.log(selectedEmploymentType);
+    console.log("Selected Employment Type:", selectedEmploymentType);
+  
     if (!selectedEmploymentType || employeeTypes.length === 0 || employees.length === 0 || leaveTypes.length === 0) {
-      setEmpOptions([]);
       setFields((prevFields) =>
         prevFields.map((field) =>
-          field.name === "leave_type_id" ? { ...field, options: [] } : field
+          field.name === "employee_code" || field.name === "leave_type_id"
+            ? { ...field, options: [] }
+            : field
         )
       );
       return;
     }
-
+  
+    // Reset `leave_type_id` when employment type changes
     setData((prev) => ({
       ...prev,
       leave_type_id: "",
     }));
-    
+  
     const employmentTypeObj = employeeTypes.find(
       (ele) => ele["Employment Type"].toLowerCase() === selectedEmploymentType.toLowerCase()
     );
-console.log(employmentTypeObj);
+  
+    console.log("Matching Employment Type Object:", employmentTypeObj);
+  
     if (employmentTypeObj) {
       setData((prev) => ({
         ...prev,
         employment_type_id: employmentTypeObj.id,
       }));
-
+  
       const filteredEmployees = employees
         .filter((ele) => ele.employment_type_id === employmentTypeObj.id)
         .map((ele) => ({
           label: ele.employee_code,
           value: ele.employee_code,
         }));
-
-      // setEmpOptions(filteredEmployees);
+  
+      console.log("Filtered Employees:", filteredEmployees);
+  
       setFields((prevFields) =>
         prevFields.map((field) =>
           field.name === "employee_code" ? { ...field, options: filteredEmployees } : field
         )
       );
-      console.log(filteredEmployees);
-      console.log(leaveTypes)
-      const filteredLeaveTypes = leaveTypes
-        .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
-        .map((leave) => ({
-          label: leave["Leave Type"],
-          value: leave.id,
-        }));
-console.log(filteredLeaveTypes)
-      setFields((prevFields) =>
-        prevFields.map((field) =>
-          field.name === "leave_type_id" ? { ...field, options: filteredLeaveTypes } : field
-        )
-      );
+  
+      // Ensure `leaveRules` is defined before filtering
+      if (typeof leaveRules !== "undefined") {
+        const filteredLeaveTypes = leaveRules
+          .filter((leave) => leave["Employment Type"] === selectedEmploymentType)
+          .map((leave) => {
+            const matchedLeaveType = leaveTypes.find((ele) => ele["Leave Type"] === leave["Leave Type"]);
+            return matchedLeaveType
+              ? { label: leave["Leave Type"], value: matchedLeaveType.id }
+              : null;
+          })
+          .filter(Boolean); // Remove `null` values if `leaveTypes.find()` didn't match
+  
+        console.log("Filtered Leave Types:", filteredLeaveTypes);
+  
+        setFields((prevFields) =>
+          prevFields.map((field) =>
+            field.name === "leave_type_id" ? { ...field, options: filteredLeaveTypes } : field
+          )
+        );
+      }
     } else {
-      setEmpOptions([]);
       setFields((prevFields) =>
         prevFields.map((field) =>
-          field.name === "leave_type_id" ? { ...field, options: [] } : field
+          field.name === "employee_code" || field.name === "leave_type_id"
+            ? { ...field, options: [] }
+            : field
         )
       );
     }
-  }, [selectedEmploymentType, employeeTypes, employees, leaveTypes]);
-
+  }, [selectedEmploymentType, employeeTypes, employees, leaveTypes, leaveRules]); // Added `leaveRules` dependency
+  
   const columns = [
     "Select",
     "Employment Type",
