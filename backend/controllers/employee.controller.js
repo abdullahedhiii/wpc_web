@@ -352,6 +352,7 @@ module.exports.getAttendance = async(req,res) =>{
 
 module.exports.getInHand = async (req, res) => {
   const [code, id] = req.params.id.split('.');
+
   try {
     const serviceDetail = await ServiceDetail.findOne({
       where: { employee_code: code },
@@ -361,13 +362,14 @@ module.exports.getInHand = async (req, res) => {
     if (!serviceDetail) {
       return res.status(404).json({ message: "Service detail not found" });
     }
+
     const leaveAllocation = await LeaveAllocation.findOne({
       where: {
         employee_code: code,
         leave_type_id: id,
       }
     });
-    
+
     const leaveRule = await LeaveRule.findOne({
       where: {
         leave_type_id: id,
@@ -399,7 +401,8 @@ module.exports.getInHand = async (req, res) => {
     if (!leaveAllocation) {
       return res.status(200).json(0);
     } else {
-      return res.status(200).json(Math.max(leaveAllocation.leave_in_hand - (if_requested?.total_days || 0), 0));
+      const totalDaysRequested = if_requested[0]?.total_days || 0; // Correct way to extract sum
+      return res.status(200).json(Math.max(leaveAllocation.leave_in_hand - totalDaysRequested, 0));
     }
   } catch (err) {
     return res.status(500).json({ error: "Server error", details: err.message });

@@ -58,12 +58,14 @@ const LeaveApplication = () => {
       const from = new Date(formData.fromDate);
       const to = new Date(formData.toDate);
 
-      if (to >= from) {
+      if (to > from) {
         const timeDiff = to.getTime() - from.getTime();
         const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1; // Including start day
         setFormData((prev) => ({ ...prev, days: dayDiff }));
       } else {
         setFormData((prev) => ({ ...prev, days: 0 }));
+        alert('Please enter valid dates');
+        return;
       }
     }
   }, [formData.fromDate, formData.toDate]);
@@ -86,6 +88,7 @@ const LeaveApplication = () => {
     });
   };
   const handleApply = async () => {
+    e.preventDefault()
     if(formData.days > formData.leave_in_hand){
       window.alert('You dont have enough leaves left for this holiday type');
       return;
