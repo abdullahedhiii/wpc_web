@@ -140,7 +140,7 @@ const DataTable = ({
         //         request.id === request_id ? { ...request, status: status } : request
         //     )
         // );
-        alert(`Leave Request updated to ${status}`)
+        alert(`Leave Request status set to ${status}`)
     } catch (err) {
     }
 };
@@ -293,7 +293,7 @@ return (
                                 }}
                                 
                               >
-                                <option disabled value = "" >Choose </option>
+                                <option value = "" >View Options </option>
                                 {row["Action"].map((option, optionIndex) => (
                                   <option key={optionIndex} value={option.route}>
                                     {option.label}

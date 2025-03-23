@@ -1836,26 +1836,35 @@ module.exports.getEmployeePage = async (req, res) => {
             "Nationality",
             "nationality_no",
           ],
+          required : false,
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
           attributes: ["designation"],
+          required : false,
+
         },
         {
           model: PassportDetail,
           as: "passportdetail",
           attributes: ["passport_no"],
+          required : false,
+
         },
         {
           model: VisaDetail,
           as: "visadetail",
           attributes: ["expiry_date", "current"],
+          required : false,
+
         },
         {
           model: ContactInfo,
           as: "contact",
           attributes: ["line1", "line2", "line3", "city", "country"],
+          required : false,
+
         },
       ],
     });
@@ -1865,18 +1874,18 @@ module.exports.getEmployeePage = async (req, res) => {
       return {
         "Employee ID": employee.employee_code,
         "Employee Name": [
-          employee.personaldetail.fname,
-          employee.personaldetail.mname,
-          employee.personaldetail.lname,
+          employee.personaldetail?.fname,
+          employee.personaldetail?.mname,
+          employee.personaldetail?.lname,
         ]
           .filter(Boolean)
           .join(" "),
-        DOB: employee.personaldetail.dob,
-        Mobile: employee.personaldetail.contact_1,
-        Email: employee.personaldetail.email,
+        DOB: employee.personaldetail?.dob,
+        Mobile: employee.personaldetail?.contact_1,
+        Email: employee.personaldetail?.email,
         Designation: employee.servicedetail?.designation,
         Nationality: employee.personaldetail?.Nationality,
-        "NI Number": employee.personaldetail.nationality_no,
+        "NI Number": employee.personaldetail?.nationality_no,
         "Visa Expired": employee.visadetail?.current
           ? employee.visadetail?.expiry_date
           : "expired",
