@@ -393,11 +393,11 @@ module.exports.getInHand = async (req, res) => {
       where: {
         employeeCode: code,
         leave_type_id: id,
+        status: { [Op.in]: ["Pending", "Approved"] } // ✅ Fetch requests with either "Pending" or "Approved" status
       },
       attributes: [[Sequelize.fn("SUM", Sequelize.col("days")), "total_days"]],
       raw: true, 
     });
-
     if (!leaveAllocation) {
       return res.status(200).json(0);
     } else {

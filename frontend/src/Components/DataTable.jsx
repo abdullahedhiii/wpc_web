@@ -291,8 +291,9 @@ return (
                                   else {
                                     navigate(`/hrms/${e.target.value}`)}
                                 }}
+                                
                               >
-                                <option >Choose </option>
+                                <option disabled value = "" >Choose </option>
                                 {row["Action"].map((option, optionIndex) => (
                                   <option key={optionIndex} value={option.route}>
                                     {option.label}
