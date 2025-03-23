@@ -397,8 +397,8 @@ const EmployeeForm = () => {
       start: "",
       end_if: "",
       location: "",
-      reportingauth: "",
-      leaveauth: "",
+      reportingauth: "h",
+      leaveauth: "h",
       profile_pic: null,
     },
     education_details: [
@@ -722,24 +722,24 @@ const EmployeeForm = () => {
           type: "file",
           required: false,
         },
-        {
-          label: "Reporting Authority",
-          value: "service_details.reportingauth",
-          type: "select",
-          required: false,
-          options: [
-            authorizingDetails[0]["Authorizing_fname"] +
-              " " +
-              authorizingDetails[0]["Authorizing_lname"],
-          ],
-        },
-        {
-          label: "Leave Sanction Authority",
-          value: "service_details.leaveauth",
-          type: "select",
-          required: false,
-          options: [],
-        },
+        // {
+        //   label: "Reporting Authority",
+        //   value: "service_details.reportingauth",
+        //   type: "select",
+        //   required: false,
+        //   options: [
+        //     authorizingDetails[0]["Authorizing_fname"] +
+        //       " " +
+        //       authorizingDetails[0]["Authorizing_lname"],
+        //   ],
+        // },
+        // {
+        //   label: "Leave Sanction Authority",
+        //   value: "service_details.leaveauth",
+        //   type: "select",
+        //   required: false,
+        //   options: [],
+        // },
       ],
     },
     {
@@ -1297,23 +1297,40 @@ const EmployeeForm = () => {
         alert('Please enter a valid phone number')
         return
       }
-      const {department,designation,start,end_if,type} = formData.service_details;
+      const {department,designation,start,end_if,type,joining,confirmation} = formData.service_details;
       if(department === "" || designation === "" || type === ""){
         alert('Employee Department,Designation, and Employment Type are required')
         return false
       }
-      const startDate = new Date(start);
-      const endDate = new Date(end_if);
-      if(isNaN(startDate) && !isNaN(endDate)){
-            alert('You must provide start date of the contract');
-            return false
+      const dateJoining = joining ? new Date(joining) : null;
+      const confirmDate = joining ? new Date(joining) : null;
+      const startDate = start ? new Date(start) : null;
+      const endDate = end_if ? new Date(end_if) : null;
+      
+      if (startDate && confirmDate) {
+        if (startDate < confirmDate) {
+          alert("Please enter a valid contract start date and confirmation date");
+          return;
+        }
       }
-      else if(!isNaN(startDate) && !isNaN(endDate)){
-          if(endDate < startDate ){
-            alert('Please enter valid contract dates');
-            return false
-          }
+      
+      if (confirmDate && dateJoining) {
+        if (confirmDate < dateJoining) {
+          alert("Please enter a valid confirmation date and joining date");
+          return;
+        }
       }
+      
+      if (!startDate && endDate) {
+        alert("You must provide the start date of the contract");
+        return false;
+      } else if (startDate && endDate) {
+        if (endDate < startDate) {
+          alert("Please enter valid contract dates");
+          return false;
+        }
+      }
+      
     }
     else if(currentStep === 3){
       for (const detail of formData.training_details) {
@@ -1653,9 +1670,9 @@ const EmployeeForm = () => {
   return (
     <div className="p-12">
       <p className="text-[12px] text-gray-600">
-        Home
+       <a href="/hrms/employeeDashboard" > Home</a>
         <span className="mx-2">/</span>
-        Employee
+      <a href="/hrms/employees">Employee</a>  
         <span className="mx-2 text-tt">/ Add New Employee</span>
       </p>
       <div
