@@ -133,6 +133,7 @@ console.log(employmentTypeObj);
         )
       );
       console.log(filteredEmployees);
+      console.log(leaveTypes)
       const filteredLeaveTypes = leaveTypes
         .filter((leave) => leave.employment_type_id === employmentTypeObj.id)
         .map((leave) => ({
