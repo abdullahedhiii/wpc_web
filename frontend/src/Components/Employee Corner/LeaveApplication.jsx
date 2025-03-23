@@ -3,11 +3,12 @@ import { Calendar, Home, ChevronRight } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
+import { useNavigate } from "react-router-dom";
 
 const LeaveApplication = () => {
   const { user } = useSelector((state) => state.user);
   const { leaveTypes,fetchLeaveTypes } = useCompanyContext();
-
+  const {navigate} = useNavigate();
   useEffect(() => {
     fetchLeaveTypes();
   }, []);
@@ -102,8 +103,10 @@ const LeaveApplication = () => {
         return;
        }
        window.alert('Leave application submittedd');
+       navigate('/hrms/employee-corner/leave-applications');
        handleReset()
-    }
+
+      }
     catch(err){
         window.alert(err.response.data.message);
     }
