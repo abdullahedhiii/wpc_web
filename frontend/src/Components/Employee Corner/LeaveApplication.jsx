@@ -87,7 +87,7 @@ const LeaveApplication = () => {
       days: 0,
     });
   };
-  const handleApply = async () => {
+  const handleApply = async (e) => {
     e.preventDefault()
     if(formData.days > formData.leave_in_hand){
       window.alert('You dont have enough leaves left for this holiday type');
