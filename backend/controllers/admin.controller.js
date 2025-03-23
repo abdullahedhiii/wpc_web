@@ -2564,11 +2564,10 @@ module.exports.allocateLeave = async (req, res) => {
       where: { id: req.body.leave_type_id },
     });
     const leave_rule = await LeaveRule.findOne({
-      where: { leave_type_id: req.body.leave_type_id },
+      where: { employment_type_id : req.body.employment_type_id,leave_type_id: req.body.leave_type_id },
     });
     const year = b ? b : req.body.year;
 
-    // Check if leave allocation already exists
     const existingLeave = await LeaveAllocation.findOne({
       where: {
         employee_code: req.body.employee_code,
@@ -2578,13 +2577,11 @@ module.exports.allocateLeave = async (req, res) => {
     });
 
     if (existingLeave) {
-      // Update existing leave allocation
       await LeaveAllocation.update(
         { leave_in_hand: leave_rule.leave_in_hand },
         { where: { id: existingLeave.id } }
       );
     } else {
-      // Create a new leave allocation if it doesn't exist
       await LeaveAllocation.create({
         employee_code: req.body.employee_code,
         employment_type_id: req.body.employment_type_id,
