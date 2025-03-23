@@ -145,7 +145,7 @@ const LeaveAllocationForm = () => {
       // Ensure `leaveRules` is defined before filtering
       if (typeof leaveRules !== "undefined") {
         const filteredLeaveTypes = leaveRules
-          .filter((leave) => leave["Employment Type"] === selectedEmploymentType)
+          .filter((leave) => leave["Employee Type"] === selectedEmploymentType)
           .map((leave) => {
             const matchedLeaveType = leaveTypes.find((ele) => ele["Leave Type"] === leave["Leave Type"]);
             return matchedLeaveType
