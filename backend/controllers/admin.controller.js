@@ -1724,12 +1724,14 @@ module.exports.getAllEmployees = async (req, res) => {
           model: PersonalDetail,
           as: "personaldetail",
           attributes: ["fname", "mname", "lname"],
+          required: false,
         },
         {
           model: JobDetail,
           as: "jobdetails",
           attributes: ["title"],
-        },
+        
+          required: false,},
         {
           model: ServiceDetail,
           as: "servicedetail",
@@ -1747,6 +1749,7 @@ module.exports.getAllEmployees = async (req, res) => {
               { end_if: { [Op.gte]: today } }, // Employees with a future end date
             ],
           },
+          required: false,
         },
         {
           model: Organisation,
@@ -1783,9 +1786,9 @@ module.exports.getAllEmployees = async (req, res) => {
           .filter(Boolean)
           .join(", "), // Filter out null values
         "Employee Name": [
-          employee.personaldetail.fname,
-          employee.personaldetail.mname,
-          employee.personaldetail.lname,
+          employee.personaldetail?.fname,
+          employee.personaldetail?.mname,
+          employee.personaldetail?.lname,
         ]
           .filter(Boolean)
           .join(" "),

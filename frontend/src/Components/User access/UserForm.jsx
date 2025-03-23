@@ -10,6 +10,7 @@ const UserForm = () => {
   const {isSideBarOpen} = useSidebarContext();
   const {id} = useParams();
   const {employees,fetchEmployeesLink,companyData} = useCompanyContext();
+  
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData,setFormData] = useState({
     employee_code: '',
@@ -22,6 +23,9 @@ const UserForm = () => {
     fetchEmployeesLink();
   },[]);
   
+  useEffect(() => {
+
+  })
   const fetchUser = async(req,res) => {
       try{
         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserData/${id}`);
@@ -56,7 +60,13 @@ const UserForm = () => {
   };
   
   const handleSubmit = async(e) =>{
-     try{
+    e.preventDefault()
+    if (formData.password.length < 8){
+      alert('The password should be of length 8 or more');
+      return;
+    }
+    try{
+
         const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/createUser/${companyData[0].id}`,formData);
         navigate('/hrms/role/vw-users');
         
