@@ -41,7 +41,6 @@ const ChangeOfCircumstances = () => {
         "ESUS Details",
         "DBS Details",
         "National Id Details",
-        "Other Documents",
         "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?",
         "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?",
         "Action"

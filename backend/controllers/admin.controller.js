@@ -2165,37 +2165,68 @@ module.exports.getCOCTable = async (req, res) => {
             "awareContact",
             "awareInterview",
           ],
+          required:false
+
         },
         {
           model: PersonalDetail,
           as: "personaldetail",
           attributes: ["Nationality", "fname", "lname", "mname", "contact_1"],
+          required:false
         },
         {
           model: ContactInfo,
           as: "contact",
           attributes: ["line1", "line2", "line3", "country", "city"],
+          required:false
+
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
           attributes: ["type"],
+          required:false
+
         },
         {
           model: JobDetail,
           as: "jobdetails",
           attributes: ["title"],
+          required:false
+
         },
         {
           model: VisaDetail,
           as: "visadetail",
           attributes: ["visa_no", "expiry_date"],
+          required:false
+
         },
         {
           model: PassportDetail,
           as: "passportdetail",
           attributes: ["passport_no"],
+          required:false
+
         },
+        {
+          model : EsusDetail,
+          as : 'esusdetail',
+          attributes: ["expiry", "review_date"],
+          required:false,
+        },
+        {
+          model : NationalDetail,
+          as : 'nationaldetail',
+          attributes: ["expiry", "review_date"],
+          required : false,
+        },
+        {
+          model : DBSDetail,
+          as : 'dbsdetail',
+          attributes: ["expiry", "review_date"],
+          required : false,
+        }
       ],
     });
 
@@ -2224,13 +2255,12 @@ module.exports.getCOCTable = async (req, res) => {
         "Contact Number": emp.personaldetail.contact_1,
         Nationality: emp.personaldetail.Nationality,
         "BRP Number": emp.visadetail?.visa_no,
-        "Visa Expired": emp.visadetail?.expiry_date,
+        "Visa Expired": emp.visadetail ? `Expires on ${emp.visadetail?.expiry_date}` : '',
         "Remarks/Restriction to work": emp.cocdetails?.remarks,
         "Passport No": emp.passportdetail?.passport_no,
-        "ESUS Details": "no",
-        "DBS Details": "no",
-        "National Id Details": "no",
-        "Other Documents": "no",
+        "ESUS Details": emp.esusdetail ? `Expires on ${emp.esusdetail?.expiry_date}` : '',
+        "DBS Details": emp.dbsdetail ? `Expires on ${emp.dbsdetail?.expiry_date}` : '',
+        "National Id Details":emp.nationaldetail ? `Expires on ${emp.nationaldetail?.expiry_date}` : '',
         "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?":
           emp.cocdetails?.awareContact ? "Yes" : "No",
         "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?":

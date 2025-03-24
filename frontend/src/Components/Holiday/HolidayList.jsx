@@ -11,7 +11,7 @@ const HolidayList = () => {
         "Date",
         "No. of Days",
         "Holiday Description",
-        "Day of Week",
+        // "Day of Week",
         "Holiday Type",
         "Edit",
         // "Delete"

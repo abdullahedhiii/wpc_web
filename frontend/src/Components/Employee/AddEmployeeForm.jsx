@@ -636,7 +636,7 @@ const EmployeeForm = () => {
         },
         {
           label: "Select Nationality",
-          value: "personal_details.nationality",
+          value: "personal_details.Nationality",
           type: "select",
           required: false,
           options: nationalityOptions,
@@ -917,12 +917,12 @@ const EmployeeForm = () => {
           type: "text",
           value: "passport_details.passport_no",
         },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "passport_details.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "passport_details.nationality",
+        //   options: nationalityOptions,
+        // },
         {
           label: "Place of Birth",
           type: "text",

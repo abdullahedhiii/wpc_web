@@ -23,8 +23,8 @@ const HolidayListForm = () => {
     num_days : NaN
   });
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const day_options = days.map((day) => ({ label: day, value: day }));
+  // const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  // const day_options = days.map((day) => ({ label: day, value: day }));
   
   useEffect(() => {
        if(ho_id){
@@ -33,7 +33,7 @@ const HolidayListForm = () => {
             const [s, e] = selected_holiday['Date'].split(' - '); 
             setData({
               year: selected_holiday['Year'],
-              day: selected_holiday['Day of Week'],
+              // day: selected_holiday['Day of Week'],
               start_date: s, 
               end_date: e,    
               description: selected_holiday['Holiday Description'],
@@ -70,12 +70,12 @@ const HolidayListForm = () => {
         type: "date",
         name: "end_date",
     },
-    {
-        label : "Day",
-        type : "select",
-        name :"day",
-        options : day_options
-    },
+    // {
+    //     label : "Day",
+    //     type : "select",
+    //     name :"day",
+    //     options : day_options
+    // },
     {
       label: "Holiday Type",
       type: "select",
@@ -103,7 +103,7 @@ const HolidayListForm = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-      if(holidayList.find((ele) => ele['Holiday Type'] === data.holiday_type && ele['Year'] === data.year)){
+      if(!ho_id && holidayList.find((ele) => ele['Holiday Type'] === data.holiday_type && ele['Year'] === data.year)){
         alert('Holiday type is already listed for this year,try updating!');
         return;
    }
