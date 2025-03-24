@@ -557,7 +557,50 @@ module.exports.getFormDetails = async (req, res) => {
     });
     const response = {
       allData: companyDetails,
-      tradingHours,
+      tradingHours : tradingHours ? tradingHours : [
+        {
+          day: "Monday",
+          status: "Open",
+          openingTime: "09:00",
+          closingTime: "18:00",
+        },
+        {
+          day: "Tuesday",
+          status: "Open",
+          openingTime: "09:00",
+          closingTime: "18:00",
+        },
+        {
+          day: "Wednesday",
+          status: "Open",
+          openingTime: "09:00",
+          closingTime: "18:00",
+        },
+        {
+          day: "Thursday",
+          status: "Open",
+          openingTime: "09:00",
+          closingTime: "18:00",
+        },
+        {
+          day: "Friday",
+          status: "Open",
+          openingTime: "09:00",
+          closingTime: "18:00",
+        },
+        {
+          day: "Saturday",
+          status: "Open",
+          openingTime: "09:00",
+          closingTime: "15:00",
+        },
+        {
+          day: "Sunday",
+          status: "Closed",
+          openingTime: "closed",
+          closingTime: "closed",
+        },
+      ],
       company_documents,
     };
 

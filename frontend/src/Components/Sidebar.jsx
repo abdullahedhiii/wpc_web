@@ -153,11 +153,11 @@ const Sidebar = ({ isOpen, setOpen }) => {
           {isOpen ? (
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center space-x-3">
-                <img
-                  src={user.profile_image || "https://via.placeholder.com/40"}
+                {user.profile_image !== null ? <img
+                  src={user.profile_image}
                   alt="User"
                   className="w-8 h-8 rounded-full border border-gray-200"
-                />
+                /> : null}
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-gray-700">{user.first_name}</span>
                 </div>

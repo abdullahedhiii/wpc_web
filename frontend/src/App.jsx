@@ -1107,15 +1107,16 @@ const router = createBrowserRouter([
     ],
   },
 ]);
+
 function App() {
   const dispatch = useDispatch();
-  const {user} = useSelector((state) => state.user);
+  const {user,justLoggedOut} = useSelector((state) => state.user);
   const { fetchModules } = useModuleContext();
   const { fetchOrganisation } = useCompanyContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if(user?.justLoggedOut) return;
+    if(justLoggedOut) return;
     axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/check-session`)
       .then(response => {
         if(!response.data.found) return;
