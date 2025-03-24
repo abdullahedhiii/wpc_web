@@ -2255,12 +2255,12 @@ module.exports.getCOCTable = async (req, res) => {
         "Contact Number": emp.personaldetail.contact_1,
         Nationality: emp.personaldetail.Nationality,
         "BRP Number": emp.visadetail?.visa_no,
-        "Visa Expired": emp.visadetail ? `Expires on ${emp.visadetail?.expiry_date}` : '',
+        "Visa Expired": emp.visadetail.expiry_date ? `Expires on ${emp.visadetail?.expiry_date}` : '',
         "Remarks/Restriction to work": emp.cocdetails?.remarks,
         "Passport No": emp.passportdetail?.passport_no,
-        "ESUS Details": emp.esusdetail ? `Expires on ${emp.esusdetail?.expiry_date}` : '',
-        "DBS Details": emp.dbsdetail ? `Expires on ${emp.dbsdetail?.expiry_date}` : '',
-        "National Id Details":emp.nationaldetail ? `Expires on ${emp.nationaldetail?.expiry_date}` : '',
+        "ESUS Details": emp.esusdetail.expiry_date ? `Expires on ${emp.esusdetail?.expiry_date}` : '',
+        "DBS Details": emp.dbsdetail.expiry_date ? `Expires on ${emp.dbsdetail?.expiry_date}` : '',
+        "National Id Details":emp.nationaldetail.expiry_date ? `Expires on ${emp.nationaldetail?.expiry_date}` : '',
         "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?":
           emp.cocdetails?.awareContact ? "Yes" : "No",
         "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?":

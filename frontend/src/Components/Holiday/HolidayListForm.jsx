@@ -33,7 +33,7 @@ const HolidayListForm = () => {
             const [s, e] = selected_holiday['Date'].split(' - '); 
             setData({
               year: selected_holiday['Year'],
-              // day: selected_holiday['Day of Week'],
+              day: 'Monday',
               start_date: s, 
               end_date: e,    
               description: selected_holiday['Holiday Description'],

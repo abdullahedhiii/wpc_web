@@ -963,12 +963,12 @@ const EmployeeForm = () => {
       title: "Visa/BRP Details",
       fields: [
         { label: "Visa/BRP No.", type: "text", value: "visa.visa_no" },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "visa.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "visa.nationality",
+        //   options: nationalityOptions,
+        // },
         {
           label: "Country of Residence",
           type: "select",
@@ -1003,12 +1003,12 @@ const EmployeeForm = () => {
       title: "EUSS/Time limit details",
       fields: [
         { label: "Reference Number.", type: "text", value: "esus.reference" },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "esus.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "esus.nationality",
+        //   options: nationalityOptions,
+        // },
         { label: "Issued Date", type: "date", value: "esus.issued" },
         { label: "Expiry Date", type: "date", value: "esus.expiry" },
         {
@@ -1037,12 +1037,12 @@ const EmployeeForm = () => {
           options: ["Basic", "Standard", "Advanced"],
         },
         { label: "Reference Number.", type: "text", value: "dbs.reference" },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "dbs.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "dbs.nationality",
+        //   options: nationalityOptions,
+        // },
         { label: "Issued Date", type: "date", value: "dbs.issued" },
         { label: "Expiry Date", type: "date", value: "dbs.expiry" },
         {
@@ -1069,12 +1069,12 @@ const EmployeeForm = () => {
           type: "text",
           value: "national.national_id",
         },
-        {
-          label: "Nationality",
-          type: "text",
-          value: "national.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "text",
+        //   value: "national.nationality",
+        //   options: nationalityOptions,
+        // },
         {
           label: "Country of Residence",
           type: "select",
