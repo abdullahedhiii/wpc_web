@@ -169,7 +169,7 @@ const LeaveAllocationForm = () => {
   }, [selectedEmploymentType, employeeTypes, employees, leaveTypes, leaveRules]); 
   
   const columns = [
-    "Select",
+    // "Select",
     "Employment Type",
     "Employee Code",
     "Leave Name",

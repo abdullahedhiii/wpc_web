@@ -115,8 +115,8 @@ const HolidayListForm = () => {
             navigate('/hrms/holidays');
          }
       }
-      catch(err){
-
+      catch(err){ 
+            console.log(err);
       }
   };
 

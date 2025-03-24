@@ -157,7 +157,7 @@ const ShiftManagementForm = () => {
   };
 
   const handleReset = () => {
-    const defaultDepartment = departmentData[0]["Department Name"];
+    const defaultDepartment = departmentData.length > 0 ? departmentData[0]["Department Name"] : "";
     const defaultDesignation = designationData.find(
       (item) => item["Department Name"] === defaultDepartment
     )?.["Designation"];

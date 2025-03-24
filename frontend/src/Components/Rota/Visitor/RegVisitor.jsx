@@ -38,7 +38,7 @@ const RegVisitor = () => {
         data={[{ 'Visitor Link': url }]}  
         showEntries
         searchable
-        downloadable
+        downloadable = {false}
       />
     </div>
   );
