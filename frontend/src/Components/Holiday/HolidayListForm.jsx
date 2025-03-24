@@ -44,20 +44,28 @@ const HolidayListForm = () => {
   },[]);
 
   useEffect(() => {
-    if (data.start_date!== '' && data.end_date!== '') {
+    if (data.start_date && data.end_date) {
       const startDate = new Date(data.start_date);
       const endDate = new Date(data.end_date);
-
-      const differenceInTime = endDate - startDate;
-
-      const differenceInDays = differenceInTime / (1000 * 60 * 60 * 24);
-
-      setData((prev) => ({
-        ...prev,
-        num_days : differenceInDays
-      }))
+      if(startDate > endDate){
+        alert('Enter valid dates');
+        return;
+      }
+      if (!isNaN(startDate) && !isNaN(endDate)) {
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
+  
+        const differenceInTime = endDate.getTime() - startDate.getTime();
+        const differenceInDays = Math.round(differenceInTime / (1000 * 60 * 60 * 24));
+  
+        setData((prev) => ({
+          ...prev,
+          num_days: differenceInDays
+        }));
+      }
     }
-  },[data.start_date,data.end_date]);
+  }, [data.start_date, data.end_date]);
+  
   
   const fields = [
     {

@@ -621,7 +621,7 @@ const EmployeeFormOnline = () => {
         },
         {
           label: "Select Nationality",
-          value: "personal_details.nationality",
+          value: "personal_details.Nationality",
           type: "select",
           required: false,
           options: nationalityOptions,
@@ -918,12 +918,12 @@ const EmployeeFormOnline = () => {
           type: "text",
           value: "passport_details.passport_no",
         },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "passport_details.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "passport_details.nationality",
+        //   options: nationalityOptions,
+        // },
         {
           label: "Place of Birth",
           type: "text",
@@ -964,12 +964,12 @@ const EmployeeFormOnline = () => {
       title: "Visa/BRP Details",
       fields: [
         { label: "Visa/BRP No.", type: "text", value: "visa.visa_no" },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "visa.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "visa.nationality",
+        //   options: nationalityOptions,
+        // },
         {
           label: "Country of Residence",
           type: "select",
@@ -1004,12 +1004,12 @@ const EmployeeFormOnline = () => {
       title: "EUSS/Time limit details",
       fields: [
         { label: "Reference Number.", type: "text", value: "esus.reference" },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "esus.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "esus.nationality",
+        //   options: nationalityOptions,
+        // },
         { label: "Issued Date", type: "date", value: "esus.issued" },
         { label: "Expiry Date", type: "date", value: "esus.expiry" },
         {
@@ -1038,12 +1038,12 @@ const EmployeeFormOnline = () => {
           options: ["Basic", "Standard", "Advanced"],
         },
         { label: "Reference Number.", type: "text", value: "dbs.reference" },
-        {
-          label: "Nationality",
-          type: "select",
-          value: "dbs.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "select",
+        //   value: "dbs.nationality",
+        //   options: nationalityOptions,
+        // },
         { label: "Issued Date", type: "date", value: "dbs.issued" },
         { label: "Expiry Date", type: "date", value: "dbs.expiry" },
         {
@@ -1070,12 +1070,12 @@ const EmployeeFormOnline = () => {
           type: "text",
           value: "national.national_id",
         },
-        {
-          label: "Nationality",
-          type: "text",
-          value: "national.nationality",
-          options: nationalityOptions,
-        },
+        // {
+        //   label: "Nationality",
+        //   type: "text",
+        //   value: "national.nationality",
+        //   options: nationalityOptions,
+        // },
         {
           label: "Country of Residence",
           type: "select",
@@ -1548,7 +1548,8 @@ const EmployeeFormOnline = () => {
     }
   };
 
-  const handleAddEducationDetail = () => {
+  const handleAddEducationDetail = (e) => {
+    e.preventDefault();
     setFormData((prevState) => ({
       ...prevState,
       education_details: [
@@ -1775,6 +1776,7 @@ const EmployeeFormOnline = () => {
                                 </td>
                                 <td className="border px-4 py-2">
                                   <button
+                                  type = "button"
                                     onClick={() =>
                                       handleRemoveEducationDetail(index)
                                     }
@@ -1789,6 +1791,8 @@ const EmployeeFormOnline = () => {
                         </tbody>
                       </table>
                       <button
+                                                        type = "button"
+
                         onClick={handleAddEducationDetail}
                         className="mt-4 px-4 py-2 bg-green-300 text-white rounded"
                       >

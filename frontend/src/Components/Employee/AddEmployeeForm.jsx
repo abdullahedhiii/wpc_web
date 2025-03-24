@@ -1637,8 +1637,8 @@ const EmployeeForm = () => {
     }
   };
 
-  const handleAddEducationDetail = () => {
-
+  const handleAddEducationDetail = (e) => {
+e.preventDefault();
     setFormData((prevState) => ({
       ...prevState,
       education_details: [
@@ -1669,12 +1669,12 @@ const EmployeeForm = () => {
   const { isSideBarOpen } = useSidebarContext();
   return (
     <div className="p-12">
-      <p className="text-[12px] text-gray-600">
-       <a href="/hrms/employeeDashboard" > Home</a>
-        <span className="mx-2">/</span>
-      <a href="/hrms/employees">Employee</a>  
-        <span className="mx-2 text-tt">/ Add New Employee</span>
-      </p>
+    <p className="text-[14px] text-gray-600">
+  <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
+  <span className="mx-2">/</span>
+  <Link to="/hrms/employees" className="hover:underline">Employee</Link>
+  <span className="mx-2 text-gray-400">/ Add New Employee</span>
+</p>
       <div
         className={`min-h-screen mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
           isSideBarOpen ? "max-w-[700px]" : "max-w[1300px]"
@@ -1877,6 +1877,8 @@ const EmployeeForm = () => {
                                     onClick={() =>
                                       handleRemoveEducationDetail(index)
                                     }
+                                    type = "button"
+
                                     className="px-3 bg-red-300 text-white rounded"
                                   >
                                     Remove
@@ -1889,6 +1891,7 @@ const EmployeeForm = () => {
                       </table>
                       <button
                         onClick={handleAddEducationDetail}
+                        type = "button"
                         className="mt-4 px-4 py-2 bg-green-300 text-white rounded"
                       >
                         Add More Education Details

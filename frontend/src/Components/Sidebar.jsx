@@ -193,7 +193,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
           ) : (
             <div className="flex flex-col items-center space-y-2">
 
-{user.profile_image ?<img
+{user.profile_image !== null ?<img
                   src={user.profile_image }
                   alt="User"
                   className="w-8 h-8 rounded-full border border-gray-200"

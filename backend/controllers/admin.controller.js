@@ -119,19 +119,24 @@ module.exports.submitCompanyForm = async (req, res) => {
       RTI_job_title,
       RTI_Immigration_status,
     } = req.body;
-    
+
     const check_unique = await Organisation.findOne({
       where: {
         [Op.or]: [
           { Company_RegNo: Company_RegNo },
           { Company_Contact: Company_Contact },
-          { Company_OrganisationEmail: Company_OrganisationEmail }
-        ]
-      }
+          { Company_OrganisationEmail: Company_OrganisationEmail },
+        ],
+      },
     });
-    
+
     if (check_unique) {
-      return res.status(400).json({ message: "Organisation registration number,contact, and email must be unique!" });
+      return res
+        .status(400)
+        .json({
+          message:
+            "Organisation registration number,contact, and email must be unique!",
+        });
     }
     // Parse and map trading hours
     const tradingHours = req.body.tradingHours.map((item) => JSON.parse(item));
@@ -237,7 +242,6 @@ module.exports.submitCompanyForm = async (req, res) => {
       tradingHours: tradingHoursData,
     });
   } catch (error) {
-    
     res.status(500).json({
       message: "Failed to create Organisation or Trading Hours.",
       error: error.message,
@@ -246,7 +250,6 @@ module.exports.submitCompanyForm = async (req, res) => {
 };
 
 module.exports.updateCompany = async (req, res) => {
-  
   try {
     const {
       Company_admin_id,
@@ -431,7 +434,6 @@ module.exports.updateCompany = async (req, res) => {
       tradingHours: tradingHours || [],
     });
   } catch (error) {
-    
     res.status(500).json({
       message: "Failed to update company information.",
       error: error.message,
@@ -440,7 +442,7 @@ module.exports.updateCompany = async (req, res) => {
 };
 
 // try {
-//   
+//
 
 //   const {
 //     admin_id,
@@ -460,7 +462,7 @@ module.exports.updateCompany = async (req, res) => {
 //   } = req.body;
 
 //   const logoPath = req.file ? `${process.env.BACKEND_URL}/uploads/${req.file.filename}` : null;
-//   
+//
 //   const newOrganisation = await Organisation.create({
 //     Name,
 //     Type,
@@ -484,7 +486,7 @@ module.exports.updateCompany = async (req, res) => {
 //     organisation: newOrganisation,
 //   });
 // } catch (error) {
-//   
+//
 
 //   return res.status(500).json({
 //     error: "An error occurred while registering the organisation",
@@ -526,7 +528,6 @@ module.exports.getOrganisations = async (req, res) => {
     };
     return res.status(200).json(responseData);
   } catch (error) {
-    
     return res.status(500).json({
       error: "An error occurred while fetching the organisations",
       details: error.message,
@@ -562,7 +563,6 @@ module.exports.getFormDetails = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (err) {
-    
     return res.status(500).json({ message: "Server error" });
   }
 };
@@ -601,7 +601,6 @@ module.exports.addDepartment = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -623,7 +622,6 @@ module.exports.getDepartments = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -663,7 +661,6 @@ module.exports.addDesignation = async (req, res) => {
       });
     }
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -676,10 +673,10 @@ module.exports.addDesignation = async (req, res) => {
 //         }
 //     });
 //         if (department) {
-//           
+//
 //             department.department_name = department_name;
 //             await department.save();
-//             
+//
 //             return res.status(201).json({
 //                 message: 'Department updated successfully',
 //                 department,
@@ -699,7 +696,7 @@ module.exports.addDesignation = async (req, res) => {
 //         });
 //     }
 // } catch (error) {
-//     
+//
 //     return res.status(500).json({ message: 'Internal server error' });
 // }
 
@@ -719,7 +716,6 @@ module.exports.getDesignations = async (req, res) => {
       order: [["id", "ASC"]],
     });
     const formattedData = designations.map((designation, index) => {
-      
       return {
         id: designation.id,
         department_id: designation.department.id,
@@ -732,7 +728,6 @@ module.exports.getDesignations = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -771,7 +766,6 @@ module.exports.addEmployeeType = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -793,7 +787,6 @@ module.exports.getEmployeeTypes = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -833,7 +826,6 @@ module.exports.addPayGroup = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -856,7 +848,6 @@ module.exports.getPayGroups = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -893,7 +884,6 @@ module.exports.addAnnualPay = async (req, res) => {
       });
     }
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -925,7 +915,6 @@ module.exports.getAnnualPays = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -947,7 +936,6 @@ module.exports.getCompanyBanks = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -985,7 +973,6 @@ module.exports.addCompanyBank = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1016,7 +1003,6 @@ module.exports.getBankSortCodes = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1055,7 +1041,6 @@ module.exports.addBankSortCode = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1079,7 +1064,6 @@ module.exports.getTaxMasters = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1121,7 +1105,6 @@ module.exports.addTaxMaster = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1145,7 +1128,6 @@ module.exports.getPaymentTypes = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1187,7 +1169,6 @@ module.exports.addPaymentType = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1224,7 +1205,6 @@ module.exports.addHolidayType = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1245,7 +1225,6 @@ module.exports.getHolidayTypes = async (req, res) => {
     });
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1265,19 +1244,29 @@ module.exports.addHoliday = async (req, res) => {
   try {
     if (isUpdate) {
       const holiday = await Holiday.findOne({ where: { id: ho_id } });
+      const old_type = holiday.holiday_type;
       if (holiday) {
-        (holiday.year = year), (holiday.day = day);
+        holiday.year = year;
+        holiday.day = day;
         holiday.start_date = start_date;
         holiday.end_date = end_date;
         holiday.holiday_type = holiday_type;
         holiday.description = description;
+
         await holiday.save();
+
+        await Holiday.update(
+          { where: { holiday_type: old_type, organisation_id: id } },
+          { holiday_type: holiday_type },
+        );
+
         return res.status(201).json({
-          message: "holiday updated successfully",
+          message:
+            "Holiday updated successfully, and all holidays updated with the new type.",
           holiday,
         });
       } else {
-        return res.status(404).json({ message: "holiday  not found" });
+        return res.status(404).json({ message: "Holiday not found" });
       }
     } else {
       const holiday = await Holiday.create({
@@ -1296,7 +1285,9 @@ module.exports.addHoliday = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error",error : error });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error });
   }
 };
 
@@ -1322,7 +1313,6 @@ module.exports.getHolidayList = async (req, res) => {
     });
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1348,7 +1338,6 @@ module.exports.getVisitors = async (req, res) => {
     });
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1393,7 +1382,6 @@ module.exports.addShift = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1489,7 +1477,6 @@ module.exports.getShifts = async (req, res) => {
 
     return res.status(200).json(shiftDetails);
   } catch (error) {
-    
     return res
       .status(500)
       .json({ message: "Server error", error: error.message });
@@ -1498,7 +1485,6 @@ module.exports.getShifts = async (req, res) => {
 
 module.exports.addLatePolicy = async (req, res) => {
   const { data, dep_id, des_id } = req.body;
-  
 
   try {
     // Check if a policy already exists
@@ -1518,7 +1504,6 @@ module.exports.addLatePolicy = async (req, res) => {
         salary_days: data.salary_days,
       });
 
-      
       return res.status(200).json({
         message: "Late policy updated successfully",
         policy: existingPolicy,
@@ -1534,14 +1519,12 @@ module.exports.addLatePolicy = async (req, res) => {
         salary_days: data.salary_days,
       });
 
-      
       return res.status(201).json({
         message: "New late policy created successfully",
         policy: newPolicy,
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1593,7 +1576,6 @@ module.exports.getLatePolicies = async (req, res) => {
 
     res.status(200).json(result);
   } catch (error) {
-    
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -1643,7 +1625,6 @@ module.exports.addOffDay = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -1667,7 +1648,6 @@ module.exports.uploadDocuments = async (req, res) => {
       document: newDocument,
     });
   } catch (error) {
-    
     res.status(500).json({
       message: "Error uploading document",
       error: error.message,
@@ -1700,12 +1680,10 @@ const generateLink = (employee_code) => {
     const secretKey = process.env.EMP_SECRET_KEY;
 
     if (!secretKey || secretKey.length !== 64) {
-      
       throw new Error(
         "Secret key must be 64 hex characters (32 bytes in length)"
       );
     }
-    
 
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(
@@ -1719,13 +1697,11 @@ const generateLink = (employee_code) => {
 
     return iv.toString("hex") + encrypted;
   } catch (error) {
-    
     return null;
   }
 };
 
 module.exports.getAllEmployees = async (req, res) => {
-  
   const org_id = req.params.id;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -1743,8 +1719,9 @@ module.exports.getAllEmployees = async (req, res) => {
           model: JobDetail,
           as: "jobdetails",
           attributes: ["title"],
-        
-          required: false,},
+
+          required: false,
+        },
         {
           model: ServiceDetail,
           as: "servicedetail",
@@ -1779,7 +1756,6 @@ module.exports.getAllEmployees = async (req, res) => {
       ],
     });
 
-    
     const formattedResponse = emp.map((employee, index) => {
       //   console.log(employee,index,'indexxx')
       const employeeLink = employee.has_filled_out_form
@@ -1821,7 +1797,6 @@ module.exports.getAllEmployees = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -1829,7 +1804,6 @@ module.exports.getAllEmployees = async (req, res) => {
 };
 
 module.exports.getEmployeePage = async (req, res) => {
-  
   const org_id = req.params.id;
 
   try {
@@ -1849,41 +1823,36 @@ module.exports.getEmployeePage = async (req, res) => {
             "Nationality",
             "nationality_no",
           ],
-          required : false,
+          required: false,
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
           attributes: ["designation"],
-          required : false,
-
+          required: false,
         },
         {
           model: PassportDetail,
           as: "passportdetail",
           attributes: ["passport_no"],
-          required : false,
-
+          required: false,
         },
         {
           model: VisaDetail,
           as: "visadetail",
           attributes: ["expiry_date", "current"],
-          required : false,
-
+          required: false,
         },
         {
           model: ContactInfo,
           as: "contact",
           attributes: ["line1", "line2", "line3", "city", "country"],
-          required : false,
-
+          required: false,
         },
       ],
     });
 
     const formattedResponse = emp.map((employee, index) => {
-      
       return {
         "Employee ID": employee.employee_code,
         "Employee Name": [
@@ -1920,7 +1889,6 @@ module.exports.getEmployeePage = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2016,38 +1984,189 @@ module.exports.getEmployeeData = async (req, res) => {
 
     // Construct response object
     const response = {
-      personal_details : personal_details ? personal_details : {employee_code: "",fname: "",mname: "",lname: "",Gender: "",dob: "",nationality_no: "",Nationality: "",email: "",contact_1: "",contact_2: "",
-      },
-      service_details : service_details ? service_details : {department: "",designation: "",joining: "",type: "",confirmation: "",start: "",end_if: "",location: "",reportingauth: "",leaveauth: "",profile_pic: null,
-      },
-      education_details : education_details ? education_details :[{  sl_no: "",  qualification: "",  subject: "",  institution_name: "",  awarding_body: "",  year_of_passing: "",  percentage: "",  grade_division: "",  transcript_document: null,  certificate_document: null,},
-      ] ,
-      job_details : job_details ? job_details :{title: "",start: "",end: "",experience: 0,description: "",
-      } ,
-      key_responsibilities : key_responsibilities ? key_responsibilities : [{ responsibility: "" }],
-      training_details : training_details ? training_details : [{ title: "", start: "", end: "", description: "" }] ,
-      kin_details : kin_details ? kin_details :{name: "",relation: "",email: "",contact_no: "",address: "",
-      },
-      certification  : certification ? certification  :{ title: "", start: "", end: "", license: "" } ,
-      contact_info : contact_info ? contact_info : {post_code: "",address: "",line1: "",line2: "",line3: "",city: "",country: "",proof: null,
-      },
-      other_documents : other_documents ? other_documents : [{ type: "", doc: null }],
-      passport_details: passport_details ? passport_details : {passport_no: "",nationality: "",place: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",picture: null,current: true,remarks: "",
-      },
-      esus : esus ? esus : {refernece: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
-      dbs : dbs ? dbs :  {type: "",reference: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
-      visa : visa ? visa : {visa_no: 0,nationality: "",country: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",front: null,back: null,current: true,remarks: "",},
-      national : national ? national : {national_id: "",nationality: "",country: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
-      pay_details : pay_details ? pay_details :{group: "",pay: "",wedges: "",payment_type: "",basic_wedges: "",min_hours: 0,rate: 0,tax_code: "",tax_reference: "",tax_percentage: 0,pay_mode: "",bank_name: "",branch_name: "",account_no: "",sort_code: "",currency: ""},
-      other_details: other_details ? other_details :  [
-        {name: "",reference: "",nationality: "",issued: "",expiry: "",review_date: "",document: null,current: false,remarks: "",},
-      ],
+      personal_details: personal_details
+        ? personal_details
+        : {
+            employee_code: "",
+            fname: "",
+            mname: "",
+            lname: "",
+            Gender: "",
+            dob: "",
+            nationality_no: "",
+            Nationality: "",
+            email: "",
+            contact_1: "",
+            contact_2: "",
+          },
+      service_details: service_details
+        ? service_details
+        : {
+            department: "",
+            designation: "",
+            joining: "",
+            type: "",
+            confirmation: "",
+            start: "",
+            end_if: "",
+            location: "",
+            reportingauth: "",
+            leaveauth: "",
+            profile_pic: null,
+          },
+      education_details: education_details
+        ? education_details
+        : [
+            {
+              sl_no: "",
+              qualification: "",
+              subject: "",
+              institution_name: "",
+              awarding_body: "",
+              year_of_passing: "",
+              percentage: "",
+              grade_division: "",
+              transcript_document: null,
+              certificate_document: null,
+            },
+          ],
+      job_details: job_details
+        ? job_details
+        : { title: "", start: "", end: "", experience: 0, description: "" },
+      key_responsibilities: key_responsibilities
+        ? key_responsibilities
+        : [{ responsibility: "" }],
+      training_details: training_details
+        ? training_details
+        : [{ title: "", start: "", end: "", description: "" }],
+      kin_details: kin_details
+        ? kin_details
+        : { name: "", relation: "", email: "", contact_no: "", address: "" },
+      certification: certification
+        ? certification
+        : { title: "", start: "", end: "", license: "" },
+      contact_info: contact_info
+        ? contact_info
+        : {
+            post_code: "",
+            address: "",
+            line1: "",
+            line2: "",
+            line3: "",
+            city: "",
+            country: "",
+            proof: null,
+          },
+      other_documents: other_documents
+        ? other_documents
+        : [{ type: "", doc: null }],
+      passport_details: passport_details
+        ? passport_details
+        : {
+            passport_no: "",
+            nationality: "",
+            place: "",
+            issued_by: "",
+            issue_date: "",
+            expiry_date: "",
+            review_date: "",
+            picture: null,
+            current: true,
+            remarks: "",
+          },
+      esus: esus
+        ? esus
+        : {
+            refernece: 0,
+            nationality: "",
+            issued: "",
+            expiry: "",
+            review_date: "",
+            remarks: "",
+            document: null,
+            current: false,
+          },
+      dbs: dbs
+        ? dbs
+        : {
+            type: "",
+            reference: 0,
+            nationality: "",
+            issued: "",
+            expiry: "",
+            review_date: "",
+            remarks: "",
+            document: null,
+            current: false,
+          },
+      visa: visa
+        ? visa
+        : {
+            visa_no: 0,
+            nationality: "",
+            country: "",
+            issued_by: "",
+            issue_date: "",
+            expiry_date: "",
+            review_date: "",
+            front: null,
+            back: null,
+            current: true,
+            remarks: "",
+          },
+      national: national
+        ? national
+        : {
+            national_id: "",
+            nationality: "",
+            country: "",
+            issued: "",
+            expiry: "",
+            review_date: "",
+            remarks: "",
+            document: null,
+            current: false,
+          },
+      pay_details: pay_details
+        ? pay_details
+        : {
+            group: "",
+            pay: "",
+            wedges: "",
+            payment_type: "",
+            basic_wedges: "",
+            min_hours: 0,
+            rate: 0,
+            tax_code: "",
+            tax_reference: "",
+            tax_percentage: 0,
+            pay_mode: "",
+            bank_name: "",
+            branch_name: "",
+            account_no: "",
+            sort_code: "",
+            currency: "",
+          },
+      other_details: other_details
+        ? other_details
+        : [
+            {
+              name: "",
+              reference: "",
+              nationality: "",
+              issued: "",
+              expiry: "",
+              review_date: "",
+              document: null,
+              current: false,
+              remarks: "",
+            },
+          ],
       pay_structure: formatted_pay_structure,
     };
 
     return res.status(200).json(response);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2056,9 +2175,8 @@ module.exports.getEmployeeData = async (req, res) => {
 
 module.exports.getCOCData = async (req, res) => {
   const id = req.params.id;
-  
+
   try {
-    
     const employees = await Employee.findAll({
       where: { organisation_id: id },
       include: [
@@ -2081,7 +2199,7 @@ module.exports.getCOCData = async (req, res) => {
         },
       ],
     });
-    
+
     const employeesWithDetails = await Promise.all(
       employees.map(async (emp) => {
         const employee_code = emp.employee_code;
@@ -2124,26 +2242,109 @@ module.exports.getCOCData = async (req, res) => {
         const other_details = await COCOtherDetail.findOne({
           where: { employee_code },
         });
- 
+
         return {
           employee,
-          contact_info : contact_info ? contact_info : {post_code: "",address: "",line1: "",line2: "",line3: "",city: "",country: "",proof: null,},
-          passport_details: passport_details ? passport_details : {passport_no: "",nationality: "",place: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",picture: null,current: true,remarks: "",
-          },
-          esus : esus ? esus : {refernece: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
-          dbs : dbs ? dbs :  {type: "",reference: 0,nationality: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
-          visa : visa ? visa : {visa_no: 0,nationality: "",country: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",front: null,back: null,current: true,remarks: "",},
-          national : national ? national : {national_id: "",nationality: "",country: "",issued: "",expiry: "",review_date: "",remarks: "",document: null,current: false,},
-          other_details: other_details ? other_details :  [
-            {name: "",reference: "",nationality: "",issued: "",expiry: "",review_date: "",document: null,current: false,remarks: "",},
-          ]
-          }
-        })
+          contact_info: contact_info
+            ? contact_info
+            : {
+                post_code: "",
+                address: "",
+                line1: "",
+                line2: "",
+                line3: "",
+                city: "",
+                country: "",
+                proof: null,
+              },
+          passport_details: passport_details
+            ? passport_details
+            : {
+                passport_no: "",
+                nationality: "",
+                place: "",
+                issued_by: "",
+                issue_date: "",
+                expiry_date: "",
+                review_date: "",
+                picture: null,
+                current: true,
+                remarks: "",
+              },
+          esus: esus
+            ? esus
+            : {
+                refernece: 0,
+                nationality: "",
+                issued: "",
+                expiry: "",
+                review_date: "",
+                remarks: "",
+                document: null,
+                current: false,
+              },
+          dbs: dbs
+            ? dbs
+            : {
+                type: "",
+                reference: 0,
+                nationality: "",
+                issued: "",
+                expiry: "",
+                review_date: "",
+                remarks: "",
+                document: null,
+                current: false,
+              },
+          visa: visa
+            ? visa
+            : {
+                visa_no: 0,
+                nationality: "",
+                country: "",
+                issued_by: "",
+                issue_date: "",
+                expiry_date: "",
+                review_date: "",
+                front: null,
+                back: null,
+                current: true,
+                remarks: "",
+              },
+          national: national
+            ? national
+            : {
+                national_id: "",
+                nationality: "",
+                country: "",
+                issued: "",
+                expiry: "",
+                review_date: "",
+                remarks: "",
+                document: null,
+                current: false,
+              },
+          other_details: other_details
+            ? other_details
+            : [
+                {
+                  name: "",
+                  reference: "",
+                  nationality: "",
+                  issued: "",
+                  expiry: "",
+                  review_date: "",
+                  document: null,
+                  current: false,
+                  remarks: "",
+                },
+              ],
+        };
+      })
     );
 
     return res.status(200).json(employeesWithDetails);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2165,68 +2366,62 @@ module.exports.getCOCTable = async (req, res) => {
             "awareContact",
             "awareInterview",
           ],
-          required:false
-
+          required: false,
         },
         {
           model: PersonalDetail,
           as: "personaldetail",
           attributes: ["Nationality", "fname", "lname", "mname", "contact_1"],
-          required:false
+          required: false,
         },
         {
           model: ContactInfo,
           as: "contact",
           attributes: ["line1", "line2", "line3", "country", "city"],
-          required:false
-
+          required: false,
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
           attributes: ["type"],
-          required:false
-
+          required: false,
         },
         {
           model: JobDetail,
           as: "jobdetails",
           attributes: ["title"],
-          required:false
-
+          required: false,
         },
         {
           model: VisaDetail,
           as: "visadetail",
           attributes: ["visa_no", "expiry_date"],
-          required:false
-
+          required: false,
         },
         {
           model: PassportDetail,
           as: "passportdetail",
           attributes: ["passport_no"],
-          required:false
-
+          required: false,
         },
         {
-          model : EsusDetail,
-          as : 'esusdetail',
+          model: EsusDetail,
+          as: "esusdetail",
           attributes: ["expiry", "review_date"],
-          required:false,
+          required: false,
         },
         {
-          model : NationalDetail,
-          as : 'nationaldetail',
+          model: NationalDetail,
+          as: "nationaldetail",
           attributes: ["expiry", "review_date"],
-          required : false,
+          required: false,
         },
         {
-          model : DBSDetail,
-          as : 'dbsdetail',
+          model: DBSDetail,
+          as: "dbsdetail",
           attributes: ["expiry", "review_date"],
-          required : false,
-        }
+          required: false,
+        },
       ],
     });
 
@@ -2255,12 +2450,20 @@ module.exports.getCOCTable = async (req, res) => {
         "Contact Number": emp.personaldetail.contact_1,
         Nationality: emp.personaldetail.Nationality,
         "BRP Number": emp.visadetail?.visa_no,
-        "Visa Expired": emp.visadetail.expiry_date ? `Expires on ${emp.visadetail?.expiry_date}` : '',
+        "Visa Expired": emp.visadetail.expiry_date
+          ? `Expires on ${emp.visadetail?.expiry_date}`
+          : "",
         "Remarks/Restriction to work": emp.cocdetails?.remarks,
         "Passport No": emp.passportdetail?.passport_no,
-        "ESUS Details": emp.esusdetail.expiry_date ? `Expires on ${emp.esusdetail?.expiry_date}` : '',
-        "DBS Details": emp.dbsdetail.expiry_date ? `Expires on ${emp.dbsdetail?.expiry_date}` : '',
-        "National Id Details":emp.nationaldetail.expiry_date ? `Expires on ${emp.nationaldetail?.expiry_date}` : '',
+        "ESUS Details": emp.esusdetail.expiry_date
+          ? `Expires on ${emp.esusdetail?.expiry_date}`
+          : "",
+        "DBS Details": emp.dbsdetail.expiry_date
+          ? `Expires on ${emp.dbsdetail?.expiry_date}`
+          : "",
+        "National Id Details": emp.nationaldetail.expiry_date
+          ? `Expires on ${emp.nationaldetail?.expiry_date}`
+          : "",
         "Are Sponsored migrants aware that they must inform[HR/line manager] promptly of changes in contact Details?":
           emp.cocdetails?.awareContact ? "Yes" : "No",
         "Are Sponsore migrants aware that they need to cooperate Home Office interview by presenting original passports during the Interview(In applicable cases)?":
@@ -2271,7 +2474,6 @@ module.exports.getCOCTable = async (req, res) => {
 
     return res.status(200).json(formattedData);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2370,7 +2572,6 @@ module.exports.getCOCEmployee = async (req, res) => {
 
     return res.status(200).json([formattedData]);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal Server Error", error: err.message });
@@ -2416,7 +2617,6 @@ module.exports.addLeaveType = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2439,7 +2639,6 @@ module.exports.getLeaveTypes = async (req, res) => {
     });
     return res.status(200).json(formattedResponse);
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2504,7 +2703,7 @@ module.exports.addLeaveRule = async (req, res) => {
             },
             {
               where: {
-                employee_code : employeeCode,
+                employee_code: employeeCode,
                 leave_type_id,
                 year: currentYear,
               },
@@ -2524,11 +2723,11 @@ module.exports.addLeaveRule = async (req, res) => {
           employment_type_id,
           [Op.and]: [
             Sequelize.where(
-              Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"from\"")),
+              Sequelize.fn("EXTRACT", Sequelize.literal('YEAR FROM "from"')),
               currentYear
             ),
             Sequelize.where(
-              Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"to\"")),
+              Sequelize.fn("EXTRACT", Sequelize.literal('YEAR FROM "to"')),
               currentYear
             ),
           ],
@@ -2558,11 +2757,9 @@ module.exports.addLeaveRule = async (req, res) => {
       });
     }
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 module.exports.getLeaveRules = async (req, res) => {
   const id = req.params.id;
@@ -2601,13 +2798,11 @@ module.exports.getLeaveRules = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports.allocateLeave = async (req, res) => {
-  
   const id = req.params.id;
 
   try {
@@ -2619,7 +2814,10 @@ module.exports.allocateLeave = async (req, res) => {
       where: { id: req.body.leave_type_id },
     });
     const leave_rule = await LeaveRule.findOne({
-      where: { employment_type_id : req.body.employment_type_id,leave_type_id: req.body.leave_type_id },
+      where: {
+        employment_type_id: req.body.employment_type_id,
+        leave_type_id: req.body.leave_type_id,
+      },
     });
     const year = b ? b : req.body.year;
 
@@ -2659,7 +2857,6 @@ module.exports.allocateLeave = async (req, res) => {
 
     return res.status(existingLeave ? 200 : 201).json(response);
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -2694,14 +2891,12 @@ module.exports.getLeaveAllocated = async (req, res) => {
     };
     return res.status(200).json(data);
   } catch (error) {
-    
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 module.exports.getLeavesAllocated = async (req, res) => {
   const id = req.params.id;
-  
 
   try {
     const employees = await Employee.findAll({
@@ -2725,8 +2920,6 @@ module.exports.getLeavesAllocated = async (req, res) => {
         where: { employee_code: employee_code },
       });
 
-      
-
       for (const leave_allocated of leave_allocations) {
         const leave_type = await LeaveType.findOne({
           where: { id: leave_allocated.leave_type_id },
@@ -2738,17 +2931,16 @@ module.exports.getLeavesAllocated = async (req, res) => {
             leave_type_id: leave_allocated.leave_type_id,
             [Op.and]: [
               Sequelize.where(
-                Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"from\"")),
+                Sequelize.fn("EXTRACT", Sequelize.literal('YEAR FROM "from"')),
                 currentYear
               ),
               Sequelize.where(
-                Sequelize.fn("EXTRACT", Sequelize.literal("YEAR FROM \"to\"")),
+                Sequelize.fn("EXTRACT", Sequelize.literal('YEAR FROM "to"')),
                 currentYear
               ),
             ],
           },
         });
-        
 
         const employee_type = await EmploymentType.findOne({
           where: { id: leave_allocated.employment_type_id },
@@ -2778,7 +2970,6 @@ module.exports.getLeavesAllocated = async (req, res) => {
 
     return res.status(200).json(records);
   } catch (err) {
-    
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -2792,7 +2983,6 @@ module.exports.getOrgDocuments = async (req, res) => {
     });
     return res.status(200).json(documents);
   } catch (err) {
-    
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -2803,9 +2993,9 @@ module.exports.createUser = async (req, res) => {
       where: {
         [Op.or]: [
           { email: req.body.email },
-          { employee_code: req.body.employee_code }
-        ]
-      }
+          { employee_code: req.body.employee_code },
+        ],
+      },
     });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists." });
@@ -2818,7 +3008,6 @@ module.exports.createUser = async (req, res) => {
       .status(201)
       .json({ message: "User registered successfully.", newUser });
   } catch (error) {
-    
     return res
       .status(500)
       .json({ error: "An error occurred. Please try again later." });
@@ -2881,8 +3070,6 @@ module.exports.getUsers = async (req, res) => {
   }
 };
 module.exports.grantRights = async (req, res) => {
-  
-
   try {
     // Check if the user role already exists
     const existingRole = await UserRole.findOne({
@@ -2895,7 +3082,6 @@ module.exports.grantRights = async (req, res) => {
     });
 
     if (existingRole) {
-      
       return res.status(400).json({ message: "User role already assigned!" });
     }
 
@@ -2909,7 +3095,6 @@ module.exports.grantRights = async (req, res) => {
 
     return res.status(200).json({ message: "User role created" });
   } catch (err) {
-    
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -2950,7 +3135,6 @@ module.exports.getUserRoles = async (req, res) => {
 
     return res.status(200).json(formattedResponse);
   } catch (err) {
-    
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -2971,7 +3155,6 @@ module.exports.getJobOpen = async (req, res) => {
 
     res.status(200).json({ message: "Jobs retrieved successfully", jobs });
   } catch (err) {
-    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3000,7 +3183,6 @@ module.exports.addForm = async (req, res) => {
       return res.status(201).json({ message: "Form added successfully" });
     }
   } catch (err) {
-    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3026,7 +3208,7 @@ module.exports.getForms = async (req, res) => {
         },
       ],
     });
-    
+
     const formattedData = jobs.map((job, index) =>
       job.form
         ? {
@@ -3043,7 +3225,6 @@ module.exports.getForms = async (req, res) => {
     );
     return res.status(200).json(formattedData);
   } catch (err) {
-    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3061,7 +3242,6 @@ module.exports.getJobForm = async (req, res) => {
     form.job_position = job.jobTitle;
     return res.status(200).json(form);
   } catch (err) {
-    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3075,7 +3255,6 @@ module.exports.assignDuty = async (req, res) => {
     });
     res.status(200).json({ message: "form added" });
   } catch (err) {
-    
     res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3109,12 +3288,10 @@ module.exports.getDuties = async (req, res) => {
 
     if (employee_code) dutyWhereClause.employee_code = employee_code;
 
-    
     let duties;
     duties = await Duty.findAll({ where: dutyWhereClause });
-    
+
     if (employee_code && duties.length === 0) {
-      
       duties = await Duty.findAll({
         where: {
           fromDate: { [Op.gte]: fromDate },
@@ -3123,7 +3300,6 @@ module.exports.getDuties = async (req, res) => {
           designation_id: employee_detail.designation_id,
         },
       });
-      
     }
 
     const shift = await Shift.findOne({
@@ -3142,10 +3318,8 @@ module.exports.getDuties = async (req, res) => {
       ],
     });
 
-    
-
     const employeeWhereClause = employee_code ? { employee_code } : {};
-    
+
     const employeeRecords = await Employee.findAll({
       where: employeeWhereClause,
       include: [
@@ -3161,8 +3335,6 @@ module.exports.getDuties = async (req, res) => {
         },
       ],
     });
-
-    
 
     // Step 4: Format Duties Per Employee
     const formattedDuties = duties.map((duty) => {
@@ -3198,7 +3370,6 @@ module.exports.getDuties = async (req, res) => {
     // Step 5: Send response
     return res.status(200).json(formattedDuties);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3248,14 +3419,12 @@ module.exports.getTasks = async (req, res) => {
     // Return response
     return res.status(200).json(formattedTasks);
   } catch (err) {
-    
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 module.exports.getLeavesRequested = async (req, res) => {
   try {
-    
     const leaves = await Employee.findAll({
       where: {
         organisation_id: req.params.id,
@@ -3278,11 +3447,10 @@ module.exports.getLeavesRequested = async (req, res) => {
         },
       ],
     });
-    
+
     const formattedTasks = await Promise.all(
       leaves.flatMap((leave, index) =>
         leave.leave_requests.map(async (leaveRequest) => {
-          
           const leave_type = await LeaveType.findOne({
             where: {
               id: leaveRequest.leave_type_id,
@@ -3318,7 +3486,6 @@ module.exports.getLeavesRequested = async (req, res) => {
 
     res.status(200).json(formattedTasks);
   } catch (err) {
-    
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -3361,7 +3528,7 @@ module.exports.updateLeaveRequest = async (req, res) => {
 
     if (req.body.status !== "Rejected") {
       await LeaveAllocation.update(
-        { leave_in_hand: max(leaveType.leave_in_hand - num_days,0) },
+        { leave_in_hand: max(leaveType.leave_in_hand - num_days, 0) },
         {
           where: {
             employee_code: updatedRequest.employeeCode,
@@ -3373,7 +3540,6 @@ module.exports.updateLeaveRequest = async (req, res) => {
 
     return res.status(200).json({ message: "Request updated successfully" });
   } catch (err) {
-    
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -3432,7 +3598,6 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -3528,7 +3693,6 @@ module.exports.getPastStaffData = async (req, res) => {
 
     res.status(200).json(formattedData);
   } catch (err) {
-    
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -3662,7 +3826,6 @@ module.exports.processAttendance = async (req, res) => {
     ];
     return res.status(200).json(response);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });
@@ -3825,7 +3988,6 @@ module.exports.processAbsentReport = async (req, res) => {
 
     return res.status(200).json(reportData);
   } catch (err) {
-    
     return res
       .status(500)
       .json({ message: "Internal server error", error: err.message });

@@ -1115,6 +1115,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if(user?.justLoggedOut) return;
     axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/check-session`)
       .then(response => {
         if(!response.data.found) return;
@@ -1126,7 +1127,7 @@ function App() {
       })
       .catch(err => {
       })
-      .finally(() => setLoading(false)); // Ensure loading state is updated
+      .finally(() => setLoading(false)); 
   }, []); 
 
   if (loading) return <div></div>;
