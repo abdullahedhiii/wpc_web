@@ -18,14 +18,17 @@ module.exports = (sequelize, DataTypes) => {
       },
       Company_RegNo: {
         type: DataTypes.STRING,
+        unique : true,
         // allowNull: false,
       },
       Company_Contact: {
         type: DataTypes.STRING,
+        unique : true,
         // allowNull: false,
       },
       Company_OrganisationEmail: {
         type: DataTypes.STRING,
+        unique:true,
         // allowNull: false,
       },
       Company_Website: {

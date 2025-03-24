@@ -191,7 +191,7 @@ const PaymentPage = () => {
                     <span>Payment Successful!</span>
                   </div>
                 ) : (
-                  `Pay $999`
+                  `Pay Now`
                 )}
               </button>
             </form>

@@ -119,7 +119,20 @@ module.exports.submitCompanyForm = async (req, res) => {
       RTI_job_title,
       RTI_Immigration_status,
     } = req.body;
-
+    
+    const check_unique = await Organisation.findOne({
+      where: {
+        [Op.or]: [
+          { Company_RegNo: Company_RegNo },
+          { Company_Contact: Company_Contact },
+          { Company_OrganisationEmail: Company_OrganisationEmail }
+        ]
+      }
+    });
+    
+    if (check_unique) {
+      return res.status(400).json({ message: "Organisation registration number,contact, and email must be unique!" });
+    }
     // Parse and map trading hours
     const tradingHours = req.body.tradingHours.map((item) => JSON.parse(item));
     const companyLogo = req.files["Company_Logo"]

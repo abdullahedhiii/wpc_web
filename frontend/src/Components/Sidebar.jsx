@@ -193,11 +193,11 @@ const Sidebar = ({ isOpen, setOpen }) => {
           ) : (
             <div className="flex flex-col items-center space-y-2">
 
-                <img
-                  src={user.profile_image || "https://via.placeholder.com/40"}
+{user.profile_image ?<img
+                  src={user.profile_image }
                   alt="User"
                   className="w-8 h-8 rounded-full border border-gray-200"
-                />
+                /> : null}
               
               <button
                   onClick={() => navigate("/hrms/employeeDashboard")}

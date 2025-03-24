@@ -40,7 +40,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setIsSubmitting(true)
     setError("")
     if (formData.firstName.length < 3 || formData.lastName.length < 3){
       setError("Please enter a valid name")
@@ -54,6 +53,8 @@ const Register = () => {
       setError("Password must be atleast of length 8")
       return
     }
+    setIsSubmitting(true)
+
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, formData)
       setFormData({

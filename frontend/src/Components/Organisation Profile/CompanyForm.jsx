@@ -818,6 +818,8 @@ const CompanyForm = () => {
       navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
     } catch (err) {
+      console.log(err);
+      alert(err.response.data.message);
     }
   };
   
