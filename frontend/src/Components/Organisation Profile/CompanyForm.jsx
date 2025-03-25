@@ -9,7 +9,7 @@ const CompanyForm = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
   const { company_id } = useParams();
-  const { setAllDetails,fetchDetails,companyDocuments } = useCompanyContext();
+  const { setAllDetails,fetchDetails,companyDocuments,fetchOrganisation } = useCompanyContext();
   
   
   const options = [
@@ -823,6 +823,9 @@ const CompanyForm = () => {
     } catch (err) {
       console.log(err);
       alert(err.response.data.message);
+    }
+    finally{
+      await fetchOrganisation(company_id,user.isAdmin);
     }
   };
   

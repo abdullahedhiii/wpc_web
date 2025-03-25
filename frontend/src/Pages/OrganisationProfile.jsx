@@ -24,18 +24,18 @@ const OrganisationProfile = () => {
     "Action",
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchOrganisation(); 
-    };
-    fetchData();
-  }, []); 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await fetchOrganisation(); 
+  //   };
+  //   fetchData();
+  // }, []); 
   
   useEffect(() => {
     if (companyData.length === 0) {
       navigate('/hrms/company-profile/edit-company');
     }
-  }, [companyData]);
+  }, [user,companyData]);
   
 
   return (
