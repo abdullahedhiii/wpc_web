@@ -24,12 +24,17 @@ const OrganisationProfile = () => {
     "Action",
   ];
 
+  
+  useEffect(() => {
+    fetchOrganisation();
+  }, []);
+
   useEffect(() => {
     if (companyData.length === 0) {
       navigate('/hrms/company-profile/edit-company');
     }
-  }, [user]);
-
+  },[companyData]);
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
