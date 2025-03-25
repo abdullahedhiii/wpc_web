@@ -434,6 +434,7 @@ module.exports.updateCompany = async (req, res) => {
       tradingHours: tradingHours || [],
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Failed to update company information.",
       error: error.message,
@@ -555,9 +556,10 @@ module.exports.getFormDetails = async (req, res) => {
     const company_documents = await OrgDocument.findAll({
       where: { organisation_id: id },
     });
+
     const response = {
       allData: companyDetails,
-      tradingHours : tradingHours ? tradingHours : [
+      tradingHours :  tradingHours.length > 0 ? tradingHours : [
         {
           day: "Monday",
           status: "Open",

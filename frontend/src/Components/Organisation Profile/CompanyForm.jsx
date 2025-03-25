@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import {Link, useNavigate, useParams } from "react-router-dom";
 import { useCompanyContext } from "../../contexts/CompanyContext";
+import axiosInstance from "../../../axiosInstance";
 
 const CompanyForm = () => {
   const navigate = useNavigate();
@@ -324,13 +325,13 @@ const CompanyForm = () => {
           required: false,
           additionalElement: null,
         },
-        {
-          label: "Select Address",
-          value: "Address_Select",
-          type: "select",
-          required: false,
-          options: [],
-        },
+        // {
+        //   label: "Select Address",
+        //   value: "Address_Select",
+        //   type: "select",
+        //   required: false,
+        //   options: [],
+        // },
         {
           label: "Address Line 1",
           value: "Address_Line1",
@@ -658,7 +659,7 @@ const CompanyForm = () => {
     const fetchDetails = async () => {
       try {
         if (company_id) {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getCompanyDetails`, {
+          const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompanyDetails`, {
             params: { id: company_id },
           });
           if (response.data) {
@@ -696,6 +697,7 @@ const CompanyForm = () => {
                 if (updatedValue) {
                     newState = {
                         ...newState,
+                        KeyContact_check: true,
                         KeyContact_fname: prevData.Authorizing_fname,
                         KeyContact_lname: prevData.Authorizing_lname,
                         KeyContact_designation: prevData.Authorizing_designation,
@@ -720,6 +722,7 @@ const CompanyForm = () => {
                 if (updatedValue) {
                     newState = {
                         ...newState,
+                        Level1_check : true,
                         Level1_fname: prevData.Authorizing_fname,
                         Level1_lname: prevData.Authorizing_lname,
                         Level1_designation: prevData.Authorizing_designation,
@@ -827,14 +830,12 @@ const CompanyForm = () => {
   return (
     <div className="m-16">
       <p className="text-[12px] text-gray-600">
-        Home
-        <span className="mx-2">/</span>
-        <a href="/hrms/company-profile/company">Organisation Profile</a>
-        <span className="mx-2">/</span>
-        <a href="#" className="text-tt">
-          Edit organisation profile
-        </a>
+      <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
+      <span className="mx-2">/</span>
+      <Link to="/hrms/company-profile/company" className="hover:underline">Organisation Profile</Link>
+      <span className="mx-2">/ Update Company Profile</span>
       </p>
+ 
       <div className="mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <i className="la la-user-edit text-lg text-yellow-900"></i>
