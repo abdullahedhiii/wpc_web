@@ -642,6 +642,7 @@ module.exports.addDepartment = async (req, res) => {
       return res.status(201).json({message : 'Department created'});
     
   } catch (error) {
+    console.log("Department" ,error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -796,6 +797,8 @@ module.exports.addEmployeeType = async (req, res) => {
         message: "Employee type created successfully",
       });
   } catch (error) {
+    console.log("Employee Type" ,error);
+
     return res.status(500).json({ message: "Internal server error" });
   }
 };

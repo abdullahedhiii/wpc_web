@@ -95,11 +95,13 @@ module.exports.addServiceDetails = async (req, res) => {
     const {department,designation,type} = req.body;
     const b = {department_name : department};
     await axios.post(`${process.env.BACKEND_URL}/api/addDepartment/${organisationId}`,b);
-    b = {department_name : department,designation_name : designation};
-    await axios.post(`${process.env.BACKEND_URL}/api/addDesignation/${organisationId}`,b);
-    b = {employment_type : type}
-    await axios.post(`${process.env.BACKEND_URL}/api/addEmployeeType/${organisationId}`,b)
-
+    console.log('Department added');
+    const c = {department_name : department,designation_name : designation};
+    await axios.post(`${process.env.BACKEND_URL}/api/addDesignation/${organisationId}`,c);
+    console.log('Designation added');
+    d = {employment_type : type}
+    await axios.post(`${process.env.BACKEND_URL}/api/addEmployeeType/${organisationId}`,d)
+console.log("employment type added");
     if (existingServiceDetail) {
       await existingServiceDetail.update({
         profile_pic: fileUrl,
@@ -125,7 +127,7 @@ module.exports.addServiceDetails = async (req, res) => {
     return res.status(200).json({ message, serviceDetail });
 
   } catch (err) {
-    
+    console.log(err);
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };

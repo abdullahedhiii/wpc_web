@@ -11,29 +11,6 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: "CASCADE",
         },
-        department_id: {
-          type: DataTypes.INTEGER,
-          references: {
-            model: "Departments",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-        },
-        designation_id: {
-          type: DataTypes.INTEGER,
-          references: {
-            model: "Designations",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-        },
-        employment_type_id : {
-          type : DataTypes.INTEGER,
-          references : {
-            model : "EmploymentTypes",
-            key : "id",
-          },
-        },
         department: DataTypes.STRING,
         designation: DataTypes.STRING,
         joining: DataTypes.DATEONLY,
@@ -45,6 +22,8 @@ module.exports = (sequelize, DataTypes) => {
         reportingauth: DataTypes.STRING,
         leaveauth: DataTypes.STRING,
         profile_pic: DataTypes.STRING,
+        work_in : DataTypes.TIME,
+        work_out : DataTypes.TIME
       },
       { tableName: "ServiceDetails", timestamps: false }
     );

@@ -400,6 +400,8 @@ const EmployeeForm = () => {
       reportingauth: "h",
       leaveauth: "h",
       profile_pic: null,
+      work_in : "",
+      work_out : ""
     },
     education_details: [
       {
@@ -722,24 +724,19 @@ const EmployeeForm = () => {
           type: "file",
           required: false,
         },
-        // {
-        //   label: "Reporting Authority",
-        //   value: "service_details.reportingauth",
-        //   type: "select",
-        //   required: false,
-        //   options: [
-        //     authorizingDetails[0]["Authorizing_fname"] +
-        //       " " +
-        //       authorizingDetails[0]["Authorizing_lname"],
-        //   ],
-        // },
-        // {
-        //   label: "Leave Sanction Authority",
-        //   value: "service_details.leaveauth",
-        //   type: "select",
-        //   required: false,
-        //   options: [],
-        // },
+        {
+          label: "Shift Time In",
+          value: "service_details.work_in",
+          type: "time",
+          required: true,
+        },
+        {
+          label: "Shift Time Out",
+          value: "service_details.work_out",
+          type: "time",
+          required: true,
+        }
+       
       ],
     },
     {
@@ -880,12 +877,12 @@ const EmployeeForm = () => {
       title: "Contact Information (Correspondence Address)",
       fields: [
         { label: "Post Code", type: "text", value: "contact_info.post_code" },
-        {
-          label: "Select Addres",
-          type: "select",
-          value: "contact_info.address",
-          options: [],
-        },
+        // {
+        //   label: "Select Addres",
+        //   type: "select",
+        //   value: "contact_info.address",
+        //   options: [],
+        // },
         { label: "Address Line 1", type: "text", value: "contact_info.line1" },
         { label: "Address Line 2", type: "text", value: "contact_info.line2" },
         { label: "Address Line 3", type: "text", value: "contact_info.line3" },
@@ -1109,27 +1106,27 @@ const EmployeeForm = () => {
       fields: [
         {
           label: "Pay Group",
-          type: "select",
+          type: "text",
           value: "pay_details.group",
-          options: payGroupoptions,
+          // options: payGroupoptions,
         },
         {
           label: "Annual Pay",
-          type: "select",
+          type: "text",
           value: "pay_details.pay",
-          options: filteredPays,
+          // options: filteredPays,
         },
         {
           label: "Wedges pay mode",
-          type: "select",
+          type: "text",
           value: "pay_details.wedges",
-          options: [],
+          // options: [],
         },
         {
           label: "Payment Type",
-          type: "select",
+          type: "text",
           value: "pay_details.payment_type",
-          options: payment_type_options,
+          // options: payment_type_options,
         },
         {
           label: "Basic/Daily Wedges",
@@ -1144,9 +1141,9 @@ const EmployeeForm = () => {
         { label: "Rate", type: "text", value: "pay_details.rate" },
         {
           label: "Tax Code",
-          type: "select",
+          type: "text",
           value: "pay_details.tax_code",
-          options: tax_options,
+          // options: tax_options,
         },
         {
           label: "Tax Reference",
@@ -1160,15 +1157,15 @@ const EmployeeForm = () => {
         },
         {
           label: "Payment Mode",
-          type: "select",
+          type: "text",
           value: "pay_details.pay_mode",
-          options: ["Bank", "Cash"],
+          // options: ["Bank", "Cash"],
         },
         {
           label: "Bank Name",
-          type: "select",
+          type: "text",
           value: "pay_details.bank_name",
-          options: bank_options,
+          // options: bank_options,
         },
         { label: "Branch No", type: "text", value: "pay_details.branch_name" },
         { label: "Account No", type: "text", value: "pay_details.account_no" },
@@ -1279,7 +1276,7 @@ const EmployeeForm = () => {
     let errors = ""; // Store field validation errors
   
     if (currentStep === 1) {
-      const { employee_code, fname, lname, email, contact_1 } = formData.personal_details;
+      const { employee_code, fname, lname, email, contact_1,dob} = formData.personal_details;
       if (!fname) errors = errors + "Employee First name,";
       if (!lname) errors =  errors + " Last name,";
       if (!email) errors = errors +  " Email,";
@@ -1297,16 +1294,18 @@ const EmployeeForm = () => {
         alert('Please enter a valid phone number')
         return
       }
-      const {department,designation,start,end_if,type,joining,confirmation} = formData.service_details;
-      if(department === "" || designation === "" || type === ""){
-        alert('Employee Department,Designation, and Employment Type are required')
+      const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out} = formData.service_details;
+      if(department === "" || designation === "" || type === "" || work_in === "" || work_out === ""){
+        alert('Employee Department,Designation,Shift in time, Shift out time and Employment Type are required')
         return false
       }
       const dateJoining = joining ? new Date(joining) : null;
       const confirmDate = joining ? new Date(joining) : null;
       const startDate = start ? new Date(start) : null;
       const endDate = end_if ? new Date(end_if) : null;
-      
+      const inTime = work_in ? new Date(`1970-01-01T${workIn}`) : null;
+      const outTime = work_out ? new Date(`1970-01-01T${workOut}`) : null;
+
       if (startDate && confirmDate) {
         if (startDate < confirmDate) {
           alert("Please enter a valid contract start date and confirmation date");
@@ -1321,6 +1320,16 @@ const EmployeeForm = () => {
         }
       }
       
+      if(inTime && outTime){
+        if(inTime < outTime){
+          alert('Enter valid Shift timings');
+          return;
+        }
+      }
+      else{
+        alert('Work in and Work out times are required');
+        return;
+      }
       if (!startDate && endDate) {
         alert("You must provide the start date of the contract");
         return false;
@@ -1410,12 +1419,12 @@ const EmployeeForm = () => {
           }
         }
 
-        const emplo_type = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type);
-        if(!emplo_type){
-          alert ('An error occured while processing employement type');
-          return;
-        }
-        serviceDetailsFormData.set('employment_type_id', emplo_type.id);
+        // const emplo_type = employeeTypes.find((ele) => ele['Employment Type'] === formData.service_details.type);
+        // if(!emplo_type){
+        //   alert ('An error occured while processing employement type');
+        //   return;
+        // }
+        // serviceDetailsFormData.set('employment_type_id', emplo_type.id);
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-service-details/${companyData[0].id}.${employee_code}`, serviceDetailsFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
