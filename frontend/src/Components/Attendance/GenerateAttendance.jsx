@@ -4,7 +4,7 @@ import axiosInstance from "../../../axiosInstance";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import {motion} from 'framer-motion';
 const GenerateAttendance = () => {
-  const { companyData,fetchDepartments,fetchDesignations,fetchEmployeesLink,fetchShifts, departmentData, designationData, shifts, employees } =
+  const { companyData,fetchDepartments,fetchDesignations,fetchEmployeesLink, departmentData, designationData, employees } =
     useCompanyContext();
   const [attendance, setAttendance] = useState([]);
 
@@ -12,14 +12,14 @@ const GenerateAttendance = () => {
     fetchDepartments();
     fetchDesignations()
     fetchEmployeesLink()
-    fetchShifts()
+    // fetchShifts()
   },[]);
   const departmentOptions = useMemo(() => {
     return departmentData.map((ele) => ({ name: ele["Department Name"] }));
   }, [departmentData]);
 
   const [designationOptions, setDesignationOptions] = useState([]);
-  const [shiftOptions, setShiftOptions] = useState([]);
+  // const [shiftOptions, setShiftOptions] = useState([]);
   const [employeeCodes, setCodes] = useState([]);
   const [formData, setFormData] = useState({
     department: "",
@@ -27,7 +27,7 @@ const GenerateAttendance = () => {
     employeeCode: "",
     fromDate: "",
     toDate: "",
-    shift: "",
+    // shift: "",
   });
 
   useEffect(() => {
@@ -52,14 +52,14 @@ const GenerateAttendance = () => {
 
   useEffect(() => {
     if (formData.department && formData.designation) {
-      const filteredShifts = shifts
-        .filter(
-          (ele) =>
-            ele.Department === formData.department &&
-            ele.Designation === formData.designation
-        )
-        .map((ele) => ({ name: ele["Shift Code"] }));
-      setShiftOptions(filteredShifts);
+      // const filteredShifts = shifts
+      //   .filter(
+      //     (ele) =>
+      //       ele.Department === formData.department &&
+      //       ele.Designation === formData.designation
+      //   )
+      //   .map((ele) => ({ name: ele["Shift Code"] }));
+      // setShiftOptions(filteredShifts);
 
       const filteredEmployees = employees
         .filter(
@@ -70,12 +70,12 @@ const GenerateAttendance = () => {
         .map((ele) => ({ name: ele.employee_code }));
       setCodes(filteredEmployees);
     }
-  }, [formData.department, formData.designation, shifts]);
+  }, [formData.department, formData.designation]);
 
   const handleGenerate = async (e) => {
     e.preventDefault();
 
-    if(!formData.department || !formData.designation || !formData.employeeCode || !formData.fromDate || !formData.shift || !formData.toDate){
+    if(!formData.department || !formData.designation || !formData.employeeCode || !formData.fromDate || !formData.toDate){
         window.alert('all fields are required');
         return;
     }
@@ -239,7 +239,7 @@ const GenerateAttendance = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="text-[12px] block font-medium text-gray-700">
               Shift
             </label>
@@ -257,7 +257,7 @@ const GenerateAttendance = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
         </div>
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"

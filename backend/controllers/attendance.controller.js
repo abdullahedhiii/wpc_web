@@ -64,7 +64,6 @@ module.exports.submitCSV = async (req, res) => {
 
       const requiredHeaders = [
           "Employee Code",
-          "Shift Code",
           "Date",
           "Clock in",
           "Clock in location",
@@ -93,7 +92,6 @@ module.exports.submitCSV = async (req, res) => {
           try {
               const { 
                   "Employee Code": employee_code, 
-                  "Shift Code": shift_code, 
                   "Date": date, 
                   "Clock in": clock_in, 
                   "Clock in location": clock_in_location
@@ -102,7 +100,7 @@ module.exports.submitCSV = async (req, res) => {
                   "Clock out location": clock_out_location,
               } = row;
 
-              if (!employee_code || !shift_code || !date || !clock_in || !clock_out) {
+              if (!employee_code  || !date || !clock_in || !clock_out) {
                   console.warn(`Skipping invalid row: ${JSON.stringify(row)}`);
                   continue;
               }
@@ -131,30 +129,30 @@ module.exports.submitCSV = async (req, res) => {
                   console.warn(`Skipping row employee not found: ${JSON.stringify(row)}`);
                   continue;
               }
-              const shift_check = await Shift.findOne({ where: { shift_code } });
+              // const shift_check = await Shift.findOne({ where: { shift_code } });
 
-              if (!shift_check) {
-                console.warn(`Skipping row, shift not found: ${shift_code}`);
-                continue;
-              }
+              // if (!shift_check) {
+              //   console.warn(`Skipping row, shift not found: ${shift_code}`);
+              //   continue;
+              // }
               
               
               
-              const dept_check = await Department.findOne({
-                where: { id: shift_check.department_id, organisation_id }
-              });
+              // const dept_check = await Department.findOne({
+              //   where: { id: shift_check.department_id, organisation_id }
+              // });
               
-              const desg_check = await Designation.findOne({
-                where: { id: shift_check.designation_id }
-              });
-              
-              
+              // const desg_check = await Designation.findOne({
+              //   where: { id: shift_check.designation_id }
+              // });
               
               
-              if (!dept_check || !desg_check) {
-                console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
-                continue;
-              }
+              
+              
+              // if (!dept_check || !desg_check) {
+              //   console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
+              //   continue;
+              // }
               
               const clockInTime = parseTimeString(clock_in);
               const clockOutTime = parseTimeString(clock_out);
@@ -165,23 +163,28 @@ module.exports.submitCSV = async (req, res) => {
               }
 
               const duty_hours = (clockOutTime - clockInTime) / (1000 * 60 * 60);
-              const shift = await Shift.findOne({ 
-                  where: { shift_code },
-                  include: [{ model: LatePolicy, as: "latepolicy" }]
-              });
+              // const shift = await Shift.findOne({ 
+              //     where: { shift_code },
+              //     include: [{ model: LatePolicy, as: "latepolicy" }]
+              // });
 
-              if (!shift) {
-                  console.warn(`Skipping row, shift not found: ${shift_code}`);
-                  continue;
-              }
+              // if (!shift) {
+              //     console.warn(`Skipping row, shift not found: ${shift_code}`);
+              //     continue;
+              // }
 
-              const workInTime = new Date(`1970-01-01T${shift.work_in}`);
-              const workOutTime = new Date(`1970-01-01T${shift.work_out}`);
+              const service_d = await ServiceDetail.findOne({
+                where:{
+                  employee_code : employee_code
+                }
+              })
+              const workInTime = new Date(`1970-01-01T${service_d.work_in}`);
+              const workOutTime = new Date(`1970-01-01T${service_d.work_out}`);
               const requiredDutyHours = (workOutTime - workInTime) / (1000 * 60 * 60);
 
-              const gracePeriodMinutes = shift.latepolicy ? shift.latepolicy.period : 0;
-              const graceEndTime = new Date(workInTime.getTime() + gracePeriodMinutes * 60000);
-              const grace_period_exceeded = clockInTime > graceEndTime;
+              // const gracePeriodMinutes = shift.latepolicy ? shift.latepolicy.period : 0;
+              // const graceEndTime = new Date(workInTime.getTime() + gracePeriodMinutes * 60000);
+              // const grace_period_exceeded = clockInTime > graceEndTime;
 
               const dutyHoursMet = duty_hours >= requiredDutyHours;
               const status = dutyHoursMet ? "Present" : "Incomplete Hours";
@@ -199,7 +202,6 @@ module.exports.submitCSV = async (req, res) => {
               await Attendance.create({
                   organisation_id,
                   employee_code,
-                  shift_code,
                   date: parsedDate, // No manual formatting
                   clock_in,
                   clock_out,
@@ -437,7 +439,7 @@ module.exports.submitCSV = async (req, res) => {
       
       const whereCondition = {
         organisation_id: parseInt(req.params.id),
-        shift_code: data.shift,
+        // shift_code: data.shift,
         employee_code: data.employeeCode,
       };
       

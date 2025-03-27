@@ -1320,12 +1320,11 @@ const EmployeeForm = () => {
         }
       }
       
-      if(inTime && outTime){
-        if(inTime < outTime){
+        if(outTime < inTime){
           alert('Enter valid Shift timings');
           return;
         }
-      }
+      
       else{
         alert('Work in and Work out times are required');
         return;
