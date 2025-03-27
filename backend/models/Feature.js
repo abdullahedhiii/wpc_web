@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
       download_api_route:{
         type: DataTypes.STRING(255),
         allowNull:true,
+      },
+      isActive : {
+        type : DataTypes.TEXT,
+        allowNull :true,
+        defaultValue : 'Yes'
       }
     });
   

@@ -681,7 +681,7 @@ module.exports.addDesignation = async (req, res) => {
     }
 
     const existingDesignation = await Designation.findOne({
-      where: { designation_name, department_name: dept.department_name }
+      where: { designation_name, department_id: dept.id }
     });
 
     if (existingDesignation) {

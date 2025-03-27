@@ -1303,8 +1303,8 @@ const EmployeeForm = () => {
       const confirmDate = joining ? new Date(joining) : null;
       const startDate = start ? new Date(start) : null;
       const endDate = end_if ? new Date(end_if) : null;
-      const inTime = work_in ? new Date(`1970-01-01T${workIn}`) : null;
-      const outTime = work_out ? new Date(`1970-01-01T${workOut}`) : null;
+      const inTime = work_in ? new Date(`1970-01-01T${work_in}`) : null;
+      const outTime = work_out ? new Date(`1970-01-01T${work_out}`) : null;
 
       if (startDate && confirmDate) {
         if (startDate < confirmDate) {
