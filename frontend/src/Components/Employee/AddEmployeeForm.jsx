@@ -485,62 +485,62 @@ const EmployeeForm = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    if (formData.service_details.department) {
-      const dept =departmentData.length > 0? departmentData.find(
-        (ele) => ele["Department Name"] === formData.service_details.department
-      ): null;
-      if (dept) {
-        setFormData((prev) => ({
-          ...prev,
-          service_details: {
-            ...prev.service_details,
-            department_id: dept.id,
-          },
-        }));
-      }
-    }
-  }, [formData.service_details.department]);
+  // useEffect(() => {
+  //   if (formData.service_details.department) {
+  //     const dept =departmentData.length > 0? departmentData.find(
+  //       (ele) => ele["Department Name"] === formData.service_details.department
+  //     ): null;
+  //     if (dept) {
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         service_details: {
+  //           ...prev.service_details,
+  //           department_id: dept.id,
+  //         },
+  //       }));
+  //     }
+  //   }
+  // }, [formData.service_details.department]);
 
-  useEffect(() => {
-    if (formData.service_details.designation) {
-      const desg = designationData.find(
-        (ele) => ele["Designation"] === formData.service_details.designation
-      );
-      if (desg) {
-        setFormData((prev) => ({
-          ...prev,
-          service_details: {
-            ...prev.service_details,
-            designation_id: desg.id,
-          },
-        }));
-      }
-    }
-  }, [formData.service_details.designation]);
+  // useEffect(() => {
+  //   if (formData.service_details.designation) {
+  //     const desg = designationData.find(
+  //       (ele) => ele["Designation"] === formData.service_details.designation
+  //     );
+  //     if (desg) {
+  //       setFormData((prev) => ({
+  //         ...prev,
+  //         service_details: {
+  //           ...prev.service_details,
+  //           designation_id: desg.id,
+  //         },
+  //       }));
+  //     }
+  //   }
+  // }, [formData.service_details.designation]);
 
-  const departmentOptions = departmentData.length > 0 ? departmentData.map(
-    (department) => department["Department Name"]
-  ) : null;
-  const typeOptions = employeeTypes.length > 0 ? employeeTypes.map((type) => type["Employment Type"]) : null;
+  // const departmentOptions = departmentData.length > 0 ? departmentData.map(
+  //   (department) => department["Department Name"]
+  // ) : null;
+  // const typeOptions = employeeTypes.length > 0 ? employeeTypes.map((type) => type["Employment Type"]) : null;
   const payGroupoptions = payGroups.length > 0 ? payGroups.map((group) => group["Pay Group"]) : null;
   const payment_type_options = paymentTypes.map((type) => type["Payment Type"]);
   const tax_options = taxMasters.map((opt) => opt["Tax Code"]);
   const bank_options = orgBanks.map((opt) => opt["Bank Name"]);
-  const [filteredDesignations, setFilteredDesignations] = useState([]);
+  // const [filteredDesignations, setFilteredDesignations] = useState([]);
   const [filteredPays, setFilteredPays] = useState([]);
 
-  useEffect(() => {
-    const filtered = designationData
-      .filter(
-        (designation) =>
-          designation["Department Name"] ===
-          formData.service_details?.department
-      )
-      .map((designation) => designation["Designation"]);
+  // useEffect(() => {
+  //   const filtered = designationData
+  //     .filter(
+  //       (designation) =>
+  //         designation["Department Name"] ===
+  //         formData.service_details?.department
+  //     )
+  //     .map((designation) => designation["Designation"]);
 
-    setFilteredDesignations(filtered);
-  }, [formData.service_details.department, designationData]);
+  //   setFilteredDesignations(filtered);
+  // }, [formData.service_details.department, designationData]);
 
   useEffect(() => {
     const filtered = annualPays
@@ -668,16 +668,16 @@ const EmployeeForm = () => {
         {
           label: "Department",
           value: "service_details.department",
-          type: "select",
+          type: "text",
           required: true,
-          options: departmentOptions,
+          // options: departmentOptions,
         },
         {
           label: "Designation",
           value: "service_details.designation",
-          type: "select",
+          type: "text",
           required: true,
-          options: filteredDesignations,
+          // options: filteredDesignations,
         },
         {
           label: "Date of Joining",
@@ -688,9 +688,9 @@ const EmployeeForm = () => {
         {
           label: "Employment Type",
           value: "service_details.type",
-          type: "select",
+          type: "text",
           required: true,
-          options: typeOptions,
+          // options: typeOptions,
         },
         {
           label: "Date of Confirmation",

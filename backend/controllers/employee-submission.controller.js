@@ -21,6 +21,7 @@ const {
   TrainingDetail,
   COCOtherDetail,
 } = require("../config/sequelize");
+const axios = require('axios');
 
 const isValidDate = (date) => {
   if (!date || date.trim() === "") return false; // Handle empty or null values
@@ -91,6 +92,13 @@ module.exports.addServiceDetails = async (req, res) => {
 
     let serviceDetail;
     let message;
+    const {department,designation,type} = req.body;
+    const b = {department_name : department};
+    await axios.post(`${process.env.BACKEND_URL}/api/addDepartment/${organisationId}`,b);
+    b = {department_name : department,designation_name : designation};
+    await axios.post(`${process.env.BACKEND_URL}/api/addDesignation/${organisationId}`,b);
+    b = {employment_type : type}
+    await axios.post(`${process.env.BACKEND_URL}/api/addEmployeeType/${organisationId}`,b)
 
     if (existingServiceDetail) {
       await existingServiceDetail.update({

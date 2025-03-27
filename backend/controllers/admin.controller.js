@@ -613,38 +613,34 @@ module.exports.getFormDetails = async (req, res) => {
 };
 
 module.exports.addDepartment = async (req, res) => {
-  const id = req.params.id;
-
-  const { department_name, isUpdate, department_id } = req.body;
+  const organisation_id = req.params.id;
+  const { department_name } = req.body;
 
   try {
-    if (isUpdate) {
       const department = await Department.findOne({
         where: {
-          id: department_id,
+          organisation_id,
+          department_name,
         },
       });
       if (department) {
-        department.department_name = department_name;
-        await department.save();
-        return res.status(201).json({
-          message: "Department updated successfully",
-          department,
-        });
-      } else {
-        return res.status(404).json({ message: "Department not found" });
+        return res.status(200).json({message : 'Department already exists,skipping'});
+      //   department.department_name = department_name;
+      //   await department.save();
+      //   return res.status(201).json({
+      //     message: "Department updated successfully",
+      //     department,
+      //   });
+      // } else {
+      //   return res.status(404).json({ message: "Department not found" });
       }
-    } else {
-      const newDepartment = await Department.create({
+      await Department.create({
         department_name,
         organisation_id: id,
       });
 
-      return res.status(201).json({
-        message: "Department created successfully",
-        department: newDepartment,
-      });
-    }
+      return res.status(201).json({message : 'Department created'});
+    
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -670,45 +666,43 @@ module.exports.getDepartments = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 module.exports.addDesignation = async (req, res) => {
-  const { designation_name, department_name, isUpdate, designation_id } =
-    req.body;
+  const organisation_id = req.params.id;
+  const { designation_name, department_name } = req.body;
+
   try {
-    if (isUpdate) {
-      const designationToUpdate = await Designation.findOne({
-        where: { id: designation_id },
-      });
+    const dept = await Department.findOne({
+      where: { organisation_id, department_name }
+    });
 
-      if (!designationToUpdate) {
-        return res.status(404).json({
-          message: "Designation not found for update",
-        });
-      }
+    if (!dept) {
+      return res.status(404).json({ message: "Department not found" });
+    }
 
-      designationToUpdate.designation_name = designation_name;
-      designationToUpdate.department_id = req.params.id; // Ensure department_id is updated here
-      await designationToUpdate.save();
+    const existingDesignation = await Designation.findOne({
+      where: { designation_name, department_name: dept.department_name }
+    });
 
-      return res.status(201).json({
-        message: "Designation updated successfully",
-        designation: designationToUpdate,
-      });
-    } else {
-      const newDesignation = await Designation.create({
-        designation_name: designation_name,
-        department_id: req.params.id, // Correctly assign department_id here
-      });
-
-      return res.status(201).json({
-        message: "Designation created successfully",
-        designation: newDesignation,
+    if (existingDesignation) {
+      return res.status(200).json({
+        message: "Designation already exists, skipping"
       });
     }
+    await Designation.create({
+      designation_name: designation_name,
+      department_id: dept.id
+    });
+
+    return res.status(201).json({
+      message: "Designation created successfully"
+    });
+
   } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error adding designation:", err.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // try {
 //     if (isUpdate) {
@@ -780,36 +774,27 @@ module.exports.getDesignations = async (req, res) => {
 module.exports.addEmployeeType = async (req, res) => {
   const id = req.params.id; //company id
 
-  const { Employment_Type, isUpdate, type_id } = req.body;
-
-  try {
-    if (isUpdate) {
+  // const { Employment_Type, isUpdate, type_id } = req.body;
+  const {employment_type} = req.body;
+   try {
       const type = await EmploymentType.findOne({
         where: {
-          id: type_id,
+          organisation_id : id,
+          employment_type
         },
       });
       if (type) {
-        type.employment_type = Employment_Type;
-        await type.save();
-        return res.status(201).json({
-          message: "type updated successfully",
-          type,
-        });
-      } else {
-        return res.status(404).json({ message: "Employee Type not found" });
+       return res.status(201).json({message : 'Type exists,skipping'})
       }
-    } else {
-      const newType = await EmploymentType.create({
-        employment_type: Employment_Type,
+    
+      await EmploymentType.create({
+        employment_type,
         organisation_id: id,
       });
 
       return res.status(201).json({
         message: "Employee type created successfully",
-        employeeType: newType,
       });
-    }
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
