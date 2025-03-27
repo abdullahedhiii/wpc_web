@@ -1309,26 +1309,21 @@ const EmployeeForm = () => {
       if (startDate && confirmDate) {
         if (startDate < confirmDate) {
           alert("Please enter a valid contract start date and confirmation date");
-          return;
+          return false;
         }
       }
       
       if (confirmDate && dateJoining) {
         if (confirmDate < dateJoining) {
           alert("Please enter a valid confirmation date and joining date");
-          return;
+          return false;
         }
       }
       
         if(outTime < inTime){
           alert('Enter valid Shift timings');
-          return;
+          return false;
         }
-      
-      else{
-        alert('Work in and Work out times are required');
-        return;
-      }
       if (!startDate && endDate) {
         alert("You must provide the start date of the contract");
         return false;
