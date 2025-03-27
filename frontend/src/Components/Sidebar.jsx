@@ -66,7 +66,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
       <nav className="flex-grow overflow-y-auto py-4">
         {modules?.map((module) =>
-          module.can_access || user.isAdmin ? (
+          (module.name !== 'Settings' && (module.can_access || user.isAdmin)) ? (
             <div key={module.id} className="mb-2">
               <button
                 onClick={() =>{
@@ -102,7 +102,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
               {isOpen && expandedModules[module.id] && (
                 <div className="pl-8 ">
-                  {module.subModules?.map((subModule) => (
+                  {module.subModules?.map((subModule) => subModule.name!== 'Time Shift Management'?(
                     <div key={subModule.id}>
                       <button
                         onClick={() => {
@@ -140,7 +140,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                         </div>
                       )}
                     </div>
-                  ))}
+                  ) : null)}
                 </div>
               )}
             </div>
