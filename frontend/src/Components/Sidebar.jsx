@@ -125,8 +125,8 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
                       {expandedFeatures[`${module.id}-${subModule.id}`] && (
                         <div className="pl-4">
-                          {subModule.features?.map((feature) =>
-                            user.isAdmin || feature.can_access ? (
+                          {subModule.features?.map((feature) => 
+                            feature.name!== 'Employee Creation Link' && (user.isAdmin || feature.can_access) ? (
                               <button
                                 key={feature.id}
                                 onClick={() => handleFeatureSelect(feature)}

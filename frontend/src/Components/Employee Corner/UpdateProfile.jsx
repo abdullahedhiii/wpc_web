@@ -351,6 +351,8 @@ const UpdateProfile = () => {
       reportingauth: "",
       leaveauth: "",
       profile_pic: null,
+      work_in : "",
+      work_out : ""
     },
     education_details: [
       {
@@ -724,7 +726,20 @@ const UpdateProfile = () => {
           readOnly: true,
 
         },
-
+        {
+          label: "Shift Time In",
+          value: "service_details.work_in",
+          type: "time",
+          required: true,
+          readOnly :true,
+        },
+        {
+          label: "Shift Time Out",
+          value: "service_details.work_out",
+          type: "time",
+          required: true,
+          readOnly :true,
+        }
     ],
 
     },

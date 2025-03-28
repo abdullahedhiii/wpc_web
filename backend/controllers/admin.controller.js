@@ -1850,70 +1850,30 @@ module.exports.getEmployeePage = async (req, res) => {
             "fname",
             "mname",
             "lname",
-            "dob",
-            "email",
-            "contact_1",
-            "Nationality",
-            "nationality_no",
           ],
           required: false,
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
-          attributes: ["designation"],
+          attributes: ["designation","profile_pic"],
           required: false,
         },
-        {
-          model: PassportDetail,
-          as: "passportdetail",
-          attributes: ["passport_no"],
-          required: false,
-        },
-        {
-          model: VisaDetail,
-          as: "visadetail",
-          attributes: ["expiry_date", "current"],
-          required: false,
-        },
-        {
-          model: ContactInfo,
-          as: "contact",
-          attributes: ["line1", "line2", "line3", "city", "country"],
-          required: false,
-        },
+
       ],
     });
 
     const formattedResponse = emp.map((employee, index) => {
       return {
-        "Employee ID": employee.employee_code,
-        "Employee Name": [
+        employee_code: employee.employee_code,
+        employee_name: [
           employee.personaldetail?.fname,
           employee.personaldetail?.mname,
           employee.personaldetail?.lname,
         ]
           .filter(Boolean)
           .join(" "),
-        DOB: employee.personaldetail?.dob,
-        Mobile: employee.personaldetail?.contact_1,
-        Email: employee.personaldetail?.email,
-        Designation: employee.servicedetail?.designation,
-        Nationality: employee.personaldetail?.Nationality,
-        "NI Number": employee.personaldetail?.nationality_no,
-        "Visa Expired": employee.visadetail?.current
-          ? employee.visadetail?.expiry_date
-          : "expired",
-        "Passport No": employee.passportdetail?.passport_no,
-        Address: [
-          employee.contact?.line1,
-          employee.contact?.line2,
-          employee.contact?.line3,
-          employee.contact?.city,
-          employee.contact?.country,
-        ]
-          .filter(Boolean)
-          .join(", "),
+        Picture : employee.servicedetail.profile_pic , 
         Action: [
           { label: "Edit", route: `addEmployee/${employee.employee_code}` },
         ],
