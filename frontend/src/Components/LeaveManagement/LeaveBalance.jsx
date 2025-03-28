@@ -4,24 +4,22 @@ import DataTable from "../DataTable";
 import {motion} from 'framer-motion';
 const LeaveBalance = () => {
    const {fetchLeavesAllocated,leavesAllocated} = useCompanyContext();
+ 
    useEffect(() => {
      fetchLeavesAllocated();
    },[]);
 
-   const [data,setData] = useState([])
    const columns = ["Sl. No.", "Employee Code","Employee Name",
-    "Leave Type","Leave Balance"];
+    "Holiday Leaves(Max Allowed)" ,
+          "Holiday Leaves(In hand)",
+          "Medical Leaves(Max Allowed)" ,
+          "Medical Leaves(In hand)",
+          "Maternity Leaves(Max Allowed)" ,
+          "Maternity Leaves(In hand)",
+          "Effective Year",
+   ]
    
-   useEffect(() => {
-      const d = leavesAllocated.map((leave) => ({
-          "Sl. No." : leave["Sl. No."],
-          "Employee Code" : leave['Employee Code'],
-          "Employee Name": leave['Employee Name'],
-          "Leave Type": leave['Leave Type'],
-          "Leave Balance" : leave["Leave In Hand"] === 0 ? 'Zero leaves left' : leave["Leave In Hand"],
-      }));
-      setData(d);
-   },[leavesAllocated]);
+   
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
@@ -52,7 +50,7 @@ const LeaveBalance = () => {
       <DataTable
         title="Leave Balance"
         fields={columns}
-        data={data}
+        data={leavesAllocated}
         showEntries
         searchable
         downloadable={false}

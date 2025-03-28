@@ -20,6 +20,7 @@ const {
   EmployeeOtherDocument,
   TrainingDetail,
   COCOtherDetail,
+  LeaveAllocation,
 } = require("../config/sequelize");
 const axios = require('axios');
 
@@ -997,12 +998,50 @@ module.exports.getDocuments = async (req, res) => {
   }
 };
 
+module.exports.submitLeaveallocation = async (req, res) => {
+  try {
+    const employee_code = req.params.id;
+    const { medical_leave, holiday_leave, maternity_leave, year } = req.body;
 
-module.exports.submitLeaveallocation = async(req,res) => {
-  try{
+    let record = await LeaveAllocation.findOne({
+      where: {
+        employee_code,
+        year,
+      },
+    });
 
-  }
-  catch(err){
-    
+    if (record) {
+      await record.update({
+        medical_max_leaves :medical_leave,
+        holiday_max_leaves : holiday_leave,
+        maternity_max_leaves : maternity_leave,
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Leave allocation updated successfully",
+      });
+    } else {
+      await LeaveAllocation.create({
+        employee_code,
+        medical_leaves_in_hand: medical_leave,
+        medical_max_leaves :medical_leave,
+        holiday_leaves_in_hand: holiday_leave,
+        holiday_max_leaves : holiday_leave,
+        maternity_leaves_in_hand: maternity_leave,
+        maternity_max_leaves : maternity_leave,
+        year,
+      });
+
+      return res.status(201).json({
+        success: true,
+        message: "Leave allocation created successfully",
+      });
+    }
+  } catch (err) {
+    console.error("Error in submitLeaveallocation:", err);
+    return res.status(500).json({
+      message: err
+    });
   }
 };

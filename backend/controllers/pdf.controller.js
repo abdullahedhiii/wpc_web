@@ -628,12 +628,11 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     const employee_data = await Employee.findAll({
       where: { organisation_id: id },
       include: [
-        { model: PersonalDetail, as: "personaldetail" },
-        { model: ServiceDetail, as: "servicedetail" },
+        { model: PersonalDetail, as: "personaldetail",required:false },
+        { model: ServiceDetail, as: "servicedetail",required:false },
       ],
     });
 
-    const leaveTypes = await LeaveType.findAll({ where: { organisation_id: id } });
 
     
     const doc = new PDFDocument({ 
@@ -714,7 +713,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
        .moveDown()
        .fontSize(14)
        .font('Helvetica-Bold')
-       .text('EMPLOYEE LEAVE REPORT', { align: 'center' })
+       .text('EMPLOYEE LEAVE REPORT(leaves in hand)', { align: 'center' })
        .moveDown(2);
 
     
@@ -758,9 +757,9 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     });
 
     
-    leaveTypes.forEach(leave => {
+    ['Holiday Leaves','Medical Leaves','Maternity Leaves(if applicable)'].forEach(leave => {
       drawTableCell(
-        leave.leave_type,
+        leave,
         currentX,
         startY,
         leaveColumnWidth,
@@ -780,19 +779,14 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     const {year} = req.query;
     for (let i = 0; i < employee_data.length; i++) {
       const employee = employee_data[i];
-      const designation = await Designation.findOne({
-        where: { id: employee.servicedetail.designation_id },
-      });
+      const designation = employee.servicedetail.designation
     
-      const leaveAllocations = await LeaveAllocation.findAll({
+      const leave_allocated = await LeaveAllocation.findOne({
         where: { employee_code: employee.employee_code, year},
       });
-    
-      const leaveMap = new Map(leaveAllocations.map(leave => [leave.leave_type_id, leave]));
-    
+        
       currentX = startX;
       const rowHeight = 25;
-    
       
       drawTableCell(String(i + 1), currentX, startY, fixedColumns[0].width, rowHeight, { align: "center" });
       currentX += fixedColumns[0].width;
@@ -811,7 +805,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       currentX += fixedColumns[2].width;
     
       drawTableCell(
-        designation ? designation.designation_name : "N/A",
+        designation ? designation : "N/A",
         currentX,
         startY,
         fixedColumns[3].width,
@@ -820,32 +814,36 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       );
       currentX += fixedColumns[3].width;
     
+      drawTableCell(
+        String(leave_allocated.holiday_leaves_in_hand),
+        currentX,
+        startY,
+        leaveColumnWidth,
+        rowHeight,
+        { align: "center" }
+      );
+      currentX += leaveColumnWidth;
+
+      drawTableCell(
+        String(leave_allocated.medical_leaves_in_hand),
+        currentX,
+        startY,
+        leaveColumnWidth,
+        rowHeight,
+        { align: "center" }
+      );
+      currentX += leaveColumnWidth;
+
+      drawTableCell(
+        String(leave_allocated.maternity_leaves_in_hand),
+        currentX,
+        startY,
+        leaveColumnWidth,
+        rowHeight,
+        { align: "center" }
+      );
+      currentX += leaveColumnWidth;
       
-      for (const leave of leaveTypes) {
-        const allocatedLeave = leaveMap.get(leave.id);
-        let maxLeave = 0;
-    
-        if (allocatedLeave) {
-          const leaveRule = await LeaveRule.findOne({
-            where: { leave_type_id: allocatedLeave.leave_type_id },
-          });
-    
-          maxLeave = leaveRule ? leaveRule.max : 0;
-        }
-    
-        const leaveCount = allocatedLeave ? Math.max(0, allocatedLeave.leave_in_hand - maxLeave) : 0;
-    
-        drawTableCell(
-          String(leaveCount),
-          currentX,
-          startY,
-          leaveColumnWidth,
-          rowHeight,
-          { align: "center" }
-        );
-        currentX += leaveColumnWidth;
-      }
-    
       startY += rowHeight;
     
       
@@ -864,8 +862,8 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
           currentX += column.width;
         });
     
-        leaveTypes.forEach(leave => {
-          drawTableCell(leave.leave_type, currentX, startY, leaveColumnWidth, 30, {
+        ['Holiday Leaves','Medical Leaves','Maternity Leaves(if applicable)'].forEach(leave => {
+          drawTableCell(leave, currentX, startY, leaveColumnWidth, 30, {
             backgroundColor: "#2c5282",
             textColor: "white",
             align: "center",

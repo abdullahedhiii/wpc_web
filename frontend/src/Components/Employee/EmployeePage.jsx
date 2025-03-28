@@ -122,9 +122,9 @@ const EmployeePage = () => {
             
                   <div className="p-4 flex items-center">
                     <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center overflow-hidden mr-4 border-2 border-yellow-300">
-                      {employee.picture ? (
+                      {employee.Picture ? (
                         <img
-                          src={employee.Picture || "/images/user-image.png"}
+                          src={employee.Picture}
                           alt={employee.employee_name}
                           className="w-full h-full object-cover"
                         />

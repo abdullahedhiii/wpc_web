@@ -16,26 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "CASCADE",
       },
-      employment_type_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "EmploymentTypes",
-          key: "id",
-        },
-        onDelete: "CASCADE",
-      },
-      leave_type_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "LeaveTypes",
-          key: "id",
-        },
-        onDelete: "CASCADE",
-      },
-      leave_type : DataTypes.STRING(255),
-      leave_in_hand: DataTypes.INTEGER,
+      medical_leaves_in_hand: DataTypes.INTEGER,
+      medical_max_leaves : DataTypes.INTEGER,
+      holiday_leaves_in_hand: DataTypes.INTEGER,
+      holiday_max_leaves : DataTypes.INTEGER,
+      maternity_leaves_in_hand: DataTypes.INTEGER,
+      maternity_max_leaves : DataTypes.INTEGER,
       year: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -47,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       indexes: [
         {
           unique: true,
-          fields: ["employee_code", "year","leave_type_id"],
+          fields: ["employee_code", "year"],
         },
       ],
     }

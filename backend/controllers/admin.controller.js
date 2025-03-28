@@ -2890,7 +2890,7 @@ module.exports.getLeaveAllocated = async (req, res) => {
 
 module.exports.getLeavesAllocated = async (req, res) => {
   const id = req.params.id;
-
+  const {year} = req.query;
   try {
     const employees = await Employee.findAll({
       where: { organisation_id: id },
@@ -2899,7 +2899,15 @@ module.exports.getLeavesAllocated = async (req, res) => {
           model: PersonalDetail,
           as: "personaldetail",
           attributes: ["fname", "mname", "lname"],
+          required:false
+
         },
+        {
+          model : ServiceDetail,
+          as : "servicedetail",
+          attributes : ['type'],
+          required:false
+        }
       ],
     });
 
@@ -2909,56 +2917,30 @@ module.exports.getLeavesAllocated = async (req, res) => {
     for (const employee of employees) {
       const employee_code = employee.employee_code;
 
-      const leave_allocations = await LeaveAllocation.findAll({
-        where: { employee_code: employee_code },
+      const leave_allocated = await LeaveAllocation.findOne({
+        where: { employee_code,year },
       });
 
-      for (const leave_allocated of leave_allocations) {
-        const leave_type = await LeaveType.findOne({
-          where: { id: leave_allocated.leave_type_id },
-        });
-        const currentYear = new Date().getFullYear();
-
-        const rule = await LeaveRule.findOne({
-          where: {
-            leave_type_id: leave_allocated.leave_type_id,
-            [Op.and]: [
-              Sequelize.where(
-                Sequelize.fn("EXTRACT", Sequelize.literal('YEAR FROM "from"')),
-                currentYear
-              ),
-              Sequelize.where(
-                Sequelize.fn("EXTRACT", Sequelize.literal('YEAR FROM "to"')),
-                currentYear
-              ),
-            ],
-          },
-        });
-
-        const employee_type = await EmploymentType.findOne({
-          where: { id: leave_allocated.employment_type_id },
-        });
-
         records.push({
-          id: leave_allocated.id,
           "Sl. No.": index++,
-          "Employee Type": employee_type?.employment_type || "N/A",
+          "Employee Type": employee.servicedetail?.type || "N/A",
           "Employee Code": employee_code,
-          "Leave Type": leave_type?.leave_type || "N/A",
           "Employee Name": [
-            employee.personaldetail.fname,
-            employee.personaldetail.mname,
-            employee.personaldetail.lname,
+            employee.personaldetail?.fname,
+            employee.personaldetail?.mname,
+            employee.personaldetail?.lname,
           ]
             .filter(Boolean)
             .join(" "),
-          "Max. No Of Leave": rule.max || 0, // Fixed accessing `.max`
-          "Leave In Hand": leave_allocated.leave_in_hand,
+          "Holiday Leaves(Max Allowed)" : leave_allocated.holiday_max_leaves,
+          "Holiday Leaves(In hand)" : leave_allocated.holiday_leaves_in_hand,
+          "Medical Leaves(Max Allowed)" : leave_allocated.medical_max_leaves,
+          "Medical Leaves(In hand)" : leave_allocated.medical_leaves_in_hand,
+          "Maternity Leaves(Max Allowed)" : leave_allocated.maternity_max_leaves || '-',
+          "Maternity Leaves(In hand)" : leave_allocated.maternity_leaves_in_hand || '-',
           "Effective Year": "01/" + leave_allocated.year,
-          Action: "Edit",
-          employment_type_id: leave_allocated.employment_type_id,
+          // Action: "Edit",
         });
-      }
     }
 
     return res.status(200).json(records);

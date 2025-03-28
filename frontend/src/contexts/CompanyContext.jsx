@@ -40,7 +40,9 @@ export const CompanyProvider = ({ children }) => {
   const fetchLeavesAllocated = async (company_id) => {
     const id_to = company_id ? company_id : companyData[0].id;
     try {
-      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeavesAllocated/${id_to}`);
+      const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeavesAllocated/${id_to}`,{
+        params : {year : new Date().getFullYear()}
+      });
       if (response.status === 200) {
         setAllocated(response.data);
       }
