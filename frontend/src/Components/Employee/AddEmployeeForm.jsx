@@ -722,7 +722,7 @@ const EmployeeForm = () => {
           label: "Profile Picture",
           value: "service_details.profile_pic",
           type: "file",
-          required: false,
+          required: true,
         },
         {
           label: "Shift Time In",
@@ -1294,9 +1294,9 @@ const EmployeeForm = () => {
         alert('Please enter a valid phone number')
         return
       }
-      const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out} = formData.service_details;
-      if(department === "" || designation === "" || type === "" || work_in === "" || work_out === ""){
-        alert('Employee Department,Designation,Shift in time, Shift out time and Employment Type are required')
+      const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
+      if(department === "" || designation === "" || type === "" || work_in === "" || work_out === "" || profile_pic === ""){
+        alert('Employee Department,Designation,Shift in time, Shift out time, Profile Picture and Employment Type are required')
         return false
       }
       const dateJoining = joining ? new Date(joining) : null;

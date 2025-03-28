@@ -705,27 +705,26 @@ const UpdateProfile = () => {
           label: "Profile Picture",
           value: "service_details.profile_pic",
           type: "file",
-          required: false,
-          readOnly: true,
+          required: true,
 
         },
-        {
-          label: "Reporting Authority",
-          value: "service_details.reportingauth",
-          type: "select",
-          required: false,
+        // {
+        //   label: "Reporting Authority",
+        //   value: "service_details.reportingauth",
+        //   type: "select",
+        //   required: false,
 
-          readOnly: true,
+        //   readOnly: true,
 
-        },
-        {
-          label: "Leave Sanction Authority",
-          value: "service_details.leaveauth",
-          type: "select",
-          required: false,
-          readOnly: true,
+        // },
+        // {
+        //   label: "Leave Sanction Authority",
+        //   value: "service_details.leaveauth",
+        //   type: "select",
+        //   required: false,
+        //   readOnly: true,
 
-        },
+        // },
         {
           label: "Shift Time In",
           value: "service_details.work_in",
@@ -881,12 +880,12 @@ const UpdateProfile = () => {
       title: "Contact Information (Correspondence Address)",
       fields: [
         { label: "Post Code", type: "text", value: "contact_info.post_code" },
-        {
-          label: "Select Addres",
-          type: "select",
-          value: "contact_info.address",
-          options: [],
-        },
+        // {
+        //   label: "Select Addres",
+        //   type: "select",
+        //   value: "contact_info.address",
+        //   options: [],
+        // },
         { label: "Address Line 1", type: "text", value: "contact_info.line1" },
         { label: "Address Line 2", type: "text", value: "contact_info.line2" },
         { label: "Address Line 3", type: "text", value: "contact_info.line3" },
@@ -1110,25 +1109,25 @@ const UpdateProfile = () => {
       fields: [
         {
           label: "Pay Group",
-          type: "select",
+          type: "text",
           value: "pay_details.group",
           readOnly: true,
         },
         {
           label: "Annual Pay",
-          type: "select",
+          type: "text",
           value: "pay_details.pay",
           readOnly: true,
         },
         {
           label: "Wedges pay mode",
-          type: "select",
+          type: "text",
           value: "pay_details.wedges",
           readOnly: true,
         },
         {
           label: "Payment Type",
-          type: "select",
+          type: "text",
           value: "pay_details.payment_type",
           readOnly: true,
         },
@@ -1150,7 +1149,7 @@ const UpdateProfile = () => {
         },
         {
           label: "Tax Code",
-          type: "select",
+          type: "text",
           value: "pay_details.tax_code",
           readOnly: true,
 
@@ -1169,13 +1168,13 @@ const UpdateProfile = () => {
         },
         {
           label: "Payment Mode",
-          type: "select",
+          type: "text",
           value: "pay_details.pay_mode",
           readOnly: true,
         },
         {
           label: "Bank Name",
-          type: "select",
+          type: "text",
           value: "pay_details.bank_name",
           readOnly: true,
         },
@@ -1187,7 +1186,7 @@ const UpdateProfile = () => {
         },
         {
           label: "Payment Currency",
-          type: "select",
+          type: "text",
           value: "pay_details.currency",
           readOnly: true,
         },
@@ -1327,7 +1326,91 @@ const UpdateProfile = () => {
   const currentSections = formSections.filter(
     (section) => section.page === currentPage
   );
+  const validatePage = (currentStep) => {
+    let isValid = true;
+    let errors = ""; // Store field validation errors
+  
+    if (currentStep === 1) {
+      const { employee_code, fname, lname, email, contact_1,dob} = formData.personal_details;
+      if (!fname) errors = errors + "Employee First name,";
+      if (!lname) errors =  errors + " Last name,";
+      if (!email) errors = errors +  " Email,";
+      if (!contact_1) errors = errors+  " and Primary contact(1) is required";
+      if (errors.length > 0) {
+        alert(errors);
+       return false;
 
+      }
+      if(fname.length < 3 || lname.length < 3){
+        alert('Please enter valid names')
+        return
+      }
+      if(contact_1.length < 10 ){
+        alert('Please enter a valid phone number')
+        return
+      }
+      const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
+      if(department === "" || designation === "" || type === "" || work_in === "" || work_out === "" || profile_pic === ""){
+        alert('Employee Department,Designation,Shift in time, Shift out time, Profile Picture and Employment Type are required')
+        return false
+      }
+      const dateJoining = joining ? new Date(joining) : null;
+      const confirmDate = joining ? new Date(joining) : null;
+      const startDate = start ? new Date(start) : null;
+      const endDate = end_if ? new Date(end_if) : null;
+      const inTime = work_in ? new Date(`1970-01-01T${work_in}`) : null;
+      const outTime = work_out ? new Date(`1970-01-01T${work_out}`) : null;
+
+      if (startDate && confirmDate) {
+        if (startDate < confirmDate) {
+          alert("Please enter a valid contract start date and confirmation date");
+          return false;
+        }
+      }
+      
+      if (confirmDate && dateJoining) {
+        if (confirmDate < dateJoining) {
+          alert("Please enter a valid confirmation date and joining date");
+          return false;
+        }
+      }
+      
+        if(outTime < inTime){
+          alert('Enter valid Shift timings');
+          return false;
+        }
+      if (!startDate && endDate) {
+        alert("You must provide the start date of the contract");
+        return false;
+      } else if (startDate && endDate) {
+        if (endDate < startDate) {
+          alert("Please enter valid contract dates");
+          return false;
+        }
+      }
+      
+    }
+    else if(currentStep === 3){
+      for (const detail of formData.training_details) {
+        const startDate = new Date(detail.start);
+        const endDate = new Date(detail.end);
+        if (isNaN(startDate) && isNaN(endDate)) continue;    
+        if (isNaN(startDate) || isNaN(endDate)) {
+            alert("Please enter valid dates.");
+            return false;
+        }
+    
+        if (endDate < startDate) {
+            alert("Please enter valid training info. Start date cannot be after end date.");
+            return false;
+        }
+    }    
+    }
+
+  
+    return true;
+  };
+  
   const handleSubmit = async () => {
     try {
     
@@ -2456,14 +2539,17 @@ const UpdateProfile = () => {
               Back
             </button>
           )}
-          {currentPage < 8 ? (
+            {currentPage < 8 ? (
             <button
               className="px-4 py-2 text-white bg-yellow-800 rounded"
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={() => {
+                if(!validatePage(currentPage)) return;  
+                setCurrentPage(currentPage + 1)
+              }}
             >
               Next
             </button>
-          ) : (
+          )  : (
             <button
               className="px-4 py-2 text-white bg-green-500 rounded"
               onClick={handleSubmit}
