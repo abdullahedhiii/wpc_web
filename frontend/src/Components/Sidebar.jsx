@@ -120,13 +120,15 @@ const Sidebar = ({ isOpen, setOpen }) => {
                         <span className="flex-grow text-left">{subModule.name}</span>
                         {subModule.features?.length > 0 && (
                           expandedFeatures[`${module.id}-${subModule.id}`] ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-                        )}
+                        )}3.
                       </button>
 
                       {expandedFeatures[`${module.id}-${subModule.id}`] && (
                         <div className="pl-4">
                           {subModule.features?.map((feature) => 
-                            feature.name!== 'Employee Creation Link' && (user.isAdmin || feature.can_access) ? (
+                            (feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
+                               && feature.name!== 'Manage Leave Type'  && feature.name!== 'Leave Allocation'
+                              )&& (user.isAdmin || feature.can_access) ? (
                               <button
                                 key={feature.id}
                                 onClick={() => handleFeatureSelect(feature)}

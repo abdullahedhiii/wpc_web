@@ -465,6 +465,12 @@ const EmployeeForm = () => {
       deductions: {niDeduction: false,incomeTaxDeduction: false,incomeTaxCess: false,esi: false,profTax: false,
       },
     },
+    leave_allocation :{
+      holiday_leave : '',
+      medical_leave : '',
+      maternity_leave : '',
+      year : new Date().getFullYear()
+    }
   });
 
   useEffect(() => {
@@ -738,6 +744,15 @@ const EmployeeForm = () => {
         }
        
       ],
+    },
+    {
+      page : 1,
+      title :'Leave Allocation',
+      fields:[
+        { label: "Holiday Leaves", type: "text", value: "service_details.holiday_leave" ,required:true},
+        { label: "Medical Leaves", type: "text", value: "service_details.medical_leave" ,required:true},
+        { label: "Maternity Leaves(if applicable)", type: "text", value: "service_details.maternity_leave" ,required:true},
+      ]
     },
     {
       page: 2,
@@ -1276,7 +1291,13 @@ const EmployeeForm = () => {
     let errors = ""; // Store field validation errors
   
     if (currentStep === 1) {
-      const { employee_code, fname, lname, email, contact_1,dob} = formData.personal_details;
+      const { fname, lname, email, contact_1,dob} = formData.personal_details;
+      const check_dob = dob ? new Date(dob) : null;
+      const today = new Date();
+      if(check_dob && check_dob > today){
+        alert('Enter valid employee date of birth');
+        return false;
+      }
       if (!fname) errors = errors + "Employee First name,";
       if (!lname) errors =  errors + " Last name,";
       if (!email) errors = errors +  " Email,";
@@ -1288,15 +1309,16 @@ const EmployeeForm = () => {
       }
       if(fname.length < 3 || lname.length < 3){
         alert('Please enter valid names')
-        return
+        return false
       }
       if(contact_1.length < 10 ){
         alert('Please enter a valid phone number')
-        return
+        return false
+
       }
-      const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
-      if(department === "" || designation === "" || type === "" || work_in === "" || work_out === "" || profile_pic === ""){
-        alert('Employee Department,Designation,Shift in time, Shift out time, Profile Picture and Employment Type are required')
+      const {holiday_leave,medical_leave,maternity_leave,department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
+      if(holiday_leave  === ''|| medical_leave  === '' || maternity_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" || profile_pic === ""){
+        alert('Please fill out the required fields (*) !');
         return false
       }
       const dateJoining = joining ? new Date(joining) : null;
@@ -1424,6 +1446,7 @@ const EmployeeForm = () => {
             "Content-Type": "multipart/form-data",
           },
       });
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-leave-allocation/${companyData[0].id}.${employee_code}`,formData.leave_allocation);
 
       formData.education_details.forEach(async (edu, index) => {
         const educationFormData = new FormData();

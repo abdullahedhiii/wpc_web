@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "CASCADE",
       },
+      leave_type : DataTypes.STRING(255),
       leave_in_hand: DataTypes.INTEGER,
       year: {
         type: DataTypes.INTEGER,

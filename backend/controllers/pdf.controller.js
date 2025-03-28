@@ -910,3 +910,29 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     });
   }
 };
+
+module.exports.generateEmployeePDF = async(req,res) =>{
+    try{
+       const employee_code = req.params.employee_code;
+       const employee = await Employee.findOne({
+        where : {
+           employee_code,
+        },
+        include : [
+            {
+              model : PersonalDetail,
+              as : 'personaldetail',
+              required:false,
+            },
+            {
+              model : ServiceDetail,
+              as : 'servicedetail',
+              required:false,
+            },
+        ]
+       })
+    } 
+    catch(err){
+     return res.status(500).json({message : 'Error generatting employee report',err});
+    }
+}

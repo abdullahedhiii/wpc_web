@@ -996,3 +996,13 @@ module.exports.getDocuments = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 };
+
+
+module.exports.submitLeaveallocation = async(req,res) => {
+  try{
+
+  }
+  catch(err){
+    
+  }
+};

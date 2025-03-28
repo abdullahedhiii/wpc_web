@@ -33,10 +33,18 @@ const EmployeePage = () => {
     fetchEmployees()
   }, [])
 
-  const handleDownloadPDF = async(e) => {
-
+  const handleDownloadPDF = async(employee_code) => {
+     const routee = `${import.meta.env.VITE_API_URL}/api/getEmployeePDF/${employee_code}`;
+     try {
+      const response = await axiosInstance.get(routee);
+      if (response.data.pdf_url) {
+        window.open(response.data.pdf_url, "_blank"); 
+      } 
+    } catch (err) {
+      alert('Network error downloading pdf',err);
+    }
   }
-  // Filter employees based on search term
+
   const filteredEmployees = employeeDetails.filter(
     (employee) =>
       employee.employee_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -116,7 +124,7 @@ const EmployeePage = () => {
                     <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center overflow-hidden mr-4 border-2 border-yellow-300">
                       {employee.picture ? (
                         <img
-                          src={employee.picture || "/images/user-image.png"}
+                          src={employee.Picture || "/images/user-image.png"}
                           alt={employee.employee_name}
                           className="w-full h-full object-cover"
                         />
@@ -132,9 +140,7 @@ const EmployeePage = () => {
                     </div>
                   </div>
             
-                  {/* Action Buttons */}
                   <div className="border-t border-yellow-100 p-4 bg-yellow-50 flex justify-between">
-                    {/* Edit Button */}
                     <Link
                       to={`/hrms/addEmployee/${employee.employee_code}`}
                       className="text-yellow-600 hover:text-yellow-800 font-medium"
