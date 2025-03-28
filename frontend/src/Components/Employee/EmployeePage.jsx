@@ -33,6 +33,9 @@ const EmployeePage = () => {
     fetchEmployees()
   }, [])
 
+  const handleDownloadPDF = async(e) => {
+
+  }
   // Filter employees based on search term
   const filteredEmployees = employeeDetails.filter(
     (employee) =>
@@ -65,9 +68,7 @@ const EmployeePage = () => {
         </div>
       </div>
 
-      {/* Employee Cards Section */}
       <div className="p-4 md:p-8 lg:p-16">
-        {/* Search and Add Employee Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
           <div className="relative w-full md:w-64">
             <input
@@ -99,56 +100,60 @@ const EmployeePage = () => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {filteredEmployees.map((employee, index) => (
-                  <motion.div
-                    key={employee.id || index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="bg-white rounded-lg shadow-md overflow-hidden border border-yellow-200 hover:shadow-lg transition-shadow duration-200"
-                  >
-                    <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 p-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-white font-medium">ID: {employee.employee_code}</span>
-                        <button className="text-white hover:bg-yellow-600 rounded-full p-1">
-                          <FaEllipsisV />
-                        </button>
-                      </div>
+              {filteredEmployees.map((employee, index) => (
+                <motion.div
+                  key={employee.id || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="bg-white rounded-lg shadow-md overflow-hidden border border-yellow-200 hover:shadow-lg transition-shadow duration-200"
+                >
+                  <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 p-4 flex justify-between items-center">
+                    <span className="text-white font-medium">ID: {employee.employee_code}</span>
+                  </div>
+            
+                  <div className="p-4 flex items-center">
+                    <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center overflow-hidden mr-4 border-2 border-yellow-300">
+                      {employee.picture ? (
+                        <img
+                          src={employee.picture || "/images/user-image.png"}
+                          alt={employee.employee_name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-yellow-500 text-2xl font-bold">
+                          {employee.employee_name?.charAt(0) || "E"}
+                        </span>
+                      )}
                     </div>
-                    <div className="p-4 flex items-center">
-                      <div className="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center overflow-hidden mr-4 border-2 border-yellow-300">
-                        {employee.picture ? (
-                          <img
-                            src={employee.picture || "/images/user-image.png"}
-                            alt={employee.employee_name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-yellow-500 text-2xl font-bold">
-                            {employee.employee_name?.charAt(0) || "E"}
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-800 text-lg">{employee.employee_name}</h3>
-                        <p className="text-gray-600 text-sm">{employee.designation || "Employee"}</p>
-                      </div>
+                    <div>
+                      <h3 className="font-bold text-gray-800 text-lg">{employee.employee_name}</h3>
+                      <p className="text-gray-600 text-sm">{employee.designation || "Employee"}</p>
                     </div>
-                    <div className="border-t border-yellow-100 p-4 bg-yellow-50">
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>
-                          <p className="text-gray-500">Email</p>
-                          <p className="text-gray-700 truncate">{employee.email || "N/A"}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500">Mobile</p>
-                          <p className="text-gray-700">{employee.mobile || "N/A"}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                  </div>
+            
+                  {/* Action Buttons */}
+                  <div className="border-t border-yellow-100 p-4 bg-yellow-50 flex justify-between">
+                    {/* Edit Button */}
+                    <Link
+                      to={`/hrms/addEmployee/${employee.employee_code}`}
+                      className="text-yellow-600 hover:text-yellow-800 font-medium"
+                    >
+                      Edit
+                    </Link>
+            
+                    {/* Download PDF Button */}
+                    <button
+                      onClick={() => handleDownloadPDF(employee.employee_code)}
+                      className="text-yellow-600 hover:text-yellow-800 font-medium"
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
             )}
           </>
         )}
