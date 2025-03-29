@@ -732,7 +732,6 @@ const EmployeeForm = () => {
           label: "Profile Picture",
           value: "service_details.profile_pic",
           type: "file",
-          required: true,
         },
         {
           label: "Shift Time In",
@@ -751,11 +750,11 @@ const EmployeeForm = () => {
     },
     {
       page : 1,
-      title :'Leave Allocation',
+      title :`Leave Allocation (Year  ${new Date().getFullYear()})`,
       fields:[
-        { label: "Holiday Leaves", type: "text", value: "service_details.holiday_leave" ,required:true},
-        { label: "Medical Leaves", type: "text", value: "service_details.medical_leave" ,required:true},
-        { label: "Maternity Leaves(if applicable)", type: "text", value: "service_details.maternity_leave" ,required:true},
+        { label: "Holiday Leaves", type: "text", value: "leave_allocation.holiday_leave" ,required:true},
+        { label: "Medical Leaves", type: "text", value: "leave_allocation.medical_leave" ,required:true},
+        { label: "Maternity Leaves(if applicable)", type: "text", value: "leave_allocation.maternity_leave" ,required:true},
       ]
     },
     {
@@ -1320,8 +1319,8 @@ const EmployeeForm = () => {
         return false
 
       }
-      const {holiday_leave,medical_leave,maternity_leave,department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
-      if(holiday_leave  === ''|| medical_leave  === '' || maternity_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" || profile_pic === ""){
+      const {holiday_leave,medical_leave,maternity_leave,department,designation,start,end_if,type,joining,confirmation,work_in,work_out} = formData.service_details;
+      if(holiday_leave  === ''|| medical_leave  === '' || maternity_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" ){
         alert('Please fill out the required fields (*) !');
         return false
       }

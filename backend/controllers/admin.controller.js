@@ -1944,6 +1944,17 @@ module.exports.getEmployeeData = async (req, res) => {
       where : {employee_code : code,year}
     })
     // Format pay_structure to match frontend state
+    const formatted_leave_allocation = leave_allocation ? {
+      holiday_leave : leave_allocation.holiday_max_leaves,
+      medical_leave : leave_allocation.medical_max_leaves,
+      maternity_leave : leave_allocation.maternity_max_leaves,
+      year : leave_allocation.year,
+    } : {
+      holiday_leave : '',
+      medical_leave : '',
+      maternity_leave : '',
+      year : '',
+    };
     const formatted_pay_structure = pay_structure
       ? {
           payments: {
@@ -2159,12 +2170,7 @@ module.exports.getEmployeeData = async (req, res) => {
             },
           ],
       pay_structure: formatted_pay_structure,
-      leave_allocation : leave_allocation ? leave_allocation : {
-        holiday_leave : '',
-        medical_leave : '',
-        maternity_leave : '',
-        year : '',
-      }
+      leave_allocation : formatted_leave_allocation
     };
 
     return res.status(200).json(response);
