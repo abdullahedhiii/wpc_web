@@ -3568,21 +3568,17 @@ module.exports.getLeaveReportEmployee = async (req, res) => {
 
     const formattedData = await Promise.all(
       records.map(async (record, index) => {
-        const leave_type = await LeaveType.findOne({
-          where: { id: record.leave_type_id },
-        });
-
         return {
           "Sl No.": index + 1,
-          "Employee Code": record.employeeCode,
+          "Employee Code": record?.employeeCode,
           "Employee Name": [emp.fname, emp.mname, emp.lname]
             .filter(Boolean)
             .join(" "),
-          "Leave Type": leave_type ? leave_type.leave_type : "Unknown",
-          "Date of Application": record.applicationDate,
-          "Date(s)": `${record.fromDate} - ${record.toDate}`,
-          "Duration (Days)": record.days,
-          Status: record.status,
+          "Leave Type": record?.leave_type,
+          "Date of Application": record?.applicationDate,
+          "Date(s)": `${record?.fromDate} - ${record?.toDate}`,
+          "Duration (Days)": record?.days,
+          Status: record?.status,
         };
       })
     );

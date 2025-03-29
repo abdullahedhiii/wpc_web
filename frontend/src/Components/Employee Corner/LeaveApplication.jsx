@@ -8,9 +8,9 @@ import { useNavigate } from "react-router-dom";
 const LeaveApplication = () => {
   const { user } = useSelector((state) => state.user);
   const {navigate} = useNavigate();
-  useEffect(() => {
-    fetchLeaveTypes();
-  }, []);
+  // useEffect(() => {
+  //   fetchLeaveTypes();
+  // }, []);
   
   const [formData, setFormData] = useState({
     company_id : user.company_id,

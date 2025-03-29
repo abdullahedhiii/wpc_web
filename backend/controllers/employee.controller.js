@@ -367,7 +367,6 @@ module.exports.getInHand = async (req, res) => {
     const leaveAllocation = await LeaveAllocation.findOne({
       where: {
         employee_code: code,
-        leave_type: id,
         year
       }
     });
