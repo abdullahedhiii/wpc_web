@@ -542,7 +542,7 @@ module.exports.submitCSV = async (req, res) => {
           "Clock Out": record?.clock_out || "N/A",
           "Clock Out Location": record?.clock_out_location || "N/A",
           "Duty Hours": record?.duty_hours || "N/A",
-          Action: "Edit",
+          // Action: "Edit",
         },
       ];}
   

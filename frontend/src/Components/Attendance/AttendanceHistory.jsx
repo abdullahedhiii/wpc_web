@@ -12,50 +12,50 @@ const AttendanceHistory = () => {
     const {companyData,fetchEmployeesLink,fetchDepartments,fetchDesignations,employees,departmentData,designationData} = useCompanyContext();
     
     useEffect(() => {
-       fetchDepartments();
-       fetchDesignations();
+      //  fetchDepartments();
+      //  fetchDesignations();
        fetchEmployeesLink();
     },[]);
     const [formData,setFormData] = useState({
-        department : '',
-        designation : '',
+        // department : '',
+        // designation : '',
         fromDate: '',
         employeeCode: '',
         toDate : ''
     });
     
-    const departmentOptions = useMemo(() => {
-        return departmentData.map((ele) => ({ name: ele["Department Name"] }));
-    }, [departmentData]);
+    // const departmentOptions = useMemo(() => {
+    //     return departmentData.map((ele) => ({ name: ele["Department Name"] }));
+    // }, [departmentData]);
     
-    const [designationOptions, setDesignationOptions] = useState([]);
-    const [employeeCodes, setCodes] = useState([]);
+    // const [designationOptions, setDesignationOptions] = useState([]);
+    // const [employeeCodes, setCodes] = useState([]);
 
 
-    useEffect(() => {
-        if (formData.department) {
-          const filteredDesignations = designationData
-            .filter(
-              (designation) =>
-                designation["Department Name"] === formData.department
-            )
-            .map((ele) => ({ name: ele["Designation"] }));
-          setDesignationOptions(filteredDesignations);
-        }
-      }, [formData.department]);
+    // useEffect(() => {
+    //     if (formData.department) {
+    //       const filteredDesignations = designationData
+    //         .filter(
+    //           (designation) =>
+    //             designation["Department Name"] === formData.department
+    //         )
+    //         .map((ele) => ({ name: ele["Designation"] }));
+    //       setDesignationOptions(filteredDesignations);
+    //     }
+    //   }, [formData.department]);
     
-     useEffect(() => {
-        if (formData.department && formData.designation) {
-          const filteredEmployees = employees
-            .filter(
-              (ele) =>
-                ele.Department === formData.department &&
-                ele.Designation === formData.designation
-            )
-            .map((ele) => ({ name: ele.employee_code }));
-          setCodes(filteredEmployees);
-        }
-      }, [formData.department, formData.designation]);
+    //  useEffect(() => {
+    //     if (formData.department && formData.designation) {
+    //       const filteredEmployees = employees
+    //         .filter(
+    //           (ele) =>
+    //             ele.Department === formData.department &&
+    //             ele.Designation === formData.designation
+    //         )
+    //         .map((ele) => ({ name: ele.employee_code }));
+    //       setCodes(filteredEmployees);
+    //     }
+    //   }, [formData.department, formData.designation]);
       
    
     const handleInputChange = (e) => {
@@ -69,7 +69,7 @@ const AttendanceHistory = () => {
     const handleGenerate = async (e) => {
       e.preventDefault();
 
-        if(!formData.department || !formData.designation || !formData.employeeCode || !formData.fromDate || !formData.toDate){
+        if(!formData.employeeCode || !formData.fromDate || !formData.toDate){
             window.alert('all fields are required');
             return;
         }
@@ -114,7 +114,7 @@ const AttendanceHistory = () => {
       >
         <form onSubmit={handleGenerate}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
+          {/* <div>
             <label className="block text-[12px] font-medium text-gray-700">
               Department
             </label>
@@ -156,7 +156,7 @@ const AttendanceHistory = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
@@ -170,9 +170,9 @@ const AttendanceHistory = () => {
               required
             >
               <option value="" disabled>Select Employee</option>
-              {employeeCodes.map((dd) => (
-                <option key={dd.id} value={dd.name}>
-                  {dd.name}
+              {employees.map((dd) => (
+                <option key={dd.employee_code} value={dd.employee_code}>
+                  {`${dd['Employee Name']} (${dd.employee_code})`}
                 </option>
               ))}
             </select>
@@ -219,7 +219,7 @@ const AttendanceHistory = () => {
           type = "button"
           onClick={() => {
             setFormData({
-                department :'',designation :'',employeeCode: '',fromDate :'',toDate : ''
+               employeeCode: '',fromDate :'',toDate : ''
             })
             setAttendance([])
           }}

@@ -1761,10 +1761,10 @@ module.exports.getAllEmployees = async (req, res) => {
           attributes: [
             "type",
             "department",
-            "designation_id",
-            "department_id",
+            // "designation_id",
+            // "department_id",
             "designation",
-            "employment_type_id",
+            // "employment_type_id",
           ],
           where: {
             [Op.or]: [
@@ -1821,9 +1821,9 @@ module.exports.getAllEmployees = async (req, res) => {
           ? `${process.env.FRONTEND_URL}/employeelink/${employeeLink}`
           : "Form filled out already",
         Designation: employee.servicedetail?.designation,
-        Designation_id: employee.servicedetail?.designation_id,
-        Department_id: employee.servicedetail?.department_id,
-        employment_type_id: employee.servicedetail?.employment_type_id,
+        // Designation_id: employee.servicedetail?.designation_id,
+        // Department_id: employee.servicedetail?.department_id,
+        // employment_type_id: employee.servicedetail?.employment_type_id,
         employee_code: employee.employee_code,
       };
     });
@@ -3442,11 +3442,6 @@ module.exports.getLeavesRequested = async (req, res) => {
     const formattedTasks = await Promise.all(
       leaves.flatMap((leave, index) =>
         leave.leave_requests.map(async (leaveRequest) => {
-          const leave_type = await LeaveType.findOne({
-            where: {
-              id: leaveRequest.leave_type_id,
-            },
-          });
 
           return {
             id: leaveRequest.id,
@@ -3460,7 +3455,7 @@ module.exports.getLeavesRequested = async (req, res) => {
             ]
               .filter(Boolean)
               .join(" "),
-            "Leave Type": leave_type?.leave_type || "N/A",
+            "Leave Type": leaveRequest.leave_type || "N/A",
             "From Date": leaveRequest.fromDate,
             "To Date": leaveRequest.toDate,
             "Date Of Application": leaveRequest.applicationDate,

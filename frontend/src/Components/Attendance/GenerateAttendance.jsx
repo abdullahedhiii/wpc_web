@@ -10,37 +10,37 @@ const GenerateAttendance = () => {
 
   useEffect(() => {
     fetchDepartments();
-    fetchDesignations()
-    fetchEmployeesLink()
+ //   fetchDesignations()
+   // fetchEmployeesLink()
     // fetchShifts()
   },[]);
-  const departmentOptions = useMemo(() => {
-    return departmentData.map((ele) => ({ name: ele["Department Name"] }));
-  }, [departmentData]);
+  // const departmentOptions = useMemo(() => {
+  //   return departmentData.map((ele) => ({ name: ele["Department Name"] }));
+  // }, [departmentData]);
 
-  const [designationOptions, setDesignationOptions] = useState([]);
-  // const [shiftOptions, setShiftOptions] = useState([]);
-  const [employeeCodes, setCodes] = useState([]);
+  // const [designationOptions, setDesignationOptions] = useState([]);
+  // // const [shiftOptions, setShiftOptions] = useState([]);
+  // const [employeeCodes, setCodes] = useState([]);
   const [formData, setFormData] = useState({
-    department: "",
-    designation: "",
+    // department: "",
+    // designation: "",
     employeeCode: "",
     fromDate: "",
     toDate: "",
     // shift: "",
   });
 
-  useEffect(() => {
-    if (formData.department) {
-      const filteredDesignations = designationData
-        .filter(
-          (designation) =>
-            designation["Department Name"] === formData.department
-        )
-        .map((ele) => ({ name: ele["Designation"] }));
-      setDesignationOptions(filteredDesignations);
-    }
-  }, [formData.department]);
+  // useEffect(() => {
+  //   if (formData.department) {
+  //     const filteredDesignations = designationData
+  //       .filter(
+  //         (designation) =>
+  //           designation["Department Name"] === formData.department
+  //       )
+  //       .map((ele) => ({ name: ele["Designation"] }));
+  //     setDesignationOptions(filteredDesignations);
+  //   }
+  // }, [formData.department]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,32 +50,32 @@ const GenerateAttendance = () => {
     }));
   };
 
-  useEffect(() => {
-    if (formData.department && formData.designation) {
-      // const filteredShifts = shifts
-      //   .filter(
-      //     (ele) =>
-      //       ele.Department === formData.department &&
-      //       ele.Designation === formData.designation
-      //   )
-      //   .map((ele) => ({ name: ele["Shift Code"] }));
-      // setShiftOptions(filteredShifts);
+  // useEffect(() => {
+  //   if (formData.department && formData.designation) {
+  //     // const filteredShifts = shifts
+  //     //   .filter(
+  //     //     (ele) =>
+  //     //       ele.Department === formData.department &&
+  //     //       ele.Designation === formData.designation
+  //     //   )
+  //     //   .map((ele) => ({ name: ele["Shift Code"] }));
+  //     // setShiftOptions(filteredShifts);
 
-      const filteredEmployees = employees
-        .filter(
-          (ele) =>
-            ele.Department === formData.department &&
-            ele.Designation === formData.designation
-        )
-        .map((ele) => ({ name: ele.employee_code }));
-      setCodes(filteredEmployees);
-    }
-  }, [formData.department, formData.designation]);
+  //     const filteredEmployees = employees
+  //       .filter(
+  //         (ele) =>
+  //           ele.Department === formData.department &&
+  //           ele.Designation === formData.designation
+  //       )
+  //       .map((ele) => ({ name: ele.employee_code }));
+  //     setCodes(filteredEmployees);
+  //   }
+  // }, [formData.department, formData.designation]);
 
   const handleGenerate = async (e) => {
     e.preventDefault();
 
-    if(!formData.department || !formData.designation || !formData.employeeCode || !formData.fromDate || !formData.toDate){
+    if(!formData.employeeCode || !formData.fromDate || !formData.toDate){
         window.alert('all fields are required');
         return;
     }
@@ -147,7 +147,7 @@ const GenerateAttendance = () => {
       <div className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "w-[700px]" : "w[1350px]"} `}>
         <form onSubmit={handleGenerate}>
         <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
+          {/* <div>
             <label className="block text-[12px] font-medium text-gray-700">
               Department
             </label>
@@ -189,7 +189,7 @@ const GenerateAttendance = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-[12px] font-medium text-gray-700">
@@ -203,9 +203,9 @@ const GenerateAttendance = () => {
               required
             >
               <option value="" disabled></option>
-              {employeeCodes.map((dd) => (
-                <option key={dd.id} value={dd.name}>
-                  {dd.name}
+              {employees.map((dd) => (
+                <option key={dd.employee_code} value={dd.employee_code}>
+                  {`${dd['Employee Name']} (${dd.employee_code})`}
                 </option>
               ))}
             </select>

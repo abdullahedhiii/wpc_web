@@ -105,9 +105,9 @@ const EmployeeReport = () => {
               required
             >
               <option value="" disabled></option>
-              {employees?.map((dd, index) => (
-                <option key={index} value={dd.employee_code}>
-                  {dd.employee_code}
+              {employees.map((dd) => (
+                <option key={dd.employee_code} value={dd.employee_code}>
+                  {`${dd['Employee Name']} (${dd.employee_code})`}
                 </option>
               ))}
             </select>
