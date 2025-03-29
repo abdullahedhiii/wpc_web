@@ -731,7 +731,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     
     const leaveColumnWidth = Math.min(
       80,
-      (pageWidth - fixedColumns.reduce((sum, col) => sum + col.width, 0)) / leaveTypes.length
+      (pageWidth - fixedColumns.reduce((sum, col) => sum + col.width, 0)) / 3
     );
 
     

@@ -2947,20 +2947,21 @@ module.exports.getLeavesAllocated = async (req, res) => {
           ]
             .filter(Boolean)
             .join(" "),
-          "Holiday Leaves(Max Allowed)" : leave_allocated.holiday_max_leaves,
-          "Holiday Leaves(In hand)" : leave_allocated.holiday_leaves_in_hand,
-          "Medical Leaves(Max Allowed)" : leave_allocated.medical_max_leaves,
-          "Medical Leaves(In hand)" : leave_allocated.medical_leaves_in_hand,
-          "Maternity Leaves(Max Allowed)" : leave_allocated.maternity_max_leaves || '-',
-          "Maternity Leaves(In hand)" : leave_allocated.maternity_leaves_in_hand || '-',
-          "Effective Year": "01/" + leave_allocated.year,
+          "Holiday Leaves(Max Allowed)" : leave_allocated?.holiday_max_leaves ,
+          "Holiday Leaves(In hand)" : leave_allocated?.holiday_leaves_in_hand,
+          "Medical Leaves(Max Allowed)" : leave_allocated?.medical_max_leaves,
+          "Medical Leaves(In hand)" : leave_allocated?.medical_leaves_in_hand,
+          "Maternity Leaves(Max Allowed)" : leave_allocated?.maternity_max_leaves || '-',
+          "Maternity Leaves(In hand)" : leave_allocated?.maternity_leaves_in_hand || '-',
+          "Effective Year": "01/" + leave_allocated?.year,
           // Action: "Edit",
         });
     }
 
     return res.status(200).json(records);
   } catch (err) {
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.log(err);
+    return res.status(500).json({ error: "Internal Server Error",err });
   }
 };
 

@@ -120,7 +120,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                         <span className="flex-grow text-left">{subModule.name}</span>
                         {subModule.features?.length > 0 && (
                           expandedFeatures[`${module.id}-${subModule.id}`] ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-                        )}3.
+                        )}
                       </button>
 
                       {expandedFeatures[`${module.id}-${subModule.id}`] && (
