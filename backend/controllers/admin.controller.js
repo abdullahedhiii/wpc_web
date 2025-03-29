@@ -1890,6 +1890,7 @@ module.exports.getEmployeePage = async (req, res) => {
 
 module.exports.getEmployeeData = async (req, res) => {
   const code = req.params.id;
+  const {year} = req.query;
   try {
     const personal_details = await PersonalDetail.findOne({
       where: { employee_code: code },
@@ -1939,7 +1940,9 @@ module.exports.getEmployeeData = async (req, res) => {
     const pay_structure = await PayStructure.findOne({
       where: { employee_code: code },
     });
-
+    const leave_allocation = await LeaveAllocation.findOne({
+      where : {employee_code : code,year}
+    })
     // Format pay_structure to match frontend state
     const formatted_pay_structure = pay_structure
       ? {
@@ -2156,6 +2159,12 @@ module.exports.getEmployeeData = async (req, res) => {
             },
           ],
       pay_structure: formatted_pay_structure,
+      leave_allocation : leave_allocation ? leave_allocation : {
+        holiday_leave : '',
+        medical_leave : '',
+        maternity_leave : '',
+        year : '',
+      }
     };
 
     return res.status(200).json(response);

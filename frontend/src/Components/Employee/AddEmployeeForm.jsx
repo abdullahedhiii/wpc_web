@@ -320,6 +320,7 @@ const currency_options = [
 const EmployeeForm = () => {
   const navigate = useNavigate();
   let { id } = useParams();
+  const [isSubmit,setIsSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const {user} = useSelector((state) => state.user);
   const {
@@ -469,17 +470,20 @@ const EmployeeForm = () => {
       holiday_leave : '',
       medical_leave : '',
       maternity_leave : '',
-      year : new Date().getFullYear()
+      year : '',
     }
   });
 
   useEffect(() => {
     const isEmployee = location.pathname.includes('update-profile');
+    const t = new Date();
     if(isEmployee && id === null) id = user.employee_code;
     const fetchFormInfo = async () => {
       try {
         const response = await axiosInstance.get(
-          `${import.meta.env.VITE_API_URL}/api/getEmployeeDetails/${id}`
+          `${import.meta.env.VITE_API_URL}/api/getEmployeeDetails/${id}`,{
+            params: {year :  t.getFullYear()}
+          }
         );
         setFormData(response.data);
         setCode(response.data.personal_details.employee_code);
@@ -531,12 +535,12 @@ const EmployeeForm = () => {
   //   (department) => department["Department Name"]
   // ) : null;
   // const typeOptions = employeeTypes.length > 0 ? employeeTypes.map((type) => type["Employment Type"]) : null;
-  const payGroupoptions = payGroups.length > 0 ? payGroups.map((group) => group["Pay Group"]) : null;
-  const payment_type_options = paymentTypes.map((type) => type["Payment Type"]);
-  const tax_options = taxMasters.map((opt) => opt["Tax Code"]);
-  const bank_options = orgBanks.map((opt) => opt["Bank Name"]);
-  // const [filteredDesignations, setFilteredDesignations] = useState([]);
-  const [filteredPays, setFilteredPays] = useState([]);
+  // const payGroupoptions = payGroups.length > 0 ? payGroups.map((group) => group["Pay Group"]) : null;
+  // const payment_type_options = paymentTypes.map((type) => type["Payment Type"]);
+  // const tax_options = taxMasters.map((opt) => opt["Tax Code"]);
+  // const bank_options = orgBanks.map((opt) => opt["Bank Name"]);
+  // // const [filteredDesignations, setFilteredDesignations] = useState([]);
+  // const [filteredPays, setFilteredPays] = useState([]);
 
   // useEffect(() => {
   //   const filtered = designationData
@@ -550,13 +554,13 @@ const EmployeeForm = () => {
   //   setFilteredDesignations(filtered);
   // }, [formData.service_details.department, designationData]);
 
-  useEffect(() => {
-    const filtered = annualPays
-      .filter((pay) => pay["Pay Group"] === formData.pay_details.group)
-      .map((pp) => pp["Annual Pay"]);
+  // useEffect(() => {
+  //   const filtered = annualPays
+  //     .filter((pay) => pay["Pay Group"] === formData.pay_details.group)
+  //     .map((pp) => pp["Annual Pay"]);
 
-    setFilteredPays(filtered);
-  }, [formData.pay_details.group, annualPays]);
+  //   setFilteredPays(filtered);
+  // }, [formData.pay_details.group, annualPays]);
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -1420,6 +1424,7 @@ const EmployeeForm = () => {
   );
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
     
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-personal-details/${companyData[0].id}.${employee_code}`,formData.personal_details);
@@ -1446,7 +1451,12 @@ const EmployeeForm = () => {
             "Content-Type": "multipart/form-data",
           },
       });
-      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-leave-allocation/${companyData[0].id}.${employee_code}`,formData.leave_allocation);
+
+      const today = new Date();
+      leave_allocation.year = today.getFullYear();
+      console.log(formData.leave_allocation);
+
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-leave-allocation/${employee_code}`,formData.leave_allocation);
 
       formData.education_details.forEach(async (edu, index) => {
         const educationFormData = new FormData();
@@ -1637,6 +1647,9 @@ const EmployeeForm = () => {
 
     } catch (error) {
        alert(error.response?.data?.message || 'An error occured ' + error );
+    }
+    finally{
+      setIsSubmitting(false);
     }
   };
 
@@ -2585,11 +2598,19 @@ e.preventDefault();
             </button>
           ) : (
             <button
-              className="px-4 py-2 text-white bg-green-500 rounded"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
+               className={`px-4 py-2 rounded text-white ${
+               isSubmit ? "bg-gray-400 cursor-not-allowed" : "bg-green-500"
+               }`}
+               onClick={() => {
+                 if (!isSubmit) {
+                   handleSubmit();
+                  }
+                 }}
+              disabled={isSubmit}
+>
+               {isSubmit ? "Submitting..." : "Submit"}
+              </button>
+
           )}
         </div>
       </div>
