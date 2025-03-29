@@ -1319,7 +1319,8 @@ const EmployeeForm = () => {
         return false
 
       }
-      const {holiday_leave,medical_leave,maternity_leave,department,designation,start,end_if,type,joining,confirmation,work_in,work_out} = formData.service_details;
+      const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
+      const {holiday_leave,medical_leave,maternity_leave} = formData.leave_allocation;
       if(holiday_leave  === ''|| medical_leave  === '' || maternity_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" ){
         alert('Please fill out the required fields (*) !');
         return false
@@ -1452,7 +1453,7 @@ const EmployeeForm = () => {
       });
 
       const today = new Date();
-      leave_allocation.year = today.getFullYear();
+      formData.leave_allocation.year = today.getFullYear();
       console.log(formData.leave_allocation);
 
       await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-leave-allocation/${employee_code}`,formData.leave_allocation);
