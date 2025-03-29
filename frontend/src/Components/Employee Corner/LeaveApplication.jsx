@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 const LeaveApplication = () => {
   const { user } = useSelector((state) => state.user);
-  const { leaveTypes,fetchLeaveTypes } = useCompanyContext();
   const {navigate} = useNavigate();
   useEffect(() => {
     fetchLeaveTypes();
@@ -28,8 +27,9 @@ const LeaveApplication = () => {
 
   const fetchMyleave = async () => {
     try {
+      const year = new Date().getFullYear();
       const response = await axiosInstance.get(
-        `${import.meta.env.VITE_API_URL}/api/getMyLeaves/${user.employee_code}.${formData.leaveType}`
+        `${import.meta.env.VITE_API_URL}/api/getMyLeaves/${user.employee_code}.${formData.leaveType}.${year}`
       );
       if(response.data.message){
         window.alert(response.data.message);
@@ -43,6 +43,7 @@ const LeaveApplication = () => {
     }
   };
 
+  
   useEffect(() => {
     if (formData.leaveType !== "") {
       setFormData((prev) => ({
@@ -159,11 +160,14 @@ const LeaveApplication = () => {
             required
             >
               <option value="" disabled>Select Leave Type</option>
-              {leaveTypes.map((holiday) => (
+              {/* {leaveTypes.map((holiday) => (
                 <option key={holiday.id} value={holiday.id}>
                   {holiday["Leave Type"]}
                 </option>
-              ))}
+              ))} */}
+              <option value ="Holiday">Holiday Leave</option>
+              <option value ="Medical">Medical Leave</option>
+              <option value ="Maternity">Maternity Leave(if applicable)</option>
 
             </select>
           </div>

@@ -360,49 +360,45 @@ module.exports.getAttendance = async(req,res) =>{
 }
 
 module.exports.getInHand = async (req, res) => {
-  const [code, id] = req.params.id.split('.');
+  const [code, id,year] = req.params.id.split('.');
 
   try {
-    const serviceDetail = await ServiceDetail.findOne({
-      where: { employee_code: code },
-      attributes: ['employment_type_id']
-    });
-
-    if (!serviceDetail) {
-      return res.status(404).json({ message: "Service detail not found" });
-    }
 
     const leaveAllocation = await LeaveAllocation.findOne({
       where: {
         employee_code: code,
-        leave_type_id: id,
+        leave_type: id,
+        year
       }
     });
 
-    const leaveRule = await LeaveRule.findOne({
-      where: {
-        leave_type_id: id,
-        employment_type_id: serviceDetail.employment_type_id,
-      }
-    });
+    // const leaveRule = await LeaveRule.findOne({
+    //   where: {
+    //     leave_type_id: id,
+    //     employment_type_id: serviceDetail.employment_type_id,
+    //   }
+    // });
 
-    if (!leaveRule) {
-      return res.status(404).json({ message: "Leave rule not found" });
-    }
+    // if (!leaveRule) {
+    //   return res.status(404).json({ message: "Leave rule not found" });
+    // }
 
-    const now = new Date();
-    const fromDate = new Date(leaveRule.from);
-    const toDate = new Date(leaveRule.to);
+    // const now = new Date();
+    // const fromDate = new Date(leaveRule.from);
+    // const toDate = new Date(leaveRule.to);
 
-    if (now < fromDate || now > toDate) {
-      return res.status(200).json({ message: "Cannot apply for this leave as it is not effective right now." });
-    }
+    // if (now < fromDate || now > toDate) {
+    //   return res.status(200).json({ message: "Cannot apply for this leave as it is not effective right now." });
+    // }
+
+    const leave_in_hand = id === 'Holiday' ? leaveAllocation.holiday_leaves_in_hand : 
+    id === 'Medical' ? leaveAllocation.medical_leaves_in_hand : maternity_leaves_in_hand;
 
     const if_requested = await LeaveRequest.findAll({
       where: {
         employeeCode: code,
-        leave_type_id: id,
-        status: { [Op.in]: ["Pending", "Approved"] } // ✅ Fetch requests with either "Pending" or "Approved" status
+        leave_type: id,
+        status: { [Op.in]: ["Pending", "Approved"] } 
       },
       attributes: [[Sequelize.fn("SUM", Sequelize.col("days")), "total_days"]],
       raw: true, 
@@ -410,8 +406,8 @@ module.exports.getInHand = async (req, res) => {
     if (!leaveAllocation) {
       return res.status(200).json(0);
     } else {
-      const totalDaysRequested = if_requested[0]?.total_days || 0; // Correct way to extract sum
-      return res.status(200).json(Math.max(leaveAllocation.leave_in_hand - totalDaysRequested, 0));
+      const totalDaysRequested = if_requested[0]?.total_days || 0; 
+      return res.status(200).json(Math.max(leave_in_hand- totalDaysRequested, 0));
     }
   } catch (err) {
     return res.status(500).json({ error: "Server error", details: err.message });
@@ -482,7 +478,7 @@ module.exports.applyLeave = async (req, res) => {
     const check_if_already_applied = await LeaveRequest.findOne({
       where: {
         employeeCode,
-        leave_type_id: leaveType,
+        leave_type: leaveType,
         [Op.or]: [
           { fromDate: { [Op.between]: [fromDate, toDate] } },
           { toDate: { [Op.between]: [fromDate, toDate] } },
@@ -500,38 +496,38 @@ module.exports.applyLeave = async (req, res) => {
       return res.status(400).json({ message: "You have already applied for the same leave type during the same period" });
     }
 
-    const serviceDetail = await ServiceDetail.findOne({
-      where: { employee_code: employeeCode },
-      attributes: ["employment_type_id"]
-    });
+    // const serviceDetail = await ServiceDetail.findOne({
+    //   where: { employee_code: employeeCode },
+    //   attributes: ["employment_type_id"]
+    // });
 
-    if (!serviceDetail) {
-      return res.status(404).json({ message: "Service detail not found" });
-    }
+    // if (!serviceDetail) {
+    //   return res.status(404).json({ message: "Service detail not found" });
+    // }
 
-    const leaveRule = await LeaveRule.findOne({
-      where: {
-        leave_type_id: leaveType,
-        employment_type_id: serviceDetail.employment_type_id,
-      }
-    });
+    // const leaveRule = await LeaveRule.findOne({
+    //   where: {
+    //     leave_type_id: leaveType,
+    //     employment_type_id: serviceDetail.employment_type_id,
+    //   }
+    // });
 
-    if (!leaveRule) {
-      return res.status(400).json({ message: "Leave rule not found for this leave type and employment type" });
-    }
+    // if (!leaveRule) {
+    //   return res.status(400).json({ message: "Leave rule not found for this leave type and employment type" });
+    // }
 
-    const requestedFromDate = new Date(fromDate);
-    const requestedToDate = new Date(toDate);
-    const ruleFromDate = new Date(leaveRule.from);
-    const ruleToDate = new Date(leaveRule.to);
+    // const requestedFromDate = new Date(fromDate);
+    // const requestedToDate = new Date(toDate);
+    // const ruleFromDate = new Date(leaveRule.from);
+    // const ruleToDate = new Date(leaveRule.to);
 
-    if (requestedFromDate < ruleFromDate || requestedToDate > ruleToDate) {
-      return res.status(400).json({ message: "Cannot apply for this leave as it is not effective during the requested period." });
-    }
+    // if (requestedFromDate < ruleFromDate || requestedToDate > ruleToDate) {
+    //   return res.status(400).json({ message: "Cannot apply for this leave as it is not effective during the requested period." });
+    // }
 
     await LeaveRequest.create({
       ...req.body,
-      leave_type_id: leaveType,
+      leave_type: leaveType,
       applicationDate: new Date()
     });
 

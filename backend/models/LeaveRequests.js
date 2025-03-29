@@ -24,15 +24,6 @@ module.exports = (sequelize, DataTypes) => {
             key: "id",
           },
         },
-        leave_type_id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: "LeaveTypes",
-            key: "id",
-          },
-          onDelete: "CASCADE",
-        },
         applicationDate: {
           type: DataTypes.DATEONLY,
           allowNull: false,
@@ -44,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         toDate: {
           type: DataTypes.DATEONLY,
           allowNull: false,
+        },
+        leave_type:{
+          type : DataTypes.STRING(255),
+          allowNull :false,
         },
         leave_in_hand: {
           type: DataTypes.INTEGER,
@@ -66,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         indexes: [
           {
             unique: true,
-            fields: ["employeeCode", "leave_type_id", "fromDate", "toDate"],
+            fields: ["employeeCode", "leave_type", "fromDate", "toDate"],
           },
         ],
       }
