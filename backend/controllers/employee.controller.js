@@ -424,13 +424,13 @@ module.exports.getApplications = async (req, res) => {
     
     const formattedLeaves = await Promise.all(
       requests.map(async (request) => {
-        const leaveType = await LeaveType.findOne({
-          where: { id: request.leave_type_id },
-          attributes: ['leave_type'],
-        });
+        // const leaveType = await LeaveType.findOne({
+        //   where: { id: request.leave_type_id },
+        //   attributes: ['leave_type'],
+        // });
 
         return {
-          "Leave Type": leaveType ? leaveType.leave_type : "N/A",
+          "Leave Type":request.leave_type,
           "Requested On": request.applicationDate,
           "Number of days": request.days,
           "Dates": `${request.fromDate} to ${request.toDate}`,

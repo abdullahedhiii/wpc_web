@@ -27,7 +27,8 @@ const LeaveReportEmployee = () =>{
       }
     const [report,setReport] = useState([]);
 
-    const handleView = async() => {
+    const handleView = async(e) => {
+      e.preventDefault();
        try{
           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeaveReportEmployee`,{
             params : formData
@@ -67,6 +68,7 @@ const LeaveReportEmployee = () =>{
       
     </div>
     <div className={`mt-16 mr-16 ml-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"} `}>
+      <form onSubmit={handleView}>
       <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label className="block text-[12px] font-medium text-gray-700">
@@ -100,14 +102,12 @@ const LeaveReportEmployee = () =>{
             className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
             required
           >
-            <option value="" disabled>
-              Select Employee
-            </option>
-            {employees.map((desig) => (
-              <option key={desig.employee_code} value={desig.employee_code}>
-                {desig.employee_code}
-              </option>
-            ))}
+           <option value="" disabled>Select Employee</option>
+              {employees.map((dd) => (
+                <option key={dd.employee_code} value={dd.employee_code}>
+                  {`${dd['Employee Name']} (${dd.employee_code})`}
+                </option>
+              ))}
           </select>
         </div>
 </div>
@@ -129,7 +129,8 @@ const LeaveReportEmployee = () =>{
         >
           Reset
         </button>
-        </div>
+        
+        </div></form>
 </div>
 <div className="p-16">
         <DataTable

@@ -130,9 +130,11 @@ const DataTable = ({
   const handleRequestUpdate = async (status, request_id) => {
     
     try {
+      const y = new Date().getFullYear()
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/updateLeaveRequest`, {
             status: status,
-            request_id: request_id
+            request_id: request_id,
+            year : y,
         });
         setFetch()
         // setData(prevData => 

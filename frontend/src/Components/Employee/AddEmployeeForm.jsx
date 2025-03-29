@@ -754,7 +754,7 @@ const EmployeeForm = () => {
       fields:[
         { label: "Holiday Leaves", type: "text", value: "leave_allocation.holiday_leave" ,required:true},
         { label: "Medical Leaves", type: "text", value: "leave_allocation.medical_leave" ,required:true},
-        { label: "Maternity Leaves(if applicable)", type: "text", value: "leave_allocation.maternity_leave" ,required:true},
+        { label: "Maternity Leaves(if applicable)", type: "text", value: "leave_allocation.maternity_leave" ,required:false},
       ]
     },
     {
@@ -1321,7 +1321,7 @@ const EmployeeForm = () => {
       }
       const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
       const {holiday_leave,medical_leave,maternity_leave} = formData.leave_allocation;
-      if(holiday_leave  === ''|| medical_leave  === '' || maternity_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" ){
+      if(holiday_leave  === ''|| medical_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" ){
         alert('Please fill out the required fields (*) !');
         return false
       }

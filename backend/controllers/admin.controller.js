@@ -3497,38 +3497,45 @@ module.exports.updateLeaveRequest = async (req, res) => {
         .json({ message: "Updated leave request not found" });
     }
 
-    const num_days = updatedRequest.days;
-    const leaveType = await LeaveAllocation.findOne({
-      where: {
-        employee_code: updatedRequest.employeeCode,
-        leave_type_id: updatedRequest.leave_type_id,
-      },
-    });
-
-    // Check if leaveType exists
-    if (!leaveType) {
-      return res
-        .status(404)
-        .json({ message: "Leave allocation record not found" });
-    }
+    const { days: num_days, leave_type, employeeCode, leave_type_id } = updatedRequest;
 
     if (req.body.status !== "Rejected") {
+      // Fetch current leave allocation first
+      const leaveAllocation = await LeaveAllocation.findOne({
+        where: { employee_code: employeeCode, leave_type_id,year : req.body.year },
+      });
+
+      if (!leaveAllocation) {
+        return res.status(404).json({ message: "Leave allocation record not found" });
+      }
+
       await LeaveAllocation.update(
-        { leave_in_hand: max(leaveType.leave_in_hand - num_days, 0) },
         {
-          where: {
-            employee_code: updatedRequest.employeeCode,
-            leave_type_id: updatedRequest.leave_type_id,
-          },
+          holiday_leaves_in_hand: leave_type === "Holiday" 
+            ? Math.max(leaveAllocation.holiday_leaves_in_hand - num_days, 0) 
+            : leaveAllocation.holiday_leaves_in_hand,
+          
+          medical_leaves_in_hand: leave_type === "Medical" 
+            ? Math.max(leaveAllocation.medical_leaves_in_hand - num_days, 0) 
+            : leaveAllocation.medical_leaves_in_hand,
+          
+          maternity_leaves_in_hand: leave_type === "Maternity" 
+            ? Math.max(leaveAllocation.maternity_leaves_in_hand - num_days, 0) 
+            : leaveAllocation.maternity_leaves_in_hand,
+        },
+        {
+          where: { employee_code: employeeCode, leave_type_id },
         }
       );
     }
 
     return res.status(200).json({ message: "Request updated successfully" });
   } catch (err) {
+    console.error("Error updating leave request:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 module.exports.getLeaveReportEmployee = async (req, res) => {
   const { year, employee_code } = req.query;

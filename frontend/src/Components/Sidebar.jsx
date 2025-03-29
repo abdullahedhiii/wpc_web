@@ -102,7 +102,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
               {isOpen && expandedModules[module.id] && (
                 <div className="pl-8 ">
-                  {module.subModules?.map((subModule) => subModule.name!== 'Time Shift Management'?(
+                  {module.subModules?.map((subModule) => (subModule.name!== 'Time Shift Management' && subModule.name!== 'Archive') ?(
                     <div key={subModule.id}>
                       <button
                         onClick={() => {
@@ -126,7 +126,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                       {expandedFeatures[`${module.id}-${subModule.id}`] && (
                         <div className="pl-4">
                           {subModule.features?.map((feature) => 
-                            (feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
+                            (feature.name!== 'Process Attendance' &&  feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
                                && feature.name!== 'Manage Leave Type'  && feature.name!== 'Leave Allocation'
                               )&& (user.isAdmin || feature.can_access) ? (
                               <button

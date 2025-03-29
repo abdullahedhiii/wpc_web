@@ -202,7 +202,7 @@ const GenerateAttendance = () => {
               className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
               required
             >
-              <option value="" disabled></option>
+              <option value="" disabled>Select Employee</option>
               {employees.map((dd) => (
                 <option key={dd.employee_code} value={dd.employee_code}>
                   {`${dd['Employee Name']} (${dd.employee_code})`}
