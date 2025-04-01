@@ -262,8 +262,8 @@ Attendance.belongsTo(Employee, { foreignKey: "employee_code", as: "employee" });
 
 Attendance.belongsTo(PersonalDetail, { foreignKey: "employee_code", as: "employeePersonalDetail" });
 
-Job.hasMany(Candidate,{as : 'candidates',foreignKey : 'id'});
-Candidate.belongsTo(Job,{as : 'job',foreignKey:'id'});
+Job.hasMany(Candidate,{as : 'candidates',foreignKey : 'job_id'});
+Candidate.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
 
 Job.hasOne(InterviewForm,{as : 'form',foreignKey : 'job_id'});
 InterviewForm.belongsTo(Job,{as : 'job',foreignKey:'job_id'});

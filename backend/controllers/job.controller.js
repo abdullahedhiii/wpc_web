@@ -239,8 +239,12 @@ module.exports.getJobDetails = async (req, res) => {
 
 
 module.exports.applyJob = async (req, res) => {
-  const [organisationId, job_id, email] = req.params.id.split('.');
-   console.log('In job apply ',job_id);
+  const organisationId = parseInt(req.params.id.split('.')[0], 10);
+  const job_id = parseInt(req.params.id.split('.')[1], 10);
+  const email = req.params.id.split('.')[2];
+  
+  console.log("Parsed values:", { organisationId, job_id, email });
+  
   const resumeFile = req.files?.resume ? req.files.resume[0].filename : null;
   const coverLetterFile = req.files?.coverLetter ? req.files.coverLetter[0].filename : null;
 
@@ -256,8 +260,8 @@ module.exports.applyJob = async (req, res) => {
     const requestBody = typeof req.body === 'object' && req.body !== null ? req.body : {}; 
     console.log(requestBody);
     const candidate = await Candidate.create({
-  organisation_id: organisationId,
-  job_id,
+     organisation_id: organisationId,
+     job_id,
   email, 
   coverLetter: coverLetterUrl,
   resume: resumeUrl,

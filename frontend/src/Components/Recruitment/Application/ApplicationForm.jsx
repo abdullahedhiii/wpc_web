@@ -17,6 +17,8 @@ import {
 } from "lucide-react"
 
 export default function ApplicationForm({ onBack, job_id, jobTitle, organisation_id }) {
+  const [justsubmitted,setSubmitted] = useState(false);
+  const [isSubmitting,setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     job_id: job_id,
     organisation_id: organisation_id,
@@ -57,12 +59,14 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const d = new Date(formData.dob);
-    if(d > new Date()){
-      alert('Enter valid date of birth')
-      return;
-    }
+    setSubmitting(true);
     try {
+      const d = new Date(formData.dob);
+      if(d > new Date()){
+        alert('Enter valid date of birth')
+        setSubmitting(false);
+        return;
+      }
       const candidate = new FormData()
       for (const key in formData) {
         if (formData[key]) {
@@ -79,13 +83,16 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
         },
       })
 
-      window.alert("Application submitted successfully")
+      setSubmitted(true);
     } catch (err) {
       if (err.response) {
         window.alert(err.response.data.message || "Something went wrong. Please try again.")
       } else {
         window.alert("Network error. Please check your connection.")
       }
+    }
+    finally{
+      setSubmitting(false);
     }
   }
 
@@ -371,6 +378,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
               className="w-full py-3 mt-6 bg-gradient-to-r from-yellow-500 to-amber-600 text-white font-bold rounded-md hover:from-yellow-600 hover:to-amber-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              disabled = {isSubmitting}
             >
               <Send className="w-5 h-5 mr-2" />
               Submit Application

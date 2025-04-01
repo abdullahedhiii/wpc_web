@@ -3461,9 +3461,9 @@ module.exports.getLeavesRequested = async (req, res) => {
             "Date Of Application": leaveRequest.applicationDate,
             "No. Of Leave": leaveRequest.days,
             Status: leaveRequest.status,
-            Action: [
-              { label: "approve", route: "Approved" },
-              { label: "reject", route: "Rejected" },
+            Action: leaveRequest.status !== 'Pending' ? null : [
+              { label: "Approve Request", route: "Approved" },
+              { label: "Reject Request", route: "Rejected" },
             ],
           };
         })

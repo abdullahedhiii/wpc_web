@@ -35,6 +35,11 @@ const VisitorForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
+    const t = new Date(formData.date);
+    if(t < new Date()){
+      alert('Please enter a valid date of visit');
+      return;
+    }
     try {
       const send_data = { ...formData, key: hashKey }
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/registerVisitor`, send_data)

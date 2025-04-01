@@ -179,7 +179,7 @@ const Candidate = () => {
           <p><strong>Experience:</strong> {details.experienceYear} years, {details.experienceMonth} months</p>
           <p><strong>Current Location:</strong> {details.currentLocation}</p>
           <p><strong>Recent Position:</strong> {details.recentPosition}</p>
-          <p><strong>Next Job Title:</strong> {details.nextJobTitle || "N/A"}</p>
+          {/* <p><strong>Next Job Title:</strong> {details.nextJobTitle || "N/A"}</p> */}
           <p><strong>Status:</strong> {details.status}</p>
           <p><strong>Applied Date:</strong> {new Date(details.applyDate).toLocaleDateString()}</p>
 
