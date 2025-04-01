@@ -253,15 +253,17 @@ module.exports.applyJob = async (req, res) => {
     : null;
 
   try {
-    console.log('trying to create candidate ,',job_id,organisationId,...req.body)
+    const requestBody = typeof req.body === 'object' && req.body !== null ? req.body : {}; 
+    console.log(requestBody);
     const candidate = await Candidate.create({
-      organisation_id: organisationId,
-      job_id,
-      email, 
-      coverLetter: coverLetterUrl,
-      resume: resumeUrl,
-      ...req.body, 
-    });
+  organisation_id: organisationId,
+  job_id,
+  email, 
+  coverLetter: coverLetterUrl,
+  resume: resumeUrl,
+  ...requestBody,  
+});
+
 
     return res.status(200).json({ message: "Applied for job successfully", candidate });
   } catch (err) {

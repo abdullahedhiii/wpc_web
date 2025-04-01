@@ -57,7 +57,11 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    const d = new Date(formData.dob);
+    if(d > new Date()){
+      alert('Enter valid date of birth')
+      return;
+    }
     try {
       const candidate = new FormData()
       for (const key in formData) {
@@ -66,8 +70,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
         }
       }
 
-      const str = `${formData.organisation_id}.${formData.job_id}.${formData.email}`
-
+      const str = `${formData.organisation_id}.${job_id}.${formData.email}`
+      console.log(str);
+      console.log(formData);
       await axios.post(`${import.meta.env.VITE_API_URL}/api/applyJob/${str}`, candidate, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -212,6 +217,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
+                  required
                 />
               </div>
 
@@ -235,7 +241,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Experience in Months</label>
                 <select
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -250,7 +256,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
             </motion.div>
 
             <motion.div variants={itemVariants}>
@@ -264,6 +270,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                 name="education"
                 value={formData.education}
                 onChange={handleChange}
+                required
               ></textarea>
             </motion.div>
 
@@ -279,7 +286,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Next Recent Job Title</label>
                 <input
                   type="text"
@@ -288,9 +295,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                   value={formData.nextJobTitle}
                   onChange={handleChange}
                 />
-              </div>
+              </div> */}
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Current/Past code</label>
                 <input
                   type="text"
@@ -299,7 +306,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                   value={formData.currentCode}
                   onChange={handleChange}
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -327,6 +334,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                 name="expectedSalary"
                 value={formData.expectedSalary}
                 onChange={handleChange}
+                required
               />
             </motion.div>
 

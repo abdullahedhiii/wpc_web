@@ -72,10 +72,10 @@ const JobPostingForm = () => {
     }
   
     const options = jobs.length > 0 
-      ? [{ label: "", value: "" }, ...jobs.map((ele) => ({
+      ? jobs.map((ele) => ({
           value: ele["SOC CODE"], 
           label: ele["SOC CODE"]
-        }))]
+        }))
       : [];
   
     setSocOptions(options);
@@ -146,13 +146,13 @@ const JobPostingForm = () => {
       required : true
 
     },
-    {
-      label: "Department",
-      type: "text",
-      stateAttribute: "department",
-      required : true
+    // {
+    //   label: "Department",
+    //   type: "text",
+    //   stateAttribute: "department",
+    //   required : true
 
-    },
+    // },
     {
       label: "Job Code",
       type: "text",
@@ -271,6 +271,12 @@ const JobPostingForm = () => {
 
   const handleJobPost = async (e) => {
     e.preventDefault();
+    const t1 = new Date(formData.jobClosingDate);
+    const t2 = new Date(formData.jobPostingDate);
+    if(t1 < t2){
+      alert('Enter valid job closing and posting date');
+      return;
+    }
     try {
       const response = await axiosInstance.post(
         `${import.meta.env.VITE_API_URL}/api/addJobPosted/${companyData[0].id}`,
@@ -505,31 +511,7 @@ const JobPostingForm = () => {
               />
               </div>
 
-              <div className="flex flex-col">
-                <label className="text-[12px] font-semibold text-gray-600 mb-2">
-                  Authorising Officer
-                </label>
-                <input
-                  type="text"
-                  name="authorisingOfficer"
-                  value={formData.authorisingOfficer}
-                  onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-[12px] font-semibold text-gray-600 mb-2">
-                  Authorising Officer’s Designation
-                </label>
-                <input
-                  type="text"
-                  name="authorisingOfficerDesignation"
-                  value={formData.authorisingOfficerDesignation}
-                  onChange={handleChange}
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400  hover:border-b-4"
               
-              />
-              </div>
 
               <div className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">
@@ -560,24 +542,6 @@ const JobPostingForm = () => {
                 />
               </div>
 
-              <div className="flex flex-col">
-                <label className="text-[12px] font-semibold text-gray-600 mb-2">
-                  Is this a new role
-                </label>
-                <select
-                  name="newRole"
-                  value={formData.newRole}
-                  onChange={handleChange}
-                  required
-
-                  className="p-2 border rounded-md focus:outline-none focus:border-2 focus:border-yellow-400 focus:border-b-4 hover:border-yellow-400 hover:border-b-4"
-                >
-                  <option value="" diasbled className="text-[12px]">Select</option>
-                  <option value="Yes"  className="text-[12px]">Yes</option>
-                  <option value="No"  className="text-[12px]">No</option>
-
-                </select>
-              </div>
 
               <div className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">
