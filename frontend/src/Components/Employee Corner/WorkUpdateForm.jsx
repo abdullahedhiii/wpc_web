@@ -22,12 +22,19 @@ const [data, setData] = useState({
   
     const from = new Date(`1970-01-01T${fromTime}`);
     const to = new Date(`1970-01-01T${toTime}`);
-  
+    let hours = "" ,minutes = "";
+ 
+    if(to < from){
+      alert('Enter valid timings');
+    }
+else{   
     let diffMs = to - from;
     if (diffMs < 0) diffMs += 24 * 60 * 60 * 1000; 
   
-    const hours = Math.floor(diffMs / (1000 * 60 * 60));
-    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+     hours = Math.floor(diffMs / (1000 * 60 * 60));
+     minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+}
+ 
   
     return { hours, minutes };
   };

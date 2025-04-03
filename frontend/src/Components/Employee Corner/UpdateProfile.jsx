@@ -1331,7 +1331,13 @@ const UpdateProfile = () => {
     let errors = ""; // Store field validation errors
   
     if (currentStep === 1) {
-      const { employee_code, fname, lname, email, contact_1,dob} = formData.personal_details;
+      const { fname, lname, email, contact_1,dob} = formData.personal_details;
+      const check_dob = dob ? new Date(dob) : null;
+      const today = new Date();
+      if(check_dob && check_dob > today){
+        alert('Enter valid employee date of birth');
+        return false;
+      }
       if (!fname) errors = errors + "Employee First name,";
       if (!lname) errors =  errors + " Last name,";
       if (!email) errors = errors +  " Email,";
@@ -1343,15 +1349,17 @@ const UpdateProfile = () => {
       }
       if(fname.length < 3 || lname.length < 3){
         alert('Please enter valid names')
-        return
+        return false
       }
       if(contact_1.length < 10 ){
         alert('Please enter a valid phone number')
-        return
+        return false
+
       }
       const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
-      if(department === "" || designation === "" || type === "" || work_in === "" || work_out === "" || profile_pic === ""){
-        alert('Employee Department,Designation,Shift in time, Shift out time, Profile Picture and Employment Type are required')
+      const {holiday_leave,medical_leave,maternity_leave} = formData.leave_allocation;
+      if(holiday_leave  === ''|| medical_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" ){
+        alert('Please fill out the required fields (*) !');
         return false
       }
       const dateJoining = joining ? new Date(joining) : null;
@@ -1390,6 +1398,16 @@ const UpdateProfile = () => {
       }
       
     }
+    else if (currentStep === 2){
+      const {start,end} = formData.job_details;
+      const c_start = new Date(start);
+      const c_end = new Date(end);
+      if(c_start > c_end){
+        alert('Enter valid job dates');
+        return;
+      }
+    }
+   
     else if(currentStep === 3){
       for (const detail of formData.training_details) {
         const startDate = new Date(detail.start);
@@ -1404,12 +1422,81 @@ const UpdateProfile = () => {
             alert("Please enter valid training info. Start date cannot be after end date.");
             return false;
         }
-    }    
+    }  
+    }
+   else if(currentStep === 6){
+    let { issue_date, expiry_date, review_date } = formData.passport_details || {};
+
+    let x = issue_date ? new Date(issue_date) : null;
+    let y = expiry_date ? new Date(expiry_date) : null;
+    let z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid passport issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issue_date, expiry_date, review_date } = formData.visa || {});
+    
+    x = issue_date ? new Date(issue_date) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid visa issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.esus || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid ESUS issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.dbs || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid DBS issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.national || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid National data issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.other_details || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid other details issue, expiry, and review dates!');
+      return false;
+    }
+    
     }
 
-  
+    
     return true;
   };
+  
   
   const handleSubmit = async () => {
     try {

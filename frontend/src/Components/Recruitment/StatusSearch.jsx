@@ -58,10 +58,17 @@ const StatusSearch = () => {
     }));
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (e) => {
+    e.preventDefault();
     if ( !formData.title || !formData.fromDate || !formData.toDate) {
       alert("Please fill in all fields.");
       return;
+    }
+    const w = new Date(formData.fromDate);
+    const x = new Date(formData.toDate);
+    if(x < w){
+       alert('Enter valid dates');
+       return;
     }
     setData([]);
     const filteredCandidates = candidates.filter((candidate) => {

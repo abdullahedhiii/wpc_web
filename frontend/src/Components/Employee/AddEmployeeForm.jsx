@@ -446,6 +446,7 @@ const EmployeeForm = () => {
       proof: null,
     },
     other_documents: [{ type: "", doc: null }],
+    
     passport_details: {passport_no: "",nationality: "",place: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",picture: null,current: true,remarks: "",
     },
     visa: {visa_no: 0,nationality: "",country: "",issued_by: "",issue_date: "",expiry_date: "",review_date: "",front: null,back: null,current: true,remarks: "",
@@ -1361,6 +1362,16 @@ const EmployeeForm = () => {
       }
       
     }
+    else if (currentStep === 2){
+      const {start,end} = formData.job_details;
+      const c_start = new Date(start);
+      const c_end = new Date(end);
+      if(c_start > c_end){
+        alert('Enter valid job dates');
+        return;
+      }
+    }
+   
     else if(currentStep === 3){
       for (const detail of formData.training_details) {
         const startDate = new Date(detail.start);
@@ -1375,10 +1386,78 @@ const EmployeeForm = () => {
             alert("Please enter valid training info. Start date cannot be after end date.");
             return false;
         }
-    }    
+    }  
+    }
+   else if(currentStep === 6){
+    let { issue_date, expiry_date, review_date } = formData.passport_details || {};
+
+    let x = issue_date ? new Date(issue_date) : null;
+    let y = expiry_date ? new Date(expiry_date) : null;
+    let z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid passport issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issue_date, expiry_date, review_date } = formData.visa || {});
+    
+    x = issue_date ? new Date(issue_date) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid visa issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.esus || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid ESUS issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.dbs || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid DBS issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.national || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid National data issue, expiry, and review dates!');
+      return false;
+    }
+    
+    ({ issued, expiry_date, review_date } = formData.other_details || {});
+    
+    x = issued ? new Date(issued) : null;
+    y = expiry_date ? new Date(expiry_date) : null;
+    z = review_date ? new Date(review_date) : null;
+    
+    if ((x && y && y < x) || (x && z && z < x)) {
+      alert('Enter valid other details issue, expiry, and review dates!');
+      return false;
+    }
+    
     }
 
-  
+    
     return true;
   };
   

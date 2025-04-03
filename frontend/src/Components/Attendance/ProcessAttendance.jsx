@@ -65,7 +65,12 @@ const ProcessAttendance = () => {
 
   const handleGenerate = async (e) => {
     e.preventDefault();
-
+    const t = new Date(formData.fromDate);
+    const w = new Date(formData.toDate);
+    if(w < t){
+      alert('Enter valid from and to dates!');
+      return;
+    }
      try{
          const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/processAttendance`,
             {
