@@ -18,15 +18,24 @@ const Dashboard = () => {
   }, [modules])
   
   const handleModuleSelect = (module) => {
-    try{
-    setSelectedModule(module)
-    setSubFeature(null)
-    setSubModule(null)
-    navigate(`/hrms/${module.next_route}`)
+    try {
+      setSelectedModule(module);
+  
+      const firstSubModule = module.subModules?.[0] || null;
+      const firstFeature = firstSubModule?.features?.[0] || null;
+  
+      setSubModule(firstSubModule);
+      setSubFeature(firstFeature);
+  
+      if(firstFeature)
+      navigate(`/hrms/${firstFeature.next_route}`);
+      else if(firstSubModule) navigate(`/hrms/${firstSubModule.main_route}`);
+
+    } catch (err) {
+      console.error("Module selection error:", err);
     }
-  catch(err){
-  }
-  }
+  };
+  
 
   if (isLoading) {
     return (

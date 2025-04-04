@@ -820,7 +820,6 @@ const CompanyForm = () => {
   
       await Promise.all(documentUploads);
       alert('Company Submission Successful');
-      navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
     } catch (err) {
       console.log(err);
@@ -828,6 +827,8 @@ const CompanyForm = () => {
     }
     finally{
       await fetchOrganisation(company_id,user.isAdmin);
+      navigate(`/hrms/company-profile/company`);
+
     }
   };
   
