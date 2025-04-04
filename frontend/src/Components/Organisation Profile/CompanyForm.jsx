@@ -709,6 +709,7 @@ const CompanyForm = () => {
                 } else {
                     newState = {
                         ...newState,
+                        KeyContact_check: false, 
                         KeyContact_fname: "",
                         KeyContact_lname: "",
                         KeyContact_designation: "",
@@ -734,6 +735,7 @@ const CompanyForm = () => {
                 } else {
                     newState = {
                         ...newState,
+                        Level1_check : false,
                         Level1_fname: "",
                         Level1_lname: "",
                         Level1_designation: "",

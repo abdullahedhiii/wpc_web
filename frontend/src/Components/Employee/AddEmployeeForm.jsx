@@ -963,7 +963,7 @@ const EmployeeForm = () => {
           label: "Review Date",
           type: "date",
           value: "passport_details.review_date",
-          readOnly: true,
+          // readOnly: true,
         },
         { label: "Picture", type: "file", value: "passport_details.picture" },
         {
@@ -998,7 +998,7 @@ const EmployeeForm = () => {
           label: "Eligible Review Date",
           type: "date",
           value: "visa.review_date",
-          readOnly: true,
+          // readOnly: true,
         },
         {
           label: "Upload Front Side Picture",
@@ -1031,7 +1031,7 @@ const EmployeeForm = () => {
           label: "Eligible Review Date",
           type: "date",
           value: "esus.review_date",
-          readOnly: true,
+          // readOnly: true,
         },
         { label: "Upload Document", type: "file", value: "esus.document" },
         {
@@ -1065,7 +1065,7 @@ const EmployeeForm = () => {
           label: "Eligible Review Date",
           type: "date",
           value: "dbs.review_date",
-          readOnly: true,
+          // readOnly: true,
         },
         { label: "Upload Document", type: "file", value: "dbs.document" },
         {
@@ -1103,7 +1103,7 @@ const EmployeeForm = () => {
           label: "Eligible Review Date",
           type: "date",
           value: "national.review_date",
-          readOnly: true,
+          // readOnly: true,
         },
         { label: "Upload Document", type: "file", value: "national.document" },
         {
@@ -1389,6 +1389,7 @@ const EmployeeForm = () => {
     }  
     }
    else if(currentStep === 6){
+    let issued;
     let { issue_date, expiry_date, review_date } = formData.passport_details || {};
 
     let x = issue_date ? new Date(issue_date) : null;
@@ -1531,10 +1532,15 @@ const EmployeeForm = () => {
           },
       });
 
-      const today = new Date();
-      formData.leave_allocation.year = today.getFullYear();
-      console.log(formData.leave_allocation);
-
+      const today  = new Date();
+      setFormData(prev => ({
+        ...prev,
+        leave_allocation: {
+          ...prev.leave_allocation,
+          year: today.getFullYear(),
+          maternity_leave: prev.leave_allocation.maternity_leave || 0,
+        }
+      }));      
       await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-leave-allocation/${employee_code}`,formData.leave_allocation);
 
       formData.education_details.forEach(async (edu, index) => {

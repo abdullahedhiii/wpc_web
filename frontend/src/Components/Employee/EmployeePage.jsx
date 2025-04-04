@@ -37,8 +37,8 @@ const EmployeePage = () => {
      const routee = `${import.meta.env.VITE_API_URL}/api/getEmployeePDF/${employee_code}`;
      try {
       const response = await axiosInstance.get(routee);
-      if (response.data.pdf_url) {
-        window.open(response.data.pdf_url, "_blank"); 
+      if (response.data.url) {
+        window.open(response.data.url, "_blank"); 
       } 
     } catch (err) {
       alert('Network error downloading pdf',err);

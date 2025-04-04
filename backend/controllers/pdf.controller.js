@@ -909,28 +909,195 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
   }
 };
 
-module.exports.generateEmployeePDF = async(req,res) =>{
-    try{
-       const employee_code = req.params.employee_code;
-       const employee = await Employee.findOne({
-        where : {
-           employee_code,
+module.exports.generateEmployeePDF = async (req, res) => {
+  try {
+    const employee_code = req.params.employee_code;
+    const employee = await Employee.findOne({
+      where: {
+        employee_code,
+      },
+      include: [
+        {
+          model: PersonalDetail,
+          as: "personaldetail",
+          required: false,
         },
-        include : [
-            {
-              model : PersonalDetail,
-              as : 'personaldetail',
-              required:false,
-            },
-            {
-              model : ServiceDetail,
-              as : 'servicedetail',
-              required:false,
-            },
-        ]
-       })
-    } 
-    catch(err){
-     return res.status(500).json({message : 'Error generatting employee report',err});
+        {
+          model: ServiceDetail,
+          as: "servicedetail",
+          required: false,
+        },
+      ],
+    });
+
+    const year = new Date().getFullYear();
+    const leaveA = await LeaveAllocation.findOne({
+      where: {
+        employee_code,
+        year,
+      },
+    });
+
+    const org = await Organisation.findOne({
+      where: {
+        id: employee.organisation_id,
+      },
+    });
+
+    // Create directory if it doesn't exist
+    const uploadDir = path.join(
+      process.cwd(),
+      "uploads",
+      org.id.toString(),
+      "EmployeeReports"
+    );
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
-}
+
+    const filePath = path.join(uploadDir, `${employee_code}.pdf`);
+    const doc = new PDFDocument({ margin: 50 });
+
+    doc.pipe(fs.createWriteStream(filePath));
+
+    const primaryColor = "#1a73e8";
+    const secondaryColor = "#f1f8ff";
+    const textColor = "#333333";
+
+    async function addImage(url, x, y, options = {}) {
+      if (!url) return Promise.resolve();
+      
+      try {
+        const response = await axios.get(url, { responseType: "arraybuffer" });
+        const imageBuffer = Buffer.from(response.data);
+        
+        const width = options.width || 100;
+        const height = options.height || 100;
+        
+        doc.image(imageBuffer, x, y, { 
+          width, 
+          height, 
+          ...options 
+        });
+        
+        return Promise.resolve();
+      } catch (error) {
+        console.error("Error loading image:", error.message);
+        return Promise.resolve();
+      }
+    }
+
+    function formatName(personalDetail) {
+      if (!personalDetail) return "N/A";
+      
+      const nameParts = [];
+      if (personalDetail.fname) nameParts.push(personalDetail.fname);
+      if (personalDetail.mname) nameParts.push(personalDetail.mname);
+      if (personalDetail.lname) nameParts.push(personalDetail.lname);
+      
+      return nameParts.length > 0 ? nameParts.join(" ") : "N/A";
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return "N/A";
+      
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    }
+
+    function addField(label, value, y) {
+      doc.fillColor(primaryColor).font("Helvetica-Bold").text(label, 100, y);
+      doc.fillColor(textColor).font("Helvetica").text(value || "N/A", 300, y);
+      return y + 25;
+    }
+    doc.rect(0, 0, doc.page.width, 120).fill(primaryColor);
+    doc.fillColor("white").fontSize(24).font("Helvetica-Bold").text("Employee Report", 50, 50);
+    
+    doc.fillColor("white")
+       .fontSize(16)
+       .font("Helvetica")
+       .text(org.Company_name || "Company Name", 50, 80);
+
+    if (org.Company_Logo) {
+      await addImage(org.Company_Logo, 450, 40, { width: 100, height: 80 });
+    }
+
+    let yPos = 150;
+    
+    doc.rect(50, yPos, doc.page.width - 100, 100).fill(secondaryColor);
+    
+    if (employee.servicedetail && employee.servicedetail.profile_pic) {
+      await addImage(employee.servicedetail.profile_pic, 60, yPos + 10, { width: 80, height: 80 });
+    }
+    
+    doc.fillColor(primaryColor)
+       .fontSize(18)
+       .font("Helvetica-Bold")
+       .text(formatName(employee.personaldetail), 150, yPos + 20);
+    
+    doc.fillColor(textColor)
+       .fontSize(14)
+       .font("Helvetica")
+       .text(`Employee Code: ${employee_code}`, 150, yPos + 45);
+    
+    yPos = 280;
+    
+    doc.fillColor(primaryColor)
+       .fontSize(16)
+       .font("Helvetica-Bold")
+       .text("Employee Details", 50, yPos);
+    
+    doc.moveTo(50, yPos + 20).lineTo(550, yPos + 20).stroke(primaryColor);
+    
+    yPos += 40;
+    
+    yPos = addField("Department:", employee.servicedetail?.department, yPos);
+    yPos = addField("Designation:", employee.servicedetail?.designation, yPos);
+    yPos = addField("Employment Type:", employee.servicedetail?.type, yPos);
+    yPos = addField("Contract Start:", formatDate(employee.servicedetail?.start), yPos);
+    yPos = addField("Contract End:", formatDate(employee.servicedetail?.end_if), yPos);
+    yPos = addField("Shift Work In Time:", employee.servicedetail?.work_in, yPos);
+    yPos = addField("Shift Work Out Time:", employee.servicedetail?.work_out, yPos);
+    
+    yPos += 20;
+    
+    doc.fillColor(primaryColor)
+       .fontSize(16)
+       .font("Helvetica-Bold")
+       .text("Leave Details", 50, yPos);
+    
+    doc.moveTo(50, yPos + 20).lineTo(550, yPos + 20).stroke(primaryColor);
+    
+    yPos += 40;
+    
+    yPos = addField("Holiday Leaves Left:", leaveA?.holiday_leaves_in_hand, yPos);
+    yPos = addField("Medical Leaves Left:", leaveA?.medical_leaves_in_hand, yPos);
+    
+    if (leaveA?.maternity_leaves_in_hand !== undefined) {
+      yPos = addField("Maternity Leaves Left:", leaveA.maternity_leaves_in_hand, yPos);
+    }
+    
+    const footerY = doc.page.height - 50;
+    doc.moveTo(50, footerY).lineTo(550, footerY).stroke(primaryColor);
+    
+    doc.fillColor(textColor)
+       .fontSize(10)
+       .font("Helvetica")
+       .text(`Generated on: ${new Date().toLocaleDateString()}`, 50, footerY + 10);
+    
+    doc.fillColor(textColor)
+       .fontSize(10)
+       .font("Helvetica")
+       .text("Confidential Document", 450, footerY + 10);
+    
+    doc.end();
+    
+    res.status(200).json({
+      message: "Employee Report generated successfully",
+      url: `${process.env.BACKEND_URL}/uploads/${org.id}/EmployeeReports/${employee_code}.pdf`,
+    });
+  } catch (err) {
+    console.error("PDF generation error:", err);
+    return res.status(500).json({ message: "Error generating employee report", err });
+  }
+};

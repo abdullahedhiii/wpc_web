@@ -1425,6 +1425,7 @@ const UpdateProfile = () => {
     }  
     }
    else if(currentStep === 6){
+    let issued;
     let { issue_date, expiry_date, review_date } = formData.passport_details || {};
 
     let x = issue_date ? new Date(issue_date) : null;
