@@ -12,7 +12,7 @@ const AttendanceRoutes = require('./routes/attendance.routes');
 const PdfRoutes = require('./routes/pdf.routes');
 const employeeRoutes = require('./routes/employee-routes');
 
-// require('./jobs/sponsor-fetch');
+const {runSponsorUpdate} =  require('./jobs/sponsor-fetch');
 
 const app = express();
 app.use(express.json());  
@@ -39,6 +39,9 @@ app.use('/uploads', express.static('uploads'));
 sequelize.sync({ force: false }).then(() => {
   app.listen(process.env.PORT, () => {
     console.log('Server is running');
+    runSponsorUpdate().catch(error => {
+      console.error('Initial sponsor update failed:', error);
+    });
   });
 }).catch((error) => {
   console.error('Error syncing the database:', error);

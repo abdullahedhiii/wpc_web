@@ -4,7 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 const csv = require("csv-parser");
-const { Sponsor } = require("../config/sequelize");
+const { Sponsor, Sequelize } = require("../config/sequelize");
+const Op = Sequelize.Op;
 
 const BASE_URL = "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers";
 const DOWNLOAD_DIR = "./downloads";
@@ -12,68 +13,199 @@ const DOWNLOAD_DIR = "./downloads";
 if (!fs.existsSync(DOWNLOAD_DIR)) {
   fs.mkdirSync(DOWNLOAD_DIR);
 }
+
 const processCSV = async (csvFilePath) => {
   try {
-      const existingSponsors = await Sponsor.findAll();
-      const existingMap = new Map(existingSponsors.map(s => [s.organisationName, s]));
+    // Get all existing sponsors from the database
+    const existingSponsors = await Sponsor.findAll();
+    
+    // Create a map for quick lookup by organization name
+    const existingMap = new Map(existingSponsors.map(s => [s.organisationName, s]));
+    
+    // To store all CSV entries grouped by organisationName
+    const sponsorRecords = new Map();
+    
+    // To track which organizations are in the current CSV
+    const currentSponsors = new Set();
 
-      const sponsorRecords = new Map(); // To store all CSV entries grouped by organisationName
-      const newSponsors = new Set();
+    // Step 1: Read CSV and group by organisationName
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(csvFilePath)
+        .pipe(csv())
+        .on("data", (row) => {
+          const orgName = row["Organisation Name"];
+          if (!orgName) return; // Skip rows without organization name
+          
+          const typeAndRating = row["Type & Rating"] || "";
+          const route = row["Route"] || "";
+          const licenseEntry = `${typeAndRating} - ${route}`; // Concatenating values
 
-      // Step 1: Read CSV and group by organisationName
-      await new Promise((resolve, reject) => {
-          fs.createReadStream(csvFilePath)
-              .pipe(csv())
-              .on("data", (row) => {
-                  const orgName = row["Organisation Name"];
-                  const typeAndRating = row["Type & Rating"];
-                  const route = row["Route"];
-                  const licenseEntry = `${typeAndRating} - ${route}`; // Concatenating values
-
-                  if (!sponsorRecords.has(orgName)) {
-                      sponsorRecords.set(orgName, {
-                          organisationName: orgName,
-                          townCity: row["Town/City"],
-                          county: row["County"],
-                          licenseTier: new Set(), // Using Set to avoid duplicates
-                      });
-                  }
-                  sponsorRecords.get(orgName).licenseTier.add(licenseEntry);
-                  newSponsors.add(orgName);
-              })
-              .on("end", resolve)
-              .on("error", reject);
-      });
-
-      // Step 2: Insert or update sponsors
-      const updates = [];
-      for (const [orgName, sponsorData] of sponsorRecords.entries()) {
-          sponsorData.licenseTier = Array.from(sponsorData.licenseTier).join("; "); // Convert Set to string
-
-          if (existingMap.has(orgName)) {
-              const existingSponsor = existingMap.get(orgName);
-              if (existingSponsor.licenseTier !== sponsorData.licenseTier) {
-                  sponsorData.status = "updated";
-                  updates.push(Sponsor.update(sponsorData, { where: { organisationName: orgName } }));
-              }
-          } else {
-              sponsorData.status = "active";
-              sponsorData.newSponsor = true;
-              updates.push(Sponsor.create(sponsorData));
+          if (!sponsorRecords.has(orgName)) {
+            sponsorRecords.set(orgName, {
+              organisationName: orgName,
+              townCity: row["Town/City"] || "",
+              county: row["County"] || "",
+              licenseTier: new Set(), // Using Set to avoid duplicates
+            });
           }
+          
+          // Add this license entry to the set
+          sponsorRecords.get(orgName).licenseTier.add(licenseEntry);
+          
+          // Mark this organization as present in current CSV
+          currentSponsors.add(orgName);
+        })
+        .on("end", resolve)
+        .on("error", reject);
+    });
+
+    console.log(`Found ${sponsorRecords.size} unique organizations in CSV`);
+
+    // Prepare arrays for bulk operations
+    const newSponsors = [];
+    const sponsorsToUpdate = [];
+    const reactivatedSponsors = [];
+    
+    // Step 2: Process each sponsor from the CSV
+    for (const [orgName, sponsorData] of sponsorRecords.entries()) {
+      // Convert Set of license tiers to string
+      sponsorData.licenseTier = Array.from(sponsorData.licenseTier)
+        .filter(entry => entry && entry.trim() !== "")
+        .join("; ");
+
+      if (existingMap.has(orgName)) {
+        // Organization exists in database
+        const existingSponsor = existingMap.get(orgName);
+        
+        if (existingSponsor.status === "removed") {
+          // If it was previously removed, mark as new again
+          reactivatedSponsors.push({
+            id: existingSponsor.id,
+            organisationName: orgName,
+            townCity: sponsorData.townCity,
+            county: sponsorData.county,
+            licenseTier: sponsorData.licenseTier,
+            status: "active",
+            newSponsor: true
+          });
+        } else if (existingSponsor.licenseTier !== sponsorData.licenseTier) {
+          // If license tier changed, mark as updated
+          sponsorsToUpdate.push({
+            id: existingSponsor.id,
+            organisationName: orgName,
+            townCity: sponsorData.townCity,
+            county: sponsorData.county,
+            licenseTier: sponsorData.licenseTier,
+            status: "updated",
+            newSponsor: false
+          });
+        } else if (existingSponsor.status !== "active") {
+          // No changes in license tier, but ensure status is active if it wasn't
+          sponsorsToUpdate.push({
+            id: existingSponsor.id,
+            status: "active",
+            newSponsor: false
+          });
+        }
+      } else {
+        // New organization, not in database
+        newSponsors.push({
+          organisationName: orgName,
+          townCity: sponsorData.townCity,
+          county: sponsorData.county,
+          licenseTier: sponsorData.licenseTier,
+          status: "active",
+          newSponsor: true
+        });
       }
+    }
 
-      await Promise.all(updates);
+    // Step 3: Identify sponsors to mark as removed
+    const sponsorsToRemove = existingSponsors
+      .filter(sponsor => 
+        !currentSponsors.has(sponsor.organisationName) && 
+        sponsor.status !== "removed"
+      )
+      .map(sponsor => sponsor.id);
 
-      // Step 3: Mark missing sponsors as "removed"
-      await Sponsor.update(
+    // Execute bulk operations within a transaction
+    const transaction = await Sponsor.sequelize.transaction();
+    
+    try {
+      // Bulk create new sponsors
+      if (newSponsors.length > 0) {
+        console.log(`Creating ${newSponsors.length} new sponsors`);
+        await Sponsor.bulkCreate(newSponsors, { transaction });
+      }
+      
+      // Bulk update sponsors with changed license tiers
+      if (sponsorsToUpdate.length > 0) {
+        console.log(`Updating ${sponsorsToUpdate.length} existing sponsors`);
+        await Promise.all(
+          sponsorsToUpdate.map(sponsor => 
+            Sponsor.update(
+              {
+                townCity: sponsor.townCity,
+                county: sponsor.county,
+                licenseTier: sponsor.licenseTier,
+                status: sponsor.status,
+                newSponsor: sponsor.newSponsor
+              },
+              { 
+                where: { id: sponsor.id },
+                transaction
+              }
+            )
+          )
+        );
+      }
+      
+      // Bulk update reactivated sponsors
+      if (reactivatedSponsors.length > 0) {
+        console.log(`Reactivating ${reactivatedSponsors.length} previously removed sponsors`);
+        await Promise.all(
+          reactivatedSponsors.map(sponsor => 
+            Sponsor.update(
+              {
+                townCity: sponsor.townCity,
+                county: sponsor.county,
+                licenseTier: sponsor.licenseTier,
+                status: sponsor.status,
+                newSponsor: sponsor.newSponsor
+              },
+              { 
+                where: { id: sponsor.id },
+                transaction
+              }
+            )
+          )
+        );
+      }
+      
+      // Bulk update sponsors to mark as removed
+      if (sponsorsToRemove.length > 0) {
+        console.log(`Marking ${sponsorsToRemove.length} sponsors as removed`);
+        await Sponsor.update(
           { status: "removed", newSponsor: false },
-          { where: { organisationName: { [Op.notIn]: Array.from(newSponsors) } } }
-      );
-
-      console.log("CSV processing completed.");
+          { 
+            where: { id: { [Op.in]: sponsorsToRemove } },
+            transaction
+          }
+        );
+      }
+      
+      // Commit the transaction
+      await transaction.commit();
+      console.log("CSV processing completed successfully.");
+    } catch (error) {
+      // Rollback the transaction in case of error
+      await transaction.rollback();
+      console.error("Transaction failed:", error);
+      throw error;
+    }
   } catch (error) {
-      console.error("Error processing CSV:", error);
+    console.error("Error processing CSV:", error);
+    throw error;
   }
 };
   
@@ -96,12 +228,16 @@ const getCSVUrl = async () => {
   }
 };
 
-  
 const downloadCSV = async () => {
   try {
+    console.log("Fetching CSV URL...");
     const csvUrl = await getCSVUrl();
-    if (!csvUrl) return;
+    if (!csvUrl) {
+      console.error("Failed to get CSV URL");
+      return;
+    }
 
+    console.log(`Downloading CSV from: ${csvUrl}`);
     const response = await axios.get(csvUrl, { responseType: "stream" });
 
     const fileName = path.basename(csvUrl);
@@ -110,20 +246,45 @@ const downloadCSV = async () => {
     const writer = fs.createWriteStream(filePath);
     response.data.pipe(writer);
 
-    writer.on("finish",async () =>{ 
-        console.log(`CSV downloaded: ${filePath}`)
-        await processCSV(filePath); // Call CSV processing
-
+    return new Promise((resolve, reject) => {
+      writer.on("finish", async () => { 
+        console.log(`CSV downloaded: ${filePath}`);
+        try {
+          await processCSV(filePath);
+          resolve(filePath);
+        } catch (err) {
+          reject(err);
+        }
+      });
+      writer.on("error", (err) => {
+        console.error("Error writing file:", err);
+        reject(err);
+      });
     });
-    writer.on("error", (err) => console.error("Error writing file:", err));
   } catch (error) {
     console.error("Error downloading CSV:", error);
+    throw error;
   }
 };
 
-downloadCSV();
+// Function to run the entire process
+const runSponsorUpdate = async () => {
+  try {
+    console.log("Starting sponsor update process...");
+    await downloadCSV();
+    console.log("Sponsor update process completed successfully");
+  } catch (error) {
+    console.error("Sponsor update process failed:", error);
+  }
+};
 
+// Run immediately on startup
+runSponsorUpdate();
+
+// Schedule to run at midnight every day
 cron.schedule("0 0 * * *", () => {
-  console.log("Running scheduled CSV fetch...");
-  downloadCSV();
+  console.log("Running scheduled sponsor update...");
+  runSponsorUpdate();
 });
+
+module.exports = { runSponsorUpdate };

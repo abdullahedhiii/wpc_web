@@ -783,7 +783,6 @@ const CompanyForm = () => {
   
     try {
   
-      // Submit company data first
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/${company_id ? `updateCompany/${company_id}` : "submitCompanyForm"}`,
         formDataToSend,

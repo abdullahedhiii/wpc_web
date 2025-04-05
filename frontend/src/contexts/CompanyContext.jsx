@@ -287,6 +287,7 @@ export const CompanyProvider = ({ children }) => {
       setCompanyData([response.data])
     }
     } catch (err) {
+      alert('Error in fetching organisation ',id,isAdmin,err);
       setCompanyData([]);
     }
   };

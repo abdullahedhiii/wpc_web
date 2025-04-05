@@ -137,13 +137,9 @@ const DataTable = ({
             year : y,
         });
         setFetch()
-        // setData(prevData => 
-        //     prevData.map(request => 
-        //         request.id === request_id ? { ...request, status: status } : request
-        //     )
-        // );
         alert(`Leave Request status set to ${status}`)
     } catch (err) {
+      alert('Error in updating leave status ',err);
     }
 };
 

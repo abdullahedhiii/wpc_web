@@ -31,9 +31,18 @@ const UserRoleForm = () => {
     },[]);
 
     useEffect(() => {
-      const allSubModules = modules.flatMap(module => module.subModules);
+      const filteredModules = modules.filter(
+        (module) =>
+          module.name !== 'Settings' &&
+          module.name !== 'Holiday' &&
+          module.name !== 'Rota' &&
+          module.name !== 'Tasks'
+      );
+    
+      const allSubModules = filteredModules.flatMap((module) => module.subModules);
       setModuleOptions(allSubModules);
     }, [modules]);
+    
 
     const [formData,setFormData] = useState({
       module : 0,
@@ -41,17 +50,29 @@ const UserRoleForm = () => {
       email : '',
       right : ''
     });
-    
     useEffect(() => {
-        if (formData.module) {
-          const m = moduleOptions.find((ele) => ele.id === parseInt(formData.module));
-          if (m) {
-            setOptions(m.features || []);
-          }
-        } else {
-          setOptions([]); 
-        }
-      }, [formData.module, modules]);
+      const filteredModules = modules
+        .filter(
+          (module) =>
+            module.name !== 'Settings' &&
+            module.name !== 'Holiday' &&
+            module.name !== 'Rota' &&
+            module.name !== 'Tasks'
+        )
+        .map((module) => ({
+          ...module,
+          subModules: module.subModules?.filter(
+            (subModule) =>
+              subModule.name !== 'Time Shift Management' &&
+              subModule.name !== 'Archive'
+          )
+        }));
+    
+      const allSubModules = filteredModules.flatMap((module) => module.subModules);
+      setModuleOptions(allSubModules);
+    }, [modules]);
+    
+    
       
 
     const handleInputChange = (e) => {

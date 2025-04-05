@@ -35,7 +35,7 @@ const OrganisationProfile = () => {
     if (companyData.length === 0) {
       navigate('/hrms/company-profile/edit-company');
     }
-  }, [user,companyData]);
+  }, []);
   
 
   return (
