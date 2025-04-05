@@ -10,7 +10,7 @@ const CompanyForm = () => {
   const { user } = useSelector((state) => state.user);
   const { company_id } = useParams();
   const { setAllDetails,fetchDetails,companyDocuments,fetchOrganisation } = useCompanyContext();
-  
+  const [isSubmitting,setSubmitting] = useState(false);
   
   const options = [
     "PAYEE And Account Reference Letter From HMRC",
@@ -759,7 +759,7 @@ const CompanyForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setSubmitting(true);
     const formDataToSend = new FormData();
   
     Object.entries(formData).forEach(([key, value]) => {
@@ -827,6 +827,7 @@ const CompanyForm = () => {
     }
     finally{
       await fetchOrganisation(company_id,user.isAdmin);
+      setSubmitting(false);
       navigate(`/hrms/company-profile/company`);
 
     }
@@ -1174,8 +1175,10 @@ const CompanyForm = () => {
             </div>
           ))}
 
-          <button className="p-2 rounded-lg text-white bg-yellow-900">
-            Submit
+          <button className="p-2 rounded-lg text-white bg-yellow-900"
+            disabled = {isSubmitting}
+          >
+            {isSubmitting ? 'Submitting..' : 'Submit'}
           </button>
         </form>
       </div>

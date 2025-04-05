@@ -66,7 +66,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
 
       <nav className="flex-grow overflow-y-auto py-4">
         {modules?.map((module) =>
-          (module.name !== 'Settings' && (module.can_access || user.isAdmin)) ? (
+          ((module.name !== 'Settings' && module.name!== 'Holiday' && module.name!== 'Rota' && module.name !== 'Tasks') && (module.can_access || user.isAdmin)) ? (
             <div key={module.id} className="mb-2">
               <button
                 onClick={() =>{
@@ -126,7 +126,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                       {expandedFeatures[`${module.id}-${subModule.id}`] && (
                         <div className="pl-4">
                           {subModule.features?.map((feature) => 
-                            (feature.name!== 'Process Attendance' &&  feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
+                            (feature.name!== 'Daily Work Update' && feature.name!== 'Process Attendance' &&  feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
                                && feature.name!== 'Manage Leave Type'  && feature.name!== 'Leave Allocation'
                               )&& (user.isAdmin || feature.can_access) ? (
                               <button

@@ -64,7 +64,8 @@ const LeaveApplication = () => {
         const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1; // Including start day
         setFormData((prev) => ({ ...prev, days: dayDiff }));
       } else {
-        setFormData((prev) => ({ ...prev, days: 0 }));
+        setFormData((prev) => ({ ...prev, fromDate: "",
+          toDate: "", days: 0 }));
         alert('Please enter valid dates');
         return;
       }
@@ -98,6 +99,7 @@ const LeaveApplication = () => {
     const from = new Date(formData.fromDate).getFullYear()
     if (from != current_year){
       alert('You can apply for past leaves in the current year only');
+      retrun;
     }
 
     try{

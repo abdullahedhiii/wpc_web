@@ -15,7 +15,8 @@ const AbsentReport = () => {
     designationData,
     companyData
   } = useCompanyContext();
-
+ 
+  const [fetching,setFetching] = useState(false);
   useEffect(() => {
     fetchDepartments();
     fetchDesignations();
