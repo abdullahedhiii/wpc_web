@@ -257,6 +257,7 @@ export const CompanyProvider = ({ children }) => {
   };
 
   const fetchOrganisation = async (id,isAdmin) => {
+    console.log(id,isAdmin,'Fetching company ');
     try {   
       if(isAdmin){
       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getOrganisation/${id}`);
@@ -285,6 +286,7 @@ export const CompanyProvider = ({ children }) => {
     else{
       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserOrganisation/${id}`);
       setCompanyData([response.data])
+      console.log(response.data);
     }
     } catch (err) {
       alert('Error in fetching organisation ',id,isAdmin,err);

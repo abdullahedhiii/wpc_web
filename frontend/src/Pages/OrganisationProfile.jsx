@@ -9,8 +9,7 @@ import { motion } from "framer-motion";
 import { Building2, Search, Download, Filter, Plus } from 'lucide-react';
 
 const OrganisationProfile = () => {
-  const { companyData, fetchOrganisation } = useCompanyContext();
-  const { user } = useSelector((state) => state.user);
+  const { companyData } = useCompanyContext();
   const navigate = useNavigate();
 
   const columns = [

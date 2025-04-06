@@ -30,18 +30,18 @@ const UserRoleForm = () => {
       fetchUsers()
     },[]);
 
-    useEffect(() => {
-      const filteredModules = modules.filter(
-        (module) =>
-          module.name !== 'Settings' &&
-          module.name !== 'Holiday' &&
-          module.name !== 'Rota' &&
-          module.name !== 'Tasks'
-      );
+    // useEffect(() => {
+    //   const filteredModules = modules.filter(
+    //     (module) =>
+    //       module.name !== 'Settings' &&
+    //       module.name !== 'Holiday' &&
+    //       module.name !== 'Rota' &&
+    //       module.name !== 'Tasks'
+    //   );
     
-      const allSubModules = filteredModules.flatMap((module) => module.subModules);
-      setModuleOptions(allSubModules);
-    }, [modules]);
+    //   const allSubModules = filteredModules.flatMap((module) => module.subModules);
+    //   setModuleOptions(allSubModules);
+    // }, [modules]);
     
 
     const [formData,setFormData] = useState({
