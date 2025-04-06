@@ -347,8 +347,8 @@ const CompanyForm = () => {
           additionalElement: null,
         },
         {
-          label: "Address Line 2",
-          value: "Address_Line2",
+          label: "Address Line 3",
+          value: "Address_Line3",
           type: "text",
           required: false,
           additionalElement: null,

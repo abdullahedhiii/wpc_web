@@ -46,10 +46,11 @@ const UserRoleForm = () => {
 
     const [formData,setFormData] = useState({
       module : 0,
-      feature : '',
+      feature : 0,
       email : '',
       right : ''
     });
+
     useEffect(() => {
       const filteredModules = modules
         .filter(
@@ -74,14 +75,17 @@ const UserRoleForm = () => {
     
     
     useEffect(() => {
-          if(formData.module){
-             const selectedModule = modules.find((ele) => ele.id === parseInt(formData.module));
-             if(selectedModule){
-                 setOptions(selectedModule.features);
-             }
-          }
-    },[formData.module]);
-      
+      for (const module of modules) {
+        const subModule = module.subModules.find(
+          (sub) => sub.id === formData.module
+        );
+        if (subModule) {
+          setOptions(subModule.features || []);
+          break;
+        }
+      }
+    }, [formData.module, modules]);
+    
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
