@@ -73,6 +73,14 @@ const UserRoleForm = () => {
     }, [modules]);
     
     
+    useEffect(() => {
+          if(formData.module){
+             const selectedModule = modules.find((ele) => ele.id === parseInt(formData.module));
+             if(selectedModule){
+                 setOptions(selectedModule.features);
+             }
+          }
+    },[formData.module]);
       
 
     const handleInputChange = (e) => {

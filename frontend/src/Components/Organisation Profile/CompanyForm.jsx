@@ -818,7 +818,7 @@ const CompanyForm = () => {
       });
   
       await Promise.all(documentUploads);
-      await fetchOrganisation(company_id,user.isAdmin);
+      await fetchOrganisation(user.id,user.isAdmin);
       alert('Company Submission Successful');
       navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
