@@ -5,7 +5,6 @@ const path = require('path');
 const PDFDocument = require('pdfkit');
 const moment = require('moment');
 const {Sequelize} = require('sequelize');
-const { default: JobPostingForm } = require("../../frontend/src/Components/Recruitment/JobPostingForm");
 
 const generateLink = (job_id) => {
   try {
@@ -159,13 +158,14 @@ module.exports.addJobListed = async(req,res) => {
       return res.status(500).json({ message: "Internal server error", error: err });
     }
 }
+
 module.exports.addJobPosted = async (req, res) => {
     const id = req.params.id;
     try {
       const { job_id } = req.body.formData;  
       const check_unique = await Job.findOne({
         where : {
-          socCode : req.body.socCode,
+          socCode : req.body.formData.socCode,
           organisation_id : id,
         }
       })
@@ -175,12 +175,12 @@ module.exports.addJobPosted = async (req, res) => {
 
       const check_2 = await Job.findOne({
         where : {
-          jobCode : req.body.jobCode,
+          jobCode : req.body.formData.jobCode,
           organisation_id : id,
 
         }
       })
-      if(check2){
+      if(check_2){
         return res.status(500).json({message : 'Job code must be unique'});
       }
 

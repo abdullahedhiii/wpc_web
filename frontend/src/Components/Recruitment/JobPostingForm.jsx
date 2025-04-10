@@ -15,7 +15,6 @@ const JobPostingForm = () => {
   // const [jobs,setJobs] = useState([]);
 
   const [formData, setFormData] = useState({
-    job_id: -1,
     jobType : "",
     jobCode: "",
     jobContractType: "",
@@ -24,12 +23,12 @@ const JobPostingForm = () => {
     jobTitle: "",
     status: "Posted",
     workingHours: 0,
-    jobExperienceMin: 0,
-    jobExperienceMax: 0,
-    basicSalaryMin: 0,
-    basicSalaryMax: 0,
+    jobExperienceMin: '',
+    jobExperienceMax: '',
+    basicSalaryMin: '',
+    basicSalaryMax:'',
     salaryPeriod: "",
-    numVacancies: 0,
+    numVacancies: '',
     jobLocation: "",
     qualifications: "",
     skillSet: "",
@@ -49,7 +48,7 @@ const JobPostingForm = () => {
 
   // const [socCodeOptions,setSocOptions] = useState([]);
   // const [titleOptions,setTitleOptions] = useState([]);
-  const [submitting,setSubmitting] = useState(true);
+  const [submitting,setSubmitting] = useState(false);
 
 
   // useEffect(() => {
