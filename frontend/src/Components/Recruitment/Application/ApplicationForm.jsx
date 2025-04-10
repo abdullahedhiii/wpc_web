@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
 import { motion } from "framer-motion"
 import {
@@ -82,7 +82,6 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
           "Content-Type": "multipart/form-data",
         },
       })
-
       setSubmitted(true);
     } catch (err) {
       if (err.response) {
@@ -96,6 +95,12 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
     }
   }
 
+  useEffect(() => {
+   if(justsubmitted){
+      alert('Application submitted successfully');
+      
+   }
+  },[justsubmitted])
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -120,6 +125,23 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
 
   return (
     <motion.div initial="hidden" animate="visible" variants={containerVariants} className="mt-12 max-w-4xl mx-auto">
+   {justsubmitted ? (
+      <div className="p-8 bg-yellow-50 border border-yellow-200 rounded-lg shadow-lg text-center">
+        <h2 className="text-3xl font-bold text-yellow-700 mb-4">Thank You!</h2>
+        <p className="text-gray-700 text-lg">
+          Your application for <strong>{jobTitle}</strong> has been submitted successfully.
+        </p>
+        <motion.button
+          onClick={onBack}
+          className="mt-6 inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          Back to Job Details
+        </motion.button>
+      </div>
+    ) : (
       <div className="relative">
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-t-lg"></div>
 
@@ -381,11 +403,12 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
               disabled = {isSubmitting}
             >
               <Send className="w-5 h-5 mr-2" />
-              Submit Application
+             {isSubmitting ? 'Submitting Application ...' : 'Submit Application'} 
             </motion.button>
           </form>
         </div>
       </div>
+    )}
     </motion.div>
   )
 }
