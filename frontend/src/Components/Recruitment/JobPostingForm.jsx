@@ -12,7 +12,7 @@ const JobPostingForm = () => {
   const { isSideBarOpen } = useSidebarContext();
   const { companyData } = useCompanyContext();
   const [content, setContent] = useState("");
-  const [jobs,setJobs] = useState([]);
+  // const [jobs,setJobs] = useState([]);
 
   const [formData, setFormData] = useState({
     job_id: -1,
@@ -43,44 +43,45 @@ const JobPostingForm = () => {
     authorisingOfficer : '',
     authorisingOfficerDesignation : '',
     contactNumber: '',
-    email :''
+    email :'',
+    // organisation_id : companyData[0].id,
   });
 
-  const [socCodeOptions,setSocOptions] = useState([]);
-  const [titleOptions,setTitleOptions] = useState([]);
-  const [loading,setLoading] = useState(true);
+  // const [socCodeOptions,setSocOptions] = useState([]);
+  // const [titleOptions,setTitleOptions] = useState([]);
+  const [submitting,setSubmitting] = useState(true);
 
 
-  useEffect(() => {
-    const fetchJobsPosted = async () => {
-      try {
-        const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getJobsListed/${companyData[0].id}`);
-        setJobs(response.data);
-      } catch (err) {
-      }
-      finally{
-        setLoading(false);
-      }
-    };
-    if(!id) fetchJobsPosted();
-  }, []); 
+  // useEffect(() => {
+  //   const fetchJobsPosted = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getJobsListed/${companyData[0].id}`);
+  //       setJobs(response.data);
+  //     } catch (err) {
+  //     }
+  //     finally{
+  //       setLoading(false);
+  //     }
+  //   };
+  //   if(!id) fetchJobsPosted();
+  // }, []); 
 
-  useEffect(() => {
-    if (!Array.isArray(jobs)) {
-      setSocOptions([]); // Set an empty array if jobs is not an array
-      return;
-    }
+  // useEffect(() => {
+  //   if (!Array.isArray(jobs)) {
+  //     setSocOptions([]); // Set an empty array if jobs is not an array
+  //     return;
+  //   }
   
-    const options = jobs.length > 0 
-      ? jobs.map((ele) => ({
-          value: ele["SOC CODE"], 
-          label: ele["SOC CODE"]
-        }))
-      : [];
+  //   const options = jobs.length > 0 
+  //     ? jobs.map((ele) => ({
+  //         value: ele["SOC CODE"], 
+  //         label: ele["SOC CODE"]
+  //       }))
+  //     : [];
   
-    setSocOptions(options);
+  //   setSocOptions(options);
   
-  }, [jobs]);
+  // }, [jobs]);
   
 
   useEffect(() => {
@@ -89,8 +90,8 @@ const JobPostingForm = () => {
             const response  = await axiosInstance.get(`/api/getJobDetails/${id}`);
             setFormData(response.data);
             setContent(response.data.jobDescription)
-            setSocOptions([{label : response.data.socCode, value : response.data.socCode}]);
-            setTitleOptions([{label : response.data.jobTitle, value : response.data.jobTitle}]);
+            // setSocOptions([{label : response.data.socCode, value : response.data.socCode}]);
+            // setTitleOptions([{label : response.data.jobTitle, value : response.data.jobTitle}]);
 
         }
         catch(err){
@@ -105,44 +106,44 @@ const JobPostingForm = () => {
      }
   },[]);
 
-  useEffect(() => {
-    if (!id && formData.socCode) {
-      const filteredTitles = [{label : "",value: ""},...jobs
-        .filter((ele) => ele['SOC CODE'] === formData.socCode)
-        .map((ele) => ({
-          value: ele['Job Title'], 
-          label: ele['Job Title']
-        }))];
-      setTitleOptions(filteredTitles);
-    }
-  }, [formData.socCode, jobs]);  
+  // useEffect(() => {
+  //   if (!id && formData.socCode) {
+  //     const filteredTitles = [{label : "",value: ""},...jobs
+  //       .filter((ele) => ele['SOC CODE'] === formData.socCode)
+  //       .map((ele) => ({
+  //         value: ele['Job Title'], 
+  //         label: ele['Job Title']
+  //       }))];
+  //     setTitleOptions(filteredTitles);
+  //   }
+  // }, [formData.socCode, jobs]);  
   
-  useEffect(() => {
-    if(!id && Array.isArray(jobs) && formData.socCode && formData.jobTitle){
-     const selected_job = jobs.find((ele) => ele['SOC CODE'] === formData.socCode && ele['Job Title'] === formData.jobTitle);
-     setFormData((prev) => ({
-        ...prev,
-        job_id : selected_job.id
-     }));
-     setContent(selected_job.jobDescription)
-    }
+  // useEffect(() => {
+  //   if(!id && Array.isArray(jobs) && formData.socCode && formData.jobTitle){
+  //    const selected_job = jobs.find((ele) => ele['SOC CODE'] === formData.socCode && ele['Job Title'] === formData.jobTitle);
+  //    setFormData((prev) => ({
+  //       ...prev,
+  //       job_id : selected_job.id
+  //    }));
+  //    setContent(selected_job.jobDescription)
+  //   }
  
-  },[formData.socCode,formData.jobTitle]);
+  // },[formData.socCode,formData.jobTitle]);
 
   const formFields = [
     {
       label: "SOC Code",
-      type: "select",
+      type: "text",
       stateAttribute: "socCode",
-      options: socCodeOptions,
+      // options: socCodeOptions,
       required : true
 
     },
     {
       label: "Job Title",
-      type: "select",
+      type: "text",
       stateAttribute: "jobTitle",
-      options: titleOptions,
+      // options: titleOptions,
       required : true
 
     },
@@ -271,9 +272,11 @@ const JobPostingForm = () => {
 
   const handleJobPost = async (e) => {
     e.preventDefault();
+    setSubmitting(true)
     const t1 = new Date(formData.jobClosingDate);
     const t2 = new Date(formData.jobPostingDate);
     if(t1 < t2){
+      setSubmitting(false)
       alert('Enter valid job closing and posting date');
       return;
     }
@@ -284,6 +287,10 @@ const JobPostingForm = () => {
       );
       if (response.status === 200) navigate("/hrms/recruitment/job-posting");
     } catch (err) {
+      alert(err.response?.data?.message)
+    }
+    finally{
+      setSubmitting(false)
     }
   };
 
@@ -570,7 +577,7 @@ const JobPostingForm = () => {
 type="submit"
 className="rounded mt-2 px-4 py-2 bg-yellow-900 text-white"
           >
-            Submit
+            {submitting ? "Submitting..." : 'Submit'}
           </button>
         </form> 
       </div>      

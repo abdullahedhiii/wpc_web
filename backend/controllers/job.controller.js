@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 const moment = require('moment');
-const {Sequelize} = require('sequelize')
+const {Sequelize} = require('sequelize');
+const { default: JobPostingForm } = require("../../frontend/src/Components/Recruitment/JobPostingForm");
 
 const generateLink = (job_id) => {
   try {
@@ -162,17 +163,43 @@ module.exports.addJobPosted = async (req, res) => {
     const id = req.params.id;
     try {
       const { job_id } = req.body.formData;  
-    const job = await Job.findOne({ where: { id: job_id } });
-  
-      console.log('is error heree ? ', job);
-        if (!job) {
-        return res.status(404).json({ message: 'Job not found' });
+      const check_unique = await Job.findOne({
+        where : {
+          socCode : req.body.socCode,
+          organisation_id : id,
+        }
+      })
+      if(check_unique){
+        return res.status(500).json({message : 'Job SOC code must be unique'});
       }
+
+      const check_2 = await Job.findOne({
+        where : {
+          jobCode : req.body.jobCode,
+          organisation_id : id,
+
+        }
+      })
+      if(check2){
+        return res.status(500).json({message : 'Job code must be unique'});
+      }
+
+      if(job_id){
+        const job = await Job.findOne({ where: { id: job_id  } });
         await job.update({
-        jobDescription: req.body.content,
-        ...req.body.formData,
-      });
-        return res.status(200).json({ message: "Job posted successfully", job });
+          jobDescription: req.body.content,
+          ...req.body.formData,
+        });
+      }
+      else{
+        await Job.create({
+          jobDescription: req.body.content,
+          organisation_id : id,
+          ...req.body.formData,
+        })
+      }
+       
+        return res.status(200).json({ message: "Job posted successfully" });
     } catch (err) {
       // Log error
       console.log('Error: ', err);

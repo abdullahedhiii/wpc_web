@@ -257,26 +257,26 @@ export const CompanyProvider = ({ children }) => {
   };
 
   const fetchOrganisation = async (id,isAdmin) => {
-    console.log(id,isAdmin,'Fetching company ');
+    // console.log(id,isAdmin,'Fetching company ');
     try {   
       if(isAdmin){
-        console.log('Fetching admins');
+        // console.log('Fetching admins');
       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getOrganisation/${id}`);
-     console.log(response.data);
+    //  console.log(response.data);
       setCompanyData([response.data]);
       fetchDetails(response.data.id);
     }
     else{
       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserOrganisation/${id}`);
-      console.log(response.data);
+      // console.log(response.data);
       setCompanyData([response.data])
       console.log(response.data);
     }
     } 
     catch (err) {
-      console.log('Error fetching org ',err);
-      alert('Error in fetching organisation ',id,isAdmin,err);
-      setCompanyData([]);
+      // console.log('Error fetching org ',err);
+      // alert('Error in fetching organisation ',id,isAdmin,err);
+      // setCompanyData([]);
     }
   };
 

@@ -126,7 +126,7 @@ const Sidebar = ({ isOpen, setOpen }) => {
                       {expandedFeatures[`${module.id}-${subModule.id}`] && (
                         <div className="pl-4">
                           {subModule.features?.map((feature) => 
-                            (feature.name!== 'Daily Work Update' && feature.name!== 'Process Attendance' &&  feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
+                            (feature.name!== 'Job List' && feature.name!== 'Daily Work Update' && feature.name!== 'Process Attendance' &&  feature.name!== 'Employee Creation Link' && feature.name!== 'Leave Rule'
                                && feature.name!== 'Manage Leave Type'  && feature.name!== 'Leave Allocation'
                               )&& (user.isAdmin || feature.can_access) ? (
                               <button

@@ -117,7 +117,28 @@ const formats = [
 ];
 
 const TextEditor = ({ content, setContent, label }) => {
-  // Inject custom styles
+  const quillRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (quillRef.current) {
+      const editor = quillRef.current.getEditor();
+
+      editor
+        .getModule("clipboard")
+        .addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+          // Block pasted images
+          delta.ops = delta.ops.filter((op) => {
+            if (op.insert && op.insert.image) {
+              alert("Image pasting is disabled!");
+              return false;
+            }
+            return true;
+          });
+          return delta;
+        });
+    }
+  }, []);
+
   React.useEffect(() => {
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -143,17 +164,16 @@ const TextEditor = ({ content, setContent, label }) => {
       )}
       <div className="relative rounded-lg shadow-sm">
         <ReactQuill
+          ref={quillRef}
           value={content}
           onChange={setContent}
           modules={modules}
           formats={formats}
           theme="snow"
           className="rounded-lg transition-all duration-200 hover:shadow-md focus-within:shadow-md focus-within:ring-2 focus-within:ring-yellow-200"
-          style={{
-            minHeight: "200px",
-            maxHeight: "600px",
-          }}
+          style={{ minHeight: "200px", maxHeight: "600px" }}
         />
+
         <div className="absolute bottom-3 right-3 text-xs text-gray-400">
           {content?.length || 0} characters
         </div>
