@@ -190,32 +190,32 @@ const JobPostingForm = () => {
       required : true
 
     },
-    {
-      label: "Job Experience (Min)",
-      type: "select",
-      stateAttribute: "jobExperienceMin",
-      options: 
-        Array.from({ length: 16 }, (_, i) => ({
-          value: i,
-          label: i,
-        })),
+    // {
+    //   label: "Job Experience (Min)",
+    //   type: "select",
+    //   stateAttribute: "jobExperienceMin",
+    //   options: 
+    //     Array.from({ length: 16 }, (_, i) => ({
+    //       value: i,
+    //       label: i,
+    //     })),
   
-      required : true
+    //   required : true
 
-    },
-    {
-      label: "Job Experience (Max)",
-      type: "select",
-      stateAttribute: "jobExperienceMax",
-      options: 
-        Array.from({ length: 16 }, (_, i) => ({
-          value: i,
-          label: i,
-        })),
+    // },
+    // {
+    //   label: "Job Experience (Max)",
+    //   type: "select",
+    //   stateAttribute: "jobExperienceMax",
+    //   options: 
+    //     Array.from({ length: 16 }, (_, i) => ({
+    //       value: i,
+    //       label: i,
+    //     })),
   
-      required : true
+    //   required : true
 
-    },
+    // },
 
     {
       label: "Basic Salary (Min)",
@@ -408,7 +408,7 @@ const JobPostingForm = () => {
    />
               </div>
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">
                   Age (Min)
                 </label>
@@ -448,7 +448,7 @@ const JobPostingForm = () => {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               <div className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">

@@ -61,6 +61,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
     e.preventDefault()
     setSubmitting(true);
     try {
+      if(formData.contactNo.len < 10 || formData.contactNo.len > 15){
+        alert('Contact Number should be of length 10-15 digits');
+      }
       const d = new Date(formData.dob);
       if(d > new Date()){
         alert('Enter valid date of birth')
@@ -235,7 +238,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   <Calendar className="w-4 h-4 inline-block mr-1" />
                   Date Of Birth
@@ -248,7 +251,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
                   onChange={handleChange}
                   required
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
