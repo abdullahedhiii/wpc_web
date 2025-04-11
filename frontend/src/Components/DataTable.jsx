@@ -52,6 +52,7 @@ const DataTable = ({
           job_id : id,
         }
        });
+       setFetch();
        alert(response?.data?.message);
     }
     catch(err){
@@ -59,6 +60,9 @@ const DataTable = ({
     }
   } 
 
+  useEffect(() => {
+
+  },[data]);
   const handleDownload = async () => {
     // console.log(selectedFeature);
      const routee = selectedFeature ? `${import.meta.env.VITE_API_URL}/api/${selectedFeature.download_api_route}/${companyData[0].id}`

@@ -6,7 +6,7 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import {motion} from 'framer-motion';
 
 const JobPosting = () => {
-    const columns = ["Sl. No.", "SOC Code", "Job Title", "Job Link","Vacancy","Job Location","Job Posted Date","Closing Date",
+    const columns = ["Sl. No.", "SOC Code", "Job Title", "Job Link","Job Location","Job Posted Date","Closing Date",
         "Email","Phone No.","Status","Action","Delete",
     ];
     const [loading,setLoading] = useState(true);
