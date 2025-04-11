@@ -316,7 +316,7 @@ return (
                               </select>
                             ) }
                             
-                            {row["Action"] === "Edit" && (
+                            {field === "Action" && (
                               <button
                                 onClick={() => {
                                   if (
@@ -338,7 +338,7 @@ return (
                             
                             {field === "Delete" && (
                               <button
-                                onClick={() => handleDelete(row.delete_route, row.id)}
+                                onClick={() => handleDelete(row["delete_route"],row["id"])}
                                 disabled={user.isAdmin ? false : !selectedFeature.can_edit}
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
                                 title="Delete"

@@ -220,7 +220,7 @@ module.exports.getJobsPosted = async(req,res) => {
         const formattedResponse  = jobs.map((job,index) => {
           const hash = generateLink(job.id);
           const isClosed = job.jobClosingDate && moment(job.jobClosingDate).isBefore(moment()); 
-
+        
             return {
                 "id" : job.id,
                 "Sl. No." : index+1,
