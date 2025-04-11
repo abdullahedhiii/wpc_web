@@ -47,7 +47,7 @@ const DataTable = ({
       console.log(id);
       const route = `${import.meta.env.VITE_API_URL}/api/${delete_route}/${companyData[0].id}`;
       console.log(route);
-       const response = await axiosInstance.post(route,{
+       const response = await axiosInstance.post(route,{},{
         params : {
           job_id : id,
         }
@@ -58,6 +58,7 @@ const DataTable = ({
        
     }
   } 
+
   const handleDownload = async () => {
     // console.log(selectedFeature);
      const routee = selectedFeature ? `${import.meta.env.VITE_API_URL}/api/${selectedFeature.download_api_route}/${companyData[0].id}`
