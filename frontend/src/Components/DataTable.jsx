@@ -291,7 +291,7 @@ return (
                     <tr key={rowIndex} className="transition-colors hover:bg-yellow-50/50">
                       {filteredFields.map((field, colIndex) => (
                         <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {field === "Action" || field === "Edit" || field === "Delete" ? (
+                          {field === "Action" || field === "Edit"  ? (
                             Array.isArray(row["Action"]) ? (
                               <select
                                 className="h-9 rounded-xl border border-yellow-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 hover:border-yellow-300"
