@@ -292,53 +292,58 @@ return (
                       {filteredFields.map((field, colIndex) => (
                         <td key={colIndex} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {field === "Action" || field === "Edit" || field === "Delete" ? (
-                            
-                            Array.isArray(row["Action"]) ? (
+                            <>
+                            {field === "Action" && Array.isArray(row["Action"]) && (
                               <select
                                 className="h-9 rounded-xl border border-yellow-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 hover:border-yellow-300"
                                 onChange={(e) => {
                                   if (location.pathname.includes("leave-approver")) {
                                     handleRequestUpdate(e.target.value, row.id)
-                                  } 
-                                  else {
-                                    navigate(`/hrms/${e.target.value}`)}
+                                  } else {
+                                    navigate(`/hrms/${e.target.value}`)
+                                  }
                                 }}
-                                
                               >
-                                <option value = "" >View Options </option>
+                                <option value="">View Options</option>
                                 {row["Action"].map((option, optionIndex) => (
                                   <option key={optionIndex} value={option.route}>
                                     {option.label}
                                   </option>
                                 ))}
                               </select>
-                            ) : row["Action"] === "Edit" || field === "Edit" ? (
+                            ) }
+                            
+                            {field === "Edit" && (
                               <button
                                 onClick={() => {
-;                                  if(location.pathname.includes("rota/shift-management") || location.pathname.includes("rota/offday")){
-                                    navigate(`/hrms/${selectedFeature.action_route}/${row["Shift Code"]}`);
-
+                                  if (
+                                    location.pathname.includes("rota/shift-management") ||
+                                    location.pathname.includes("rota/offday")
+                                  ) {
+                                    navigate(`/hrms/${selectedFeature.action_route}/${row["Shift Code"]}`)
+                                  } else {
+                                    navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)
                                   }
-                                  else navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)}
-                                
-                                }
+                                }}
                                 disabled={user.isAdmin ? false : !selectedFeature.can_edit}
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-yellow-100 transition-all duration-200"
                                 title="Edit"
                               >
                                 <i className="la la-edit text-lg text-yellow-500" />
                               </button>
-                            ) : row["Action"] === "Delete" || field === "Delete" ? (
+                            )}
+                            
+                            {field === "Delete" && (
                               <button
-                                onClick={() => handleDelete(row.delete_route,row.id)}
+                                onClick={() => handleDelete(row.delete_route, row.id)}
                                 disabled={user.isAdmin ? false : !selectedFeature.can_edit}
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
                                 title="Delete"
                               >
                                 <i className="la la-trash text-lg text-red-500" />
                               </button>
-                            ) : null
-
+                            )}
+</>
 
                           ) : (field === "Visitor Link" || field === "Website" || field === "Employee Link" || field === "Job Link" || field === "View Letter") &&
                           row[field] ? (
