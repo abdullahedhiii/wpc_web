@@ -44,7 +44,10 @@ const DataTable = ({
   
   const handleDelete = async(delete_route,id) => {
     try{
-       const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/${delete_route}/${companyData[0].id}`,{
+      console.log(id);
+      const route = `${import.meta.env.VITE_API_URL}/api/${delete_route}/${companyData[0].id}`;
+      console.log(route);
+       const response = await axiosInstance.post(route,{
         params : {
           job_id : id,
         }
@@ -313,7 +316,7 @@ return (
                               </select>
                             ) }
                             
-                            {field === "Edit" && (
+                            {row["Action"] === "Edit" && (
                               <button
                                 onClick={() => {
                                   if (

@@ -252,7 +252,8 @@ module.exports.deleteJobPosted = async (req, res) => {
   try {
     const organisation_id = req.params.id;
     const { job_id } = req.query;
-
+    
+    console.log('In delete Job ',organisation_id,job_id);
     const deletedCount = await Job.destroy({
       where: {
         organisation_id,
@@ -266,6 +267,7 @@ module.exports.deleteJobPosted = async (req, res) => {
 
     return res.status(200).json({ message: 'Job Deleted Successfully' });
   } catch (err) {
+    console.log(err,' in job delete');
     return res.status(500).json({ message: 'Internal Server Error', error: err });
   }
 };
