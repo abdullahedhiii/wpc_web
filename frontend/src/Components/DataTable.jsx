@@ -321,7 +321,7 @@ return (
                               </select>
                             ) }
                             
-                            {field === "Action" && (
+                            {field === "Action" && row['Action'] !== null (
                               <button
                                 onClick={() => {
                                   if (

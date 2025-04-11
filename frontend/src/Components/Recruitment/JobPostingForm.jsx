@@ -492,7 +492,7 @@ const JobPostingForm = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">
                   Job Posting Date
                 </label>
@@ -505,7 +505,7 @@ const JobPostingForm = () => {
                   required
 
 />
-              </div>
+              </div> */}
               <div className="flex flex-col">
                 <label className="text-[12px] font-semibold text-gray-600 mb-2">
                   Closing Date
