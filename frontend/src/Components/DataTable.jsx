@@ -42,6 +42,19 @@ const DataTable = ({
     );
   }, [data, searchQuery]);
   
+  const handleDelete = async(delete_route,id) => {
+    try{
+       const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/${delete_route}/${companyData[0].id}`,{
+        params : {
+          job_id : id,
+        }
+       });
+       alert(response?.data?.message);
+    }
+    catch(err){
+       
+    }
+  } 
   const handleDownload = async () => {
     // console.log(selectedFeature);
      const routee = selectedFeature ? `${import.meta.env.VITE_API_URL}/api/${selectedFeature.download_api_route}/${companyData[0].id}`
@@ -316,7 +329,7 @@ return (
                               </button>
                             ) : row["Action"] === "Delete" || field === "Delete" ? (
                               <button
-                                onClick={() => {}}
+                                onClick={() => handleDelete(row.delete_route,row.id)}
                                 disabled={user.isAdmin ? false : !selectedFeature.can_edit}
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
                                 title="Delete"

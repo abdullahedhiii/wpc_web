@@ -1,5 +1,6 @@
 const express = require('express');
-const { addJobListed, getJobsListed, addJobPosted, getJobsPosted, getJobDetails, getJobData, applyJob, getCandidates, getCandidate, updateStatus, getAllCandidates } = require('../controllers/job.controller');
+const { addJobListed, getJobsListed, addJobPosted, getJobsPosted, 
+    getJobDetails, getJobData, applyJob, getCandidates, getCandidate, updateStatus, getAllCandidates, deleteJobPosted } = require('../controllers/job.controller');
 const router = express.Router();
 const {CandidateUpload} = require('../config/multerConfig');
 
@@ -18,4 +19,5 @@ router.get('/getCandidates/:id',getCandidates)
 router.get('/getCandidate/:id',getCandidate)
 router.post('/updateCandidateStatus/:id',updateStatus);
 router.get('/getAllCandidates/:id',getAllCandidates);
+router.post('/deleteJobPosted/:id',deleteJobPosted)
 module.exports = router;

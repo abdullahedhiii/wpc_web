@@ -243,19 +243,23 @@ const JobPostingForm = () => {
       required : true
 
     },
-    {
-      label: "Number of Vacancies",
-      type: "text",
-      stateAttribute: "numVacancies",
-      required : true
+    // {
+    //   label: "Number of Vacancies",
+    //   type: "text",
+    //   stateAttribute: "numVacancies",
+    //   required : true
 
-    },
+    // },
     {
       label: "Job Location",
-      type: "text",
+      type: "select",
       stateAttribute: "jobLocation",
-      required : true
-
+      required : true,
+      options: [
+        { value: "Onsite", label: "Onsite" },
+        { value: "Work From Home", label: "Work From Home" },
+        { value: "Hybrid", label: "Hybrid" },
+      ],
     },
   ];
 

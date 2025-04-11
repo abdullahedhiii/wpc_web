@@ -7,27 +7,34 @@ import {motion} from 'framer-motion';
 
 const JobPosting = () => {
     const columns = ["Sl. No.", "SOC Code", "Job Title", "Job Link","Vacancy","Job Location","Job Posted Date","Closing Date",
-        "Email","Phone No.","Status","Action", 
+        "Email","Phone No.","Status","Action","Delete",
     ];
     const [loading,setLoading] = useState(true);
     const [jobsPosted,setPosted] = useState([]);
+    const [fetchAgain,setFetchAgain] = useState(false);
     const {companyData} = useCompanyContext();
-    useEffect(( ) => {
-           const fetchPosted = async() => {
-                   try{
-                    const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getJobsPosted/${companyData[0].id}`);
-                    setPosted(response.data);
-                   }
-                   catch(err){
+    
+    const fetchPosted = async() => {
+      try{
+       const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getJobsPosted/${companyData[0].id}`);
+       setPosted(response.data);
+      }
+      catch(err){
 
-                   }
-                   finally{
-                    setLoading(false);
-                   }
-           };
-           fetchPosted();
+      }
+      finally{
+       setLoading(false);
+      }
+    };
+
+    useEffect(( ) => {
+        fetchPosted();
     },[]);
   
+    useEffect(() => {
+      if(fetchAgain) fetchPosted()
+      },[fetchAgain]);
+    
     return (
   
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
@@ -65,6 +72,7 @@ const JobPosting = () => {
             downloadable={false}
             addMore={true}
             buttonTitle="Add New Job"
+            setFetch = {() => setFetchAgain(true)}
           />      </div>
 
         </div>

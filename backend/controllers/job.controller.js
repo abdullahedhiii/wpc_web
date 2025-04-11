@@ -235,6 +235,8 @@ module.exports.getJobsPosted = async(req,res) => {
                 "Phone No." :job.contactNumber,
                 "Status" : "Posted",
                 "Action" : "Edit",
+                "Delete" : "Delete",
+                "delete_route" : 'deleteJobPosted',
                 "jobDescription" : job.jobDescription
             }
         })
@@ -244,6 +246,28 @@ module.exports.getJobsPosted = async(req,res) => {
         console.log('error getting jobs ',err);
         return res.status(500).json({ message: "Internal server error", error: err });
     }
+};
+
+module.exports.deleteJobPosted = async (req, res) => {
+  try {
+    const organisation_id = req.params.id;
+    const { job_id } = req.query;
+
+    const deletedCount = await Job.destroy({
+      where: {
+        organisation_id,
+        id: job_id,
+      },
+    });
+
+    if (deletedCount === 0) {
+      return res.status(404).json({ message: 'Job not found or already deleted' });
+    }
+
+    return res.status(200).json({ message: 'Job Deleted Successfully' });
+  } catch (err) {
+    return res.status(500).json({ message: 'Internal Server Error', error: err });
+  }
 };
 
 module.exports.getJobDetails = async (req, res) => {
