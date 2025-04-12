@@ -449,12 +449,12 @@ const nationalityOptions = [
   }
   return (
     <div className="p-12">
-      <p className="text-[12px] text-gray-600">
-        Home
-        <span className="mx-2">/</span>
-        Employee
-        <span className="mx-2 text-tt">/ Change Of Circumstances</span>
-      </p>
+    <p className="text-[14px] text-gray-600">
+  <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
+  <span className="mx-2">/</span>
+  <Link to="/hrms/employee/change-of-circumstances-add" className="hover:underline">Change Of Circumstances</Link>
+  <span className="mx-2 text-gray-400">/ Edit COC</span>
+</p>
       <div className="mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
         <div className="flex items-center gap-2 pl-2">
           <i className="fas fa-user text-lg text-yellow-900"></i>

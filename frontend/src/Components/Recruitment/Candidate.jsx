@@ -38,31 +38,41 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
 
     }
   };
-
+  const statuses = [
+    "Application Received",
+    "Short listed",
+    "Online Screen Test",
+    "Written Test",
+    "Interview",
+    "Telephone Interview",
+    "Face to Face Interview",
+    "Job Offered",
+    "Hired",
+    "Hold",
+    "Rejected"
+  ];
+  
   return (
     <div className="mt-6 bg-white p-4 rounded shadow-md">
       <label className="block text-[13px] font-medium text-gray-700">
         Current Recruitment Stage:
       </label>
       <select
-        value={selectedStatus}
-        onChange={(e) => setSelectedStatus(e.target.value)}
-        className="text-[12px] w-full p-2 mt-2 border rounded-md focus:outline-none focus:border-yellow-200 focus:border-b-4"
-        required
-      >
-        <option value="" disabled>Select</option>
-        <option value="Application Received">Application Received</option>
-        <option value="Short listed">Short listed</option>
-        <option value="Interview">Interview</option>
-        <option value="Online Screen Test">Online Screen Test</option>
-        <option value="Written Test">Written Test</option>
-        <option value="Telephone Interview">Telephone Interview</option>
-        <option value="Face to Face Interview">Face to Face Interview</option>
-        <option value="Job Offered">Job Offered</option>
-        <option value="Hired">Hired</option>
-        <option value="Hold">Hold</option>
-        <option value="Rejected">Rejected</option>
-      </select>
+  value={selectedStatus}
+  onChange={(e) => setSelectedStatus(e.target.value)}
+  className="text-[12px] w-full p-2 mt-2 border rounded-md focus:outline-none focus:border-yellow-200 focus:border-b-4"
+  required
+>
+  <option value="" disabled>Select</option>
+  {statuses
+    .filter(status => status !== details.status)
+    .map((status, index) => (
+      <option key={index} value={status}>
+        {status}
+      </option>
+    ))}
+</select>
+
 
       {isInterviewRelated && (
   <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">

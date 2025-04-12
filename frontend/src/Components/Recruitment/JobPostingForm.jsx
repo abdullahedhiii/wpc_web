@@ -307,9 +307,16 @@ const JobPostingForm = () => {
           <span>Home</span>
         </Link>
         <ChevronRight className="h-4 w-4" />
-        <Link to="/hrms/recruitmentdashboard" className="text-gray-500 hover:text-yellow-600 transition-colors">
-          Recruitment
-        </Link>
+        <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      window.history.back();
+    }}
+    className="text-gray-500 hover:text-yellow-600 transition-colors"
+  >
+    Recruitment
+  </a>
         <ChevronRight className="h-4 w-4" />
         <span className="text-gray-900">Job Posting Form</span>
       </nav>
