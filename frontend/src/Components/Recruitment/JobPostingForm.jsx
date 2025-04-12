@@ -37,7 +37,7 @@ const JobPostingForm = () => {
     gender: '',
     newRole : "",
     language : "",
-    jobPostingDate: '',
+    jobPostingDate: new Date(),
     jobClosingDate: '',
     authorisingOfficer : '',
     authorisingOfficerDesignation : '',

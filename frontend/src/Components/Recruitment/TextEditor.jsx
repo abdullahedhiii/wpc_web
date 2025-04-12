@@ -112,8 +112,8 @@ const formats = [
   "color",
   "background",
   "link",
-  "image",
-  "video",
+  // "image",
+  // "video",
 ];
 
 const TextEditor = ({ content, setContent, label }) => {
