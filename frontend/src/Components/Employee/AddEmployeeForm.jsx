@@ -955,7 +955,7 @@ const EmployeeForm = () => {
           value: "passport_details.issue_date",
         },
         {
-          label: "Expirty date",
+          label: "Expiry date",
           type: "date",
           value: "passport_details.expiry_date",
         },
@@ -993,7 +993,7 @@ const EmployeeForm = () => {
         },
         { label: "Issued by", type: "text", value: "visa.issued_by" },
         { label: "Issued date", type: "date", value: "visa.issue_date" },
-        { label: "Expirty date", type: "date", value: "visa.expiry_date" },
+        { label: "Expiry date", type: "date", value: "visa.expiry_date" },
         {
           label: "Eligible Review Date",
           type: "date",
@@ -1387,6 +1387,15 @@ const EmployeeForm = () => {
             return false;
         }
     }  
+    }
+    else if(currentStep === 4){
+      const {start,end}= formData.certification
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      if(endDate < startDate){
+        alert('Enter valid Certification start and end dates');
+        return false;
+      }
     }
    else if(currentStep === 6){
     let issued;

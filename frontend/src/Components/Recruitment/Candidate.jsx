@@ -21,7 +21,10 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
   const handleStatusUpdate = async () => {
     try {
       const payload = { status: selectedStatus };
-
+      if(selectedStatus === details.status){
+        alert('To submit,please select an updated status for Candidate');
+        return;
+      }
       if (isInterviewRelated) {
         payload.interviewDate = interviewDate;
         payload.timeFrom = timeFrom;
@@ -65,7 +68,6 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus,fetchAgain
 >
   <option value="" disabled>Select</option>
   {statuses
-    .filter(status => status !== details.status)
     .map((status, index) => (
       <option key={index} value={status}>
         {status}
@@ -186,7 +188,7 @@ const Candidate = () => {
           <p><strong>Gender:</strong> {details.gender}</p>
           {/* <p><strong>Date of Birth:</strong> {new Date(details.dob).toLocaleDateString()}</p> */}
           <p><strong>Education:</strong> {details.education}</p>
-          <p><strong>Experience:</strong> {details.experienceYear} years, {details.experienceMonth} months</p>
+          <p><strong>Experience:</strong> {details.experienceYear} years</p>
           <p><strong>Current Location:</strong> {details.currentLocation}</p>
           {/* <p><strong>Recent Position:</strong> {details.recentPosition}</p> */}
           {/* <p><strong>Next Job Title:</strong> {details.nextJobTitle || "N/A"}</p> */}
