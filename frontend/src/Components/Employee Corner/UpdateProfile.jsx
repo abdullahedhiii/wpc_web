@@ -1424,6 +1424,15 @@ const UpdateProfile = () => {
         }
     }  
     }
+    else if(currentStep === 4){
+      const {start,end}= formData.certification
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      if(endDate < startDate){
+        alert('Enter valid Certification start and end dates');
+        return false;
+      }
+    }
    else if(currentStep === 6){
     let issued;
     let { issue_date, expiry_date, review_date } = formData.passport_details || {};
@@ -1497,7 +1506,6 @@ const UpdateProfile = () => {
     
     return true;
   };
-  
   
   const handleSubmit = async () => {
     try {
