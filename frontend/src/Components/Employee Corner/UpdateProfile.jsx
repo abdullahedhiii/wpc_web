@@ -1502,7 +1502,6 @@ const UpdateProfile = () => {
     }
     
     }
-
     
     return true;
   };
