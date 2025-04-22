@@ -1887,73 +1887,73 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.qualification"
+                                    value={education.qualification}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.qualification}
+                                    name="education.qualification"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.subject"
+                                    value={education.subject}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.subject}
+                                    name="education.subject"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.institution_name"
+                                    value={education.institution_name}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.institution_name}
+                                    name="education.institution_name"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.awarding_body"
+                                    value={education.awarding_body}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.awarding_body}
+                                    name="education.awarding_body"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.year_of_passing"
+                                    value={education.year_of_passing}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.year_of_passing}
+                                    name="education.year_of_passing"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.percentage"
+                                    value={education.percentage}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.percentage}
+                                    name="education.percentage"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value="education.grade_division"
+                                    value={education.grade_division}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
