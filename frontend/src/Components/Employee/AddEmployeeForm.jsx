@@ -1554,11 +1554,11 @@ const EmployeeForm = () => {
     
       for (const edu of formData.education_details) {
         const educationFormData = new FormData();
-      
+        console.log(formData.education_details)
         for (const key in edu) {
           if (edu[key]) {
             if (key === "transcript_document" || key === "certificate_document") {
-              educationFormData.append(key, edu[key]); // already checked
+              educationFormData.append(key, edu[key]);
             } else {
               educationFormData.append(key, edu[key]);
             }
