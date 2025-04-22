@@ -1880,14 +1880,14 @@ e.preventDefault();
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.sl_no}
+                                     name="education_details.sl_no"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.qualification}
+                                    value="education.qualification"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
@@ -1898,7 +1898,7 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.subject}
+                                    value="education.subject"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
@@ -1909,7 +1909,7 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.institution_name}
+                                    value="education.institution_name"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
@@ -1920,7 +1920,7 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.awarding_body}
+                                    value="education.awarding_body"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
@@ -1931,7 +1931,7 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.year_of_passing}
+                                    value="education.year_of_passing"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
@@ -1942,7 +1942,7 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.percentage}
+                                    value="education.percentage"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
@@ -1953,11 +1953,11 @@ e.preventDefault();
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.grade_division}
+                                    value="education.grade_division"
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={education.grade_division}
+                                    name="education.grade_division"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1968,7 +1968,7 @@ e.preventDefault();
                                       onChange={(e) =>
                                         handleEducationChange(e, index)
                                       }
-                                      name={education.transcript_document}
+                                      name="education.transcript_document"
                                     />
                                     {education.transcript_document && (
                                       <a
@@ -1990,7 +1990,7 @@ e.preventDefault();
                                       onChange={(e) =>
                                         handleEducationChange(e, index)
                                       }
-                                      name={education.certificate_document}
+                                      name="education.certificate_document"
                                     />
                                     {education.certificate_document && (
                                       <a
