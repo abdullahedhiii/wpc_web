@@ -8,7 +8,7 @@ const UploadAttendance = () => {
     const [file, setFile] = useState(null);
     const {isSideBarOpen} = useSidebarContext();
     const {companyData} = useCompanyContext();
-
+    const [submitting,setSubmitting] = useState(false);
     const handleChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
@@ -30,8 +30,10 @@ const UploadAttendance = () => {
     };
 
     const handleUpload = async () => {
+      setSubmitting(true)
         if (!file) {
             alert("Please select a file to upload");
+            setSubmitting(false)
             return;
         }
         const formData = new FormData();
@@ -42,6 +44,9 @@ const UploadAttendance = () => {
         }
         catch(err){
         alert(err.response.data.message );
+        }
+        finally{
+          setSubmitting(false)
         }
     }
 
@@ -93,12 +98,14 @@ const UploadAttendance = () => {
                 <div className="mt-6 flex space-x-4">
                   <button
                     onClick={handleUpload}
+                    disabled = {submitting}
                     className="px-6 py-2 bg-yellow-600 text-white rounded-lg shadow-md hover:bg-yellow-700 transition"
                   >
-                    Upload
+                    {submitting ? 'Submitting..' : 'Submit'}
                   </button>
                   <button
                     onClick={handleReset}
+                    disabled = {submitting}
                     className="px-6 py-2 bg-gray-400 text-white rounded-lg shadow-md hover:bg-gray-500 transition"
                   >
                     Reset

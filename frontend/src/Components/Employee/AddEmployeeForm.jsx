@@ -1551,35 +1551,32 @@ const EmployeeForm = () => {
         }
       }));      
       await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-leave-allocation/${employee_code}`,formData.leave_allocation);
-
-      formData.education_details.forEach(async (edu, index) => {
+    
+      for (const edu of formData.education_details) {
         const educationFormData = new FormData();
+      
         for (const key in edu) {
           if (edu[key]) {
-            if (
-              key === "transcript_document" ||
-              key === "certificate_document"
-            ) {
-              if (edu[key]) {
-                educationFormData.append(key, edu[key]);
-              }
+            if (key === "transcript_document" || key === "certificate_document") {
+              educationFormData.append(key, edu[key]); // already checked
             } else {
               educationFormData.append(key, edu[key]);
             }
           }
         }
-        educationFormData.append('isDefault', formData.education_details.length === 1);
+      
+        educationFormData.append(
+          "isDefault",
+          String(formData.education_details.length === 1) // ✅ ensure it's a string
+        );
+      
         await axiosInstance.post(
           `${import.meta.env.VITE_API_URL}/api/submit-education-details/${companyData[0].id}.${employee_code}`,
-          educationFormData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
+          educationFormData
+          // ✅ No need for headers, let Axios auto-set them
         );
-      });
-
+      }
+      
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submit-job-details/${companyData[0].id}.${employee_code}`,formData.job_details);
 
       formData.key_responsibilities.forEach(async (res, index) => {

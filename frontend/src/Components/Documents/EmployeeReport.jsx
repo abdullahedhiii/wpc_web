@@ -132,8 +132,11 @@ const EmployeeReport = () => {
               ))}
             </select>
           </div>
+          { options.length === 0 ? <p>No employee documents have been uploaded</p> : null}
+
         </div>
         <button 
+        disabled = {options.length === 0}
           className="text-[12px] p-2 ml-4 mb-2 rounded-md text-white bg-yellow-700"
           onClick={handleView}  
         >

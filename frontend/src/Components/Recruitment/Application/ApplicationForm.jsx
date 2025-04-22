@@ -63,6 +63,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
     try {
       if(formData.contactNo.len < 10 || formData.contactNo.len > 15){
         alert('Contact Number should be of length 10-15 digits');
+        return;
       }
       const d = new Date(formData.dob);
       if(d > new Date()){

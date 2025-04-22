@@ -117,7 +117,10 @@ const OrganisationReport = () => {
                      ))}
                   </select>
                </div>
-               <button onClick={handleSubmit} className="mt-4 rounded-md bg-yellow-800 text-white px-3 py-1">Submit</button>
+               { options.length === 0 ? <p>No documents have been uploaded</p> : null}
+               <button 
+               disabled = {options.length === 0}
+               onClick={handleSubmit} className="mt-4 rounded-md bg-yellow-800 text-white px-3 py-1">Submit</button>
             </div>
          </div>
       </div>

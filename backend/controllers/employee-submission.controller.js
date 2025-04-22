@@ -138,8 +138,8 @@ module.exports.addEducationalDetails = async (req, res) => {
 
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
-    const isDefault = req.body.isDefault; // Check if the record is default
-
+    const isDefault = req.body.isDefault; 
+    console.log('In emp updatee : ',req.files,' is default ? ',isDefault);
     const file1 = req.files?.transcript_document ? req.files.transcript_document[0].filename : null;
     const file2 = req.files?.certificate_document ? req.files.certificate_document[0].filename : null;
 
@@ -208,6 +208,7 @@ module.exports.addEducationalDetails = async (req, res) => {
       }
     }
 
+    console.log('in edu ',message, document);
     return res.status(200).json({ message, document });
 
   } catch (err) {
@@ -215,6 +216,7 @@ module.exports.addEducationalDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
+
 module.exports.addJobDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
