@@ -1562,6 +1562,7 @@ const EmployeeForm = () => {
             } else {
               educationFormData.append(key, edu[key]);
             }
+            console.log('Appended ',key, ' to education data')
           }
         }
         
@@ -1570,7 +1571,7 @@ const EmployeeForm = () => {
           String(formData.education_details.length === 1) // ✅ ensure it's a string
         );
       
-        console.log('sending request for ' ,educationFormData)
+        // console.log('sending request for ' ,educationFormData)
         await axiosInstance.post(
           `${import.meta.env.VITE_API_URL}/api/submit-education-details/${companyData[0].id}.${employee_code}`,
           educationFormData
