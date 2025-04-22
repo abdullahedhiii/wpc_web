@@ -1564,12 +1564,13 @@ const EmployeeForm = () => {
             }
           }
         }
-      
+        
         educationFormData.append(
           "isDefault",
           String(formData.education_details.length === 1) // ✅ ensure it's a string
         );
       
+        console.log('sending request for ' ,educationFormData)
         await axiosInstance.post(
           `${import.meta.env.VITE_API_URL}/api/submit-education-details/${companyData[0].id}.${employee_code}`,
           educationFormData
