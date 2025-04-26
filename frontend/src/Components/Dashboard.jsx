@@ -60,7 +60,10 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-          {modules.map((module) => module.can_access || user.isAdmin ? (
+          {modules.map((module) => 
+          module.name !== 'Settings' && module.name!== 'Holiday' && module.name!== 'Rota' && module.name !== 'Tasks'
+          &&
+          (module.can_access || user.isAdmin ) ? (
             <button
               key={module.id}
               onClick={() => handleModuleSelect(module)}
