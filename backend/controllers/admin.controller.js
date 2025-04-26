@@ -62,6 +62,27 @@ require("dotenv").config({ path: process.env.ENV_FILE || ".env" });
 const crypto = require("crypto");
 const { query } = require("express");
 
+module.exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { company_id } = req.body;
+    const user = await User.findOne({
+      where: {
+        id: id,
+        organisation_id: company_id
+      }
+    });
+    if(!user){
+      return res.status(404).json({message : 'User not found'});
+    }
+    await user.destroy();
+    return res.status(200).json({message : 'User deleted successfully'});
+  }
+  catch(err){
+    return res.status(500).json({message : 'Internal server error'});
+  }
+}
+
 module.exports.submitCompanyForm = async (req, res) => {
   try {
     const {

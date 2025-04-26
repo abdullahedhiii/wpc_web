@@ -267,7 +267,7 @@ module.exports.getModules = async (req, res) => {
             icon: subModule.icon,
             download_api_route: subModule.download_api_route,
             features: subModule.features
-              .filter((feature) => ![56, 58, 59, 60,55].includes(feature.id)) 
+              .filter((feature) => ![56, 58, 59, 60,55,26].includes(feature.id)) 
               .map((feature) => ({
                 name: feature.name,
                 next_route: feature.next_route,

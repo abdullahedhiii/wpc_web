@@ -76,6 +76,17 @@ const UserForm = () => {
      }
   };
 
+  const handleDelete = async(id) => {
+    try {
+      await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/deleteUser/${id}`,{
+        company_id: companyData[0].id
+      });
+      navigate('/hrms/role/vw-users');
+    } catch (err) {
+      alert(err.response?.data?.message || 'An error occurred');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
@@ -191,6 +202,15 @@ const UserForm = () => {
                 <Save className="w-4 h-4" />
                 Save Changes
               </button>
+              {id && (
+                <button
+                  onClick={() => handleDelete(id)}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-200 transition-all duration-200 transform hover:scale-105 ml-4"
+                >
+                  <i className="la la-trash w-4 h-4" />
+                  Delete User
+                </button>
+              )}
             </motion.div>
           </div>
           </form>

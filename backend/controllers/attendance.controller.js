@@ -64,11 +64,13 @@ module.exports.submitCSV = async (req, res) => {
 
       const requiredHeaders = [
           "Employee Code",
+          "Employee Name",
           "Date",
           "Clock in",
-          "Clock in location",
+          // "Clock in location",
           "Clock out",
-          "Clock out location",
+          "Location",
+          // "Clock out location",
       ];
 
       const holidayList = await Holiday.findAll({ where: { organisation_id } });
@@ -92,12 +94,13 @@ module.exports.submitCSV = async (req, res) => {
           try {
               const { 
                   "Employee Code": employee_code, 
+                  "Employee Name": employee_name,
                   "Date": date, 
                   "Clock in": clock_in, 
-                  "Clock in location": clock_in_location
-,
+                 // "Clock in location": clock_in_location,
                   "Clock out": clock_out,
-                  "Clock out location": clock_out_location,
+                  "Location": location,
+                  //"Clock out location": clock_out_location,
               } = row;
 
               if (!employee_code  || !date || !clock_in || !clock_out) {
@@ -202,14 +205,16 @@ module.exports.submitCSV = async (req, res) => {
               await Attendance.create({
                   organisation_id,
                   employee_code,
+                  employee_name,
                   date: parsedDate, // No manual formatting
                   clock_in,
                   clock_out,
-                  "clock_out_location": clock_out_location || "N/A",
-                  "clock_in_location": clock_in_location || "N/A",
+                  location,
+                  // "clock_out_location": clock_out_location || "N/A",
+                  // "clock_in_location": clock_in_location || "N/A",
                   status,
                   duty_hours: Math.round(duty_hours),
-                  grace_period_exceeded: grace_period_exceeded ? "Yes" : "No"
+                  // grace_period_exceeded: grace_period_exceeded ? "Yes" : "No"
               });
 
               recordCount++;

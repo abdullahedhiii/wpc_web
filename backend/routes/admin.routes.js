@@ -59,7 +59,8 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   getLeaveReportEmployee,
   getPastStaffData,
   processAttendance,
-  processAbsentReport
+  processAbsentReport,
+  deleteUser
 } = require('../controllers/admin.controller');
 
 router.post('/submitCompanyForm',orgUpload.fields([
@@ -167,4 +168,6 @@ router.get('/getPastStaffData/:id',getPastStaffData);
 
 router.get('/processAttendance',processAttendance);
 router.get('/absentReport',processAbsentReport);
+
+router.post('/deleteUser/:id',deleteUser);
 module.exports = router;

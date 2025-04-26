@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "CASCADE",
       },
+      employee_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       date: {
         type: DataTypes.DATEONLY,
         allowNull: false,
@@ -43,11 +47,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TIME,
         allowNull: false,
       },
-      clock_out_location: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      clock_in_location: {
+     // clock_out_location: {
+      //  type: DataTypes.STRING,
+      //  allowNull: false,
+      //},
+      // clock_in_location: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      // },
+      location: {
         type: DataTypes.STRING,
         allowNull: false,
       },

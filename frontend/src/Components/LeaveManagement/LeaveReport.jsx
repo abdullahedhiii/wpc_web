@@ -8,12 +8,14 @@ const LeaveReport = () => {
     const { companyData } = useCompanyContext();
     const [year, setYear] = useState(2025);
     const { isSideBarOpen } = useSidebarContext();
+    const [submitting,setSubmitting] = useState(false);
 
     const startYear = companyData[0]?.year_created || new Date().getFullYear();
     const currentYear = new Date().getFullYear();
 
     const handleGenerate = async (e) => {
       e.preventDefault()
+      setSubmitting(true);
         try{
            const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getCompleteLeaveReport/${companyData[0].id}`,{
             params : {year}
@@ -27,6 +29,9 @@ const LeaveReport = () => {
     }
         catch(err){
              console.log(err);
+        }
+        finally{
+          setSubmitting(false)
         }
     }
     return (
@@ -76,9 +81,10 @@ const LeaveReport = () => {
                 <button
                   className="rounded-xl text-white text-[12px] px-2 py-2 bg-yellow-400 hover:bg-yellow-500 mt-4"
                   type="submit"
+                  disabeld = {submitting}
                 >
 
-                    View Report
+                  {!submitting ? 'View Report' :'Generating..'}
                 </button>
                 </form>
             </div>
