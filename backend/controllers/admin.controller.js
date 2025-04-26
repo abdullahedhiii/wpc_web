@@ -3126,11 +3126,18 @@ module.exports.getUserRoles = async (req, res) => {
             {
               model: Feature,
               as: "feature",
+              required:false
             },
             {
               model: SubModule,
               as: "submodule",
+              required:false
             },
+            {
+              model: Module,
+              as: "module",
+              required:false
+            }
           ],
         },
       ],

@@ -52,8 +52,6 @@ function parseDateString(dateString) {
 
 module.exports.submitCSV = async (req, res) => {
   try {
-      
-
       const organisation_id = req.params.id;
       if (!req.file) {
           return res.status(400).json({ error: "No file uploaded" });
@@ -61,16 +59,23 @@ module.exports.submitCSV = async (req, res) => {
 
       const filePath = req.file.path;
       let recordCount = 0;
+      let errorDetails = {
+          missingHeaders: [],
+          invalidRows: 0,
+          invalidDates: 0,
+          holidays: 0,
+          employeeNotFound: 0,
+          invalidTimes: 0,
+          duplicateRecords: 0
+      };
 
       const requiredHeaders = [
           "Employee Code",
           "Employee Name",
           "Date",
           "Clock in",
-          // "Clock in location",
           "Clock out",
-          "Location",
-          // "Clock out location",
+          "Location"
       ];
 
       const holidayList = await Holiday.findAll({ where: { organisation_id } });
@@ -84,6 +89,7 @@ module.exports.submitCSV = async (req, res) => {
               const missingHeaders = requiredHeaders.filter(header => !csvHeaders.includes(header));
 
               if (missingHeaders.length > 0) {
+                  errorDetails.missingHeaders = missingHeaders;
                   return res.status(400).json({ 
                       message: `Invalid CSV format. Missing columns: ${missingHeaders.join(", ")}` 
                   });
@@ -97,23 +103,20 @@ module.exports.submitCSV = async (req, res) => {
                   "Employee Name": employee_name,
                   "Date": date, 
                   "Clock in": clock_in, 
-                 // "Clock in location": clock_in_location,
                   "Clock out": clock_out,
-                  "Location": location,
-                  //"Clock out location": clock_out_location,
+                  "Location": location
               } = row;
 
-              if (!employee_code  || !date || !clock_in || !clock_out) {
-                  console.warn(`Skipping invalid row: ${JSON.stringify(row)}`);
+              if (!employee_code || !date || !clock_in || !clock_out) {
+                  errorDetails.invalidRows++;
                   continue;
               }
 
               const parsedDate = parseDateString(date);
               if (parsedDate === 'Invalid') {
-                 console.warn(`Skipping row due to invalid  date : ${JSON.stringify(row)}`);
-                 continue;
-               }
-
+                  errorDetails.invalidDates++;
+                  continue;
+              }
 
               const isHoliday = holidayList.some(holiday => {
                   const holidayStart = new Date(holiday.start_date);
@@ -122,117 +125,80 @@ module.exports.submitCSV = async (req, res) => {
               });
 
               if (isHoliday) {
-                  console.warn(`Skipping row due to holiday: ${JSON.stringify(row)}`);
+                  errorDetails.holidays++;
                   continue;
               }
 
               const employee_check = await Employee.findOne({ where: { employee_code, organisation_id } });
 
               if (!employee_check) {
-                  console.warn(`Skipping row employee not found: ${JSON.stringify(row)}`);
+                  errorDetails.employeeNotFound++;
                   continue;
               }
-              // const shift_check = await Shift.findOne({ where: { shift_code } });
 
-              // if (!shift_check) {
-              //   console.warn(`Skipping row, shift not found: ${shift_code}`);
-              //   continue;
-              // }
-              
-              
-              
-              // const dept_check = await Department.findOne({
-              //   where: { id: shift_check.department_id, organisation_id }
-              // });
-              
-              // const desg_check = await Designation.findOne({
-              //   where: { id: shift_check.designation_id }
-              // });
-              
-              
-              
-              
-              // if (!dept_check || !desg_check) {
-              //   console.warn(`Skipping row shift not found within organisation: ${JSON.stringify(row)}`);
-              //   continue;
-              // }
-              
               const clockInTime = parseTimeString(clock_in);
               const clockOutTime = parseTimeString(clock_out);
 
               if (!clockInTime || !clockOutTime) {
-                  console.warn(`Skipping row due to invalid time format: ${JSON.stringify(row)}`);
+                  errorDetails.invalidTimes++;
                   continue;
               }
 
-              const duty_hours = (clockOutTime - clockInTime) / (1000 * 60 * 60);
-              // const shift = await Shift.findOne({ 
-              //     where: { shift_code },
-              //     include: [{ model: LatePolicy, as: "latepolicy" }]
-              // });
-
-              // if (!shift) {
-              //     console.warn(`Skipping row, shift not found: ${shift_code}`);
-              //     continue;
-              // }
-
-              const service_d = await ServiceDetail.findOne({
-                where:{
-                  employee_code : employee_code
+              if (await Attendance.findOne({
+                where: {
+                  organisation_id,
+                  employee_code,
+                  date: parsedDate
                 }
-              })
+              })) {
+                errorDetails.duplicateRecords++;
+                continue;
+              }
+
+              const duty_hours = (clockOutTime - clockInTime) / (1000 * 60 * 60);
+              const service_d = await ServiceDetail.findOne({
+                where: {
+                  employee_code: employee_code
+                }
+              });
               const workInTime = new Date(`1970-01-01T${service_d.work_in}`);
               const workOutTime = new Date(`1970-01-01T${service_d.work_out}`);
               const requiredDutyHours = (workOutTime - workInTime) / (1000 * 60 * 60);
 
-              // const gracePeriodMinutes = shift.latepolicy ? shift.latepolicy.period : 0;
-              // const graceEndTime = new Date(workInTime.getTime() + gracePeriodMinutes * 60000);
-              // const grace_period_exceeded = clockInTime > graceEndTime;
-
               const dutyHoursMet = duty_hours >= requiredDutyHours;
               const status = dutyHoursMet ? "Present" : "Incomplete Hours";
-              
-              if(await Attendance.findOne({
-                where :{
-                  organisation_id,
-                  employee_code,
-                  date : parsedDate
-                }
-              })){
-                console.warn('Attendance record for this day and this employee already exists');
-                continue;
-              }
+
               await Attendance.create({
                   organisation_id,
                   employee_code,
                   employee_name,
-                  date: parsedDate, // No manual formatting
+                  date: parsedDate,
                   clock_in,
                   clock_out,
                   location,
-                  // "clock_out_location": clock_out_location || "N/A",
-                  // "clock_in_location": clock_in_location || "N/A",
                   status,
-                  duty_hours: Math.round(duty_hours),
-                  // grace_period_exceeded: grace_period_exceeded ? "Yes" : "No"
+                  duty_hours: Math.round(duty_hours)
               });
 
               recordCount++;
           } catch (rowError) {
-              
+              console.error(`Error processing row: ${rowError}`);
           }
       }
 
       if (recordCount === 0) {
-          
-          return res.status(400).json({ message: "No valid records found in CSV" });
+          return res.status(400).json({ 
+              message: "No valid records found in CSV",
+              details: errorDetails
+          });
       }
 
-      
-      return res.status(200).json({ message: `Attendance records uploaded successfully, Valid row count ${recordCount}` });
+      return res.status(200).json({ 
+          message: `Attendance records uploaded successfully, Valid row count: ${recordCount}`,
+          details: errorDetails
+      });
 
   } catch (error) {
-      
       return res.status(500).json({ error: "Server error", message: error });
   }
 };

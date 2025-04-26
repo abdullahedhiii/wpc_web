@@ -9,6 +9,7 @@ const UploadAttendance = () => {
     const {isSideBarOpen} = useSidebarContext();
     const {companyData} = useCompanyContext();
     const [submitting,setSubmitting] = useState(false);
+    const [errorDetails, setErrorDetails] = useState(null);
     const handleChange = (event) => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
@@ -41,9 +42,11 @@ const UploadAttendance = () => {
         try{
              const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submitCSV/${companyData[0].id}`,formData);
              alert(response.data.message);
+             setErrorDetails(response.data.details);
         }
         catch(err){
         alert(err.response.data.message );
+        setErrorDetails(err.response.data.details);
         }
         finally{
           setSubmitting(false)
@@ -117,6 +120,18 @@ const UploadAttendance = () => {
                     Download Sample File
                   </button>
                 </div>
+                {errorDetails && (
+                  <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-lg">
+                    <h2 className="font-semibold">Error Details:</h2>
+                    <ul className="list-disc pl-5">
+                      {Object.entries(errorDetails).map(([key, value]) => (
+                        <li key={key}>
+                          <strong>{key}:</strong> {value}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           );
