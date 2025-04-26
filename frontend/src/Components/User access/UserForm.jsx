@@ -205,6 +205,7 @@ const UserForm = () => {
               {id && (
                 <button
                   onClick={() => handleDelete(id)}
+                  type="button"
                   className="inline-flex items-center gap-2 px-6 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:ring-2 focus:ring-red-200 transition-all duration-200 transform hover:scale-105 ml-4"
                 >
                   <i className="la la-trash w-4 h-4" />
@@ -216,7 +217,7 @@ const UserForm = () => {
           </form>
         </motion.div>
   
-                {showSuccess && (
+          {showSuccess && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

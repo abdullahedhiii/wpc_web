@@ -6,6 +6,8 @@ import axiosInstance from "../../../axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { Settings, UserPlus, UserCog, Save, CheckCircle } from 'lucide-react';
 import {motion} from 'framer-motion';
+import { useParams } from 'react-router-dom';
+
 const UserRoleForm = () => {
     const navigate = useNavigate();
     const {isSideBarOpen} = useSidebarContext();
@@ -52,6 +54,7 @@ const UserRoleForm = () => {
     });
 
     useEffect(() => {
+      console.log(modules);
       const filteredModules = modules
         .filter(
           (module) =>
@@ -68,9 +71,10 @@ const UserRoleForm = () => {
               subModule.name !== 'Archive'
           )
         }));
-    
+    console.log(filteredModules);
       const allSubModules = filteredModules.flatMap((module) => module.subModules);
       setModuleOptions(allSubModules);
+      console.log(allSubModules);
     }, [modules]);
     
     
@@ -79,7 +83,9 @@ const UserRoleForm = () => {
         const subModule = module.subModules.find(
           (sub) => sub.id === formData.module
         );
+        console.log('in usee',subModule);
         if (subModule) {
+          console.log('in usee setting options',subModule.features);
           setOptions(subModule.features || []);
           break;
         }
