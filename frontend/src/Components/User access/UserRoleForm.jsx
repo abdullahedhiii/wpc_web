@@ -24,27 +24,13 @@ const UserRoleForm = () => {
            setUsers(response.data);
       }
       catch(err){
-
+          console.error("Error fetching users:", err);
       }
     }
 
     useEffect(() => {
       fetchUsers()
     },[]);
-
-    // useEffect(() => {
-    //   const filteredModules = modules.filter(
-    //     (module) =>
-    //       module.name !== 'Settings' &&
-    //       module.name !== 'Holiday' &&
-    //       module.name !== 'Rota' &&
-    //       module.name !== 'Tasks'
-    //   );
-    
-    //   const allSubModules = filteredModules.flatMap((module) => module.subModules);
-    //   setModuleOptions(allSubModules);
-    // }, [modules]);
-    
 
     const [formData,setFormData] = useState({
       module : 0,
@@ -54,42 +40,25 @@ const UserRoleForm = () => {
     });
 
     useEffect(() => {
-      console.log(modules);
       const filteredModules = modules
-        .filter(
-          (module) =>
-            module.name !== 'Settings' &&
-            module.name !== 'Holiday' &&
-            module.name !== 'Rota' &&
-            module.name !== 'Tasks'
-        )
-        .map((module) => ({
+        .filter(module => !["Settings", "Holiday", "Rota", "Tasks"].includes(module.name))
+        .map(module => ({
           ...module,
-          subModules: module.subModules?.filter(
-            (subModule) =>
-              subModule.name !== 'Time Shift Management' &&
-              subModule.name !== 'Archive'
-          )
+          subModules: module.subModules?.filter(subModule => !["Time Shift Management", "Archive"].includes(subModule.name))
         }));
-    console.log(filteredModules);
-      const allSubModules = filteredModules.flatMap((module) => module.subModules);
+      const allSubModules = filteredModules.flatMap(module => module.subModules || []);
       setModuleOptions(allSubModules);
-      console.log(allSubModules);
     }, [modules]);
     
     
     useEffect(() => {
-      for (const module of modules) {
-        console.log('in usee module',module,'formData.module',formData.module);
-        const subModule = module.subModules.find(
-          (sub) => sub.id === formData.module
-        );
-        console.log('in usee',subModule);
-        if (subModule) {
-          console.log('in usee setting options',subModule.features);
-          setOptions(subModule.features || []);
-          break;
-        }
+      const selectedModule = modules.find(module => 
+        module.subModules.some(sub => sub.id === formData.module)
+      );
+
+      if (selectedModule) {
+        const subModule = selectedModule.subModules.find(sub => sub.id === formData.module);
+        setOptions(subModule?.features || []);
       }
     }, [formData.module, modules]);
     
@@ -110,7 +79,7 @@ const UserRoleForm = () => {
           navigate('/hrms/role/view-users-role');
        }
        catch(err){
-          alert(err.response.data.message)
+          alert(err.response?.data?.message || 'An error occurred');
        }
     };
     return (
