@@ -57,7 +57,10 @@ const UserRoleForm = () => {
     
     useEffect(() => {
       setSubModuleOptions([]);
+      console.log('formData.module',formData.module);
+      console.log('modules',modules);
       const selectedModule = modules.find(module => module.id === formData.module);
+      console.log('selectedModule',selectedModule);
       if (selectedModule) {
         setSubModuleOptions(selectedModule.subModules || []);
       }
@@ -66,7 +69,9 @@ const UserRoleForm = () => {
     useEffect(() => {
       setOptions([]);
       const selectedSubModule = subModuleOptions.find(subModule => subModule.id === formData.submodule);
+      console.log('selectedSubModule',selectedSubModule);
       if (selectedSubModule) {
+        console.log('selectedSubModule.features',selectedSubModule.features);
         setOptions(selectedSubModule.features || []);
       }
     }, [formData.submodule, subModuleOptions]);
