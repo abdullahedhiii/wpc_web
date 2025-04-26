@@ -57,22 +57,32 @@ const UserRoleForm = () => {
     
     useEffect(() => {
       setSubModuleOptions([]);
-      console.log('formData.module',formData.module);
-      console.log('modules',modules);
-      const selectedModule = modules.find(module => module.id === formData.module);
-      console.log('selectedModule',selectedModule);
-      if (selectedModule) {
-        setSubModuleOptions(selectedModule.subModules || []);
+      console.log('formData.module', formData.module);
+      console.log('modules', modules);
+
+      if (formData.module) {
+        const selectedModule = modules.find(module => module.id == formData.module);
+        console.log('selectedModule', selectedModule);
+
+        if (selectedModule) {
+          setSubModuleOptions(selectedModule.subModules || []);
+        }
       }
     }, [formData.module, modules]);
     
     useEffect(() => {
       setOptions([]);
-      const selectedSubModule = subModuleOptions.find(subModule => subModule.id === formData.submodule);
-      console.log('selectedSubModule',selectedSubModule);
-      if (selectedSubModule) {
-        console.log('selectedSubModule.features',selectedSubModule.features);
-        setOptions(selectedSubModule.features || []);
+      console.log('formData.submodule', formData.submodule);
+      console.log('subModuleOptions', subModuleOptions);
+
+      if (formData.submodule) {
+        const selectedSubModule = subModuleOptions.find(subModule => subModule.id == formData.submodule);
+        console.log('selectedSubModule', selectedSubModule);
+
+        if (selectedSubModule) {
+          console.log('selectedSubModule.features', selectedSubModule.features);
+          setOptions(selectedSubModule.features || []);
+        }
       }
     }, [formData.submodule, subModuleOptions]);
 
