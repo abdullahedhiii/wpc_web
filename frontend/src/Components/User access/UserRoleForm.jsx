@@ -13,8 +13,10 @@ const UserRoleForm = () => {
     const {isSideBarOpen} = useSidebarContext();
     const {modules} = useModuleContext();
     const {companyData} = useCompanyContext();
+  // const [moduleOptions,setModuleOptions] = useState([]);
     const [featureOptions,setOptions] = useState([]);
     const [moduleOptions, setModuleOptions] = useState([]);
+    const [subModuleOptions, setSubModuleOptions] = useState([]);
     const [users,setUsers] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
 
@@ -34,6 +36,7 @@ const UserRoleForm = () => {
 
     const [formData,setFormData] = useState({
       module : 0,
+      submodule: 0,
       feature : 0,
       email : '',
       right : ''
@@ -42,26 +45,31 @@ const UserRoleForm = () => {
     useEffect(() => {
       const filteredModules = modules
         .filter(module => !["Settings", "Holiday", "Rota", "Tasks"].includes(module.name))
-        .map(module => ({
-          ...module,
-          subModules: module.subModules?.filter(subModule => !["Time Shift Management", "Archive"].includes(subModule.name))
-        }));
-      const allSubModules = filteredModules.flatMap(module => module.subModules || []);
-      setModuleOptions(allSubModules);
+        // .map(module => ({
+        //   ...module,
+        //   subModules: module.subModules?.filter(subModule => !["Time Shift Management", "Archive"].includes(subModule.name))
+        // }));
+     // const allSubModules = filteredModules.flatMap(module => module.subModules || []);
+     // setModuleOptions(allSubModules);
+     setModuleOptions(filteredModules);
     }, [modules]);
     
     
     useEffect(() => {
-      const selectedModule = modules.find(module => 
-        module.subModules.some(sub => sub.id === formData.module)
-      );
-
+      setSubModuleOptions([]);
+      const selectedModule = modules.find(module => module.id === formData.module);
       if (selectedModule) {
-        const subModule = selectedModule.subModules.find(sub => sub.id === formData.module);
-        setOptions(subModule?.features || []);
+        setSubModuleOptions(selectedModule.subModules || []);
       }
     }, [formData.module, modules]);
     
+    useEffect(() => {
+      setOptions([]);
+      const selectedSubModule = subModuleOptions.find(subModule => subModule.id === formData.submodule);
+      if (selectedSubModule) {
+        setOptions(selectedSubModule.features || []);
+      }
+    }, [formData.submodule, subModuleOptions]);
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -146,7 +154,25 @@ const UserRoleForm = () => {
                     ))}
                   </select>
                 </div>
-    
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Select Module
+                  </label>
+                  <select
+                    name="submodule"
+                    value={formData.submodule}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                    required
+                  >
+                    <option value="" disabled>Select Module</option>
+                    {subModuleOptions.map((subModule) => (
+                      <option key={subModule.id} value={subModule.id}>
+                        {subModule.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Menu

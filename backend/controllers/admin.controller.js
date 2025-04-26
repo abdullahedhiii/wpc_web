@@ -3087,7 +3087,8 @@ module.exports.grantRights = async (req, res) => {
     const existingRole = await UserRole.findOne({
       where: {
         user_id: req.body.email,
-        sub_module_id: req.body.module,
+        module_id: req.body.module,
+        sub_module_id: req.body.submodule,
         feature_id: req.body.feature,
         right: req.body.right,
       },
@@ -3100,7 +3101,8 @@ module.exports.grantRights = async (req, res) => {
     // Create a new user role if it does not exist
     await UserRole.create({
       user_id: req.body.email,
-      sub_module_id: req.body.module,
+      module_id: req.body.module,
+      sub_module_id: req.body.submodule,
       feature_id: req.body.feature,
       right: req.body.right,
     });

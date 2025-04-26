@@ -15,6 +15,14 @@ module.exports = (sequelize, DataTypes) => {
             key: "id",
           },
         },
+        module_id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: "Modules",
+            key: "id",
+          },
+        },
         sub_module_id: {
           type: DataTypes.INTEGER,
           allowNull: false,
