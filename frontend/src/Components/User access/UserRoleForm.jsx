@@ -80,6 +80,7 @@ const UserRoleForm = () => {
     
     useEffect(() => {
       for (const module of modules) {
+        console.log('in usee module',module,'formData.module',formData.module);
         const subModule = module.subModules.find(
           (sub) => sub.id === formData.module
         );
