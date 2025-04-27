@@ -32,6 +32,7 @@ const UploadAttendance = () => {
 
     const handleUpload = async () => {
       setSubmitting(true)
+      setErrorDetails(null);
         if (!file) {
             alert("Please select a file to upload");
             setSubmitting(false)

@@ -1,5 +1,5 @@
 const express = require('express');
-const { Login, Register, getModules, retrieveCookie, getUserOrganisation, logout, getSponsors } = require('../controllers/user.controller');
+const { Login, Register, getModules, fetchSponsorsFromFile,retrieveCookie, getUserOrganisation, logout, getSponsors } = require('../controllers/user.controller');
 const router = express.Router();
 
 router.post('/login',Login);

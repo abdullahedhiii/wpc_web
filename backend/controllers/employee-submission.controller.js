@@ -932,13 +932,13 @@ module.exports.getDocuments = async (req, res) => {
       ...(educational_documents?.flatMap((doc) => [
         doc.transcript_document
           ? {
-              document_type: doc.qualification + " transcript document",
+              document_type: (doc.qualification || "Qualification") + " transcript document",
               document_url: doc.transcript_document,
             }
           : null,
         doc.certificate_document
           ? {
-              document_type: doc.qualification + " certificate document",
+              document_type: (doc.qualification || "Qualification") + " certificate document",
               document_url: doc.certificate_document,
             }
           : null,
@@ -951,7 +951,7 @@ module.exports.getDocuments = async (req, res) => {
         doc.document
           ? [
               {
-                document_type: doc.name + " document",
+                document_type: (doc.name || "Document") + " document",
                 document_url: doc.document,
               },
             ]
@@ -961,7 +961,7 @@ module.exports.getDocuments = async (req, res) => {
         doc.doc_url
           ? [
               {
-                document_type: doc.type,
+                document_type: (doc.type || "Document") + " document",
                 document_url: doc.doc_url,
               },
             ]

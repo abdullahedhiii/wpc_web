@@ -7,10 +7,10 @@ import {motion} from 'framer-motion';
 
 const DailyAttendance = () => {
     const {isSideBarOpen} = useSidebarContext();
-    const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date','Clock In','Clock In Location','Clock Out','Clock Out Location','Duty Hours'];
+    const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date','Clock In','Clock Out','Location','Duty Hours'];
     const [attendance,setAttendance] = useState([]);
     const {companyData,employees,departmentData,designationData,fetchEmployeesLink,fetchDepartments,fetchDesignations} = useCompanyContext();
-    
+    const [submitted,setSubmitted] = useState(false);
     useEffect(() => {
    //    fetchDepartments();
      //  fetchDesignations();
@@ -68,6 +68,7 @@ const DailyAttendance = () => {
     
     const handleGenerate = async (e) => {
       e.preventDefault();
+      setSubmitted(true);
         if(!formData.employeeCode || !formData.date){
             window.alert('all fields are required');
             return;
@@ -78,6 +79,9 @@ const DailyAttendance = () => {
            setAttendance(response.data);
         }
         catch{
+        }
+        finally{
+          setSubmitted(false);
         }
     };
 
@@ -192,8 +196,9 @@ const DailyAttendance = () => {
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
           type="submit"
+          disabled={submitted}
         >
-          View
+          {submitted ? 'Generating...' : 'View'}
         </button>
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"

@@ -72,6 +72,8 @@ const UserRoleForm = () => {
     
     useEffect(() => {
       setOptions([]);
+      console.log('formData.module', formData.module);
+      console.log('in feature');
       console.log('formData.submodule', formData.submodule);
       console.log('subModuleOptions', subModuleOptions);
 
@@ -84,7 +86,8 @@ const UserRoleForm = () => {
           setOptions(selectedSubModule.features || []);
         }
       }
-    }, [formData.submodule, subModuleOptions]);
+    }, [formData.submodule,formData.module]);
+
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -171,7 +174,7 @@ const UserRoleForm = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
-                    Select Module
+                    Select Sub Module
                   </label>
                   <select
                     name="submodule"
@@ -180,7 +183,7 @@ const UserRoleForm = () => {
                     className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
                     required
                   >
-                    <option value="" disabled>Select Module</option>
+                    <option value="" disabled>Select Sub Module</option>
                     {subModuleOptions.map((subModule) => (
                       <option key={subModule.id} value={subModule.id}>
                         {subModule.name}
@@ -199,7 +202,7 @@ const UserRoleForm = () => {
                     className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
                     required
                   >
-                    <option value="" disabled>Select Menu</option>
+                    <option value="" disabled>Select Feature</option>
                     {featureOptions.map((e) => (
                       <option key={e.id} value={e.id}>
                         {e.name}

@@ -11,7 +11,7 @@ const EmployeeReport = () => {
   const [documents, setDocuments] = useState([]);
   const { companyData,fetchEmployeesLink, employees } = useCompanyContext();
   const { isSideBarOpen } = useSidebarContext();
-
+  
   const [formData, setFormData] = useState({
     employee_code: "",
     document_type: "",

@@ -7,7 +7,7 @@ const GenerateAttendance = () => {
   const { companyData,fetchDepartments,fetchDesignations,fetchEmployeesLink, departmentData, designationData, employees } =
     useCompanyContext();
   const [attendance, setAttendance] = useState([]);
-
+  const [submitted,setSubmitted] = useState(false);
   useEffect(() => {
     fetchDepartments();
  //   fetchDesignations()
@@ -74,7 +74,7 @@ const GenerateAttendance = () => {
 
   const handleGenerate = async (e) => {
     e.preventDefault();
-
+    setSubmitted(true);
     if(!formData.employeeCode || !formData.fromDate || !formData.toDate){
         window.alert('all fields are required');
         return;
@@ -92,6 +92,9 @@ const GenerateAttendance = () => {
       );
       setAttendance(response.data);
     } catch (err) {
+    }
+    finally{
+      setSubmitted(false);
     }
   };
   
@@ -268,8 +271,9 @@ const GenerateAttendance = () => {
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
           type="submit"
+          disabled={submitted}
         >
-          Go
+          {submitted ? 'Generating...' : 'Go'}
         </button>
         </form>
       </div>

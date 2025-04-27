@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "CASCADE",
       },
-      shift_code: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        references: {
-          model: "Shifts",
-          key: "shift_code",
-        },
-        onDelete: "CASCADE",
-      },
+      // shift_code: {
+      //   type: DataTypes.STRING,
+      //   allowNull: false,
+      //   references: {
+      //     model: "Shifts",
+      //     key: "shift_code",
+      //   },
+      //   onDelete: "CASCADE",
+      // },
       employee_code: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -61,15 +61,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       duty_hours: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       grace_period_exceeded :{
         type : DataTypes.STRING,
-        allowNull:false
+        allowNull:true
       }
     },
     { tableName: "Attendance", timestamps: false }

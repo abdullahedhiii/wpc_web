@@ -20,6 +20,7 @@ function parseDateString(dateString) {
   ];
 
   if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
+    console.log("Invalid date format:", dateString);
     return "Invalid";
 }
 
@@ -69,6 +70,7 @@ module.exports.submitCSV = async (req, res) => {
           duplicateRecords: 0
       };
 
+      let has_error = false;
       const requiredHeaders = [
           "Employee Code",
           "Employee Name",
@@ -78,7 +80,7 @@ module.exports.submitCSV = async (req, res) => {
           "Location"
       ];
 
-      const holidayList = await Holiday.findAll({ where: { organisation_id } });
+   //   const holidayList = await Holiday.findAll({ where: { organisation_id } });
       let headersChecked = false;
 
       const stream = fs.createReadStream(filePath).pipe(csvParser());
@@ -89,7 +91,9 @@ module.exports.submitCSV = async (req, res) => {
               const missingHeaders = requiredHeaders.filter(header => !csvHeaders.includes(header));
 
               if (missingHeaders.length > 0) {
+                  console.log("Missing headers:", missingHeaders);
                   errorDetails.missingHeaders = missingHeaders;
+                  has_error = true;
                   return res.status(400).json({ 
                       message: `Invalid CSV format. Missing columns: ${missingHeaders.join(", ")}` 
                   });
@@ -107,32 +111,43 @@ module.exports.submitCSV = async (req, res) => {
                   "Location": location
               } = row;
 
+              console.log(row);
+
               if (!employee_code || !date || !clock_in || !clock_out) {
+                  console.log("Invalid row:", row);
+                  has_error = true; 
                   errorDetails.invalidRows++;
                   continue;
               }
 
               const parsedDate = parseDateString(date);
               if (parsedDate === 'Invalid') {
+                  has_error = true;
+                  console.log("Invalid date:", date);
                   errorDetails.invalidDates++;
                   continue;
               }
 
-              const isHoliday = holidayList.some(holiday => {
-                  const holidayStart = new Date(holiday.start_date);
-                  const holidayEnd = new Date(holiday.end_date);
-                  return parsedDate >= holidayStart && parsedDate <= holidayEnd;
-              });
+     //         const isHoliday = holidayList.some(holiday => {
+     //           console.log("Holiday:", holiday);
+     //           const holidayStart = new Date(holiday.start_date);
+     //           const holidayEnd = new Date(holiday.end_date);
+     //           return parsedDate >= holidayStart && parsedDate <= holidayEnd;
+     //       });
 
-              if (isHoliday) {
-                  errorDetails.holidays++;
-                  continue;
-              }
+              // if (isHoliday) {
+              //     console.log("Holiday found:", isHoliday);
+              //     has_error = true;
+              //     errorDetails.holidays++;
+              //     continue;
+              // }
 
               const employee_check = await Employee.findOne({ where: { employee_code, organisation_id } });
 
               if (!employee_check) {
+                  has_error = true;
                   errorDetails.employeeNotFound++;
+                  console.log("Employee not found:", employee_check);
                   continue;
               }
 
@@ -140,7 +155,9 @@ module.exports.submitCSV = async (req, res) => {
               const clockOutTime = parseTimeString(clock_out);
 
               if (!clockInTime || !clockOutTime) {
+                  has_error = true;
                   errorDetails.invalidTimes++;
+                  console.log("Invalid time:", clockInTime, clockOutTime);
                   continue;
               }
 
@@ -151,7 +168,9 @@ module.exports.submitCSV = async (req, res) => {
                   date: parsedDate
                 }
               })) {
+                has_error = true;
                 errorDetails.duplicateRecords++;
+                console.log("Duplicate record:", employee_code, parsedDate);
                 continue;
               }
 
@@ -181,21 +200,23 @@ module.exports.submitCSV = async (req, res) => {
               });
 
               recordCount++;
+              console.log("Record created:", employee_code, parsedDate);
           } catch (rowError) {
               console.error(`Error processing row: ${rowError}`);
           }
       }
 
       if (recordCount === 0) {
+          console.log("No valid records found in CSV");
           return res.status(400).json({ 
               message: "No valid records found in CSV",
-              details: errorDetails
+              details: has_error ? errorDetails : null
           });
       }
 
       return res.status(200).json({ 
           message: `Attendance records uploaded successfully, Valid row count: ${recordCount}`,
-          details: errorDetails
+          details: has_error ? errorDetails : null
       });
 
   } catch (error) {
@@ -457,10 +478,11 @@ module.exports.submitCSV = async (req, res) => {
           "Employee Name": employeeName,
           "Date": ele.date,
           "Clock In": ele.clock_in,
-          "Clock In Location": "will do", 
+       //   "Clock In Location": "will do", 
           "Clock Out": ele.clock_out,
-          "Clock Out Location": ele.clock_out_location,
-          "Duty hours": ele.duty_hours,
+       //   "Clock Out Location": ele.clock_out_location,
+          "Location": ele.location,
+       "Duty hours": ele.duty_hours,
         };
       });
   
@@ -509,10 +531,11 @@ module.exports.submitCSV = async (req, res) => {
             .join(" "),
           Date: data.date,
           "Clock In": record?.clock_in || "N/A",
-          "Clock In Location": record?.clock_in_location || "N/A",
+       //   "Clock In Location": record?.clock_in_location || "N/A",
           "Clock Out": record?.clock_out || "N/A",
-          "Clock Out Location": record?.clock_out_location || "N/A",
-          "Duty Hours": record?.duty_hours || "N/A",
+       //   "Clock Out Location": record?.clock_out_location || "N/A",
+          "Location": record?.location || "N/A",
+       "Duty Hours": record?.duty_hours || "N/A",
           // Action: "Edit",
         },
       ];}
@@ -564,10 +587,11 @@ module.exports.submitCSV = async (req, res) => {
             .join(" "),
           Date: record.date,
           "Clock In": record?.clock_in || "N/A",
-          "Clock In Location": record?.clock_in_location || "N/A",
+       //   "Clock In Location": record?.clock_in_location || "N/A",
           "Clock Out": record?.clock_out || "N/A",
-          "Clock Out Location": record?.clock_out_location || "N/A",
-          "Duty Hours": record?.duty_hours || "N/A",
+       //   "Clock Out Location": record?.clock_out_location || "N/A",
+          "Location": record?.location || "N/A",
+       "Duty Hours": record?.duty_hours || "N/A",
         }));
       }
   
