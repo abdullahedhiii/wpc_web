@@ -8,7 +8,7 @@ import {motion} from 'framer-motion';
 const LeaveReportEmployee = () =>{
     const {isSideBarOpen} = useSidebarContext();
     const {companyData,fetchEmployeesLink,employees} = useCompanyContext();
-  
+  const[submitting,setSubmitting] = useState(false);
     const startYear = companyData[0]?.year_created || new Date().getFullYear();
     const currentYear = new Date().getFullYear();
     const [formData,setData] = useState({
@@ -28,6 +28,7 @@ const LeaveReportEmployee = () =>{
     const [report,setReport] = useState([]);
 
     const handleView = async(e) => {
+      setSubmitting(true);
       e.preventDefault();
        try{
           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getLeaveReportEmployee`,{
@@ -37,6 +38,9 @@ const LeaveReportEmployee = () =>{
        }
        catch(err){
 
+       }
+       finally{
+        setSubmitting(false);
        }
     };
     
@@ -115,8 +119,9 @@ const LeaveReportEmployee = () =>{
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
           onClick={handleView}
+          disabled={submitting}
         >
-          View
+          {submitting ? 'Generating...' : 'View'}
         </button>
         <button
           className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"

@@ -774,6 +774,8 @@ const UpdateProfile = () => {
           value: "education_details.percentage",
         },
         {
+
+
           label: "Grade/Division",
           type: "text",
           value: "education_details.grade_division",
@@ -1725,22 +1727,22 @@ const UpdateProfile = () => {
   };
 
   const handleAddEducationDetail = (e) => {
-    e.preventDefault()
+e.preventDefault();
     setFormData((prevState) => ({
       ...prevState,
       education_details: [
         ...prevState.education_details,
         {
           sl_no: "",
-          qualification: "",
-          subject: "",
-          institution_name: "",
-          awarding_body: "",
-          year_of_passing: "",
-          percentage: "",
-          grade_division: "",
-          transcript_document: null,
-          certificate_document: null,
+        qualification: "",
+        subject: "",
+        institution_name: "",
+        awarding_body: "",
+        year_of_passing: "",
+        percentage: "",
+        grade_division: "",
+        transcript_document: null,
+        certificate_document: null,
         },
       ],
     }));
@@ -1835,7 +1837,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].sl_no`}
+                                     name="education_details.sl_no"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1846,7 +1848,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].qualification`}
+                                    name="education.qualification"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1857,7 +1859,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].subject`}
+                                    name="education.subject"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1868,7 +1870,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].institution_name`}
+                                    name="education.institution_name"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1879,7 +1881,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].awarding_body`}
+                                    name="education.awarding_body"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1890,7 +1892,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].year_of_passing`}
+                                    name="education.year_of_passing"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1901,7 +1903,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].percentage`}
+                                    name="education.percentage"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1912,7 +1914,7 @@ const UpdateProfile = () => {
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
-                                    name={`education_details[${index}].grade_division`}
+                                    name="education.grade_division"
                                   />
                                 </td>
                                 <td className="border px-4 py-2">
@@ -1923,7 +1925,7 @@ const UpdateProfile = () => {
                                       onChange={(e) =>
                                         handleEducationChange(e, index)
                                       }
-                                      name={`education_details[${index}].transcript_document`}
+                                      name="education.transcript_document"
                                     />
                                     {education.transcript_document && (
                                       <a
@@ -1945,7 +1947,7 @@ const UpdateProfile = () => {
                                       onChange={(e) =>
                                         handleEducationChange(e, index)
                                       }
-                                      name={`education_details[${index}].certificate_document`}
+                                      name="education.certificate_document"
                                     />
                                     {education.certificate_document && (
                                       <a
@@ -1961,10 +1963,11 @@ const UpdateProfile = () => {
                                 </td>
                                 <td className="border px-4 py-2">
                                   <button
-                                  type= "button"
                                     onClick={() =>
                                       handleRemoveEducationDetail(index)
                                     }
+                                    type = "button"
+
                                     className="px-3 bg-red-300 text-white rounded"
                                   >
                                     Remove
@@ -1976,9 +1979,8 @@ const UpdateProfile = () => {
                         </tbody>
                       </table>
                       <button
-                                                        type= "button"
-
                         onClick={handleAddEducationDetail}
+                        type = "button"
                         className="mt-4 px-4 py-2 bg-green-300 text-white rounded"
                       >
                         Add More Education Details

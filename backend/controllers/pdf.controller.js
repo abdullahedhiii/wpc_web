@@ -815,7 +815,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       currentX += fixedColumns[3].width;
     
       drawTableCell(
-        String(leave_allocated.holiday_leaves_in_hand),
+        String(leave_allocated?.holiday_leaves_in_hand || ''),
         currentX,
         startY,
         leaveColumnWidth,
@@ -825,7 +825,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       currentX += leaveColumnWidth;
 
       drawTableCell(
-        String(leave_allocated.medical_leaves_in_hand),
+        String(leave_allocated?.medical_leaves_in_hand || ''),
         currentX,
         startY,
         leaveColumnWidth,
@@ -835,7 +835,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
       currentX += leaveColumnWidth;
 
       drawTableCell(
-        String(leave_allocated.maternity_leaves_in_hand),
+        String(leave_allocated?.maternity_leaves_in_hand || ''),
         currentX,
         startY,
         leaveColumnWidth,
