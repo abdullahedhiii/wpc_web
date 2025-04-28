@@ -7,6 +7,7 @@ const fs = require('fs');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const path = require('path');
+const csv = require('csv-parser');
 const Op = require('sequelize').Op;
 
 module.exports.Register = async (req, res) => {
@@ -704,6 +705,10 @@ const downloadCSV = async () => {
 
 module.exports.fetchSponsorsFromFile = async(req,res) => {
   try{
+    const token = req.headers['x-cron-token'];
+    if (!token || token !== process.env.CRON_SECRET_TOKEN) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
     console.log("Starting sponsor update process...");
     await downloadCSV();
     console.log("Sponsor update process completed successfully");
@@ -714,4 +719,6 @@ module.exports.fetchSponsorsFromFile = async(req,res) => {
     return res.status(500).json({ message: 'Internal server error' }); 
   }
 }
+
+
 

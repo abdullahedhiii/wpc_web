@@ -57,6 +57,7 @@ const UserRoleForm = () => {
     
     useEffect(() => {
       setSubModuleOptions([]);
+      setOptions([]); // Reset features when module changes
       console.log('formData.module', formData.module);
       console.log('modules', modules);
 
@@ -64,9 +65,17 @@ const UserRoleForm = () => {
         const selectedModule = modules.find(module => module.id == formData.module);
         console.log('selectedModule', selectedModule);
 
-        if (selectedModule) {
-          setSubModuleOptions(selectedModule.subModules || []);
+        if (selectedModule && selectedModule.subModules) {
+          // Filter out any submodules that are null or undefined
+          const validSubModules = selectedModule.subModules.filter(subModule => 
+            subModule && subModule.id && subModule.name
+          );
+          setSubModuleOptions(validSubModules);
+        } else {
+          setSubModuleOptions([]);
         }
+      } else {
+        setSubModuleOptions([]);
       }
     }, [formData.module, modules]);
     
@@ -81,12 +90,18 @@ const UserRoleForm = () => {
         const selectedSubModule = subModuleOptions.find(subModule => subModule.id == formData.submodule);
         console.log('selectedSubModule', selectedSubModule);
 
-        if (selectedSubModule) {
+        if (selectedSubModule && selectedSubModule.features) {
           console.log('selectedSubModule.features', selectedSubModule.features);
-          setOptions(selectedSubModule.features || []);
+          // Filter out any features that are null or undefined
+          const validFeatures = selectedSubModule.features.filter(feature => feature && feature.id && feature.name);
+          setOptions(validFeatures);
+        } else {
+          setOptions([]);
         }
+      } else {
+        setOptions([]);
       }
-    }, [formData.submodule,formData.module]);
+    }, [formData.submodule, subModuleOptions]);
 
 
     const handleInputChange = (e) => {
