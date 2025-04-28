@@ -58,48 +58,47 @@ const UserRoleForm = () => {
     useEffect(() => {
       setSubModuleOptions([]);
       setOptions([]); // Reset features when module changes
-      console.log('formData.module', formData.module);
-      console.log('modules', modules);
-
       if (formData.module) {
         const selectedModule = modules.find(module => module.id == formData.module);
-        console.log('selectedModule', selectedModule);
-
         if (selectedModule && selectedModule.subModules) {
-          // Filter out any submodules that are null or undefined
-          const validSubModules = selectedModule.subModules.filter(subModule => 
-            subModule && subModule.id && subModule.name
-          );
+          const validSubModules = selectedModule.subModules.filter(subModule => subModule && subModule.id && subModule.name);
           setSubModuleOptions(validSubModules);
+          // Auto-select if only one submodule
+          if (validSubModules.length === 1) {
+            setFormData(prev => ({ ...prev, submodule: validSubModules[0].id }));
+          } else {
+            setFormData(prev => ({ ...prev, submodule: '' }));
+          }
         } else {
           setSubModuleOptions([]);
+          setFormData(prev => ({ ...prev, submodule: '' }));
         }
       } else {
         setSubModuleOptions([]);
+        setFormData(prev => ({ ...prev, submodule: '' }));
       }
     }, [formData.module, modules]);
     
     useEffect(() => {
       setOptions([]);
-      console.log('formData.module', formData.module);
-      console.log('in feature');
-      console.log('formData.submodule', formData.submodule);
-      console.log('subModuleOptions', subModuleOptions);
-
       if (formData.submodule) {
         const selectedSubModule = subModuleOptions.find(subModule => subModule.id == formData.submodule);
-        console.log('selectedSubModule', selectedSubModule);
-
         if (selectedSubModule && selectedSubModule.features) {
-          console.log('selectedSubModule.features', selectedSubModule.features);
-          // Filter out any features that are null or undefined
           const validFeatures = selectedSubModule.features.filter(feature => feature && feature.id && feature.name);
           setOptions(validFeatures);
+          // Auto-select if only one feature
+          if (validFeatures.length === 1) {
+            setFormData(prev => ({ ...prev, feature: validFeatures[0].id }));
+          } else {
+            setFormData(prev => ({ ...prev, feature: '' }));
+          }
         } else {
           setOptions([]);
+          setFormData(prev => ({ ...prev, feature: '' }));
         }
       } else {
         setOptions([]);
+        setFormData(prev => ({ ...prev, feature: '' }));
       }
     }, [formData.submodule, subModuleOptions]);
 
