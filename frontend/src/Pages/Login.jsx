@@ -98,7 +98,7 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="space-y-3">
+              {/* <div className="space-y-3">
                 <button className="w-full bg-white/10 backdrop-blur-sm text-white py-3 px-6 rounded-xl hover:bg-white/20 transition duration-300 flex items-center justify-center space-x-2">
                   <PlayCircle className="w-5 h-5" />
                   <span>Watch Tutorial</span>
@@ -107,7 +107,7 @@ const Login = () => {
                   <FileDown className="w-5 h-5" />
                   <span>Download Manual</span>
                 </button>
-              </div>
+              </div> */}
             </div>
 
                         <div className="absolute top-0 left-0 w-full h-full">

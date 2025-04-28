@@ -2,45 +2,22 @@ import { useState, useEffect, useMemo } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { useSidebarContext } from "../../contexts/SidebarContext";
-import {motion} from 'framer-motion';
+import { motion } from 'framer-motion';
+import { CalendarCheck, User, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
+
 const GenerateAttendance = () => {
-  const { companyData,fetchDepartments,fetchDesignations,fetchEmployeesLink, departmentData, designationData, employees } =
-    useCompanyContext();
+  const { companyData, fetchDepartments, fetchDesignations, fetchEmployeesLink, departmentData, designationData, employees } = useCompanyContext();
   const [attendance, setAttendance] = useState([]);
-  const [submitted,setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   useEffect(() => {
     fetchDepartments();
- //   fetchDesignations()
-   // fetchEmployeesLink()
-    // fetchShifts()
-  },[]);
-  // const departmentOptions = useMemo(() => {
-  //   return departmentData.map((ele) => ({ name: ele["Department Name"] }));
-  // }, [departmentData]);
+  }, []);
 
-  // const [designationOptions, setDesignationOptions] = useState([]);
-  // // const [shiftOptions, setShiftOptions] = useState([]);
-  // const [employeeCodes, setCodes] = useState([]);
   const [formData, setFormData] = useState({
-    // department: "",
-    // designation: "",
     employeeCode: "",
     fromDate: "",
     toDate: "",
-    // shift: "",
   });
-
-  // useEffect(() => {
-  //   if (formData.department) {
-  //     const filteredDesignations = designationData
-  //       .filter(
-  //         (designation) =>
-  //           designation["Department Name"] === formData.department
-  //       )
-  //       .map((ele) => ({ name: ele["Designation"] }));
-  //     setDesignationOptions(filteredDesignations);
-  //   }
-  // }, [formData.department]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,39 +27,17 @@ const GenerateAttendance = () => {
     }));
   };
 
-  // useEffect(() => {
-  //   if (formData.department && formData.designation) {
-  //     // const filteredShifts = shifts
-  //     //   .filter(
-  //     //     (ele) =>
-  //     //       ele.Department === formData.department &&
-  //     //       ele.Designation === formData.designation
-  //     //   )
-  //     //   .map((ele) => ({ name: ele["Shift Code"] }));
-  //     // setShiftOptions(filteredShifts);
-
-  //     const filteredEmployees = employees
-  //       .filter(
-  //         (ele) =>
-  //           ele.Department === formData.department &&
-  //           ele.Designation === formData.designation
-  //       )
-  //       .map((ele) => ({ name: ele.employee_code }));
-  //     setCodes(filteredEmployees);
-  //   }
-  // }, [formData.department, formData.designation]);
-
   const handleGenerate = async (e) => {
     e.preventDefault();
     setSubmitted(true);
-    if(!formData.employeeCode || !formData.fromDate || !formData.toDate){
-        window.alert('all fields are required');
-        setSubmitted(false);
-        return;
+    if (!formData.employeeCode || !formData.fromDate || !formData.toDate) {
+      window.alert('All fields are required');
+      setSubmitted(false);
+      return;
     }
     const t = new Date(formData.fromDate);
     const w = new Date(formData.toDate);
-    if(w < t){
+    if (w < t) {
       alert('Enter valid from and to dates!');
       setSubmitted(false);
       return;
@@ -94,24 +49,22 @@ const GenerateAttendance = () => {
       );
       setAttendance(response.data);
     } catch (err) {
-    }
-    finally{
+    } finally {
       setSubmitted(false);
     }
   };
-  
-  const [totalPages,setTotalPages] = useState(0);
-  const [currentPage,setCurrentPage] = useState(1);
-  const [dataToshow,setDataToShow] = useState([]);
+
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [dataToshow, setDataToShow] = useState([]);
   const per_page = 10;
 
   useEffect(() => {
-       if(attendance.length > 0){
-           const total = Math.ceil(attendance.length / per_page);
-           setTotalPages(total);
-       }
-  },[attendance]);
-  
+    if (attendance.length > 0) {
+      const total = Math.ceil(attendance.length / per_page);
+      setTotalPages(total);
+    }
+  }, [attendance]);
 
   useEffect(() => {
     const startIndex = (currentPage - 1) * per_page;
@@ -128,219 +81,172 @@ const GenerateAttendance = () => {
     setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
 
-  const {isSideBarOpen} = useSidebarContext();
+  const { isSideBarOpen } = useSidebarContext();
 
   return (
-    <div className="min-h-screen bg-white">
-        <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
-      
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col gap-1">
-          <motion.h1
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
+      <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
+        <div className="absolute inset-0 bg-black/10" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-2xl font-bold text-white"
+            className="flex items-center gap-4"
           >
-           Generate Attendance
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-yellow-100 text-sm"
-          >
-            View Attendance(date range)
-          </motion.p>
+            <div className="p-2 bg-yellow-400/20 backdrop-blur-sm rounded-lg">
+              <CalendarCheck className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Generate Attendance</h1>
+              <p className="text-yellow-100 text-sm">View Attendance (date range)</p>
+            </div>
+          </motion.div>
         </div>
       </div>
-      
-    </div>
-      <div className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "w-[700px]" : "w[1350px]"} `}>
-        <form onSubmit={handleGenerate}>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              Department
-            </label>
-            <select
-              name="department"
-              value={formData.department}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled>
-                Select Department
-              </option>
-              {departmentOptions.map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              Designation
-            </label>
-            <select
-              name="designation"
-              value={formData.designation}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled>
-                Select a designation
-              </option>
-              {designationOptions.map((desig) => (
-                <option key={desig.id} value={desig.name}>
-                  {desig.name}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              Employee Code
-            </label>
-            <select
-              name="employeeCode"
-              value={formData.employeeCode}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled>Select Employee</option>
-              {employees.map((dd) => (
-                <option key={dd.employee_code} value={dd.employee_code}>
-                  {`${dd['Employee Name']} (${dd.employee_code})`}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              From Date
-            </label>
-            <input
-              type="date"
-              name="fromDate"
-              value={formData.fromDate}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              To Date
-            </label>
-            <input
-              type="date"
-              name="toDate"
-              value={formData.toDate}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            />
-          </div>
-
-          {/* <div>
-            <label className="text-[12px] block font-medium text-gray-700">
-              Shift
-            </label>
-            <select
-              name="shift"
-              value={formData.shift}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled></option>
-              {shiftOptions.map((shift) => (
-                <option key={shift.id} value={shift.name}>
-                  {shift.name}
-                </option>
-              ))}
-            </select>
-          </div> */}
-        </div>
-        <button
-          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
-          type="submit"
-          disabled={submitted}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className={`bg-white rounded-xl shadow-lg overflow-hidden ${isSideBarOpen ? "max-w-2xl" : "max-w-4xl"}`}
         >
-          {submitted ? 'Generating...' : 'Go'}
-        </button>
-        </form>
+          <div className="border-b border-gray-100 bg-yellow-50/50">
+            <div className="px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-yellow-100 rounded-lg">
+                  <User className="w-5 h-5 text-yellow-600" />
+                </div>
+                <h2 className="text-lg font-semibold text-gray-800">Select Employee and Date Range</h2>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleGenerate} className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Employee Code</label>
+                <select
+                  name="employeeCode"
+                  value={formData.employeeCode}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                  required
+                >
+                  <option value="" disabled>Select Employee</option>
+                  {employees.map((dd) => (
+                    <option key={dd.employee_code} value={dd.employee_code}>
+                      {`${dd['Employee Name']} (${dd.employee_code})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">From Date</label>
+                <input
+                  type="date"
+                  name="fromDate"
+                  value={formData.fromDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">To Date</label>
+                <input
+                  type="date"
+                  name="toDate"
+                  value={formData.toDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                  required
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3 justify-end">
+              <button
+                className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all duration-200 ${submitted ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-200"}`}
+                type="submit"
+                disabled={submitted}
+              >
+                <CalendarCheck className="w-4 h-4" />
+                {submitted ? 'Generating...' : 'Go'}
+              </button>
+            </div>
+          </form>
+        </motion.div>
       </div>
 
-      <div className={`mt-16 mr-16 ml-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${isSideBarOpen ? "w-[800px]" : "w[1300px]"} `}>
-        <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-cog text-lg text-yellow-900"></i>
-          <h1 className="text-yellow-900 text-[15px] font-medium">
-            Generate Attendance
-          </h1>
-        </div>
-        <div className="overflow-x-auto p-4">
-          <table className="min-w-full">
-            <thead>
-              <tr className="text-gray-600 text-[12px] text-left">
-                <th className="px-4 py-2">Sl No.</th>
-                <th className="px-4 py-2">Employee Code</th>
-                <th className="px-4 py-2">Employee Name</th>
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">Clock In</th>
-                <th className="px-4 py-2">Clock In Location</th>
-                <th className="px-4 py-2">Clock Out</th>
-                <th className="px-4 py-2">Clock Out Location</th>
-                <th className="px-4 py-2">Duty Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataToshow.length > 0 ? (
-                dataToshow.map((attend, index) => (
-                  <tr key={index} className="text-[12px] text-gray-800">
-                    <td className="px-4 py-2">{index + 1}</td>
-                    <td className="px-4 py-2">{attend["Employee Code"]}</td>
-                    <td className="px-4 py-2">{attend["Employee Name"]}</td>
-                    <td className="px-4 py-2">{attend["Date"]}</td>
-                    <td className="px-4 py-2">{attend["Clock In"]}</td>
-                    <td className="px-4 py-2">{attend["Clock In Location"]}</td>
-                    <td className="px-4 py-2">{attend["Clock Out"]}</td>
-                    <td className="px-4 py-2">
-                      {attend["Clock Out Location"]}
-                    </td>
-                    <td className="px-4 py-2">{attend["Duty hours"]}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="9"
-                    className="px-4 py-2 text-center text-gray-500"
-                  >
-                    No data available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-          <div className="mt-4 flex justify-end space-x-3 text-white text-[12px]">
-                <button className={`w-10 h-10 rounded-full ${ currentPage === 1 ? "bg-gray-400 text-gray-600" :"bg-yellow-400" }`} 
-                onClick={handlePrevPage}>prev</button>
-                <button className="w-10 h-10 rounded-full  bg-yellow-400">{currentPage}</button>
-                <button className={`w-10 h-10 rounded-full ${ currentPage === totalPages ? "bg-gray-400 text-gray-600" : "bg-yellow-400"}`}
-                     onClick={handleNextPage}
-                >next</button>
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className={`bg-white rounded-xl shadow-lg overflow-x-auto ${isSideBarOpen ? "max-w-3xl" : "max-w-6xl"}`}
+        >
+          <div className="flex items-center gap-2 pl-6 pt-6">
+            <CalendarCheck className="w-5 h-5 text-yellow-700" />
+            <h1 className="text-yellow-900 text-[15px] font-medium">Attendance Results</h1>
           </div>
-        </div>
+          <div className="overflow-x-auto p-6">
+            <table className="min-w-full">
+              <thead>
+                <tr className="text-gray-600 text-[12px] text-left">
+                  <th className="px-4 py-2">Sl No.</th>
+                  <th className="px-4 py-2">Employee Code</th>
+                  <th className="px-4 py-2">Employee Name</th>
+                  <th className="px-4 py-2">Date</th>
+                  <th className="px-4 py-2">Clock In</th>
+                  <th className="px-4 py-2">Clock In Location</th>
+                  <th className="px-4 py-2">Clock Out</th>
+                  <th className="px-4 py-2">Clock Out Location</th>
+                  <th className="px-4 py-2">Duty Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataToshow.length > 0 ? (
+                  dataToshow.map((attend, index) => (
+                    <tr key={index} className="text-[12px] text-gray-800">
+                      <td className="px-4 py-2">{index + 1}</td>
+                      <td className="px-4 py-2">{attend["Employee Code"]}</td>
+                      <td className="px-4 py-2">{attend["Employee Name"]}</td>
+                      <td className="px-4 py-2">{attend["Date"]}</td>
+                      <td className="px-4 py-2">{attend["Clock In"]}</td>
+                      <td className="px-4 py-2">{attend["Clock In Location"]}</td>
+                      <td className="px-4 py-2">{attend["Clock Out"]}</td>
+                      <td className="px-4 py-2">{attend["Clock Out Location"]}</td>
+                      <td className="px-4 py-2">{attend["Duty hours"]}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="9" className="px-4 py-2 text-center text-gray-500">
+                      No data available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="mt-4 flex justify-end space-x-3 text-white text-[12px]">
+              <button
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${currentPage === 1 ? "bg-gray-400 text-gray-600" : "bg-yellow-400"}`}
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <span className="w-10 h-10 rounded-full flex items-center justify-center bg-yellow-400 text-gray-900">{currentPage}</span>
+              <button
+                className={`w-10 h-10 rounded-full flex items-center justify-center ${currentPage === totalPages ? "bg-gray-400 text-gray-600" : "bg-yellow-400"}`}
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

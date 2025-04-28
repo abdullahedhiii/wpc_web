@@ -57,6 +57,7 @@ const UploadAttendance = () => {
 
     const handleReset = () => {
         setFile(null);
+        setErrorDetails(null);
         document.getElementById("fileInput").value = "";
     };
     

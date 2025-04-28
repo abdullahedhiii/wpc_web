@@ -1,262 +1,188 @@
-import { useState,useMemo,useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import DataTable from "../DataTable";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import axiosInstance from "../../../axiosInstance";
-import {motion} from 'framer-motion';
+import { motion } from 'framer-motion';
+import { History, User, RefreshCw } from 'lucide-react';
 
 const AttendanceHistory = () => {
-    const {isSideBarOpen} = useSidebarContext();
+    const { isSideBarOpen } = useSidebarContext();
     const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date','Clock In','Clock Out','Location','Duty Hours'];
-    const [attendance,setAttendance] = useState([]);
-    const {companyData,fetchEmployeesLink,fetchDepartments,fetchDesignations,employees,departmentData,designationData} = useCompanyContext();
-    const [submitted,setSubmitted] = useState(false);
+    const [attendance, setAttendance] = useState([]);
+    const { companyData, fetchEmployeesLink, fetchDepartments, fetchDesignations, employees, departmentData, designationData } = useCompanyContext();
+    const [submitted, setSubmitted] = useState(false);
     useEffect(() => {
-      //  fetchDepartments();
-      //  fetchDesignations();
-       fetchEmployeesLink();
-    },[]);
-    const [formData,setFormData] = useState({
-        // department : '',
-        // designation : '',
+        fetchEmployeesLink();
+    }, []);
+    const [formData, setFormData] = useState({
         fromDate: '',
         employeeCode: '',
-        toDate : ''
+        toDate: ''
     });
-    
-    // const departmentOptions = useMemo(() => {
-    //     return departmentData.map((ele) => ({ name: ele["Department Name"] }));
-    // }, [departmentData]);
-    
-    // const [designationOptions, setDesignationOptions] = useState([]);
-    // const [employeeCodes, setCodes] = useState([]);
 
-
-    // useEffect(() => {
-    //     if (formData.department) {
-    //       const filteredDesignations = designationData
-    //         .filter(
-    //           (designation) =>
-    //             designation["Department Name"] === formData.department
-    //         )
-    //         .map((ele) => ({ name: ele["Designation"] }));
-    //       setDesignationOptions(filteredDesignations);
-    //     }
-    //   }, [formData.department]);
-    
-    //  useEffect(() => {
-    //     if (formData.department && formData.designation) {
-    //       const filteredEmployees = employees
-    //         .filter(
-    //           (ele) =>
-    //             ele.Department === formData.department &&
-    //             ele.Designation === formData.designation
-    //         )
-    //         .map((ele) => ({ name: ele.employee_code }));
-    //       setCodes(filteredEmployees);
-    //     }
-    //   }, [formData.department, formData.designation]);
-      
-   
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
-          ...prev,
-          [name]: value,
+            ...prev,
+            [name]: value,
         }));
-      };
-    
-    const handleGenerate = async (e) => {
-      e.preventDefault();
-      setSubmitted(true);
+    };
 
-        if(!formData.employeeCode || !formData.fromDate || !formData.toDate){
-            window.alert('all fields are required');
+    const handleGenerate = async (e) => {
+        e.preventDefault();
+        setSubmitted(true);
+        if (!formData.employeeCode || !formData.fromDate || !formData.toDate) {
+            window.alert('All fields are required');
             setSubmitted(false);
             return;
         }
         const t = new Date(formData.fromDate);
         const w = new Date(formData.toDate);
-        if(w < t){
-          alert('Enter valid from and to dates!');
-          setSubmitted(false);
-
-          return;
+        if (w < t) {
+            alert('Enter valid from and to dates!');
+            setSubmitted(false);
+            return;
         }
-        setAttendance([])
-        try{
-           const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getAttendanceHistory`,{params : {data : formData}});
-           setAttendance(response.data);
-        }
-        catch{
-        }
-        finally{
-          setSubmitted(false);
+        setAttendance([]);
+        try {
+            const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getAttendanceHistory`, { params: { data: formData } });
+            setAttendance(response.data);
+        } catch {
+        } finally {
+            setSubmitted(false);
         }
     };
 
-    return(
-      <div className="min-h-screen bg-white">
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col gap-1">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-2xl font-bold text-white"
-            >
-              Attendance History
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-yellow-100 text-sm"
-            >
-              View Employee Attendance History
-            </motion.p>
-          </div>
+                <div className="absolute inset-0 bg-black/10" />
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-4"
+                    >
+                        <div className="p-2 bg-yellow-400/20 backdrop-blur-sm rounded-lg">
+                            <History className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-white">Attendance History</h1>
+                            <p className="text-yellow-100 text-sm">View Employee Attendance History</p>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className={`bg-white rounded-xl shadow-lg overflow-hidden ${isSideBarOpen ? "max-w-2xl" : "max-w-4xl"}`}
+                >
+                    <div className="border-b border-gray-100 bg-yellow-50/50">
+                        <div className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-yellow-100 rounded-lg">
+                                    <User className="w-5 h-5 text-yellow-600" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-gray-800">Select Employee and Date Range</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <form onSubmit={handleGenerate} className="p-6 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">Employee Code</label>
+                                <select
+                                    name="employeeCode"
+                                    value={formData.employeeCode}
+                                    onChange={handleInputChange}
+                                    className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                                    required
+                                >
+                                    <option value="" disabled>Select Employee</option>
+                                    {employees.map((dd) => (
+                                        <option key={dd.employee_code} value={dd.employee_code}>
+                                            {`${dd['Employee Name']} (${dd.employee_code})`}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">From Date</label>
+                                <input
+                                    type="date"
+                                    name="fromDate"
+                                    value={formData.fromDate}
+                                    onChange={handleInputChange}
+                                    className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">To Date</label>
+                                <input
+                                    type="date"
+                                    name="toDate"
+                                    value={formData.toDate}
+                                    onChange={handleInputChange}
+                                    className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-3 justify-end">
+                            <button
+                                className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all duration-200 ${submitted ? "bg-gray-200 text-gray-500 cursor-not-allowed" : "bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-200"}`}
+                                type="submit"
+                                disabled={submitted}
+                            >
+                                <History className="w-4 h-4" />
+                                {submitted ? 'Generating...' : 'View'}
+                            </button>
+                            <button
+                                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-gray-500 text-white hover:bg-gray-600 focus:ring-2 focus:ring-gray-200 transition-all duration-200"
+                                type="button"
+                                onClick={() => {
+                                    setFormData({ employeeCode: '', fromDate: '', toDate: '' });
+                                    setAttendance([]);
+                                }}
+                            >
+                                <RefreshCw className="w-4 h-4" />
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                </motion.div>
+            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className={`bg-white rounded-xl shadow-lg overflow-x-auto ${isSideBarOpen ? "max-w-3xl" : "max-w-6xl"}`}
+                >
+                    <div className="flex items-center gap-2 pl-6 pt-6">
+                        <History className="w-5 h-5 text-yellow-700" />
+                        <h1 className="text-yellow-900 text-[15px] font-medium">Attendance Results</h1>
+                    </div>
+                    <div className="p-6">
+                        <DataTable
+                            title="Attendance History"
+                            fields={columns}
+                            data={attendance}
+                            showEntries
+                            searchable
+                            downloadable={false}
+                            addMore={false}
+                        />
+                    </div>
+                </motion.div>
+            </div>
         </div>
-        
-      </div>
-      <div 
-         className={`mt-16 ml-16 mr-16 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
-          isSideBarOpen ? "w-[700px]" : "w-[1350px]"
-        } `}
-      >
-        <form onSubmit={handleGenerate}>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              Department
-            </label>
-            <select
-              name="department"
-              value={formData.department}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled>
-                Select Department
-              </option>
-              {departmentOptions.map((dept) => (
-                <option key={dept.id} value={dept.name}>
-                  {dept.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              Designation
-            </label>
-            <select
-              name="designation"
-              value={formData.designation}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled>
-                Select a designation
-              </option>
-              {designationOptions.map((desig) => (
-                <option key={desig.id} value={desig.name}>
-                  {desig.name}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              Employee Code
-            </label>
-            <select
-              name="employeeCode"
-              value={formData.employeeCode}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            >
-              <option value="" disabled>Select Employee</option>
-              {employees.map((dd) => (
-                <option key={dd.employee_code} value={dd.employee_code}>
-                  {`${dd['Employee Name']} (${dd.employee_code})`}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              From Date
-            </label>
-            <input
-              type="date"
-              name="fromDate"
-              value={formData.fromDate}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-[12px] font-medium text-gray-700">
-              To Date
-            </label>
-            <input
-              type="date"
-              name="toDate"
-              value={formData.toDate}
-              onChange={handleInputChange}
-              className="text-[13px] mt-1 block w-full px-3 py-2 border focus:outline-none focus:border-b-4 focus:border-yellow-400 hover:border-b-4 hover:border-yellow-400 rounded-md"
-              required
-            />
-          </div>
-
-        </div>
-        <div className="flex space-x-3"> 
-        <button
-          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
-          type = "submit"
-          disabled={submitted}
-        >
-          {submitted ? 'Generating...' : 'View'}
-        </button>
-        <button
-          className="ml-4 px-4 py-2 text-[14px] font-semibold bg-yellow-700 rounded text-white mb-4"
-          type = "button"
-          onClick={() => {
-            setFormData({
-               employeeCode: '',fromDate :'',toDate : ''
-            })
-            setAttendance([])
-          }}
-        >
-          Reset
-        </button>
-        </div>
-        </form>
-      </div>
-      <div className="p-16">
-        <DataTable 
-          title="Attendance History"
-          fields={columns}
-          data={attendance}
-          showEntries
-          searchable
-          downloadable = {false}
-          addMore = {false}
-        />
-      </div>
-      </div>
-     
-    )
+    );
 };
 
 export default AttendanceHistory;
