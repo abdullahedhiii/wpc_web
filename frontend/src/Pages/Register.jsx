@@ -303,7 +303,7 @@ const Register = () => {
                 </div>
 
                 <div className="flex justify-center">
-                  <ReCAPTCHA sitekey="your-recaptcha-site-key" />
+                  <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} />
                 </div>
 
                 <button
