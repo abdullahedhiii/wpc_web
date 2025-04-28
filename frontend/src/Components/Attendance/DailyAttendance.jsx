@@ -71,6 +71,7 @@ const DailyAttendance = () => {
       setSubmitted(true);
         if(!formData.employeeCode || !formData.date){
             window.alert('all fields are required');
+            setSubmitted(false);  
             return;
         }
         setAttendance([])

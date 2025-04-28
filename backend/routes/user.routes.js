@@ -10,5 +10,6 @@ router.get('/getModules/:id',getModules);
 router.get('/check-session',retrieveCookie);
 router.get('/getUserOrganisation/:id',getUserOrganisation);
 router.get('/getSponsors',getSponsors);
-router.get('/fetchSponsorsFromFile',fetchSponsorsFromFile);
+// router.get('/fetchSponsorsFromFile',fetchSponsorsFromFile);
+router.get('/cron/sync-sponsors', fetchSponsorsFromFile);
 module.exports = router;

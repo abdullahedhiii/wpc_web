@@ -46,50 +46,53 @@ const SponsorList = () => {
     }
   }
 
-  const fetchSponsorsFromFile = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/fetchSponsorsFromFile`)
-      console.log("Midnight sync completed:", response.data)
-      fetchSponsors() // Refresh the data after midnight sync
-    } catch (err) {
-      console.error("Failed to fetch sponsors from file:", err)
-    }
-  }
+  // const fetchSponsorsFromFile = async () => {
+  //   try {
+  //     const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/fetchSponsorsFromFile`)
+  //     console.log("Midnight sync completed:", response.data)
+  //     fetchSponsors() // Refresh the data after midnight sync
+  //   } catch (err) {
+  //     console.error("Failed to fetch sponsors from file:", err)
+  //   }
+  // }
 
-  // Function to check if it's midnight and run fetchSponsorsFromFile
-  useEffect(() => {
-    const checkMidnightAndFetch = () => {
-      const now = new Date()
-      const hours = now.getHours()
-      const minutes = now.getMinutes()
+  // // Function to check if it's midnight and run fetchSponsorsFromFile
+  // useEffect(() => {
+  //   const checkMidnightAndFetch = () => {
+  //     const now = new Date()
+  //     const hours = now.getHours()
+  //     const minutes = now.getMinutes()
       
-      // Check if it's midnight (00:00)
-      if (hours === 0 && minutes === 0) {
-        fetchSponsorsFromFile()
-      }
-    }
+  //     // Check if it's midnight (00:00)
+  //     if (hours === 0 && minutes === 0) {
+  //       fetchSponsorsFromFile()
+  //     }
+  //   }
 
-    // Initial fetch
-    fetchSponsors()
+  //   // Initial fetch
+  //   fetchSponsors()
     
-    // Set up the timer to check every minute
-    const intervalId = setInterval(checkMidnightAndFetch, 60000) // Check every minute
+  //   // Set up the timer to check every minute
+  //   const intervalId = setInterval(checkMidnightAndFetch, 60000) // Check every minute
     
-    // Calculate time until next check
-    const now = new Date()
-    const millisecondsUntilNextMinute = (60 - now.getSeconds()) * 1000
+  //   // Calculate time until next check
+  //   const now = new Date()
+  //   const millisecondsUntilNextMinute = (60 - now.getSeconds()) * 1000
     
-    // Check once when component mounts, but wait until the start of the next minute
-    const timeoutId = setTimeout(() => {
-      checkMidnightAndFetch()
-    }, millisecondsUntilNextMinute)
+  //   // Check once when component mounts, but wait until the start of the next minute
+  //   const timeoutId = setTimeout(() => {
+  //     checkMidnightAndFetch()
+  //   }, millisecondsUntilNextMinute)
     
-    return () => {
-      clearInterval(intervalId)
-      clearTimeout(timeoutId)
-    }
-  }, [])
+  //   return () => {
+  //     clearInterval(intervalId)
+  //     clearTimeout(timeoutId)
+  //   }
+  // }, [])
 
+  useEffect(() => {
+    fetchSponsors();
+  }, []);
   // Sorting logic
   const requestSort = (key) => {
     let direction = "asc"

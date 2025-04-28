@@ -200,7 +200,7 @@ const UserRoleForm = () => {
                     value={formData.feature}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
-                    required
+                    required = {featureOptions.length > 0}
                   >
                     <option value="" disabled>Select Feature</option>
                     {featureOptions.map((e) => (
@@ -237,7 +237,7 @@ const UserRoleForm = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
-                    required
+                    required 
                   >
                     <option value="" disabled>Select User</option>
                     {users.map((e) => (

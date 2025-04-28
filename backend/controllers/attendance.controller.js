@@ -205,7 +205,10 @@ module.exports.submitCSV = async (req, res) => {
               console.error(`Error processing row: ${rowError}`);
           }
       }
-
+      fs.unlinkSync(filePath);
+      if(has_error){
+        errorDetails.missingHeaders = errorDetails.missingHeaders ? errorDetails.missingHeaders.join(", ") : 'None';
+      }
       if (recordCount === 0) {
           console.log("No valid records found in CSV");
           return res.status(400).json({ 

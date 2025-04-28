@@ -77,12 +77,14 @@ const GenerateAttendance = () => {
     setSubmitted(true);
     if(!formData.employeeCode || !formData.fromDate || !formData.toDate){
         window.alert('all fields are required');
+        setSubmitted(false);
         return;
     }
     const t = new Date(formData.fromDate);
     const w = new Date(formData.toDate);
     if(w < t){
       alert('Enter valid from and to dates!');
+      setSubmitted(false);
       return;
     }
     try {
