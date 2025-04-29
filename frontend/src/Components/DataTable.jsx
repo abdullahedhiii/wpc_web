@@ -32,6 +32,9 @@ const DataTable = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortField] = useState({ field: "", order: "Ascending" });
   const {user} = useSelector((state) => state.user);
+  const [isDownloading,setIsDownloading] = useState(false);
+  const [isDeleting,setIsDeleting] = useState(false);
+  const [isUpdating,setIsUpdating] = useState(false);
   const filteredData = useMemo(() => {
     return data.filter(
       (row) =>
@@ -44,6 +47,7 @@ const DataTable = ({
   
   const handleDelete = async(delete_route,id) => {
     try{
+      setIsDeleting(true);
       console.log(id);
       const route = `${import.meta.env.VITE_API_URL}/api/${delete_route}/${companyData[0].id}`;
       console.log(route);
@@ -58,6 +62,10 @@ const DataTable = ({
     catch(err){
        
     }
+    finally{
+      setIsDeleting(false);
+    }
+
   } 
 
   useEffect(() => {
@@ -65,6 +73,7 @@ const DataTable = ({
   },[data]);
   const handleDownload = async () => {
     // console.log(selectedFeature);
+    setIsDownloading(true);
      const routee = selectedFeature ? `${import.meta.env.VITE_API_URL}/api/${selectedFeature.download_api_route}/${companyData[0].id}`
      : `${import.meta.env.VITE_API_URL}/api/${subModule.download_api_route}/${companyData[0].id}`;
      try {
@@ -77,6 +86,9 @@ const DataTable = ({
       }
     } catch (err) {
       alert('Network error downloading pdf',err);
+    }
+    finally{
+      setIsDownloading(false);
     }
   };
   
@@ -149,7 +161,7 @@ const DataTable = ({
   };
 
   const handleRequestUpdate = async (status, request_id) => {
-    
+      setIsUpdating(true);
     try {
       const y = new Date().getFullYear()
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/updateLeaveRequest`, {
@@ -161,6 +173,9 @@ const DataTable = ({
         alert(`Leave Request status set to ${status}`)
     } catch (err) {
       alert('Error in updating leave status ',err);
+    }
+    finally{
+      setIsUpdating(false);
     }
 };
 
@@ -179,10 +194,11 @@ return (
           {downloadable && (
             <button
               onClick={handleDownload}
+              disabled={isDownloading}
               className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 bg-yellow-500 text-white shadow hover:bg-yellow-600 h-9 px-4 transform hover:scale-105"
             >
               <i className="la la-download mr-2" />
-              Download PDF
+              {isDownloading ? "Downloading..." : "Download PDF"}
             </button>
           )}
           {addMore && (
@@ -304,6 +320,7 @@ return (
                             {field === "Action" && Array.isArray(row["Action"]) && (
                               <select
                                 className="h-9 rounded-xl border border-yellow-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400 hover:border-yellow-300"
+                                disabled={isUpdating}
                                 onChange={(e) => {
                                   if (location.pathname.includes("leave-approver")) {
                                     handleRequestUpdate(e.target.value, row.id)
@@ -312,7 +329,7 @@ return (
                                   }
                                 }}
                               >
-                                <option value="">View Options</option>
+                               <option value="">View Options</option>
                                 {row["Action"].map((option, optionIndex) => (
                                   <option key={optionIndex} value={option.route}>
                                     {option.label}
@@ -344,11 +361,12 @@ return (
                             {field === "Delete" && (
                               <button
                                 onClick={() => handleDelete(row["delete_route"],row["id"])}
-                                disabled={user.isAdmin ? false : !selectedFeature.can_edit}
+                                disabled={user.isAdmin ? false : !selectedFeature.can_edit || isDeleting}
+
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
                                 title="Delete"
                               >
-                                <i className="la la-trash text-lg text-red-500" />
+                                {isDeleting ? <i className="la la-spinner animate-spin text-lg text-red-500" /> : <i className="la la-trash text-lg text-red-500" />}
                               </button>
                             )}
 </>
