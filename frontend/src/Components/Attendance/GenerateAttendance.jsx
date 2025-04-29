@@ -198,9 +198,10 @@ const GenerateAttendance = () => {
                   <th className="px-4 py-2">Employee Name</th>
                   <th className="px-4 py-2">Date</th>
                   <th className="px-4 py-2">Clock In</th>
-                  <th className="px-4 py-2">Clock In Location</th>
+                  {/* <th className="px-4 py-2">Clock In Location</th> */}
                   <th className="px-4 py-2">Clock Out</th>
-                  <th className="px-4 py-2">Clock Out Location</th>
+                 <th className="px-4 py-2">Location</th>
+                  {/* <th className="px-4 py-2">Clock Out Location</th> */}
                   <th className="px-4 py-2">Duty Hours</th>
                 </tr>
               </thead>
@@ -213,9 +214,10 @@ const GenerateAttendance = () => {
                       <td className="px-4 py-2">{attend["Employee Name"]}</td>
                       <td className="px-4 py-2">{attend["Date"]}</td>
                       <td className="px-4 py-2">{attend["Clock In"]}</td>
-                      <td className="px-4 py-2">{attend["Clock In Location"]}</td>
+                      {/* <td className="px-4 py-2">{attend["Clock In Location"]}</td> */}
                       <td className="px-4 py-2">{attend["Clock Out"]}</td>
-                      <td className="px-4 py-2">{attend["Clock Out Location"]}</td>
+                      <td className="px-4 py-2">{attend["Location"]}</td>
+                      {/* <td className="px-4 py-2">{attend["Clock Out Location"]}</td> */}
                       <td className="px-4 py-2">{attend["Duty hours"]}</td>
                     </tr>
                   ))

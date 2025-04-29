@@ -4,7 +4,8 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import {motion} from 'framer-motion';
-import { UserCog, Mail, Lock, Save, CheckCircle } from 'lucide-react';
+import { UserCog, Mail, Lock, Save, CheckCircle, Loader2 } from 'lucide-react';
+
 const UserForm = () => {
   const navigate = useNavigate();
   const {isSideBarOpen} = useSidebarContext();

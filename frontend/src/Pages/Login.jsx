@@ -7,7 +7,7 @@ import { login } from "../redux/UserSlice";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useCompanyContext } from "../contexts/CompanyContext";
 import { motion } from "framer-motion";
-import { Building2, Lock, Mail, PlayCircle, FileDown } from 'lucide-react';
+import { Building2, Lock, Mail, PlayCircle, FileDown, Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
   const { fetchModules } = useModuleContext();
@@ -18,6 +18,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useSelector((state) => state.user);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setInfo({ ...info, [e.target.name]: e.target.value });
@@ -134,14 +135,23 @@ const Login = () => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={info.password}
                     onChange={handleChange}
                     placeholder="Password"
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 bg-white shadow-sm"
+                    className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 bg-white shadow-sm"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-3.5 text-gray-400 hover:text-yellow-600 focus:outline-none"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
                 <div className="flex justify-between items-center">
                   <label className="flex items-center">

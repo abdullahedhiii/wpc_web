@@ -63,7 +63,7 @@ module.exports.addPersonalDetails = async (req, res) => {
 
       message = "Personal details added";
     }
-
+    console.log('personal detail added',personalDetail);
     return res.status(200).json({
       message,
       code: employeeCode,
@@ -71,7 +71,9 @@ module.exports.addPersonalDetails = async (req, res) => {
     });
 
   } catch (err) {
+    console.log('error in personal detail',err);
 if (err instanceof Sequelize.UniqueConstraintError) {
+
   return res.status(400).json({ 
     message: "Personal Details Error : Employee details like nationality number or contact numbers must be unique!" 
   });
@@ -124,11 +126,11 @@ console.log("employment type added");
 
       message = "Service detail added";
     }
-
+    console.log('service detail added',serviceDetail);
     return res.status(200).json({ message, serviceDetail });
 
   } catch (err) {
-    console.log(err);
+    console.log('error in service detail',err); 
     return res.status(500).json({ message: "Internal server error", error: err });
   }
 };
@@ -1014,9 +1016,9 @@ module.exports.submitLeaveallocation = async (req, res) => {
 
     if (record) {
       await record.update({
-        medical_max_leaves :medical_leave,
-        holiday_max_leaves : holiday_leave,
-        maternity_max_leaves : maternity_leave,
+        medical_max_leaves :parseInt(medical_leave),
+        holiday_max_leaves : parseInt(holiday_leave),
+        maternity_max_leaves : parseInt(maternity_leave),
       });
 
       return res.status(200).json({
@@ -1026,12 +1028,12 @@ module.exports.submitLeaveallocation = async (req, res) => {
     } else {
       await LeaveAllocation.create({
         employee_code,
-        medical_leaves_in_hand: medical_leave,
-        medical_max_leaves :medical_leave,
-        holiday_leaves_in_hand: holiday_leave,
-        holiday_max_leaves : holiday_leave,
-        maternity_leaves_in_hand: maternity_leave,
-        maternity_max_leaves : maternity_leave,
+        medical_leaves_in_hand: parseInt(medical_leave),
+        medical_max_leaves :parseInt(medical_leave),
+        holiday_leaves_in_hand: parseInt(holiday_leave),
+        holiday_max_leaves : parseInt(holiday_leave),
+        maternity_leaves_in_hand: parseInt(maternity_leave),
+        maternity_max_leaves : parseInt(maternity_leave),
         year,
       });
 

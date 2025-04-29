@@ -657,7 +657,7 @@ module.exports.addDepartment = async (req, res) => {
       }
       await Department.create({
         department_name,
-        organisation_id: id,
+        organisation_id: organisation_id,
       });
 
       return res.status(201).json({message : 'Department created'});

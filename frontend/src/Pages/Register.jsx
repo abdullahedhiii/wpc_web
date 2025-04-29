@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import ReCAPTCHA from "react-google-recaptcha"
 import axios from "axios"
 import { motion } from "framer-motion"
-import { Building2, User, Mail, Phone, Lock, CheckCircle2, Shield, Users, BarChart3, Clock } from 'lucide-react'
+import { Building2, User, Mail, Phone, Lock, CheckCircle2, Shield, Users, BarChart3, Clock, Eye, EyeOff } from 'lucide-react'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -22,6 +22,8 @@ const Register = () => {
     privacyPolicyAccepted: false,
     termsAccepted: false,
   })
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const handleChange = (e) => {
     setFormData({
@@ -51,6 +53,10 @@ const Register = () => {
     }
     else if(formData.password.length < 8){
       setError("Password must be atleast of length 8")
+      return
+    }
+    else if(formData.password !== formData.confirmPassword){
+      setError("Passwords do not match")
       return
     }
     setIsSubmitting(true)
@@ -235,26 +241,44 @@ const Register = () => {
                 <div className="relative">
                   <Lock className="absolute left-4 top-3 h-5 w-5 text-gray-400" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Create Password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 bg-white shadow-sm"
+                    className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 bg-white shadow-sm"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-3 text-gray-400 hover:text-yellow-600 focus:outline-none"
+                    tabIndex={-1}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-4 top-3 h-5 w-5 text-gray-400" />
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 bg-white shadow-sm"
+                    className="w-full pl-12 pr-12 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 bg-white shadow-sm"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute right-4 top-3 text-gray-400 hover:text-yellow-600 focus:outline-none"
+                    tabIndex={-1}
+                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
                 </div>
                 <div className="space-y-3">
                   <label className="flex items-start space-x-3 cursor-pointer group">

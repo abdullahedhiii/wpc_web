@@ -10,7 +10,7 @@ const EmployeePage = () => {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const { companyData } = useCompanyContext()
-
+  const [isDownloading, setIsDownloading] = useState(false)
   const hasFetched = useRef(false)
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -33,6 +33,7 @@ const EmployeePage = () => {
   }, [])
 
   const handleDownloadPDF = async(employee_code) => {
+    setIsDownloading(true)
      const routee = `${import.meta.env.VITE_API_URL}/api/getEmployeePDF/${employee_code}`;
      try {
       const response = await axiosInstance.get(routee);
@@ -41,6 +42,9 @@ const EmployeePage = () => {
       } 
     } catch (err) {
       alert('Network error downloading pdf',err);
+    }
+    finally{
+      setIsDownloading(false)
     }
   }
 
@@ -150,10 +154,11 @@ const EmployeePage = () => {
                       </Link>
                       <button
                         onClick={() => handleDownloadPDF(employee.employee_code)}
+                        disabled={isDownloading}
                         className="flex items-center gap-1 text-yellow-700 hover:text-yellow-900 font-semibold transition-colors text-base"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
-                        Download PDF
+                        {isDownloading ? <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-yellow-500"></div> : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>}
+                        {isDownloading ? "Downloading..." : "Download PDF"}
                       </button>
                     </div>
                   </motion.div>
