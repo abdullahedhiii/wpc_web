@@ -506,7 +506,11 @@ const UpdateProfile = () => {
     const fetchFormInfo = async () => {
       try {
         const response = await axiosInstance.get(
-          `${import.meta.env.VITE_API_URL}/api/getEmployeeDetails/${user.employee_code}`
+          `${import.meta.env.VITE_API_URL}/api/getEmployeeDetails/${user.employee_code}`,{
+            params : {
+              year : new Date().getFullYear()
+            }
+          }
         );
         setCode(response.data.personal_details.employee_code);
 
