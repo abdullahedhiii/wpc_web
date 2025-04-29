@@ -87,10 +87,10 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100/60 via-white to-blue-200/80 py-12 px-2">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-100/60 via-white to-yellow-200/80 py-12 px-2">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row rounded-3xl shadow-2xl bg-white/70 backdrop-blur-lg overflow-hidden">
         {/* Sidebar */}
-        <div className="md:w-1/4 bg-gradient-to-b from-blue-700/90 to-blue-400/80 text-white flex flex-col items-center py-10 px-4 relative">
+        <div className="md:w-1/4 bg-gradient-to-b from-yellow-700/90 to-yellow-400/80 text-white flex flex-col items-center py-10 px-4 relative">
           <img
             src={avatarUrl}
             alt="Profile"
@@ -121,7 +121,7 @@ const Profile = () => {
                   key={tab.key}
                   className={`flex items-center gap-2 w-full px-4 py-2 rounded-lg transition-all font-medium ${
                     activeTab === tab.key
-                      ? 'bg-white/80 text-blue-700 shadow'
+                      ? 'bg-white/80 text-yellow-700 shadow'
                       : 'hover:bg-white/10 text-white/80'
                   }`}
                   onClick={() => setActiveTab(tab.key)}
@@ -155,8 +155,8 @@ const Profile = () => {
 
 const Info = ({ label, value, icon }) =>
   value ? (
-    <div className="flex items-center gap-3 bg-blue-50/60 rounded-lg px-4 py-3 mb-2 shadow-sm">
-      <span className="text-blue-500">{icon}</span>
+    <div className="flex items-center gap-3 bg-yellow-50/60 rounded-lg px-4 py-3 mb-2 shadow-sm">
+      <span className="text-yellow-500">{icon}</span>
       <span className="font-medium text-gray-700">{label}:</span>
       <span className="ml-1 text-gray-900">{value}</span>
     </div>

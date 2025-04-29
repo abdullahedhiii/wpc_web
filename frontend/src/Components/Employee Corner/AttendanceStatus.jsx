@@ -37,7 +37,7 @@ const AttendanceStatus = () => {
         }
     }
   return (
-    <div className="py-12 px-4 max-w-5xl mx-auto min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+    <div className="py-12 px-4 max-w-5xl mx-auto min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-100">
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-8">
         <Home size={18} />
         <ChevronRight size={16} />
@@ -48,7 +48,7 @@ const AttendanceStatus = () => {
 
       <div className="bg-white/90 rounded-2xl shadow-2xl p-8 mb-10">
         <div className="flex items-center gap-3 mb-6">
-          <Eye className="text-blue-500" size={28} />
+          <Eye className="text-yellow-500" size={28} />
           <h1 className="text-2xl text-gray-900 font-bold tracking-wide">Attendance Status</h1>
         </div>
 
@@ -63,7 +63,7 @@ const AttendanceStatus = () => {
               name="fromDate"
               value={formData.fromDate}
               onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full bg-gray-50"
             />
           </div>
 
@@ -74,13 +74,13 @@ const AttendanceStatus = () => {
               name="toDate"
               value={formData.toDate}
               onChange={handleChange}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 w-full bg-gray-50"
             />
           </div>
 
           <button 
             type="submit"
-            className="bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg hover:bg-blue-700 transition-colors mt-4 md:mt-0 md:ml-4 shadow"
+            className="bg-yellow-600 text-white font-semibold px-8 py-2 rounded-lg hover:bg-yellow-700 transition-colors mt-4 md:mt-0 md:ml-4 shadow"
           >
             View
           </button>
