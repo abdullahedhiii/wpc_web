@@ -19,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         has_filled_out_form : {
           type : DataTypes.BOOLEAN,
           defaultValue : false,
-        }
+        },
+        has_account : {
+          type : DataTypes.BOOLEAN,
+          defaultValue : false,
+        },
       },
       {
         tableName: "Employees",

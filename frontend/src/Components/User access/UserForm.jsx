@@ -131,7 +131,7 @@ const UserForm = () => {
                   required
                 >
                   <option value="" disabled>Select Employee Code</option>
-                  {employees.map((emp) => (
+                  {employees.map((emp) => !emp.has_account && (
                     <option key={emp.id} value={emp.employee_code}>
                       {emp.employee_code}
                     </option>

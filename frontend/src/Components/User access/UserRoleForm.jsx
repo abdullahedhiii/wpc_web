@@ -255,7 +255,7 @@ const UserRoleForm = () => {
                   >
                     <option value="" disabled>Select User</option>
                     {users.map((e) => (
-                      <option key={e.id} value={e.id}>
+                      <option key={e.id} value={e.Email}>
                         {e.Email}
                       </option>
                     ))}

@@ -1846,6 +1846,7 @@ module.exports.getAllEmployees = async (req, res) => {
         // Department_id: employee.servicedetail?.department_id,
         // employment_type_id: employee.servicedetail?.employment_type_id,
         employee_code: employee.employee_code,
+        has_account : employee.has_account,
       };
     });
 
@@ -3016,6 +3017,8 @@ module.exports.createUser = async (req, res) => {
       ...req.body,
       organisation_id: req.params.id,
     });
+    await Employee.update({has_account : true},{where : {employee_code : req.body.employee_code}});
+  
     return res
       .status(201)
       .json({ message: "User registered successfully.", newUser });
@@ -3063,6 +3066,7 @@ module.exports.getUsers = async (req, res) => {
         const details = await PersonalDetail.findOne({
           where: { employee_code: user.employee_code },
         });
+        const employee = await Employee.findOne({where : {employee_code : user.employee_code}});
         return {
           id: user.id,
           "Sl. No.": index + 1,
@@ -3073,6 +3077,7 @@ module.exports.getUsers = async (req, res) => {
           Email: user.email,
           Password: "****",
           Action: "Edit",
+          has_account : employee.has_account,
         };
       })
     );
@@ -3081,9 +3086,10 @@ module.exports.getUsers = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 module.exports.grantRights = async (req, res) => {
   try {
-    // Check if the user role already exists
+    console.log('in user role grant rights ' ,req.body);
     const existingRole = await UserRole.findOne({
       where: {
         user_id: req.body.email,
