@@ -1757,47 +1757,33 @@ e.preventDefault();
 
   const { isSideBarOpen } = useSidebarContext();
   return (
-    <div className="p-12">
-      <p className="text-[12px] text-gray-600">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-white py-10 px-2">
+      <p className="text-[14px] text-gray-600 max-w-4xl mx-auto mb-2">
         Home
         <span className="mx-2">/</span>
         Employee
         <span className="mx-2 text-tt">/ Add New Employee</span>
       </p>
-      <div
-        className={`mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 ${
-          isSideBarOpen ? "max-w-[1200px]" : "max-w[1300px]"
-        }`}
-      >
-        <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-user text-lg text-yellow-900"></i>
-          <h1 className="text-yellow-900 text-lg font-medium">
-            Add New Employee
-          </h1>
+      <div className={`mt-4 max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border-t-8 border-yellow-600 p-6 md:p-10`}>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 flex items-center justify-center bg-yellow-100 rounded-full">
+            <i className="fas fa-user text-2xl text-yellow-900"></i>
+          </div>
+          <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Add New Employee</h1>
         </div>
-        <hr className="my-4 border-t-1 border-gray-200" />
+        <hr className="mb-6 border-t-2 border-yellow-100" />
         {isLoading ? (
           <p className="text-gray-500">Loading employee data...</p>
         ) : (
-          <form className="p-4 space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-12" onSubmit={handleSubmit}>
             {currentSections.map((section, sectionIndex) => (
-              <div key={sectionIndex}>
-                <h2 className="text-lg font-semibold text-tt mb-2">
-                  {section.title}
-                </h2>
-                <hr className="my-3 border-t-1 border-gray-200" />
-
-                <div
-                  className={`${
-                    section.title !== "Educational Details" &&
-                    section.title !== "Training Details" &&
-                    section.title !== "Other Documents" &&
-                    section.title !== "Other Details" &&
-                    section.title !== "Pay Structure"
-                      ? "grid grid-cols-1 md:grid-cols-3 gap-4"
-                      : undefined
-                  }`}
-                >
+              <div key={sectionIndex} className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-6 bg-yellow-600 rounded-full"></div>
+                  <h2 className="text-xl font-semibold text-yellow-900 tracking-wide">{section.title}</h2>
+                </div>
+                <hr className="mb-6 border-t-2 border-yellow-100" />
+                <div className={`${section.title !== "Educational Details" && section.title !== "Training Details" && section.title !== "Other Documents" && section.title !== "Other Details" && section.title !== "Pay Structure" ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" : undefined}`}>
                   {section.title === "Educational Details" ? (
                     <div className="w-full overflow-x-auto">
                       <table className="min-w-full border border-gray-300">
@@ -2623,22 +2609,18 @@ e.preventDefault();
         <p className="flex justify-end font-semibold text-red-500 mb-2 ">
           (*) marked fields are mandatory fields
         </p>
-        <div
-          className={`flex ${
-            currentPage > 1 ? "justify-between" : "justify-end"
-          } items-center mb-2 mr-2 ml-2`}
-        >
+        <div className={`flex ${currentPage > 1 ? "justify-between" : "justify-end"} items-center mb-2 mr-2 ml-2`}>
           {currentPage > 1 && (
             <button
-              className="px-4 py-2 bg-yellow-800 text-white rounded"
+              className="px-4 py-2 bg-yellow-800 text-white rounded hover:bg-yellow-700 transition-colors"
               onClick={() => setCurrentPage(currentPage - 1)}
             >
               Back
             </button>
           )}
-            {currentPage < 8 ? (
+          {currentPage < 8 ? (
             <button
-              className="px-4 py-2 text-white bg-yellow-800 rounded"
+              className="px-4 py-2 text-white bg-yellow-800 rounded hover:bg-yellow-700 transition-colors"
               onClick={() => {
                 if(!validatePage(currentPage)) return;  
                 setCurrentPage(currentPage + 1)
@@ -2646,9 +2628,9 @@ e.preventDefault();
             >
               Next
             </button>
-          )  : (
+          ) : (
             <button
-              className="px-4 py-2 text-white bg-green-500 rounded"
+              className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600 transition-colors"
               onClick={handleSubmit}
             >
               Submit

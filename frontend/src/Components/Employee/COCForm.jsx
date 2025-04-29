@@ -448,32 +448,33 @@ const nationalityOptions = [
      }
   }
   return (
-    <div className="p-12">
-    <p className="text-[14px] text-gray-600">
-  <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
-  <span className="mx-2">/</span>
-  <Link to="/hrms/employee/change-of-circumstances-add" className="hover:underline">Change Of Circumstances</Link>
-  <span className="mx-2 text-gray-400">/ Edit COC</span>
-</p>
-      <div className="mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
-        <div className="flex items-center gap-2 pl-2">
-          <i className="fas fa-user text-lg text-yellow-900"></i>
-          <h1 className="text-yellow-900 text-lg font-medium">
-            Change Of Circumstances
-          </h1>
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-white py-10 px-2">
+      <p className="text-[14px] text-gray-600 max-w-4xl mx-auto mb-2">
+        <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
+        <span className="mx-2">/</span>
+        <Link to="/hrms/employee/change-of-circumstances-add" className="hover:underline">Change Of Circumstances</Link>
+        <span className="mx-2 text-gray-400">/ Edit COC</span>
+      </p>
+      <div className="mt-4 max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border-t-8 border-yellow-600 p-6 md:p-10">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 flex items-center justify-center bg-yellow-100 rounded-full">
+            <i className="fas fa-user text-2xl text-yellow-900"></i>
+          </div>
+          <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Change Of Circumstances</h1>
         </div>
-        <hr className="my-4 border-t-1 border-gray-200" />
+        <hr className="mb-6 border-t-2 border-yellow-100" />
         {isLoading ? (
           <p className="text-gray-500">Loading employee data...</p>
         ) : (
-          <form className="p-4 space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-12" onSubmit={handleSubmit}>
             {FormSections.map((section, sectionIndex) => (
-              <div key={sectionIndex}>
-                <h2 className="text-lg font-semibold text-tt mb-2">
-                  {section.title}
-                </h2>
-                <hr className="my-3 border-t-1 border-gray-200" />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div key={sectionIndex} className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-6 bg-yellow-600 rounded-full"></div>
+                  <h2 className="text-xl font-semibold text-yellow-900 tracking-wide">{section.title}</h2>
+                </div>
+                <hr className="mb-6 border-t-2 border-yellow-100" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {section.fields.map((field, fieldIndex) => {
                     const fieldValue =
                       formData[field.value.split(".")[0]]?.[field.value.split(".")[1]];
@@ -492,7 +493,7 @@ const nationalityOptions = [
                           <select
                             id={field.value}
                             name={field.value}
-                            className="w-full px-3 py-2 border rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4"
+                            className="w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-yellow-400 hover:border-yellow-200 hover:border-b-4 bg-white shadow-sm"
                             required={field.required}
                             onChange={handleChange}
                             value={fieldValue || ""}
@@ -510,7 +511,7 @@ const nationalityOptions = [
                             name={field.value}
                             onChange={handleChange}
                             value={fieldValue || ""}
-                            className="w-full px-3 py-2 border rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4"
+                            className="w-full px-3 py-2 border rounded-md text-sm focus:ring-2 focus:ring-yellow-400 hover:border-yellow-200 hover:border-b-4 bg-white shadow-sm"
                             required={field.required}
                             readOnly={field.readOnly}
                           />
@@ -541,28 +542,27 @@ const nationalityOptions = [
                           </div>
                         ) : (
                           <>
-                           <input
-                            type={field.type}
-                            id={field.value}
-                            name={field.value}
-                            onChange={handleChange}
-                            value={field.type !== 'file' ? fieldValue || "" : undefined}
-                            className={`w-full px-3 py-2 border ${field.readOnly ? "bg-gray-200" : ""} rounded-md text-sm focus:border-yellow-200 focus:border-b-4 hover:border-yellow-200 hover:border-b-4`}
-                            required={field.required}
-                            readOnly={field.readOnly}
-                          />
-                          {field.type === 'file' && fieldValue ? (
-                            <a
-                              href={fieldValue}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-green-400 text-sm"
-                            >
-                              <i className="fas fa-download"></i>
-                            </a>
-                          ):null}
+                            <input
+                              type={field.type}
+                              id={field.value}
+                              name={field.value}
+                              onChange={handleChange}
+                              value={field.type !== 'file' ? fieldValue || "" : undefined}
+                              className={`w-full px-3 py-2 border ${field.readOnly ? "bg-gray-200" : "bg-white"} rounded-md text-sm focus:ring-2 focus:ring-yellow-400 hover:border-yellow-200 hover:border-b-4 shadow-sm`}
+                              required={field.required}
+                              readOnly={field.readOnly}
+                            />
+                            {field.type === 'file' && fieldValue ? (
+                              <a
+                                href={fieldValue}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-green-400 text-sm"
+                              >
+                                <i className="fas fa-download"></i>
+                              </a>
+                            ) : null}
                           </>
-                         
                         )}
                       </div>
                     );
@@ -570,10 +570,10 @@ const nationalityOptions = [
                 </div>
               </div>
             ))}
-                        <div className="mt-6">
+            <div className="mt-6">
               <button
                 type="submit"
-                className="w-full bg-yellow-600 text-white py-2 rounded-md text-lg hover:bg-yellow-700"
+                className="w-full bg-yellow-600 text-white py-2 rounded-md text-lg hover:bg-yellow-700 transition-colors"
               >
                 Submit
               </button>
