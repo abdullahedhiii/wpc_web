@@ -138,10 +138,10 @@ const LeaveApplication = () => {
 
       <div className="flex items-center justify-between mb-8 border-b pb-4">
         <h1 className="text-2xl font-bold text-gray-900">Leave Application</h1>
-        <a target="_blank" rel="noopener noreferrer" href="/hrms/employee-corner/holiday" className="flex items-center text-blue-600 font-medium hover:underline">
+        {/* <a target="_blank" rel="noopener noreferrer" href="/hrms/employee-corner/holiday" className="flex items-center text-blue-600 font-medium hover:underline">
           <Calendar size={20} />
           <span className="ml-2">Holiday Calendar</span>
-        </a>
+        </a> */}
       </div>
 
       <div className="grid md:grid-cols-3 gap-6 mb-8">

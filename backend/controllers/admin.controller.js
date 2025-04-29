@@ -1912,7 +1912,7 @@ module.exports.getEmployeePage = async (req, res) => {
 
 module.exports.getEmployeeData = async (req, res) => {
   const code = req.params.id;
-  const {year} = req.query;
+  const {year} = req.query || new Date().getFullYear();
   try {
     const personal_details = await PersonalDetail.findOne({
       where: { employee_code: code },
