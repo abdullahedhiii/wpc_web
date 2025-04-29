@@ -135,186 +135,6 @@ const CompanyForm = () => {
       ],
     },
     {
-      title: "Authorised Persons Details",
-      state_name: "authorizingData",
-      fields: [
-        {
-          label: "First Name",
-          value: "Authorizing_fname",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Last Name",
-          value: "Authorizing_lname",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Designation",
-          value: "Authorizing_designation",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Phone No",
-          value: "Authorizing_phone",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Email",
-          value: "Authorizing_email",
-          type: "email",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Proof Of Id",
-          value: "Authorizing_proof_id",
-          type: "file",
-          required: company_id ? false : true,
-          additionalElement: null,
-        },
-        {
-          label:
-            "Do you have a history of Criminal conviction/Bankruptcy/Disqualification?",
-          value: "Authorizing_history",
-          type: "select",
-          options: ["No", "Yes"],
-          required: true,
-        },
-      ],
-    },
-    {
-      title: "Key Contact",
-      state_name: "keyContactData",
-      fields: [
-        {
-          label: "If Same As Authorised Person",
-          value: "KeyContact_check",
-          type: "checkbox",
-          required: false,
-        },
-        {
-          label: "First Name",
-          value: "KeyContact_fname",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Last Name",
-          value: "KeyContact_lname",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Designation",
-          value: "KeyContact_designation",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Phone No",
-          value: "KeyContact_phone",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Email",
-          value: "KeyContact_email",
-          type: "email",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Proof Of Id",
-          value: "KeyContact_proof_id",
-          type: "file",
-          required: company_id ? false : true,
-          additionalElement: null,
-        },
-        {
-          label:
-            "Do you have a history of Criminal conviction/Bankruptcy/Disqualification?",
-          value: "KeyContact_history",
-          type: "select",
-          options: ["No", "Yes"],
-          required: true,
-        },
-      ],
-    },
-    {
-      title: "Level 1 User",
-      state_name: "level1Data",
-      fields: [
-        {
-          label: "If Same As Authorised Person",
-          value: "Level1_check",
-          type: "checkbox",
-          required: false,
-        },
-        {
-          label: "First Name",
-          value: "Level1_fname",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Last Name",
-          value: "Level1_lname",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Designation",
-          value: "Level1_designation",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Phone No",
-          value: "Level1_phone",
-          type: "text",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Email",
-          value: "Level1_email",
-          type: "email",
-          required: true,
-          additionalElement: null,
-        },
-        {
-          label: "Proof Of Id",
-          value: "Level1_proof_id",
-          type: "file",
-          required: company_id ? false : true,
-          additionalElement: null,
-        },
-        {
-          label:
-            "Do you have a history of Criminal conviction/Bankruptcy/Disqualification?",
-          value: "Level1_history",
-          type: "select",
-          options: ["No", "Yes"],
-          required: true,
-        },
-      ],
-    },
-    {
       title: "Organisation Address",
       state_name: "addressData",
       fields: [
@@ -834,57 +654,50 @@ const CompanyForm = () => {
   
   
   return (
-    <div className="m-16">
-      <p className="text-[12px] text-gray-600">
-      <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
-      <span className="mx-2">/</span>
-      <Link to="/hrms/company-profile/company" className="hover:underline">Organisation Profile</Link>
-      <span className="mx-2">/ Update Company Profile</span>
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-white py-10 px-2">
+      <p className="text-[12px] text-gray-600 max-w-4xl mx-auto mb-2">
+        <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
+        <span className="mx-2">/</span>
+        <Link to="/hrms/company-profile/company" className="hover:underline">Organisation Profile</Link>
+        <span className="mx-2">/ Update Company Profile</span>
       </p>
- 
-      <div className="mt-4 border-t-4 border-yellow-600 rounded shadow-md p-2 max-w-[1200px] mx-auto">
-        <div className="flex items-center gap-2 mb-6">
-          <i className="la la-user-edit text-lg text-yellow-900"></i>
-          <h1 className="text-yellow-900 text-lg font-medium">Profile Update</h1>
+      <div className="mt-4 max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border-t-8 border-yellow-600 p-6 md:p-10">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-10 h-10 flex items-center justify-center bg-yellow-100 rounded-full">
+            <i className="la la-user-edit text-2xl text-yellow-900"></i>
+          </div>
+          <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Profile Update</h1>
         </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-12" onSubmit={handleSubmit}>
           {formSections.map((section, sectionIndex) => (
-            <div key={sectionIndex}>
-              <h2 className="text-lg font-semibold text-yellow-900 mb-4">
-                {section.title}
-              </h2>
-              <hr className="my-6 border-t-1 border-gray-400" />
-
+            <div key={sectionIndex} className="mb-8">
+              {section.title && (
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-6 bg-yellow-600 rounded-full"></div>
+                  <h2 className="text-xl font-semibold text-yellow-900 tracking-wide">{section.title}</h2>
+                </div>
+              )}
+              {section.title && <hr className="mb-6 border-t-2 border-yellow-100" />}
               {section.title === "Trading Hours" ? (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <label className="text-sm font-medium text-gray-600">
-                      Day
-                    </label>
-                    <label className="text-sm font-medium text-gray-600">
-                      Status
-                    </label>
-                    <label className="text-sm font-medium text-gray-600">
-                      Opening Time
-                    </label>
-                    <label className="text-sm font-medium text-gray-600">
-                      Closing Time
-                    </label>
+                  <div className="hidden md:grid grid-cols-4 gap-4 text-gray-600 font-semibold text-sm mb-2">
+                    <div>Day</div>
+                    <div>Status</div>
+                    <div>Opening Time</div>
+                    <div>Closing Time</div>
                   </div>
-
                   {tradingHours.map((row, rowIndex) => (
                     <div
                       key={rowIndex}
-                      className="text-sm grid grid-cols-1 md:grid-cols-4 gap-4"
+                      className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center mb-2"
                     >
                       <input
                         type="text"
                         name={`day-${rowIndex}`}
                         value={row.day}
                         readOnly
-                        className="text-gray-400 w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed"
+                        className="text-gray-400 w-full px-3 py-2 border rounded-md bg-gray-100 cursor-not-allowed shadow-sm"
                       />
-
                       <select
                         name={`status-${rowIndex}`}
                         value={row.status || "Open"}
@@ -895,13 +708,12 @@ const CompanyForm = () => {
                             e.target.value
                           )
                         }
-                        className="w-full px-3 py-2 border rounded-md bg-white focus:border-tt"
+                        className="w-full px-3 py-2 border rounded-md bg-white focus:ring-2 focus:ring-yellow-400 shadow-sm"
                       >
-                        <option value = "" disabled>View options</option>
+                        <option value="" disabled>View options</option>
                         <option value="Open">Open</option>
                         <option value="Closed">Closed</option>
                       </select>
-
                       <select
                         name={`openingTime-${rowIndex}`}
                         value={row.openingTime}
@@ -912,13 +724,10 @@ const CompanyForm = () => {
                             e.target.value
                           )
                         }
-                        className={`${
-                          row.status === "Closed" ? "bg-gray-200" : undefined
-                        } w-full px-3 py-2 border rounded-md focus:border-tt`}
+                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-yellow-400 shadow-sm ${row.status === "Closed" ? "bg-gray-200" : "bg-white"}`}
                         disabled={row.status === "Closed"}
                       >
-                                                <option value = "" disabled>View options</option>
-
+                        <option value="" disabled>View options</option>
                         <option value="1:00">1:00</option>
                         <option value="2:00">2:00</option>
                         <option value="3:00">3:00</option>
@@ -944,7 +753,6 @@ const CompanyForm = () => {
                         <option value="23:00">23:00</option>
                         <option value="00:00">00:00</option>
                       </select>
-
                       <select
                         name={`closingTime-${rowIndex}`}
                         value={row.closingTime}
@@ -955,13 +763,10 @@ const CompanyForm = () => {
                             e.target.value
                           )
                         }
-                        className={`${
-                          row.status === "Closed" ? "bg-gray-200" : undefined
-                        } w-full px-3 py-2 border rounded-md focus:border-tt`}
+                        className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-yellow-400 shadow-sm ${row.status === "Closed" ? "bg-gray-200" : "bg-white"}`}
                         disabled={row.status === "Closed"}
                       >
-                                              <option value = "" disabled>View options</option>
-
+                        <option value="" disabled>View options</option>
                         <option value="1:00">1:00</option>
                         <option value="2:00">2:00</option>
                         <option value="3:00">3:00</option>
@@ -992,21 +797,20 @@ const CompanyForm = () => {
                 </div>
               ) : section.title === "Upload Documents" ? (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-6 text-gray-600">
-                    <label className="text-sm font-semibold">Type of Document</label>
-                    <label className="text-sm font-semibold">Upload Document</label>
+                  <div className="grid grid-cols-2 gap-6 text-gray-600 font-semibold text-sm mb-2">
+                    <div>Type of Document</div>
+                    <div>Upload Document</div>
                   </div>
-              
                   {Array.isArray(uploadDocuments) &&
                     uploadDocuments.map((row, rowIndex) => (
-                      <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div key={rowIndex} className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center mb-2">
                         <select
                           name={`documentType-${rowIndex}`}
                           value={row.documentType || ""}
                           onChange={(e) =>
                             handleUploadDocumentsChange(rowIndex, "documentType", e.target.value)
                           }
-                          className="w-full px-2 py-1 border rounded-md text-[14px] focus:border-tt focus:border-b-2"
+                          className="w-full px-3 py-2 border rounded-md text-[14px] focus:ring-2 focus:ring-yellow-400 shadow-sm bg-white"
                         >
                           <option value="" disabled>Select Document Type</option>
                           {options.map((option, idx) => (
@@ -1015,41 +819,39 @@ const CompanyForm = () => {
                             </option>
                           ))}
                         </select>
-              
                         <div className="flex flex-row gap-2 items-center">
                           {row.sampleDocument && (
-                            <button className="bg-yellow-800 p-2 border rounded w-[140px] text-[10px]">
-                              <a
-                                href={row.sampleDocument}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-white font-medium w-full text-center"
-                              >
-                                Sample Document
-                              </a>
-                            </button>
+                            <a
+                              href={row.sampleDocument}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-yellow-800 hover:bg-yellow-700 transition-colors p-2 border rounded w-[140px] text-[10px] text-white font-medium text-center"
+                            >
+                              Sample Document
+                            </a>
                           )}
-              
-                          <input
-                            type="file"
-                            name={`file-${rowIndex}`}
-                            onChange={(e) =>
-                              handleUploadDocumentsChange(rowIndex, "file", e.target.files[0])
-                            }
-                            className="w-full px-2 py-1 text-sm"
-                          />
-              
+                          <label className="w-full">
+                            <input
+                              type="file"
+                              name={`file-${rowIndex}`}
+                              onChange={(e) =>
+                                handleUploadDocumentsChange(rowIndex, "file", e.target.files[0])
+                              }
+                              className="w-full px-2 py-1 text-sm border rounded-md focus:ring-2 focus:ring-yellow-400 shadow-sm bg-white"
+                            />
+                            {row.file && (
+                              <span className="block text-xs text-gray-500 mt-1 truncate">{row.file.name}</span>
+                            )}
+                          </label>
                           {row.uploadedBefore && row.previousDetails?.document_url && (
-                            <button className="bg-green-600 p-2 border rounded text-[10px] text-white">
-                              <a
-                                href={row.previousDetails.document_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full text-center"
-                              >
-                                Download
-                              </a>
-                            </button>
+                            <a
+                              href={row.previousDetails.document_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-green-600 hover:bg-green-700 transition-colors p-2 border rounded text-[10px] text-white text-center"
+                            >
+                              Download
+                            </a>
                           )}
                         </div>
                       </div>
@@ -1057,15 +859,7 @@ const CompanyForm = () => {
                 </div>
               ) : (
                 <div
-                  className={`grid grid-cols-1 
-      ${
-        section.title === "Organisation Address" ||
-        section.title === "Trading Hours"
-          ? "md:grid-cols-4"
-          : section.title === "Organisation Employee(According to latest RTI)"
-          ? "md:grid-cols-5"
-          : "md:grid-cols-3"
-      } gap-6`}
+                  className={`grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3`}
                 >
                   {section.fields.map((field, fieldIndex) => (
                     <div
@@ -1076,7 +870,7 @@ const CompanyForm = () => {
                     >
                       <div className="flex items-center gap-2 mb-1">
                         {field.type !== "checkbox" && (
-                          <label className="text-sm">{field.label}</label>
+                          <label className="text-sm font-medium text-gray-700" htmlFor={field.value}>{field.label}</label>
                         )}
                         {field.additionalElement && (
                           <div className="ml-2">{field.additionalElement}</div>
@@ -1086,18 +880,18 @@ const CompanyForm = () => {
                             <img
                               src={formData["Company_Logo"]}
                               alt="Logo Preview"
-                              className="mt-2 w-12 h-12 rounded-md"
+                              className="mt-2 w-12 h-12 rounded-md border object-cover"
                             />
                           )}
                         {field.required && (
-                          <span className="text-red-500 font-bold">(*)</span>
+                          <span className="text-red-500 font-bold">*</span>
                         )}
                         {field.value === "Authorizing_proof_id" &&
                           formData["Authorizing_proof_id"] && (
                             <img
                               src={formData["Authorizing_proof_id"]}
                               alt="Proof id Preview"
-                              className="mt-2 w-12 h-12 rounded-md"
+                              className="mt-2 w-12 h-12 rounded-md border object-cover"
                             />
                           )}
                         {field.value === "KeyContact_proof_id" &&
@@ -1105,7 +899,7 @@ const CompanyForm = () => {
                             <img
                               src={formData["KeyContact_proof_id"]}
                               alt="Proof id Preview"
-                              className="mt-2 w-12 h-12 rounded-md"
+                              className="mt-2 w-12 h-12 rounded-md border object-cover"
                             />
                           )}
                         {field.value === "Level1_proof_id" &&
@@ -1113,20 +907,20 @@ const CompanyForm = () => {
                             <img
                               src={formData["Level1_proof_id"]}
                               alt="Proof id Preview"
-                              className="mt-2 w-12 h-12 rounded-md"
+                              className="mt-2 w-12 h-12 rounded-md border object-cover"
                             />
                           )}
                       </div>
                       {field.type === "select" ? (
                         <select
+                          id={field.value}
                           name={field.value}
                           value={formData[field.value] || ""}
                           onChange={(e) => handleChange(e, field.value)}
-                          className="w-full px-3 py-2 border rounded-md  focus:border-tt focus:border-b-2 bg-white"
+                          className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-yellow-400 bg-white shadow-sm"
                           required={field.required}
                         >
-                                                  <option value = "" disabled>View options</option>
-
+                          <option value="" disabled>View options</option>
                           {field.options.map((option, idx) => (
                             <option key={idx} value={option}>
                               {option}
@@ -1134,14 +928,14 @@ const CompanyForm = () => {
                           ))}
                         </select>
                       ) : field.type === "checkbox" ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 mt-2">
                           <input
                             type="checkbox"
                             id={field.value}
                             name={field.value}
                             checked={formData[field.value] || false}
                             onChange={(e) => handleChange(e, field.value)}
-                            className="w-4 h-4  focus:border-tt focus:border-b-2"
+                            className="w-4 h-4 border-gray-300 rounded focus:ring-2 focus:ring-yellow-400"
                           />
                           <label
                             htmlFor={field.value}
@@ -1152,17 +946,12 @@ const CompanyForm = () => {
                         </div>
                       ) : (
                         <input
+                          id={field.value}
                           name={field.value}
                           type={field.type}
-                          value={
-                            field.type === "file"
-                              ? undefined
-                              : formData[field.value]
-                          }
+                          value={field.type === "file" ? undefined : formData[field.value]}
                           onChange={(e) => handleChange(e, field.value)}
-                          className={`w-full text-gray-700 px-3 py-2 border rounded-md focus:border-tt focus:border-b-2 ${
-                            field.readOnly ? "bg-gray-100" : ""
-                          }`}
+                          className={`w-full text-gray-700 px-3 py-2 border rounded-md focus:ring-2 focus:ring-yellow-400 shadow-sm ${field.readOnly ? "bg-gray-100" : "bg-white"}`}
                           readOnly={field.readOnly || false}
                           required={field.required}
                         />
@@ -1173,12 +962,21 @@ const CompanyForm = () => {
               )}
             </div>
           ))}
-
-          <button className="p-2 rounded-lg text-white bg-yellow-900"
-            disabled = {isSubmitting}
-          >
-            {isSubmitting ? 'Submitting..' : 'Submit'}
-          </button>
+          <div className="flex justify-end">
+            <button
+              className="px-6 py-2 rounded-lg text-white bg-yellow-900 hover:bg-yellow-800 transition-colors font-semibold text-lg shadow-md flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {isSubmitting && (
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+              )}
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

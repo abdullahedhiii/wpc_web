@@ -4,7 +4,7 @@ import { useModuleContext } from "../../contexts/ModuleContext";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { useNavigate } from "react-router-dom";
-import { Settings, UserPlus, UserCog, Save, CheckCircle } from 'lucide-react';
+import { Settings, UserPlus, UserCog, Save, CheckCircle, Loader2 } from 'lucide-react';
 import {motion} from 'framer-motion';
 import { useParams } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ const UserRoleForm = () => {
     const [subModuleOptions, setSubModuleOptions] = useState([]);
     const [users,setUsers] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
-
+    const [submitting,setSubmitting] = useState(false);
     const fetchUsers = async () => {
       try{
            const response  = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUsers/${companyData[0].id}`);
@@ -113,13 +113,16 @@ const UserRoleForm = () => {
     
     const handleSubmit = async (e) => {
       e.preventDefault()
-
+      setSubmitting(true);
        try{
           const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/grantRights`,formData);
           navigate('/hrms/role/view-users-role');
        }
        catch(err){
           alert(err.response?.data?.message || 'An error occurred');
+       }
+       finally{
+        setSubmitting(false);
        }
     };
     return (
@@ -272,9 +275,10 @@ const UserRoleForm = () => {
                 <button
                   type="submit"
                   className="inline-flex items-center gap-2 px-6 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 transform hover:scale-105"
+                  disabled={submitting}
                 >
-                  <Save className="w-4 h-4" />
-                  Save Configuration
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {submitting ? 'Saving...' : 'Save Configuration'}
                 </button>
               </motion.div>
             </div>

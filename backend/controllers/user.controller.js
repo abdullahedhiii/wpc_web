@@ -250,7 +250,7 @@ module.exports.getModules = async (req, res) => {
       
       
       return res.status(200).json(
-        modules.filter((m) => ![16].includes(m.id)).map((module) => ({
+        modules.filter((m) => ![16,2,9,17].includes(m.id)).map((module) => ({
           id: module.id,
           name: module.name,
           icon_image: module.icon_image,
@@ -266,14 +266,14 @@ module.exports.getModules = async (req, res) => {
             view_route: d.view_route,
             id: d.id,
           })),
-          subModules: module.subModules.map((subModule) => ({
+          subModules: module.subModules.filter((m) => ![16].includes(m.id)).map((subModule) => ({
             id: subModule.id,
             name: subModule.name,
             main_route: subModule.main_route,
             icon: subModule.icon,
             download_api_route: subModule.download_api_route,
             features: subModule.features
-              .filter((feature) => ![56, 58, 59, 60,55,26].includes(feature.id)) 
+              .filter((feature) => ![2,27,34,35,36,64,56, 58, 59, 60,55,26].includes(feature.id)) 
               .map((feature) => ({
                 name: feature.name,
                 next_route: feature.next_route,

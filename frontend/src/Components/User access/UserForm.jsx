@@ -10,7 +10,7 @@ const UserForm = () => {
   const {isSideBarOpen} = useSidebarContext();
   const {id} = useParams();
   const {employees,fetchEmployeesLink,companyData} = useCompanyContext();
-  
+  const [submitting,setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData,setFormData] = useState({
     employee_code: '',
@@ -61,8 +61,10 @@ const UserForm = () => {
   
   const handleSubmit = async(e) =>{
     e.preventDefault()
+    setSubmitting(true);
     if (formData.password.length < 8){
       alert('The password should be of length 8 or more');
+      setSubmitting(false);
       return;
     }
     try{
@@ -73,6 +75,9 @@ const UserForm = () => {
      }
      catch(err){
         alert(err.response.data.message|| 'An error occured');
+     }
+     finally{
+      setSubmitting(false);
      }
   };
 
@@ -198,9 +203,10 @@ const UserForm = () => {
               <button
                 type="submit"
                 className="inline-flex items-center gap-2 px-6 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 transform hover:scale-105"
+                disabled={submitting}
               >
-                <Save className="w-4 h-4" />
-                Save Changes
+                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {submitting ? 'Saving...' : 'Save Changes'}
               </button>
               {id && (
                 <button
