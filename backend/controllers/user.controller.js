@@ -266,7 +266,7 @@ module.exports.getModules = async (req, res) => {
             view_route: d.view_route,
             id: d.id,
           })),
-          subModules: module.subModules.filter((m) => ![16].includes(m.id)).map((subModule) => ({
+          subModules: module.subModules.filter((m) => ![8,16].includes(m.id)).map((subModule) => ({
             id: subModule.id,
             name: subModule.name,
             main_route: subModule.main_route,

@@ -1881,8 +1881,8 @@ module.exports.getEmployeePage = async (req, res) => {
           attributes: ["designation","profile_pic"],
           required: false,
         },
-
       ],
+      order: [["employee_code", "ASC"]],
     });
 
     const formattedResponse = emp.map((employee, index) => {
