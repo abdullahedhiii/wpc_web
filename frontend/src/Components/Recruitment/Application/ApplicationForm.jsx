@@ -60,8 +60,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
     e.preventDefault()
     setSubmitting(true);
     try {
-      if(formData.contactNo.len < 10 || formData.contactNo.len > 15){
+      if(formData.contactNo.length < 10 || formData.contactNo.length > 15){
         alert('Contact Number should be of length 10-15 digits');
+        setSubmitting(false);
         return;
       }
       const d = new Date(formData.dob);

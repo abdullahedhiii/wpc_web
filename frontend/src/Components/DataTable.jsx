@@ -338,7 +338,7 @@ return (
                               </select>
                             ) }
                             
-                            {(field === "Action" && row['Action'] !== null ) && (
+                            {(field === "Action" && !Array.isArray(row["Action"]) && row['Action'] !== null ) && (
                               <button
                                 onClick={() => {
                                   if (

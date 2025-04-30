@@ -115,7 +115,7 @@ const LeaveApplication = () => {
         return;
        }
        window.alert('Leave application submitted');
-       navigate('/hrms/employee-corner/leave-applications');
+      // navigate('/hrms/employee-corner/leave-applications');
        handleReset();
     }
     catch(err){

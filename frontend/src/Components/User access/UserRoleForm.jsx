@@ -39,7 +39,7 @@ const UserRoleForm = () => {
       submodule: 0,
       feature : 0,
       email : '',
-      right : ''
+      right : 'add'
     });
 
     useEffect(() => {
@@ -228,7 +228,7 @@ const UserRoleForm = () => {
                   </select>
                 </div>
     
-                                <div className="space-y-2">
+                                {/* <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Rights
                   </label>
@@ -244,7 +244,7 @@ const UserRoleForm = () => {
                     <option value="edit">Edit</option>
                   </select>
                 </div>
-    
+     */}
                                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Select User ID
