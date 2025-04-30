@@ -483,12 +483,14 @@ const CompanyForm = () => {
             params: { id: company_id },
           });
           if (response.data) {
+            console.log(response.data.allData);
             setFormData((prevData) => ({
               ...prevData,
               Email: user.email,
               ...response.data.allData,
             }));
             setAllDetails([response.data.allData]);
+            console.log(response.data.tradingHours);
             setTradingHours(response.data.tradingHours);
           }
         }
@@ -498,6 +500,7 @@ const CompanyForm = () => {
     };
     fetchDetails();
   }, [company_id]);
+  
   const handleChange = (e, fieldName) => {
     const { value, type, checked, files } = e.target;
     const updatedValue = type === "checkbox" ? checked : value;
