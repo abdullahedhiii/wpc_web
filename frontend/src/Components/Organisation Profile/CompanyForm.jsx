@@ -483,10 +483,11 @@ const CompanyForm = () => {
             params: { id: company_id },
           });
           if (response.data) {
-            setFormData({
+            setFormData((prevData) => ({
+              ...prevData,
               Email: user.email,
               ...response.data.allData,
-            });
+            }));
             setAllDetails([response.data.allData]);
             setTradingHours(response.data.tradingHours);
           }
