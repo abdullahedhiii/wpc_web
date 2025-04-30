@@ -48,7 +48,8 @@ const UploadAttendance = () => {
             console.log(response.data.details);
             setErrorDetails(response.data.details);
         } catch (err) {
-            alert(err.response.data.message);
+            
+            alert(err.response.data.fileError? err.response.data.fileError : err.response.data.message);
             setErrorDetails(err.response.data.details);
         } finally {
             setSubmitting(false);

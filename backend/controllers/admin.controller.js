@@ -1685,23 +1685,47 @@ module.exports.addOffDay = async (req, res) => {
 
 module.exports.uploadDocuments = async (req, res) => {
   try {
-    const { id } = req.params;
+    console.log('in upload documents',req.query)
+    const { id } = req.query;
     const { documentType, Company_name } = req.body;
     const organisation_id = id;
     const url = `${process.env.BACKEND_URL}/uploads/${Company_name}/${req.file.filename}`;
 
-    // Create a new entry in OrgDocument
-    const newDocument = await OrgDocument.create({
-      document_type: documentType,
-      document_url: url,
-      organisation_id,
+    // Check if a document with the same type and organisation already exists
+    let existingDocument = await OrgDocument.findOne({
+      where: {
+        document_type: documentType,
+        organisation_id: organisation_id,
+      },
     });
-
+    console.log('existing document',existingDocument)
+    let document;
+    if (existingDocument) {
+      console.log(existingDocument,'existingDocument updatedd')
+      // Update the existing document's URL
+      await OrgDocument.update(
+        { document_url: url },
+        { where: { document_type: documentType, organisation_id } }
+      );
+      console.log(existingDocument,'existingDocument updatedd')
+      document = existingDocument;
+    } else {
+      // Create a new entry in OrgDocument
+      document = await OrgDocument.create({
+        document_type: documentType,
+        document_url: url,
+        organisation_id,
+      });
+    }
+    console.log(document,'document updatedd')
     res.status(200).json({
-      message: "Document uploaded and entry created successfully",
-      document: newDocument,
+      message: existingDocument
+        ? "Document updated successfully"
+        : "Document uploaded and entry created successfully",
+      document,
     });
   } catch (error) {
+    console.log(error,'error uploading document')
     res.status(500).json({
       message: "Error uploading document",
       error: error.message,

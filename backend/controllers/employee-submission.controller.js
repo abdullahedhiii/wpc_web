@@ -33,7 +33,7 @@ const isValidDate = (date) => {
 
 module.exports.addPersonalDetails = async (req, res) => {
   try {
-    
+    console.log('pesonal req.body',req.body);
     const [organisationId, employeeCode] = req.params.id.split(".");
 
     const [employee, created] = await Employee.findOrCreate({
@@ -85,6 +85,7 @@ if (err instanceof Sequelize.UniqueConstraintError) {
 module.exports.addServiceDetails = async (req, res) => {
   try {
     const [organisationId, employeeCode] = req.params.id.split(".");
+    console.log('in service details');
     const fileUrl = req.file
       ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : null;
@@ -139,6 +140,7 @@ module.exports.addEducationalDetails = async (req, res) => {
   
 
   try {
+    console.log('In educational details')
     const [organisationId, employeeCode] = req.params.id.split(".");
     const isDefault = req.body.isDefault; 
     console.log('In emp updatee : ',req.files,' is default ? ',isDefault);
@@ -154,10 +156,10 @@ module.exports.addEducationalDetails = async (req, res) => {
       : null;
 
     const { id, ...otherDetails } = req.body;
-    let document;
-    let message;
+    let document = null;
+    let message = "";
 
-    if (isDefault) {
+    if (isDefault === "true") {
       // Find the default record for this employee
       let defaultRecord = await EducationDetail.findOne({
         where: { employee_code: employeeCode },
@@ -205,7 +207,7 @@ module.exports.addEducationalDetails = async (req, res) => {
           certificate_document: f2,
           ...otherDetails,
         });
-
+        console.log('document created',document);
         message = "Educational details added successfully.";
       }
     }

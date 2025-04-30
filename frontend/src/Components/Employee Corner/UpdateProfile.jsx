@@ -1533,7 +1533,7 @@ const UpdateProfile = () => {
             }
           }
         }
-        educationFormData.append('isDefault',formData.education_details.length === 1)
+        educationFormData.append('isDefault',String(formData.education_details.length === 1))
 
         await axiosInstance.post(
           `${import.meta.env.VITE_API_URL}/api/submit-education-details/${user.company_id}.${employee_code}`,
