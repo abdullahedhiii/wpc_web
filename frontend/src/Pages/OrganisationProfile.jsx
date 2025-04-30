@@ -51,7 +51,7 @@ const OrganisationProfile = () => {
             </div>
             <button
               className="flex items-center gap-1 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition"
-              onClick={() => navigate('/hrms/company-profile/edit-company')}
+              onClick={() => navigate(`/hrms/company-profile/edit-company/${org.id}`)}
             >
               <Edit2 className="w-4 h-4" /> Edit
             </button>
