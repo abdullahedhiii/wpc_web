@@ -12,22 +12,22 @@ const Op = require('sequelize').Op;
 
 module.exports.Register = async (req, res) => {
  
-
+    console.log('User registration request received:', req.body);
     const { companyName,firstName, lastName, email, contactNumber,password } = req.body;
     let transaction;  // Declare transaction outside try block
     try {
       
       transaction = await sequelize.transaction();
-    
+      console.log('Transaction started');
       const existingUser = await Admin.findOne({ 
         where: { email, phone_number: contactNumber }, 
         attributes: { exclude: ['password'] } 
       });
-    
+      console.log('Existing user check completed');
       if (existingUser) {
         return res.status(400).json({ error: 'User already exists.' });
       }
-    
+      console.log('User does not exist, creating new user');
       const newUser = await Admin.create(
         {
           company_name: companyName,
@@ -38,8 +38,8 @@ module.exports.Register = async (req, res) => {
           password,
         },
         { transaction }
-      );
-    
+      ); 
+      console.log('New user created');
       await Organisation.create(
         {
           Company_name: companyName,
@@ -49,10 +49,12 @@ module.exports.Register = async (req, res) => {
       );
     
       await transaction.commit();
+      console.log('Transaction committed');
+    console.log('USer registered',newUser);
       return res.status(201).json({ message: 'User registered successfully.' });
     
     }  catch (error) {
-      
+      console.log('Error in user registration',error);
      if (error instanceof Sequelize.UniqueConstraintError) {
       return res.status(400).json({ 
         message: "The entered email or phone number has been registered already" 

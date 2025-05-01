@@ -76,7 +76,7 @@ const Register = () => {
       })
       navigate("/payment-page")
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.")
+      setError(err.response?.data?.error || "Registration failed. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
