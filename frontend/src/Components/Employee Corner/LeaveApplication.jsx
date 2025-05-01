@@ -90,6 +90,7 @@ const LeaveApplication = () => {
       days: 0,
     });
   };
+  
   const handleApply = async (e) => {
     e.preventDefault();
     if(submitting) return;
@@ -111,12 +112,27 @@ const LeaveApplication = () => {
        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/applyLeave`,formData);
        if(response.data.message){
         window.alert(response.data.message);
+        setFormData((prev) => ({
+          ...prev,
+          leaveType: "",
+          fromDate: "",
+          toDate: "",
+          leave_in_hand: 0,
+          days: 0,
+        }));
         setSubmitting(false);
         return;
        }
+       setFormData((prev) => ({
+        ...prev,
+        leaveType: "",
+        fromDate: "",
+        toDate: "",
+        leave_in_hand: 0,
+        days: 0,
+      }));
        window.alert('Leave application submitted');
-      // navigate('/hrms/employee-corner/leave-applications');
-       handleReset();
+   
     }
     catch(err){
         window.alert(err.response?.data?.message || 'An error occurred');
