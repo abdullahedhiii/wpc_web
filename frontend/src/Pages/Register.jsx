@@ -318,9 +318,9 @@ const Register = () => {
                     </span>
                   </label>
                 </div>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} />
-                </div>
+                </div> */}
                 <button
                   type="submit"
                   disabled={isSubmitting}

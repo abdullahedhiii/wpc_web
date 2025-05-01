@@ -1007,8 +1007,8 @@ module.exports.getDocuments = async (req, res) => {
 module.exports.submitLeaveallocation = async (req, res) => {
   try {
     const employee_code = req.params.id;
-    const { medical_leave, holiday_leave, maternity_leave } = req.body;
-     let {year} = req.body;
+    let { medical_leave, holiday_leave, maternity_leave,year } = req.body;
+    //  let {year} = req.body;
     let record = await LeaveAllocation.findOne({
       where: {
         employee_code,
@@ -1017,7 +1017,7 @@ module.exports.submitLeaveallocation = async (req, res) => {
     });
 
     if(year === ''){
-      year = new Date().getFullYear();
+      year = String(new Date().getFullYear());
     }
     if (record) {
       await record.update({

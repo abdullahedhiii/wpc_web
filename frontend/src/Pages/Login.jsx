@@ -162,9 +162,9 @@ const Login = () => {
                     <span className="ml-2 text-sm text-gray-600">Remember me</span>
                   </label>
                 </div>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   <ReCAPTCHA sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} />
-                </div>
+                </div> */}
                 {error && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
