@@ -1956,7 +1956,8 @@ e.preventDefault();
                                       }
                                       name="education.transcript_document"
                                     />
-                                    {education.transcript_document && (
+                                    {typeof education.transcript_document === 'string' &&
+ education.transcript_document.startsWith(import.meta.env.VITE_API_URL) && (
                                       <a
                                         href={education.transcript_document}
                                         target="_blank"
@@ -1978,7 +1979,8 @@ e.preventDefault();
                                       }
                                       name="education.certificate_document"
                                     />
-                                    {education.certificate_document && (
+                                    {typeof education.certificate_document === 'string' &&
+ education.certificate_document.startsWith(import.meta.env.VITE_API_URL) && (
                                       <a
                                         href={education.certificate_document}
                                         target="_blank"
@@ -2339,7 +2341,8 @@ e.preventDefault();
                                 }
                                 className="p-2 border rounded w-full"
                               />
-                               {detail.document && (
+                               {typeof detail.document === 'string' &&
+ detail.document.startsWith(import.meta.env.VITE_API_URL) && (
                                       <a
                                         href={detail.document}
                                         target="_blank"
@@ -2467,7 +2470,8 @@ e.preventDefault();
                                 }
                                 className="p-2 border rounded"
                               />
-                                 {document.doc && (
+                                 {typeof document.doc === 'string' &&
+ document.doc.startsWith(import.meta.env.VITE_API_URL) && (
                                       <a
                                         href={document.doc}
                                         target="_blank"
@@ -2627,7 +2631,8 @@ e.preventDefault();
                               required={field.required}
                               readOnly={field.readOnly}
                             />
-                               {field.type === 'file' && fieldValue &&(
+                               {field.type === 'file' && typeof fieldValue === 'string' &&
+ fieldValue.startsWith(import.meta.env.VITE_API_URL) && (
                                       <a
                                         href={fieldValue}
                                         target="_blank"

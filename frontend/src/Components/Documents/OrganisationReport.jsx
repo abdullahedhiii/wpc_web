@@ -58,9 +58,14 @@ const OrganisationReport = () => {
             const response = await fetch(selectedDocument.document_url);
             const blob = await response.blob();
             const blobUrl = window.URL.createObjectURL(blob);
+   
+            // Try to get the original filename from the URL
+            const urlParts = selectedDocument.document_url.split('/');
+            const originalFileName = urlParts[urlParts.length - 1].split('?')[0]; // Remove query string if any
+   
             const link = document.createElement("a");
             link.href = blobUrl;
-            link.download = `${selectedDocument.document_type}.pdf`;
+            link.download = originalFileName || `${selectedDocument.document_type}`; // fallback
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -72,6 +77,7 @@ const OrganisationReport = () => {
          }
       }
    };
+   
  
    return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
