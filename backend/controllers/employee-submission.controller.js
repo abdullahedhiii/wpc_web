@@ -1007,8 +1007,8 @@ module.exports.getDocuments = async (req, res) => {
 module.exports.submitLeaveallocation = async (req, res) => {
   try {
     const employee_code = req.params.id;
-    const { medical_leave, holiday_leave, maternity_leave, year } = req.body;
-
+    const { medical_leave, holiday_leave, maternity_leave } = req.body;
+     let {year} = req.body;
     let record = await LeaveAllocation.findOne({
       where: {
         employee_code,

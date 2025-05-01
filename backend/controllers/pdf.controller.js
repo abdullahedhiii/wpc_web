@@ -793,7 +793,7 @@ module.exports.generateEmployeePDF = async (req, res) => {
 
     const year = new Date().getFullYear();
     const leaveA = await LeaveAllocation.findOne({
-      where: { employee_code, year },
+      where: { employee_code, year : String(year) },
     });
 
     const org = await Organisation.findOne({
