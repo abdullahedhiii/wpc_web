@@ -9,7 +9,7 @@ const RoleManagement = () => {
         "User Id",
         "Module Name",
         "Menu",
-        "Rights",
+        // "Rights",
         "Action"
       ];
       const {companyData} = useCompanyContext();
