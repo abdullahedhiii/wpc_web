@@ -1012,15 +1012,18 @@ module.exports.submitLeaveallocation = async (req, res) => {
     let record = await LeaveAllocation.findOne({
       where: {
         employee_code,
-        year,
+        year : String(year),
       },
     });
 
+    if(year === ''){
+      year = new Date().getFullYear();
+    }
     if (record) {
       await record.update({
-        medical_max_leaves :parseInt(medical_leave),
-        holiday_max_leaves : parseInt(holiday_leave),
-        maternity_max_leaves : parseInt(maternity_leave),
+        medical_max_leaves :medical_leave,
+        holiday_max_leaves :holiday_leave,
+        maternity_max_leaves :maternity_leave,
       });
 
       return res.status(200).json({
@@ -1030,13 +1033,13 @@ module.exports.submitLeaveallocation = async (req, res) => {
     } else {
       await LeaveAllocation.create({
         employee_code,
-        medical_leaves_in_hand: parseInt(medical_leave),
-        medical_max_leaves :parseInt(medical_leave),
-        holiday_leaves_in_hand: parseInt(holiday_leave),
-        holiday_max_leaves : parseInt(holiday_leave),
-        maternity_leaves_in_hand: parseInt(maternity_leave),
-        maternity_max_leaves : parseInt(maternity_leave),
-        year,
+        medical_leaves_in_hand: medical_leave,
+        medical_max_leaves :medical_leave,
+        holiday_leaves_in_hand: holiday_leave,
+        holiday_max_leaves :holiday_leave,
+        maternity_leaves_in_hand: maternity_leave,
+        maternity_max_leaves :maternity_leave,
+        year : String(year),
       });
 
       return res.status(201).json({
@@ -1047,7 +1050,7 @@ module.exports.submitLeaveallocation = async (req, res) => {
   } catch (err) {
     console.error("Error in submitLeaveallocation:", err);
     return res.status(500).json({
-      message: err
+      message: err.message,
     });
   }
 };

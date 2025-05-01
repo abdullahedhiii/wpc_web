@@ -1685,36 +1685,31 @@ module.exports.addOffDay = async (req, res) => {
 
 module.exports.uploadDocuments = async (req, res) => {
   try {
-    console.log('in upload documents',req.query)
-    const { id } = req.query;
-    const { documentType, Company_name } = req.body;
-    const organisation_id = id;
+    const { documentType, Company_name,companyId } = req.body;
     const url = `${process.env.BACKEND_URL}/uploads/${Company_name}/${req.file.filename}`;
 
-    // Check if a document with the same type and organisation already exists
+    console.log('Trying to upload document ')
     let existingDocument = await OrgDocument.findOne({
       where: {
         document_type: documentType,
-        organisation_id: organisation_id,
+        organisation_id: companyId,
       },
     });
-    console.log('existing document',existingDocument)
     let document;
+
     if (existingDocument) {
-      console.log(existingDocument,'existingDocument updatedd')
-      // Update the existing document's URL
+      console.log('existingDocument updatedd')
       await OrgDocument.update(
         { document_url: url },
-        { where: { document_type: documentType, organisation_id } }
+        { where: { document_type: documentType, organisation_id: companyId } }
       );
-      console.log(existingDocument,'existingDocument updatedd')
       document = existingDocument;
     } else {
-      // Create a new entry in OrgDocument
+      console.log('else new created')
       document = await OrgDocument.create({
         document_type: documentType,
         document_url: url,
-        organisation_id,
+        organisation_id: companyId,
       });
     }
     console.log(document,'document updatedd')
@@ -1725,7 +1720,7 @@ module.exports.uploadDocuments = async (req, res) => {
       document,
     });
   } catch (error) {
-    console.log(error,'error uploading document')
+    console.log(error,'error uploading document',error.message)
     res.status(500).json({
       message: "Error uploading document",
       error: error.message,
@@ -3478,23 +3473,26 @@ module.exports.getLeavesRequested = async (req, res) => {
   try {
     const leaves = await Employee.findAll({
       where: {
-        organisation_id: req.params.id,
+        organisation_id: req  .params.id,
       },
       include: [
         {
           model: PersonalDetail,
           as: "personaldetail",
           foreignKey: "employee_code",
+          required: false,
         },
         {
           model: ServiceDetail,
           as: "servicedetail",
           foreignKey: "employee_code",
+          required: false,
         },
         {
           model: LeaveRequest,
           as: "leave_requests",
           foreignKey: "employeeCode",
+          required: true,
         },
       ],
     });
@@ -3557,12 +3555,12 @@ module.exports.updateLeaveRequest = async (req, res) => {
         .json({ message: "Updated leave request not found" });
     }
 
-    const { days: num_days, leave_type, employeeCode, leave_type_id } = updatedRequest;
+    const { days: num_days, leave_type, employeeCode } = updatedRequest;
 
     if (req.body.status !== "Rejected") {
       // Fetch current leave allocation first
       const leaveAllocation = await LeaveAllocation.findOne({
-        where: { employee_code: employeeCode, leave_type_id,year : req.body.year },
+        where: { employee_code: employeeCode,year : String(req.body.year) },
       });
 
       if (!leaveAllocation) {
@@ -3584,7 +3582,7 @@ module.exports.updateLeaveRequest = async (req, res) => {
             : leaveAllocation.maternity_leaves_in_hand,
         },
         {
-          where: { employee_code: employeeCode, leave_type_id },
+          where: { employee_code: employeeCode, year : String(req.body.year) },
         }
       );
     }
