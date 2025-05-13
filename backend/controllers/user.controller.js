@@ -471,6 +471,7 @@ module.exports.getUserOrganisation = async(req,res) => {
 
 const processCSV = async (csvFilePath) => {
   try {
+
     const existingSponsors = await Sponsor.findAll();
     const existingMap = new Map(existingSponsors.map(s => [s.organisationName, s]));
     
@@ -568,15 +569,18 @@ const processCSV = async (csvFilePath) => {
     const transaction = await Sponsor.sequelize.transaction();
     
     try {
-      if (newSponsors.length > 0) {
-        console.log(`Creating ${newSponsors.length} new sponsors`);
-        await Sponsor.bulkCreate(newSponsors, { transaction });
+      const batchSize = 100; // Adjust as necessary
+      for (let i = 0; i < newSponsors.length; i += batchSize) {
+        const batch = newSponsors.slice(i, i + batchSize);
+        console.log(`Creating batch of ${batch.length} sponsors`);
+        await Sponsor.bulkCreate(batch, { transaction });
       }
       
-      if (sponsorsToUpdate.length > 0) {
-        console.log(`Updating ${sponsorsToUpdate.length} existing sponsors`);
+      for (let i = 0; i < sponsorsToUpdate.length; i += batchSize) {
+        const batch = sponsorsToUpdate.slice(i, i + batchSize);
+        console.log(`Updating batch of ${batch.length} sponsors`);
         await Promise.all(
-          sponsorsToUpdate.map(sponsor => 
+          batch.map(sponsor =>
             Sponsor.update(
               {
                 townCity: sponsor.townCity,
@@ -585,28 +589,7 @@ const processCSV = async (csvFilePath) => {
                 status: sponsor.status,
                 newSponsor: sponsor.newSponsor
               },
-              { 
-                where: { id: sponsor.id },
-                transaction
-              }
-            )
-          )
-        );
-      }
-      
-      if (reactivatedSponsors.length > 0) {
-        console.log(`Reactivating ${reactivatedSponsors.length} previously removed sponsors`);
-        await Promise.all(
-          reactivatedSponsors.map(sponsor => 
-            Sponsor.update(
               {
-                townCity: sponsor.townCity,
-                county: sponsor.county,
-                licenseTier: sponsor.licenseTier,
-                status: sponsor.status,
-                newSponsor: sponsor.newSponsor
-              },
-              { 
                 where: { id: sponsor.id },
                 transaction
               }
@@ -614,8 +597,39 @@ const processCSV = async (csvFilePath) => {
           )
         );
       }
+console.log('here1')      
+if (Array.isArray(reactivatedSponsors) && reactivatedSponsors.length > 0) {
+  console.log(`Reactivating ${reactivatedSponsors.length} previously removed sponsors`);
+  
+  const chunkSize = 1000; 
+  for (let i = 0; i < reactivatedSponsors.length; i += chunkSize) {
+    const chunk = reactivatedSponsors.slice(i, i + chunkSize);
+
+    const updatePromises = chunk.map(sponsor => {
+      return Sponsor.update(
+        {
+          townCity: sponsor.townCity,
+          county: sponsor.county,
+          licenseTier: sponsor.licenseTier,
+          status: "active", 
+          newSponsor: true,
+        },
+        {
+          where: { id: sponsor.id },
+          transaction
+        }
+      );
+    });
+
+    await Promise.all(updatePromises);
+    console.log(`Processed ${chunk.length} sponsors in this batch`);
+  }
+
+  console.log('Sponsors reactivated');
+}
+
       
-      if (sponsorsToRemove.length > 0) {
+      if (Array.isArray(sponsorsToRemove) && sponsorsToRemove.length > 0) {
         console.log(`Marking ${sponsorsToRemove.length} sponsors as removed`);
         await Sponsor.update(
           { status: "removed", newSponsor: false },
@@ -624,8 +638,9 @@ const processCSV = async (csvFilePath) => {
             transaction
           }
         );
+        console.log('sponsors marked removed')
       }
-      
+      console.log('committing transa')
       await transaction.commit();
       console.log("CSV processing completed successfully.");
     } catch (error) {
@@ -687,6 +702,7 @@ const downloadCSV = async () => {
       writer.on("finish", async () => { 
         console.log(`CSV downloaded: ${filePath}`);
         try {
+          //res.status(200).send("CSV processing has started. You will be notified once it's complete.");
           await processCSV(filePath);
           resolve(filePath);
         } catch (err) {
@@ -705,22 +721,35 @@ const downloadCSV = async () => {
 };
 
 
-module.exports.fetchSponsorsFromFile = async(req,res) => {
-  try{
+module.exports.fetchSponsorsFromFile = async (req, res) => {
+  try {
     const token = req.headers['x-cron-token'];
     if (!token || token !== process.env.CRON_SECRET_TOKEN) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
+
+    // Send the immediate response to the user
+    res.status(200).json({ message: 'CSV processing has started. You will be notified once it\'s complete.' });
+
     console.log("Starting sponsor update process...");
-    await downloadCSV();
-    console.log("Sponsor update process completed successfully");
-    return res.status(200).json({ message: 'Sponsors updated successfully' });
-  }
-  catch(err){
+
+    // Trigger CSV processing in the background
+    setImmediate(async () => {
+      try {
+        // Call the downloadCSV function to start the process in the background
+        await downloadCSV();
+        console.log("Sponsor update process completed successfully");
+      } catch (err) {
+        console.error("Error in background processing:", err);
+      }
+    });
+
+  } catch (err) {
     console.error("Error fetching sponsors from file:", err);
-    return res.status(500).json({ message: 'Internal server error' }); 
+    return res.status(500).json({ message: 'Internal server error' });
   }
-}
+};
+
 
 
 

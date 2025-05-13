@@ -538,16 +538,19 @@ const UpdateProfile = () => {
         },
       }));
     } else {
+      let parsedValue = value;
+      if (type === 'radio' && value === "Yes") parsedValue = true;
+      else if (type === 'radio' && value === "No") parsedValue = false;
+      
       setFormData((prevData) => ({
         ...prevData,
         [section]: {
           ...prevData[section],
-          [name.split(".")[1]]: value,
+          [name.split(".")[1]]: parsedValue,
         },
       }));
     }
   };
-
   const handleStructureChange = (category, key) => {
     setFormData((prev) => ({
       ...prev,
