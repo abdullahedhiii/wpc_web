@@ -460,7 +460,7 @@ const EmployeeForm = () => {
     other_details: [
       {name: "",reference: "",nationality: "",issued: "",expiry: "",review_date: "",document: null,current: false,remarks: "",},
     ],
-    pay_details: {group: "",pay: "",wedges: "",payment_type: "",basic_wedges: "",min_hours: 0,rate: 0,tax_code: "",tax_reference: "",tax_percentage: 0,pay_mode: "",bank_name: "",branch_name: "",account_no: "",sort_code: "",currency: ""},
+    pay_details: {group: "",pay: "",wedges: "",payment_type: "",basic_wedges: "",min_hours: "",rate: "",tax_code: "",tax_reference: "",tax_percentage: "",pay_mode: "",bank_name: "",branch_name: "",account_no: "",sort_code: "",currency: ""},
     pay_structure: {
       payments: {dearnessAllowance: false,houseRentAllowance: false,conveyanceAllowance: false,performanceAllowance: false,monthlyFixedAllowance: false,
       },
@@ -575,11 +575,14 @@ const EmployeeForm = () => {
         },
       }));
     } else {
+      let parsedValue = value;
+      if (type === 'radio' && value === "Yes") parsedValue = true;
+      else if (type === 'radio' && value === "No") parsedValue = false;
       setFormData((prevData) => ({
         ...prevData,
         [section]: {
           ...prevData[section],
-          [name.split(".")[1]]: value,
+          [name.split(".")[1]]: parsedValue,
         },
       }));
     }
