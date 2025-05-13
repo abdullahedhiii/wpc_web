@@ -578,6 +578,7 @@ const EmployeeForm = () => {
       let parsedValue = value;
       if (type === 'radio' && value === "Yes") parsedValue = true;
       else if (type === 'radio' && value === "No") parsedValue = false;
+      
       setFormData((prevData) => ({
         ...prevData,
         [section]: {
