@@ -14,6 +14,7 @@ import {
   FileText,
   Send,
 } from "lucide-react"
+import { toast } from 'react-toastify';
 
 export default function ApplicationForm({ onBack, job_id, jobTitle, organisation_id }) {
   const [justsubmitted,setSubmitted] = useState(false);
@@ -61,13 +62,13 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
     setSubmitting(true);
     try {
       if(formData.contactNo.length < 10 || formData.contactNo.length > 15){
-        alert('Contact Number should be of length 10-15 digits');
+        toast.error('Contact Number should be of length 10-15 digits');
         setSubmitting(false);
         return;
       }
       const d = new Date(formData.dob);
       if(d > new Date()){
-        alert('Enter valid date of birth')
+        toast.error('Enter valid date of birth')
         setSubmitting(false);
         return;
       }
@@ -89,9 +90,9 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
       setSubmitted(true);
     } catch (err) {
       if (err.response) {
-        window.alert(err.response.data.message || "Something went wrong. Please try again.")
+       toast.error(err.response.data.message || "Something went wrong. Please try again.")
       } else {
-        window.alert("Network error. Please check your connection.")
+        toast.error("Network error. Please check your connection.")
       }
     }
     finally{
@@ -101,7 +102,7 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
 
   useEffect(() => {
    if(justsubmitted){
-      alert('Application submitted successfully');
+      toast.success('Application submitted successfully');
       
    }
   },[justsubmitted])

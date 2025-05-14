@@ -642,7 +642,11 @@ module.exports.addEsus = async (req, res) => {
       return res.status(201).json({ message: "Esus detail added", document });
     }
   } catch (err) {
-    
+    if (err instanceof Sequelize.UniqueConstraintError) {
+      return res.status(400).json({ 
+        message: "Esus identifier must be unique!" 
+      });
+    }
     return res
       .status(500)
       .json({ message: "Esus server error", error: err });
@@ -683,7 +687,12 @@ module.exports.addDBS = async (req, res) => {
         .json({ message: "DBS detail added", document: newDocument });
     }
   } catch (err) {
-    
+    if (err instanceof Sequelize.UniqueConstraintError) {
+
+      return res.status(400).json({ 
+        message: "DBS identifier must be unique" 
+      });
+    }
     return res
       .status(500)
       .json({ message: "DBS server error", error: err });

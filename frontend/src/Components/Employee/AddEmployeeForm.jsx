@@ -1303,7 +1303,7 @@ const EmployeeForm = () => {
       const check_dob = dob ? new Date(dob) : null;
       const today = new Date();
       if(check_dob && check_dob > today){
-        alert('Enter valid employee date of birth');
+        toast.error('Enter valid employee date of birth');
         return false;
       }
       if (!fname) errors = errors + "Employee First name,";

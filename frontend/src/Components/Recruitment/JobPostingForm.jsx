@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import { ChevronRight, Home } from 'lucide-react'
+import { toast } from 'react-toastify';
 
 import TextEditor from "./TextEditor";
 import axiosInstance from "../../../axiosInstance";
@@ -280,7 +281,7 @@ const JobPostingForm = () => {
     const t2 = new Date(formData.jobPostingDate);
     if(t1 < t2){
       setSubmitting(false)
-      alert('Enter valid job closing and posting date');
+      toast.error('Enter valid job closing and posting date');
       return;
     }
     try {
@@ -290,7 +291,7 @@ const JobPostingForm = () => {
       );
       if (response.status === 200) navigate("/hrms/recruitment/job-posting");
     } catch (err) {
-      alert(err.response?.data?.message)
+      toast.error(err.response?.data?.message)
     }
     finally{
       setSubmitting(false)

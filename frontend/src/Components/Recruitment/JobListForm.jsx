@@ -5,6 +5,7 @@ import { ChevronRight, Home } from 'lucide-react'
 import TextEditor from "./TextEditor";
 import axiosInstance from "../../../axiosInstance";
 import { data, useNavigate,Link } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const JobListForm = () => {
   const { isSideBarOpen } = useSidebarContext();
@@ -76,16 +77,16 @@ const JobListForm = () => {
   const handleJobPost = async(e) => {
     e.preventDefault();
     if(jobsListed.find((ele) => ele['SOC CODE'].toLowerCase() === formData.socCode.toLowerCase() )){
-      alert('SOC Code must be unique, job with this code exists');
+      toast.error('SOC Code must be unique, job with this code exists');
       return;
     }
     else if(jobsListed.find((ele) => ele.department.toLowerCase() === formData.department.toLowerCase() 
       && ele["Job Title"].toLowerCase() === formData.jobTitle.toLowerCase())){
-       alert('A job with this title is already listed,try updating');
+       toast.error('A job with this title is already listed,try updating');
        return;
       }
     else if(content.length  == 0){
-      alert('Job Description is required')
+      toast.error('Job Description is required')
       return
     }
     try{

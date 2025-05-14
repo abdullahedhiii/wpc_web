@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const LeaveApplication = () => {
   const { user } = useSelector((state) => state.user);
@@ -33,7 +34,7 @@ const LeaveApplication = () => {
         `${import.meta.env.VITE_API_URL}/api/getMyLeaves/${user.employee_code}.${formData.leaveType}.${year}`
       );
       if(response.data.message){
-        window.alert(response.data.message);
+        toast.error(response.data.message);
         return;
       }
       setFormData((prev) => ({
@@ -67,7 +68,7 @@ const LeaveApplication = () => {
       } else {
         setFormData((prev) => ({ ...prev, fromDate: "",
           toDate: "", days: 0 }));
-        alert('Please enter valid dates');
+        toast.error('Please enter valid dates');
         return;
       }
     }
@@ -96,14 +97,14 @@ const LeaveApplication = () => {
     if(submitting) return;
     setSubmitting(true);
     if(formData.days > formData.leave_in_hand){
-      window.alert('You dont have enough leaves left for this holiday type');
+      toast.error('You dont have enough leaves left for this holiday type');
       setSubmitting(false);
       return;
     };
     const current_year = new Date().getFullYear();
     const from = new Date(formData.fromDate).getFullYear();
     if (from !== current_year){
-      alert('You can apply for past leaves in the current year only');
+      toast.error('You can apply for past leaves in the current year only');
       setSubmitting(false);
       return;
     }
@@ -111,7 +112,7 @@ const LeaveApplication = () => {
     try{
        const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/applyLeave`,formData);
        if(response.data.message){
-        window.alert(response.data.message);
+        toast.success(response.data.message);
         setFormData((prev) => ({
           ...prev,
           leaveType: "",
@@ -131,11 +132,11 @@ const LeaveApplication = () => {
         leave_in_hand: 0,
         days: 0,
       }));
-       window.alert('Leave application submitted');
+       toast.success('Leave application submitted');
    
     }
     catch(err){
-        window.alert(err.response?.data?.message || 'An error occurred');
+        toast.error(err.response?.data?.message || 'An error occurred');
     }
     finally {
       setSubmitting(false);

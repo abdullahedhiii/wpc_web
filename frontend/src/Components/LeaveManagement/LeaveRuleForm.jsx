@@ -3,6 +3,7 @@ import NewForm from "../NewForm";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
+import { toast } from 'react-toastify';
 
 const LeaveRuleForm = () => {
   const {rule_id} = useParams();
@@ -105,7 +106,7 @@ const LeaveRuleForm = () => {
     // );
     // console.log('In leave rule ',check_if_exists,currentYear);
     // if (!isUpdate && check_if_exists) {
-    //     alert('Leave Rule for this leave type and employment type already exists for this year, try updating by clicking the edit option on the Leave Rule Page');
+    //     toast.error('Leave Rule for this leave type and employment type already exists for this year, try updating by clicking the edit option on the Leave Rule Page');
     //     return;
     // }
 
@@ -120,7 +121,7 @@ const LeaveRuleForm = () => {
         await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/addLeaveRule/${companyData[0].id}`, data_to);
         navigate('/hrms/leave-management/leave-rule-listing');
     } catch (err) {
-      alert(err.response.data.message);
+      toast.error(err.response.data.message);
         console.error("Error submitting leave rule:", err);
     }    
 };

@@ -4,6 +4,7 @@ import { useCompanyContext } from "../../contexts/CompanyContext"
 import { motion } from "framer-motion"
 import { FaUserPlus, FaEllipsisV } from "react-icons/fa"
 import { Link } from "react-router-dom"
+import { toast } from 'react-toastify';
 
 const EmployeePage = () => {
   const [employeeDetails, setEmployeeDetails] = useState([])
@@ -41,7 +42,7 @@ const EmployeePage = () => {
         window.open(response.data.url, "_blank"); 
       } 
     } catch (err) {
-      alert('Network error downloading pdf',err);
+      toast.error('Network error downloading pdf',err);
     }
     finally{
       setIsDownloading(false)

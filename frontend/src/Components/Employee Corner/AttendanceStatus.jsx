@@ -3,6 +3,7 @@ import { useState } from "react";
 import DataTable from "../DataTable";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../../axiosInstance";
+import { toast } from 'react-toastify';
 
 const AttendanceStatus = () => {
     const {user} = useSelector((state) => state.user);
@@ -23,7 +24,7 @@ const AttendanceStatus = () => {
       const t = new Date(formData.fromDate);
       const w = new Date(formData.toDate);
       if(w < t){
-        alert('Enter valid from and to dates!');
+        toast.error('Enter valid from and to dates!');
         return;
       }
         try{

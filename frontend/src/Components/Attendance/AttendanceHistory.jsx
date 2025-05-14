@@ -5,6 +5,7 @@ import { useSidebarContext } from "../../contexts/SidebarContext";
 import axiosInstance from "../../../axiosInstance";
 import { motion } from 'framer-motion';
 import { History, User, RefreshCw } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AttendanceHistory = () => {
     const { isSideBarOpen } = useSidebarContext();
@@ -33,14 +34,14 @@ const AttendanceHistory = () => {
         e.preventDefault();
         setSubmitted(true);
         if (!formData.employeeCode || !formData.fromDate || !formData.toDate) {
-            window.alert('All fields are required');
+            toast.success('All fields are required');
             setSubmitted(false);
             return;
         }
         const t = new Date(formData.fromDate);
         const w = new Date(formData.toDate);
         if (w < t) {
-            alert('Enter valid from and to dates!');
+            toast.error('Enter valid from and to dates!');
             setSubmitted(false);
             return;
         }

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import {Link, useNavigate, useParams } from "react-router-dom";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
+import { toast } from 'react-toastify';
 
 const CompanyForm = () => {
   const navigate = useNavigate();
@@ -643,12 +644,12 @@ const CompanyForm = () => {
   
       await Promise.all(documentUploads);
       await fetchOrganisation(user.id,user.isAdmin);
-      alert('Company Submission Successful');
+      toast.success('Company Submission Successful');
       navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
     } catch (err) {
       console.log(err);
-      alert(err.response.data.message);
+      toast.error(err.response.data.message);
     }
     finally{
       setSubmitting(false);

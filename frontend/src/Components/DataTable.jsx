@@ -6,6 +6,7 @@ import { useCompanyContext } from "../contexts/CompanyContext";
 
 import { useSelector } from "react-redux";
 import axiosInstance from "../../axiosInstance";
+import { toast } from 'react-toastify';
 
 const DataTable = ({
   title,
@@ -57,7 +58,7 @@ const DataTable = ({
         }
        });
        setFetch();
-       alert(response?.data?.message);
+       toast.success(response?.data?.message);
     }
     catch(err){
        
@@ -85,7 +86,7 @@ const DataTable = ({
       } else {
       }
     } catch (err) {
-      alert('Network error downloading pdf',err);
+      toast.error('Network error downloading pdf',err);
     }
     finally{
       setIsDownloading(false);
@@ -170,9 +171,9 @@ const DataTable = ({
             year : y,
         });
         setFetch()
-        alert(`Leave Request status set to ${status}`)
+        toast.success(`Leave Request status set to ${status}`)
     } catch (err) {
-      alert('Error in updating leave status ',err);
+      toast.error('Error in updating leave status ',err);
     }
     finally{
       setIsUpdating(false);

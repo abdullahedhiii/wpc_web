@@ -4,6 +4,7 @@ import axiosInstance from "../../../axiosInstance";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { motion } from 'framer-motion';
 import { UserRound, Download, FileText, BadgeCheck, CalendarClock, Mail, Phone, MapPin, GraduationCap, Briefcase, FileSignature, ArrowRight, ArrowLeft } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const CandidateStatus = ({ details, selectedStatus, setSelectedStatus, fetchAgain }) => {
   const [interviewDate, setInterviewDate] = useState(details.interviewDate);
@@ -22,7 +23,7 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus, fetchAgai
     try {
       const payload = { status: selectedStatus };
       if (selectedStatus === details.status) {
-        alert('To submit, please select an updated status for Candidate');
+        toast.error('To submit, please select an updated status for Candidate');
         return;
       }
       if (isInterviewRelated) {
@@ -32,9 +33,9 @@ const CandidateStatus = ({ details, selectedStatus, setSelectedStatus, fetchAgai
       }
       await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/updateCandidateStatus/${details.id}`, payload);
       fetchAgain();
-      alert(`Candidate status updated to ${payload.status}`)
+      toast.success(`Candidate status updated to ${payload.status}`)
     } catch (err) {
-      alert("Failed to update status");
+      toast.error("Failed to update status");
     }
     finally {
       setInterviewDate(""); setToTime(""); settimeFrom("");

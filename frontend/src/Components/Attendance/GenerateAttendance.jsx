@@ -4,6 +4,7 @@ import axiosInstance from "../../../axiosInstance";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { motion } from 'framer-motion';
 import { CalendarCheck, User, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const GenerateAttendance = () => {
   const { companyData, fetchDepartments, fetchDesignations, fetchEmployeesLink, departmentData, designationData, employees } = useCompanyContext();
@@ -31,14 +32,14 @@ const GenerateAttendance = () => {
     e.preventDefault();
     setSubmitted(true);
     if (!formData.employeeCode || !formData.fromDate || !formData.toDate) {
-      window.alert('All fields are required');
+      toast.error('All fields are required');
       setSubmitted(false);
       return;
     }
     const t = new Date(formData.fromDate);
     const w = new Date(formData.toDate);
     if (w < t) {
-      alert('Enter valid from and to dates!');
+      toast.error('Enter valid from and to dates!');
       setSubmitted(false);
       return;
     }

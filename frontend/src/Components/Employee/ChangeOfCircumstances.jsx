@@ -3,6 +3,7 @@ import DataTable from "../DataTable";
 import {useCompanyContext} from '../../contexts/CompanyContext';
 import axiosInstance from "../../../axiosInstance";
 import {motion} from 'framer-motion';
+
 const ChangeOfCircumstances = () => {
     //fetch COC dataaa
     const [data,setData] = useState([]);

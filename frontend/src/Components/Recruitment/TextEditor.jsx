@@ -2,6 +2,7 @@ import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { motion } from "framer-motion";
+import { toast } from 'react-toastify';
 
 // Custom styles to be injected into the head
 const customStyles = `
@@ -129,7 +130,7 @@ const TextEditor = ({ content, setContent, label }) => {
           // Block pasted images
           delta.ops = delta.ops.filter((op) => {
             if (op.insert && op.insert.image) {
-              alert("Image pasting is disabled!");
+              toast.error("Image pasting is disabled!");
               return false;
             }
             return true;

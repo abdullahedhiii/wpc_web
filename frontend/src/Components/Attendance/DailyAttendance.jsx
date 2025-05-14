@@ -5,6 +5,7 @@ import { useSidebarContext } from "../../contexts/SidebarContext";
 import axiosInstance from "../../../axiosInstance";
 import { motion } from 'framer-motion';
 import { CalendarDays, User, RefreshCw } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const DailyAttendance = () => {
     const { isSideBarOpen } = useSidebarContext();
@@ -33,7 +34,7 @@ const DailyAttendance = () => {
         e.preventDefault();
         setSubmitted(true);
         if (!formData.employeeCode || !formData.date) {
-            window.alert('All fields are required');
+           toast.error('All fields are required');
             setSubmitted(false);
             return;
         }

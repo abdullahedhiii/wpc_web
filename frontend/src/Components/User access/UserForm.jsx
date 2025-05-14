@@ -5,6 +5,7 @@ import axiosInstance from "../../../axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import {motion} from 'framer-motion';
 import { UserCog, Mail, Lock, Save, CheckCircle, Loader2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const UserForm = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const UserForm = () => {
     e.preventDefault()
     setSubmitting(true);
     if (formData.password.length < 8){
-      alert('The password should be of length 8 or more');
+      toast.error('The password should be of length 8 or more');
       setSubmitting(false);
       return;
     }
@@ -75,7 +76,7 @@ const UserForm = () => {
         
      }
      catch(err){
-        alert(err.response.data.message|| 'An error occured');
+        toast.error(err.response.data.message|| 'An error occured');
      }
      finally{
       setSubmitting(false);
@@ -89,7 +90,7 @@ const UserForm = () => {
       });
       navigate('/hrms/role/vw-users');
     } catch (err) {
-      alert(err.response?.data?.message || 'An error occurred');
+      toast.error(err.response?.data?.message || 'An error occurred');
     }
   };
 

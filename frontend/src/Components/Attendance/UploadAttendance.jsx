@@ -4,6 +4,7 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import axiosInstance from "../../../axiosInstance";
 import { motion } from 'framer-motion';
 import { Upload, RefreshCw, Download, AlertCircle, FileText } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const UploadAttendance = () => {
     const [file, setFile] = useState(null);
@@ -36,7 +37,7 @@ const UploadAttendance = () => {
         setSubmitting(true);
         setErrorDetails(null);
         if (!file) {
-            alert("Please select a file to upload");
+            toast.error("Please select a file to upload");
             setSubmitting(false);
             return;
         }
@@ -44,12 +45,12 @@ const UploadAttendance = () => {
         formData.append("attendance", file);
         try {
             const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/submitCSV/${companyData[0].id}`, formData);
-            alert(response.data.message);
+            toast.success(response.data.message);
             console.log(response.data.details);
             setErrorDetails(response.data.details);
         } catch (err) {
             
-            alert(err.response.data.fileError? err.response.data.fileError : err.response.data.message);
+            toast.error(err.response.data.fileError? err.response.data.fileError : err.response.data.message);
             setErrorDetails(err.response.data.details);
         } finally {
             setSubmitting(false);

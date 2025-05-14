@@ -4,6 +4,7 @@ import { useCompanyContext } from "../../contexts/CompanyContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../../axiosInstance";
 import DataTable from "../DataTable";
+import { toast } from 'react-toastify';
 
 const LeaveAllocationForm = () => {
   const navigate = useNavigate();
@@ -190,7 +191,7 @@ const LeaveAllocationForm = () => {
           data.year === ele["Effective Year"]
       )
     ) {
-      alert("Leave type has been already allocated to this employee, try updating!");
+      toast.error("Leave type has been already allocated to this employee, try updating!");
       return;
     }
 
@@ -200,7 +201,7 @@ const LeaveAllocationForm = () => {
         data
       );
       setTableData([response.data]);
-      alert('Leave Allocated, view below')
+      toast.success('Leave Allocated')
     } catch (err) {
       console.error("Error allocating leave:", err);
     }

@@ -4,6 +4,7 @@ import DataTable from "../DataTable";
 import { useCompanyContext } from "../../contexts/CompanyContext";
 import {motion} from 'framer-motion';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const UserConfiguration = () => {
     const {companyData} = useCompanyContext();
@@ -36,10 +37,10 @@ const UserConfiguration = () => {
       const handleDelete = async (userId) => {
         try {
           const response = await axiosInstance.delete(`${import.meta.env.VITE_API_URL}/api/deleteUser/${userId}`);
-          alert(response.data.message);
+          toast.success(response.data.message);
           fetchUsers(); // Refresh the user list after deletion
         } catch (err) {
-          alert('Error deleting user');
+          toast.error('Error deleting user');
         }
       };
 

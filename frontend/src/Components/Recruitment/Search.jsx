@@ -4,6 +4,7 @@ import DataTable from "../DataTable";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import axiosInstance from "../../../axiosInstance";
 import {motion} from 'framer-motion';
+import { toast } from 'react-toastify';
 
 const Search = () => {
   const columns = [
@@ -66,13 +67,13 @@ const Search = () => {
   const handleGenerate = async (e) => {
     e.preventDefault();
     if (!formData.stage || !formData.title || !formData.fromDate || !formData.toDate) {
-      alert("Please fill in all fields.");
+      toast.error("Please fill in all fields.");
       return;
     }
     const w = new Date(formData.fromDate);
     const x = new Date(formData.toDate);
     if(x < w){
-       alert('Enter valid dates');
+       toast.error('Enter valid dates');
        return;
     }
     setData([]);
