@@ -678,7 +678,7 @@ module.exports.addDepartment = async (req, res) => {
     
   } catch (error) {
     console.log("Department" ,error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "add department error" });
   }
 };
 
@@ -735,7 +735,7 @@ module.exports.addDesignation = async (req, res) => {
 
   } catch (err) {
     console.error("Error adding designation:", err.message);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "add desig server error" });
   }
 };
 
@@ -834,7 +834,7 @@ module.exports.addEmployeeType = async (req, res) => {
   } catch (error) {
     console.log("Employee Type" ,error);
 
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "add employee type server error" });
   }
 };
 
@@ -2920,7 +2920,7 @@ module.exports.allocateLeave = async (req, res) => {
 
     return res.status(existingLeave ? 200 : 201).json(response);
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Leave allocation error" });
   }
 };
 

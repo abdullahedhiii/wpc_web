@@ -217,7 +217,7 @@ module.exports.addEducationalDetails = async (req, res) => {
 
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Error adding educational details", error: err });
   }
 };
 
@@ -249,7 +249,7 @@ module.exports.addJobDetails = async (req, res) => {
     }
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Error adding job details" });
   }
 };
 
@@ -304,7 +304,7 @@ module.exports.addKeyResponsibility = async (req, res) => {
     });
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Error adding responsibilities", error: err });
   }
 };
 
@@ -358,7 +358,7 @@ module.exports.addTrainingData = async (req, res) => {
     });
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Error adding training details", error: err });
   }
 };
 
@@ -381,7 +381,7 @@ module.exports.addKinData = async (req, res) => {
 
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Error adding kin data", error: err });
   }
 };
 
@@ -414,7 +414,7 @@ module.exports.addCertification = async (req, res) => {
 
   } catch (err) {
     
-    return res.status(500).json("Internal server error");
+    return res.status(500).json({message : "Error adding certification"});
   }
 };
 
@@ -451,7 +451,7 @@ module.exports.addContact = async (req, res) => {
 
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Contact detail error", error: err });
   }
 };
 
@@ -480,7 +480,7 @@ module.exports.addPayDetails = async (req, res) => {
 
   } catch (err) {
     
-    return res.status(500).json("Internal server error");
+    return res.status(500).json({message : "Pay detail error"});
   }
 };
 
@@ -512,7 +512,7 @@ module.exports.addPayDetails = async (req, res) => {
   
     } catch (err) {
       
-      return res.status(500).json("Internal server error");
+      return res.status(500).json({message : "Pay structure error"});
     }
   };
   
@@ -556,7 +556,7 @@ module.exports.addPassport = async (req, res) => {
     }
     return res
       .status(500)
-      .json({ message: "Internal server error", error: err });
+      .json({ message: "Passport error", error: err });
   }
 };
 
@@ -611,7 +611,7 @@ module.exports.addVisa = async (req, res) => {
       });
     }    return res
       .status(500)
-      .json({ message: "Internal server error", error: err.message });
+      .json({ message: "Visa error", error: err.message });
   }
 };
 
@@ -645,7 +645,7 @@ module.exports.addEsus = async (req, res) => {
     
     return res
       .status(500)
-      .json({ message: "Internal server error", error: err });
+      .json({ message: "Esus server error", error: err });
   }
 };
 
@@ -686,7 +686,7 @@ module.exports.addDBS = async (req, res) => {
     
     return res
       .status(500)
-      .json({ message: "Internal server error", error: err });
+      .json({ message: "DBS server error", error: err });
   }
 };
 module.exports.add_other_details = async (req, res) => {
@@ -751,7 +751,7 @@ module.exports.add_other_details = async (req, res) => {
     });
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Other detail error", error: err });
   }
 };
 
@@ -796,7 +796,7 @@ module.exports.national_data = async (req, res) => {
     
     return res
       .status(500)
-      .json({ message: "Internal server error", error: err.message });
+      .json({ message: "National detail error", error: err.message });
   }
 };
 module.exports.add_other_document = async (req, res) => {
@@ -862,7 +862,7 @@ module.exports.add_other_document = async (req, res) => {
     });
   } catch (err) {
     
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Other document error", error: err });
   }
 };
 
@@ -897,7 +897,7 @@ module.exports.addOtherCocDetail = async(req,res)=>{
       
       return res
         .status(500)
-        .json({ message: "Internal server error", error: err.message });
+        .json({ message: "Other coc error", error: err.message });
     }
 };
 module.exports.getDocuments = async (req, res) => {

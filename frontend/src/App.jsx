@@ -7,6 +7,8 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 import Login from "./Pages/Login";
@@ -1133,7 +1135,12 @@ function App() {
 
   if (loading) return <div></div>;
 
-  return <RouterProvider router={router} />;
+  return (
+  <>
+    <RouterProvider router={router} />       
+    <ToastContainer position="bottom-right" autoClose={3000} />
+  </>
+) ;
 }
 
 

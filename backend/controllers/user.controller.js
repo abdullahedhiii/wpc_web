@@ -569,7 +569,7 @@ const processCSV = async (csvFilePath) => {
     const transaction = await Sponsor.sequelize.transaction();
     
     try {
-      const batchSize = 100; // Adjust as necessary
+      const batchSize = 30000; // Adjust as necessary
       for (let i = 0; i < newSponsors.length; i += batchSize) {
         const batch = newSponsors.slice(i, i + batchSize);
         console.log(`Creating batch of ${batch.length} sponsors`);
@@ -601,7 +601,7 @@ console.log('here1')
 if (Array.isArray(reactivatedSponsors) && reactivatedSponsors.length > 0) {
   console.log(`Reactivating ${reactivatedSponsors.length} previously removed sponsors`);
   
-  const chunkSize = 1000; 
+  const chunkSize = 30000; 
   for (let i = 0; i < reactivatedSponsors.length; i += chunkSize) {
     const chunk = reactivatedSponsors.slice(i, i + chunkSize);
 

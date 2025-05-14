@@ -4,7 +4,7 @@ import axiosInstance from "../../../axiosInstance";
 import { Link,useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSidebarContext } from "../../contexts/SidebarContext";
 import { useSelector } from "react-redux";
-
+import { toast } from 'react-toastify';
 const nationalityOptions = [
   "Afghanistan",
   "Albania",
@@ -1739,11 +1739,11 @@ const EmployeeForm = () => {
             },
         });
         });
-    alert( id? 'Employee Updated' : 'Employee Created Successfully');
+    toast.success( id? 'Employee Updated' : 'Employee Created Successfully');
     navigate("/hrms/employees");
 
     } catch (error) {
-       alert(error.response?.data?.message || 'An error occured ' + error );
+       toast.error(error.response?.data?.message || 'An error occured ' + error );
     }
     finally{
       setIsSubmitting(false);
@@ -1802,7 +1802,7 @@ e.preventDefault();
     }));
   };
 
-  const { isSideBarOpen } = useSidebarContext();
+  // const { isSideBarOpen } = useSidebarContext();
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-white py-10 px-2">
       <p className="text-[14px] text-gray-600 max-w-4xl mx-auto mb-2">
@@ -1811,7 +1811,7 @@ e.preventDefault();
         <Link to="/hrms/employees" className="hover:underline">Employee</Link>
         <span className="mx-2 text-gray-400">/ Add New Employee</span>
       </p>
-      <div className={`mt-4 max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border-t-8 border-yellow-600 p-6 md:p-10`}>
+      <div className="mt-4 max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border-t-8 border-yellow-600 p-6 md:p-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 flex items-center justify-center bg-yellow-100 rounded-full">
             <i className="fas fa-user text-2xl text-yellow-900"></i>
@@ -1819,8 +1819,14 @@ e.preventDefault();
           <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Add New Employee</h1>
         </div>
         <hr className="mb-6 border-t-2 border-yellow-100" />
+  
         {isLoading ? (
-          <p className="text-gray-500">Loading employee data...</p>
+          <div className="flex justify-center items-center min-h-[200px]">
+            <svg className="animate-spin h-10 w-10 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+          </div>
         ) : (
           <form className="space-y-12" onSubmit={handleSubmit}>
             {currentSections.map((section, sectionIndex) => (
