@@ -1123,9 +1123,9 @@ function App() {
       .then(response => {
         if(!response.data.found) return;
         if (response.data?.user) {  
-          dispatch(login(response.data.user));
-          fetchModules(response.data.user.id, response.data.user?.isAdmin);
-          fetchOrganisation(response.data.user.id, response.data.user?.isAdmin);
+          dispatch(login(response.data?.user));
+          fetchModules(response.data?.user.id, response.data.user?.isAdmin);
+          fetchOrganisation(response.data?.user.id, response.data.user?.isAdmin);
         }
       })
       .catch(err => {
