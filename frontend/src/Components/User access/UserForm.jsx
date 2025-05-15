@@ -72,6 +72,7 @@ const UserForm = () => {
     try{
 
         const response = await axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/createUser/${companyData[0].id}`,formData);
+        toast.success(response.data.message)
         navigate('/hrms/role/vw-users');
         
      }

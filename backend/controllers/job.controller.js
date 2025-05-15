@@ -163,27 +163,30 @@ module.exports.addJobPosted = async (req, res) => {
     const id = req.params.id;
     try {
       const { job_id } = req.body.formData;  
-      const check_unique = await Job.findOne({
-        where : {
-          socCode : req.body.formData.socCode,
-          organisation_id : id,
+      if(!job_id){
+        const check_unique = await Job.findOne({
+          where : {
+            socCode : req.body.formData.socCode,
+            organisation_id : id,
+          }
+        })
+        if(check_unique){
+          return res.status(500).json({message : 'Job SOC code must be unique'});
         }
-      })
-      if(check_unique){
-        return res.status(500).json({message : 'Job SOC code must be unique'});
-      }
-
-      const check_2 = await Job.findOne({
-        where : {
-          jobCode : req.body.formData.jobCode,
-          organisation_id : id,
-
+  
+        const check_2 = await Job.findOne({
+          where : {
+            jobCode : req.body.formData.jobCode,
+            organisation_id : id,
+  
+          }
+        })
+        if(check_2){
+          return res.status(500).json({message : 'Job code must be unique'});
         }
-      })
-      if(check_2){
-        return res.status(500).json({message : 'Job code must be unique'});
+  
       }
-
+    
       if(job_id){
         const job = await Job.findOne({ where: { id: job_id  } });
         await job.update({

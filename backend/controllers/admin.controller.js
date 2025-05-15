@@ -3039,12 +3039,15 @@ module.exports.createUser = async (req, res) => {
       where: {
         [Op.or]: [
           { email: req.body.email },
-          { employee_code: req.body.employee_code },
         ],
       },
     });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists." });
+      if(existingUser.employee_code !== req.body.employee_code){
+        return res.status(400).json({message : 'This email is associated to another employee on this platform.'})
+      }
+      await User.update({password : req.body.password},{where : {email : req.body.email,employee_code : req.body.employee_code}});
+      return res.status(200).json({ message: "User updated." });
     }
     const newUser = await User.create({
       ...req.body,
