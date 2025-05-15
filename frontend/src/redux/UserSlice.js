@@ -18,6 +18,7 @@ const userSlice = createSlice({
       state.user = null;
       state.isLoggedIn = false;
       state.justLoggedOut = true;
+      state.isAdmin= false
     },
   },
 });

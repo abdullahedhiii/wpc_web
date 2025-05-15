@@ -1,5 +1,6 @@
 const express = require('express');
 const {orgUpload} = require("../config/multerConfig");
+const {authenticateUser} = require('../middleware/Authenticate');
 
 const router = express.Router();
 const {submitCompanyForm, getOrganisations, getFormDetails,
@@ -63,7 +64,7 @@ const {submitCompanyForm, getOrganisations, getFormDetails,
   deleteUser
 } = require('../controllers/admin.controller');
 
-router.post('/submitCompanyForm',orgUpload.fields([
+router.post('/submitCompanyForm',authenticateUser,orgUpload.fields([
     { name: 'Company_Logo', maxCount: 1 },
     { name: 'KeyContact_proof_id', maxCount: 1 },
     { name: 'Authorizing_proof_id', maxCount: 1 },
@@ -79,95 +80,95 @@ router.post('/updateCompany/:id', orgUpload.fields([
   { name: 'Level1_proof_id', maxCount: 1 }
 ]), updateCompany);
 
-router.post('/uploadDocument/:id',orgUpload.single('document'),uploadDocuments);
+router.post('/uploadDocument/:id',authenticateUser,orgUpload.single('document'),uploadDocuments);
 
-router.post('/addDepartment/:id',addDepartment);
-router.get('/getDepartments/:id',getDepartments);
+router.post('/addDepartment/:id',authenticateUser,addDepartment);
+router.get('/getDepartments/:id',authenticateUser,getDepartments);
 
-router.post('/addDesignation/:id',addDesignation);
-router.get('/getDesignations/:id',getDesignations);
+router.post('/addDesignation/:id',authenticateUser,addDesignation);
+router.get('/getDesignations/:id',authenticateUser,getDesignations);
 
-router.post('/addEmployeeType/:id',addEmployeeType);
-router.get('/getEmployeeTypes/:id',getEmployeeTypes);
+router.post('/addEmployeeType/:id',authenticateUser,addEmployeeType);
+router.get('/getEmployeeTypes/:id',authenticateUser,getEmployeeTypes);
 
-router.post('/addPayGroup/:id',addPayGroup);
-router.get('/getPayGroups/:id',getPayGroups);
+router.post('/addPayGroup/:id',authenticateUser,addPayGroup);
+router.get('/getPayGroups/:id',authenticateUser,getPayGroups);
 
-router.get('/getAnnualPays/:id',getAnnualPays);
-router.post('/addAnnualPay/:id',addAnnualPay);
+router.get('/getAnnualPays/:id',authenticateUser,getAnnualPays);
+router.post('/addAnnualPay/:id',authenticateUser,addAnnualPay);
 
-router.get('/getCompanyBanks/:id',getCompanyBanks);
-router.post('/addCompanyBank/:id',addCompanyBank);
+router.get('/getCompanyBanks/:id',authenticateUser,getCompanyBanks);
+router.post('/addCompanyBank/:id',authenticateUser,addCompanyBank);
 
-router.get('/getBankCodes/:id',getBankSortCodes);
-router.post('/addBankSortCode/:id',addBankSortCode);
+router.get('/getBankCodes/:id',authenticateUser,getBankSortCodes);
+router.post('/addBankSortCode/:id',authenticateUser,addBankSortCode);
 
-router.get('/getTaxMasters/:id',getTaxMasters);
-router.post('/addTaxMaster/:id',addTaxMaster);
+router.get('/getTaxMasters/:id',authenticateUser,getTaxMasters);
+router.post('/addTaxMaster/:id',authenticateUser,addTaxMaster);
 
-router.get('/getPaymentTypes/:id',getPaymentTypes);
-router.post('/addPaymentType/:id',addPaymentType);
+router.get('/getPaymentTypes/:id',authenticateUser,getPaymentTypes);
+router.post('/addPaymentType/:id',authenticateUser,addPaymentType);
 
-router.get('/getHolidayTypes/:id',getHolidayTypes);
-router.post('/addHolidayType/:id',addHolidayType);
+router.get('/getHolidayTypes/:id',authenticateUser,getHolidayTypes);
+router.post('/addHolidayType/:id',authenticateUser,addHolidayType);
 
-router.get('/getHolidayList/:id',getHolidayList);
-router.post('/addHoliday/:id',addHoliday);
+router.get('/getHolidayList/:id',authenticateUser,getHolidayList);
+router.post('/addHoliday/:id',authenticateUser,addHoliday);
 
-router.get('/getVisitors/:id',getVisitors);
+router.get('/getVisitors/:id',authenticateUser,getVisitors);
 
 
-router.get('/getShifts/:id',getShifts);
-router.post('/addShift/:id',addShift);
+router.get('/getShifts/:id',authenticateUser,getShifts);
+router.post('/addShift/:id',authenticateUser,addShift);
 
-router.post('/setOffDays/:id',addOffDay);
+router.post('/setOffDays/:id',authenticateUser,addOffDay);
 
-router.post('/addLatePolicy/:id',addLatePolicy);
-router.get('/getLatePolicies/:id',getLatePolicies);
+router.post('/addLatePolicy/:id',authenticateUser,addLatePolicy);
+router.get('/getLatePolicies/:id',authenticateUser,getLatePolicies);
 
-router.get('/getEmployees/:id',getAllEmployees);
-router.get('/getNextEmployeeCode',get_next_id);
-router.get('/getEmployeePage/:id',getEmployeePage);
-router.get('/getEmployeeDetails/:id',getEmployeeData);
+router.get('/getEmployees/:id',authenticateUser,getAllEmployees);
+router.get('/getNextEmployeeCode',authenticateUser,get_next_id);
+router.get('/getEmployeePage/:id',authenticateUser,getEmployeePage);
+router.get('/getEmployeeDetails/:id',authenticateUser,getEmployeeData);
 
-router.get('/getCOCDetails/:id',getCOCData);
-router.get('/getCOCTable/:id',getCOCTable);
-router.get('/getSpecificCOC/:id',getCOCEmployee);
+router.get('/getCOCDetails/:id',authenticateUser,getCOCData);
+router.get('/getCOCTable/:id',authenticateUser,getCOCTable);
+router.get('/getSpecificCOC/:id',authenticateUser,getCOCEmployee);
 
-router.post('/addLeaveType/:id',addLeaveType)
-router.get('/getLeaveTypes/:id',getLeaveTypes)
+router.post('/addLeaveType/:id',authenticateUser,addLeaveType)
+router.get('/getLeaveTypes/:id',authenticateUser,getLeaveTypes)
 
-router.get('/getLeaveRules/:id',getLeaveRules);
-router.post('/addLeaveRule/:id',addLeaveRule);
+router.get('/getLeaveRules/:id',authenticateUser,getLeaveRules);
+router.post('/addLeaveRule/:id',authenticateUser,addLeaveRule);
 
-router.post(`/allocateLeave/:id`,allocateLeave);
-router.get('/getLeaveAllocation/:id',getLeaveAllocated);
-router.get('/getLeavesAllocated/:id',getLeavesAllocated);
+router.post(`/allocateLeave/:id`,authenticateUser,allocateLeave);
+router.get('/getLeaveAllocation/:id',authenticateUser,getLeaveAllocated);
+router.get('/getLeavesAllocated/:id',authenticateUser,getLeavesAllocated);
 
-router.get('/getOrganisationDocuments/:id',getOrgDocuments);
+router.get('/getOrganisationDocuments/:id',authenticateUser,getOrgDocuments);
 
-router.post('/createUser/:id',createUser);
-router.post('/grantRights',grantRights);
-router.get('/getUsers/:id',getUsers);
-router.get('/getUserData/:id',getUserData);
-router.get('/getUserRoles/:id',getUserRoles);
+router.post('/createUser/:id',authenticateUser,createUser);
+router.post('/grantRights',authenticateUser,grantRights);
+router.get('/getUsers/:id',authenticateUser,getUsers);
+router.get('/getUserData/:id',authenticateUser,getUserData);
+router.get('/getUserRoles/:id',authenticateUser,getUserRoles);
 
-router.get('/getJobsOpen/:id',getJobOpen);
-router.post('/addForm',addForm);
-router.get('/getForms/:id',getForms);
-router.get('/getFormOfJob/:id',getJobForm);
+router.get('/getJobsOpen/:id',authenticateUser,getJobOpen);
+router.post('/addForm',authenticateUser,addForm);
+router.get('/getForms/:id',authenticateUser,getForms);
+router.get('/getFormOfJob/:id',authenticateUser,getJobForm);
 
-router.post('/assignDuty',assignDuty);
-router.get('/getDutiesAssigned',getDuties);
+router.post('/assignDuty',authenticateUser,assignDuty);
+router.get('/getDutiesAssigned',authenticateUser,getDuties);
 
-router.get('/getTasks',getTasks);
-router.get('/getLeavesList/:id',getLeavesRequested);
-router.post('/updateLeaveRequest',updateLeaveRequest);
-router.get('/getLeaveReportEmployee',getLeaveReportEmployee);
-router.get('/getPastStaffData/:id',getPastStaffData);
+router.get('/getTasks',authenticateUser,getTasks);
+router.get('/getLeavesList/:id',authenticateUser,getLeavesRequested);
+router.post('/updateLeaveRequest',authenticateUser,updateLeaveRequest);
+router.get('/getLeaveReportEmployee',authenticateUser,getLeaveReportEmployee);
+router.get('/getPastStaffData/:id',authenticateUser,getPastStaffData);
 
-router.get('/processAttendance',processAttendance);
-router.get('/absentReport',processAbsentReport);
+router.get('/processAttendance',authenticateUser,processAttendance);
+router.get('/absentReport',authenticateUser,processAbsentReport);
 
-router.post('/deleteUser/:id',deleteUser);
+router.post('/deleteUser/:id',authenticateUser,deleteUser);
 module.exports = router;

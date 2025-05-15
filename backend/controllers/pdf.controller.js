@@ -198,14 +198,14 @@ require('dotenv').config();
       const staff = await Employee.findAll({
           where: { organisation_id: id },
           include: [
-              { model: PersonalDetail, as: 'personaldetail', attributes: ['fname', 'mname', 'lname', 'dob', 'nationality_no', 'Nationality', 'contact_1'] },
-              { model: JobDetail, as: 'jobdetails', attributes: ['start'] },
-              { model: VisaDetail, as: 'visadetail', attributes: ['expiry_date', 'review_date'] },
-              { model: PassportDetail, as: 'passportdetail', },
-              { model: EsusDetail, as: 'esusdetail', attributes: ['expiry'] },
-              { model: DBSDetail, as: 'dbsdetail', attributes: ['expiry'] },
-              { model: NationalDetail, as: 'nationaldetail',  }
-              ,{ model: ContactInfo, as: 'contact' }
+              { model: PersonalDetail, as: 'personaldetail', attributes: ['fname', 'mname', 'lname', 'dob', 'nationality_no', 'Nationality', 'contact_1'],required:false },
+              { model: JobDetail, as: 'jobdetails', attributes: ['start'],required:false  },
+              { model: VisaDetail, as: 'visadetail', attributes: ['expiry_date', 'review_date'],required:false  },
+              { model: PassportDetail, as: 'passportdetail',required:false  },
+              { model: EsusDetail, as: 'esusdetail', attributes: ['expiry'],required:false  },
+              { model: DBSDetail, as: 'dbsdetail', attributes: ['expiry'],required:false  },
+              { model: NationalDetail, as: 'nationaldetail',required:false   }
+              ,{ model: ContactInfo, as: 'contact',required:false }
 
           ]
       });

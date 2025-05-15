@@ -3032,36 +3032,55 @@ module.exports.getOrgDocuments = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 module.exports.createUser = async (req, res) => {
   try {
+    const { email, password, employee_code } = req.body;
+
     const existingUser = await User.findOne({
-      where: {
-        [Op.or]: [
-          { email: req.body.email },
-        ],
-      },
+      where: { email },
     });
+
     if (existingUser) {
-      if(existingUser.employee_code !== req.body.employee_code){
-        return res.status(400).json({message : 'This email is associated to another employee on this platform.'})
+      if (existingUser.employee_code !== employee_code) {
+        return res.status(400).json({
+          message: 'This email is associated to another employee on this platform.',
+        });
       }
-      await User.update({password : req.body.password},{where : {email : req.body.email,employee_code : req.body.employee_code}});
-      return res.status(200).json({ message: "User updated." });
+
+      const [updatedRows] = await User.update(
+        { password },
+        {
+          where: { email, employee_code },
+          individualHooks: true,
+        }
+      );
+
+      if (updatedRows === 0) {
+        return res.status(400).json({ message: 'User was not updated. Check input values.' });
+      }
+
+      return res.status(200).json({ message: 'User updated.' });
     }
+
     const newUser = await User.create({
       ...req.body,
       organisation_id: req.params.id,
     });
-    await Employee.update({has_account : true},{where : {employee_code : req.body.employee_code}});
-  
-    return res
-      .status(201)
-      .json({ message: "User registered successfully.", newUser });
+
+    await Employee.update(
+      { has_account: true },
+      { where: { employee_code } }
+    );
+
+    return res.status(201).json({
+      message: 'User registered successfully.',
+      newUser,
+    });
   } catch (error) {
+    console.error(error); 
     return res
       .status(500)
-      .json({ error: "An error occurred. Please try again later." });
+      .json({ error: 'An error occurred. Please try again later.' });
   }
 };
 

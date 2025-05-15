@@ -195,42 +195,55 @@ module.exports.getProfile = async(req,res) =>{
                 {
                     model : PersonalDetail,
                     as : 'personaldetail',
+                    required:false,
                 },
                 {
                     model : JobDetail,
                     as : 'jobdetails',
+                    required:false,
+
                 }, 
                 {
                     model : ServiceDetail,
                     as : 'servicedetail',
+                    required:false,
+
                 },
                 {
                     model : ContactInfo,
                     as : 'contact',
+                    required:false,
+
                 },
                 {
                     model : NationalDetail,
                     as : 'nationaldetail',
+                    required:false,
+
                 },
                 {
                     model : PassportDetail,
-                    as : 'passportdetail'
+                    as : 'passportdetail',
+                    required:false,
+
                 },
                 {
                     model : VisaDetail,
-                    as : 'visadetail'
+                    as : 'visadetail',                    required:false,
+
                 },
                 {
                     model : PayDetail,
-                    as : 'paydetail',
+                    as : 'paydetail',                    required:false,
+
                 },
             ]
         });
         
-        const userRoles = await UserRole.findAll({
-            where: { user_id },
-            attributes: ["sub_module_id", "feature_id", "right"],
-          });        
+        // const userRoles = await UserRole.findAll({
+        //     where: { user_id },
+        //     attributes: ["sub_module_id", "feature_id", "right"],
+        //   });        
           
           const formattedData = {
             profile_details : {

@@ -3,21 +3,22 @@ const { addJobListed, getJobsListed, addJobPosted, getJobsPosted,
     getJobDetails, getJobData, applyJob, getCandidates, getCandidate, updateStatus, getAllCandidates, deleteJobPosted } = require('../controllers/job.controller');
 const router = express.Router();
 const {CandidateUpload} = require('../config/multerConfig');
+const {authenticateUser} = require('../middleware/Authenticate');
 
-router.get('/getJobsListed/:id',getJobsListed);
-router.post('/addJobListed/:id',addJobListed);
-router.post('/addJobPosted/:id',addJobPosted);
-router.get('/getJobsPosted/:id',getJobsPosted);
-router.get('/getJobDetails/:id',getJobDetails);
-router.get('/getJobData/:id',getJobData);
+router.get('/getJobsListed/:id',authenticateUser,getJobsListed);
+router.post('/addJobListed/:id',authenticateUser,addJobListed);
+router.post('/addJobPosted/:id',authenticateUser,addJobPosted);
+router.get('/getJobsPosted/:id',authenticateUser,getJobsPosted);
+router.get('/getJobDetails/:id',authenticateUser,getJobDetails);
+router.get('/getJobData/:id',authenticateUser,getJobData);
 
 router.post('/applyJob/:id',CandidateUpload.fields([
     { name: 'resume', maxCount: 1 },
     { name: 'coverLetter', maxCount: 1 }]), applyJob);
 
-router.get('/getCandidates/:id',getCandidates)
-router.get('/getCandidate/:id',getCandidate)
-router.post('/updateCandidateStatus/:id',updateStatus);
-router.get('/getAllCandidates/:id',getAllCandidates);
-router.post('/deleteJobPosted/:id',deleteJobPosted)
+router.get('/getCandidates/:id',authenticateUser,getCandidates)
+router.get('/getCandidate/:id',authenticateUser,getCandidate)
+router.post('/updateCandidateStatus/:id',authenticateUser,updateStatus);
+router.get('/getAllCandidates/:id',authenticateUser,getAllCandidates);
+router.post('/deleteJobPosted/:id',authenticateUser,deleteJobPosted)
 module.exports = router;

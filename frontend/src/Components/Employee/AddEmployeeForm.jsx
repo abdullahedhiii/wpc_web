@@ -639,12 +639,12 @@ const EmployeeForm = () => {
           required: false,
           options: ["Male", "Female"],
         },
-        {
-          label: "NI No.",
-          value: "personal_details.nationality_no",
-          type: "text",
-          required: false,
-        },
+        // {
+        //   label: "NI No.",
+        //   value: "personal_details.nationality_no",
+        //   type: "text",
+        //   required: false,
+        // },
         {
           label: "Date of Birth",
           value: "personal_details.dob",
