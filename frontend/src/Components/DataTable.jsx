@@ -225,7 +225,7 @@ return (
                     navigate(`/hrms/${selectedFeature.plus_icon_route}`)
                   } 
                 }}
-                disabled={user.isAdmin ? false : !selectedFeature.can_add}
+                disabled={user?.isAdmin ? false : !selectedFeature.can_add}
               >
                 <i className="la la-plus text-xl" />
               </button>
@@ -351,7 +351,7 @@ return (
                                     navigate(`/hrms/${selectedFeature.action_route}/${row["id"]}`)
                                   }
                                 }}
-                                disabled={user.isAdmin ? false : !selectedFeature.can_edit}
+                                disabled={user?.isAdmin ? false : !selectedFeature.can_edit}
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-yellow-100 transition-all duration-200"
                                 title="Edit"
                               >
@@ -362,7 +362,7 @@ return (
                             {field === "Delete" && (
                               <button
                                 onClick={() => handleDelete(row["delete_route"],row["id"])}
-                                disabled={user.isAdmin ? false : !selectedFeature.can_edit || isDeleting}
+                                disabled={user?.isAdmin ? false : !selectedFeature.can_edit || isDeleting}
 
                                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
                                 title="Delete"

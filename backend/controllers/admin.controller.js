@@ -1928,9 +1928,9 @@ module.exports.getEmployeePage = async (req, res) => {
         ]
           .filter(Boolean)
           .join(" "),
-        Picture : employee.servicedetail.profile_pic , 
+        Picture : employee.servicedetail?.profile_pic , 
         Action: [
-          { label: "Edit", route: `addEmployee/${employee.employee_code}` },
+          { label: "Edit", route: `addEmployee/${employee?.employee_code}` },
         ],
       };
     });

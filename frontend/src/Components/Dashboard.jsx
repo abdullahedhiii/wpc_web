@@ -63,14 +63,14 @@ const Dashboard = () => {
           {modules.map((module) => 
           module.name !== 'Settings' && module.name!== 'Holiday' && module.name!== 'Rota' && module.name !== 'Tasks'
           &&
-          (module.can_access || user.isAdmin ) ? (
+          (module.can_access || user?.isAdmin ) ? (
             <button
               key={module.id}
               onClick={() => handleModuleSelect(module)}
-              disabled={user.isAdmin ? false : !module.can_access}
+              disabled={user?.isAdmin ? false : !module.can_access}
               className={`group relative bg-white rounded-2xl p-6 transition-all duration-300 
                 ${
-                  user.isAdmin || module.can_access
+                  user?.isAdmin || module.can_access
                     ? "hover:shadow-xl hover:-translate-y-2 hover:bg-yellow-50"
                     : "opacity-60 "
                 }
@@ -93,12 +93,12 @@ const Dashboard = () => {
 
                 <h3
                   className={`text-sm font-medium
-                  ${user.isAdmin || module.can_access ? "text-gray-700" : "text-gray-400"}`}
+                  ${user?.isAdmin || module.can_access ? "text-gray-700" : "text-gray-400"}`}
                 >
                   {module.name}
                 </h3>
 
-                {!(user.isAdmin || module.can_access) && (
+                {!(user?.isAdmin || module.can_access) && (
                   <span className="absolute top-2 right-2 text-gray-400 text-lg">
                     <i className="las la-lock"></i>
                   </span>

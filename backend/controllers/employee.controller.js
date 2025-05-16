@@ -247,42 +247,42 @@ module.exports.getProfile = async(req,res) =>{
           
           const formattedData = {
             profile_details : {
-                name :[ employee.personaldetail.fname, employee.personaldetail.mname, employee.personaldetail.lname].filter(Boolean).join(' '),
-                department : employee.servicedetail.department,
-                designation : employee.servicedetail.designation,
-                phone : employee.personaldetail.contact_1,
-                dob : employee.personaldetail.dob,
-                employee_code :employee.personaldetail.employee_code
+                name :[ employee.personaldetail?.fname, employee.personaldetail?.mname, employee.personaldetail?.lname].filter(Boolean).join(' '),
+                department : employee.servicedetail?.department,
+                designation : employee.servicedetail?.designation,
+                phone : employee.personaldetail?.contact_1,
+                dob : employee.personaldetail?.dob,
+                employee_code :employee.personaldetail?.employee_code
             },
             service_details : {
-                type : employee.servicedetail.type,
-                start : employee.servicedetail.start
+                type : employee.servicedetail?.type,
+                start : employee.servicedetail?.start
             },
             address_details : {
                 line1 :employee.contact?.line1,
-                city_county : employee.contact.city,
+                city_county : employee.contact?.city,
                 post_code :  employee.contact?.post_code,
                 country :employee.contact?.country
               
             },
             bank_details : {
-                bank_name: employee.paydetail.bank_name,
-                branch_name:  employee.paydetail.branch_name,
-                account_no:  employee.paydetail.account_no,
-                sort_code:  employee.paydetail.sort_code,
+                bank_name: employee.paydetail?.bank_name,
+                branch_name:  employee.paydetail?.branch_name,
+                account_no:  employee.paydetail?.account_no,
+                sort_code:  employee.paydetail?.sort_code,
             },
             immigration_details :{
-                 national_id : employee.nationaldetail.national_id,
-                 nationality : employee.nationaldetail.nationality,
-                 passport_no : employee.passportdetail.passport_no,
-                 passport_issue : employee.passportdetail.issue_date,
-                 passport_expiry : employee.passportdetail.expiry_date,
-                 passport_by : employee.passportdetail.issued_by,
-                 passport_review : employee.passportdetail.review_date,
-                 visa_issue : employee.visadetail.issue_date,
-                 visa_expiry : employee.visadetail.expiry_date,
-                 visa_by : employee.visadetail.issued_by,
-                 visa_review : employee.visadetail.review_date,
+                 national_id : employee.nationaldetail?.national_id,
+                 nationality : employee.nationaldetail?.nationality,
+                 passport_no : employee.passportdetail?.passport_no,
+                 passport_issue : employee.passportdetail?.issue_date,
+                 passport_expiry : employee.passportdetail?.expiry_date,
+                 passport_by : employee.passportdetail?.issued_by,
+                 passport_review : employee.passportdetail?.review_date,
+                 visa_issue : employee.visadetail?.issue_date,
+                 visa_expiry : employee.visadetail?.expiry_date,
+                 visa_by : employee.visadetail?.issued_by,
+                 visa_review : employee.visadetail?.review_date,
 
 
             },
