@@ -78,7 +78,7 @@ if (err instanceof Sequelize.UniqueConstraintError) {
     message: "Personal Details Error : Employee details like nationality number or contact numbers must be unique!" 
   });
 }
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "Personal Detai: Internal server error", error: err });
   }
 };
 
@@ -132,7 +132,7 @@ console.log("employment type added");
 
   } catch (err) {
     console.log('error in service detail',err); 
-    return res.status(500).json({ message: "Internal server error", error: err });
+    return res.status(500).json({ message: "service Detai:Internal server error", error: err });
   }
 };
 

@@ -82,13 +82,13 @@ router.post('/updateCompany/:id', orgUpload.fields([
 
 router.post('/uploadDocument/:id',authenticateUser,orgUpload.single('document'),uploadDocuments);
 
-router.post('/addDepartment/:id',authenticateUser,addDepartment);
+router.post('/addDepartment/:id',addDepartment);
 router.get('/getDepartments/:id',authenticateUser,getDepartments);
 
-router.post('/addDesignation/:id',authenticateUser,addDesignation);
+router.post('/addDesignation/:id',addDesignation);
 router.get('/getDesignations/:id',authenticateUser,getDesignations);
 
-router.post('/addEmployeeType/:id',authenticateUser,addEmployeeType);
+router.post('/addEmployeeType/:id',addEmployeeType);
 router.get('/getEmployeeTypes/:id',authenticateUser,getEmployeeTypes);
 
 router.post('/addPayGroup/:id',authenticateUser,addPayGroup);

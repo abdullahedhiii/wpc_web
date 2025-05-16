@@ -32,7 +32,7 @@ const SponsorList = () => {
   })
   const [currentPage, setCurrentPage] = useState(1)
   const rowsPerPage = 20
-
+  
   const fetchSponsors = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/getSponsors`)

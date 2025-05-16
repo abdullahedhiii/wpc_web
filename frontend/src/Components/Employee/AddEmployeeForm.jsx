@@ -351,6 +351,7 @@ const EmployeeForm = () => {
   },[]);
   useEffect(() => {
     const fetch_next_id = async () => {
+
       try {
         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getNextEmployeeCode`);
         setCode(response.data);
@@ -1809,14 +1810,16 @@ e.preventDefault();
         <Link to="/hrms/employeeDashboard" className="hover:underline">Home</Link>
         <span className="mx-2">/</span>
         <Link to="/hrms/employees" className="hover:underline">Employee</Link>
-        <span className="mx-2 text-gray-400">/ Add New Employee</span>
+        {!id ? <span className="mx-2 text-gray-400">/ Add New Employee</span>
+        :<span className="mx-2 text-gray-400"> / Update Employee/ {id}</span> }
       </p>
       <div className="mt-4 max-w-4xl mx-auto bg-white shadow-xl rounded-2xl border-t-8 border-yellow-600 p-6 md:p-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 flex items-center justify-center bg-yellow-100 rounded-full">
             <i className="fas fa-user text-2xl text-yellow-900"></i>
           </div>
-          <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Add New Employee</h1>
+          {!id ? <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Add New Employee</h1>
+          :  <h1 className="text-yellow-900 text-2xl font-bold tracking-tight">Update Employee Data</h1>}
         </div>
         <hr className="mb-6 border-t-2 border-yellow-100" />
   
