@@ -360,8 +360,10 @@ const EmployeeForm = () => {
       }
     };
     if (!id && employee_code === "") {
-    
-    fetch_next_id();}
+    fetch_next_id();
+    setLoading(false)
+
+  }
   }, []);
 
   useEffect(() => {
