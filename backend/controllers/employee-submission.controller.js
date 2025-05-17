@@ -35,7 +35,7 @@ module.exports.addPersonalDetails = async (req, res) => {
   try {
     console.log('pesonal req.body',req.body);
     const [organisationId, employeeCode] = req.params.id.split(".");
-
+    
     const [employee, created] = await Employee.findOrCreate({
       where: { organisation_id: parseInt(organisationId), employee_code: employeeCode },
       defaults: { organisation_id: parseInt(organisationId) },
@@ -75,7 +75,7 @@ module.exports.addPersonalDetails = async (req, res) => {
 if (err instanceof Sequelize.UniqueConstraintError) {
 
   return res.status(400).json({ 
-    message: "Personal Details Error : Employee details like nationality number or contact numbers must be unique!" 
+    message: "Personal Details Error : Employee details like email,nationality number or contact numbers must be unique!" 
   });
 }
     return res.status(500).json({ message: "Personal Detai: Internal server error", error: err });
@@ -523,11 +523,13 @@ module.exports.addPassport = async (req, res) => {
     const fileUrl = req.file
       ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
       : undefined;
-
+    
+    
     // Check if a PassportDetail record already exists
     let document = await PassportDetail.findOne({
       where: { employee_code: employeeCode },
     });
+  
 
     if (document) {
       await document.update({

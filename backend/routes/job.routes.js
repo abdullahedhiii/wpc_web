@@ -10,7 +10,7 @@ router.post('/addJobListed/:id',authenticateUser,addJobListed);
 router.post('/addJobPosted/:id',authenticateUser,addJobPosted);
 router.get('/getJobsPosted/:id',authenticateUser,getJobsPosted);
 router.get('/getJobDetails/:id',authenticateUser,getJobDetails);
-router.get('/getJobData/:id',authenticateUser,getJobData);
+router.get('/getJobData/:id',getJobData);
 
 router.post('/applyJob/:id',CandidateUpload.fields([
     { name: 'resume', maxCount: 1 },

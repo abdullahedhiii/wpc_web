@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         dob: DataTypes.DATEONLY,
         nationality_no: {type : DataTypes.STRING,unique : true,},
         Nationality: DataTypes.STRING,
-        email:{type : DataTypes.STRING,allowNull : false},
+        email:{type : DataTypes.STRING,allowNull : false,unique:true},
         contact_1:{type : DataTypes.STRING,allowNull : false,unique : true,},
         contact_2: DataTypes.STRING,
       },

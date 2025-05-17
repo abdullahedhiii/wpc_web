@@ -210,27 +210,31 @@ require('dotenv').config();
           ]
       });
       const formattedData = staff.map((emp,index) => ({
-        "Staff Code" : emp.employee_code || '=',
-        "Staff Name" : [emp.personaldetail.fname,emp.personaldetail.mname,emp.personaldetail.lname].filter(Boolean).join(' '), 
-        "Address" : [emp.contact.line1,emp.contact.line2,emp.contact.line3,emp.contact.city,emp.contact.country,emp.contact.post_code].filter(Boolean).join(' '),
-        "DOB": emp.personaldetail.dob, 
-        "Job Start Date":emp.jobdetails.start, 
-        "Telephone": emp.personaldetail.contact_1, 
-        "Nationality" : emp.personaldetail.Nationality || emp.nationaldetail.nationality, 
-        "NI Number" : emp.nationaldetail.national_id, 
-        "Visa Expiry" : emp.visadetail.expiry ? `Expires on ${emp.visadetail.expiry} ` : null,
-        "Visa Review" :  emp.visadetail.review_date ? `Review on ${emp.visadetail.review_date} ` : null,
-        "Passport No": emp.passportdetail.passport_no, 
-        "Passport Expiry Date":emp.passportdetail.expiry_date ? `Expires on ${emp.passportdetail.expiry_date}` : '', 
-        "EUSS Details" : emp.esusdetail.expiry  ? `Expires on ${emp.esusdetail.expiry}` : '',
-        "DBS Details":emp.dbsdetail.expiry  ? `Expires on ${emp.dbsdetail.expiry}` : '', 
-
-      }));
+        "Staff Code": emp.employee_code || '',
+        "Staff Name": emp.personaldetail
+          ? [emp.personaldetail.fname, emp.personaldetail.mname, emp.personaldetail.lname].filter(Boolean).join(' ')
+          : '',
+        "Address": emp.contact
+          ? [emp.contact.line1, emp.contact.line2, emp.contact.line3, emp.contact.city, emp.contact.country, emp.contact.post_code].filter(Boolean).join(' ')
+          : '',
+        "DOB": emp.personaldetail?.dob || '',
+        "Job Start Date": emp.jobdetails?.start || '',
+        "Telephone": emp.personaldetail?.contact_1 || '',
+        "Nationality": emp.personaldetail?.Nationality || emp.nationaldetail?.nationality || '',
+        "NI Number": emp.nationaldetail?.national_id || '',
+        "Visa Expiry": emp.visadetail?.expiry ? `Expires on ${emp.visadetail.expiry}` : '',
+        "Visa Review": emp.visadetail?.review_date ? `Review on ${emp.visadetail.review_date}` : '',
+        "Passport No": emp.passportdetail?.passport_no || '',
+        "Passport Expiry Date": emp.passportdetail?.expiry_date ? `Expires on ${emp.passportdetail.expiry_date}` : '',
+        "EUSS Details": emp.esusdetail?.expiry ? `Expires on ${emp.esusdetail.expiry}` : '',
+        "DBS Details": emp.dbsdetail?.expiry ? `Expires on ${emp.dbsdetail.expiry}` : ''
+      }
+      ));
       res.status(200).json(formattedData);
     }
     catch(err){
       
-      res.status(500).json({message : 'Internal server error'});
+      res.status(500).json({message : 'Staff Report : Internal server error',err});
     }
   }
 

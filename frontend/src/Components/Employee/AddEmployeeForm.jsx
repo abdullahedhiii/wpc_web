@@ -340,13 +340,13 @@ const EmployeeForm = () => {
   const location = useLocation();
 
   useEffect(() => {
-    fetchAnnualPays()
-    fetchBanks()
+    // fetchAnnualPays()
+    // fetchBanks()
     fetchDepartments()
     fetchDesignations()
-    fetchPayGroups()
-    fetchPaymentTypes()
-    fetchTaxMasters()
+    // fetchPayGroups()
+    // fetchPaymentTypes()
+    // fetchTaxMasters()
     fetchTypes();
   },[]);
   useEffect(() => {

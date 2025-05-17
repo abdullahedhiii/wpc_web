@@ -51,27 +51,27 @@ const TradingHour = require('../models/TradingHour')(sequelize,DataTypes);
 const Department = require('../models/Department')(sequelize,DataTypes);
 const Designation = require('../models/Designation')(sequelize,DataTypes);
 const EmploymentType = require('../models/EmploymentType')(sequelize,DataTypes);
-const PayGroup = require('../models/PayGroup')(sequelize,DataTypes);
-const AnnualPay = require('../models/AnnualPay')(sequelize,DataTypes);
-const Bank = require('../models/Bank')(sequelize,DataTypes);
-const BankSortCode = require('../models/BankSortCode')(sequelize,DataTypes);
-const TaxMaster = require('../models/TaxMaster')(sequelize,DataTypes);
-const PaymentType = require('../models/PaymentType')(sequelize,DataTypes);
-const HolidayType = require('../models/HolidayType')(sequelize,DataTypes);
-const Holiday = require('../models/Holiday')(sequelize,DataTypes);
-const Visitor = require('../models/Visitor')(sequelize,DataTypes);
+// const PayGroup = require('../models/PayGroup')(sequelize,DataTypes);
+// const AnnualPay = require('../models/AnnualPay')(sequelize,DataTypes);
+// const Bank = require('../models/Bank')(sequelize,DataTypes);
+// const BankSortCode = require('../models/BankSortCode')(sequelize,DataTypes);
+// const TaxMaster = require('../models/TaxMaster')(sequelize,DataTypes);
+// const PaymentType = require('../models/PaymentType')(sequelize,DataTypes);
+// const HolidayType = require('../models/HolidayType')(sequelize,DataTypes);
+// const Holiday = require('../models/Holiday')(sequelize,DataTypes);
+// const Visitor = require('../models/Visitor')(sequelize,DataTypes);
 const Shift = require('../models/Shift')(sequelize,DataTypes);
-const LatePolicy = require('../models/LatePolicy')(sequelize,DataTypes);
-const ShiftOffDay = require('../models/ShiftOffDay')(sequelize,DataTypes);
+// const LatePolicy = require('../models/LatePolicy')(sequelize,DataTypes);
+// const ShiftOffDay = require('../models/ShiftOffDay')(sequelize,DataTypes);
 const OrgDocument = require('../models/OrgDocument')(sequelize,DataTypes);
 const Job = require('../models/Job')(sequelize,DataTypes);
-const LeaveType = require('../models/LeaveType')(sequelize,DataTypes);
-const LeaveRule = require('../models/LeaveRule')(sequelize,DataTypes);
+// const LeaveType = require('../models/LeaveType')(sequelize,DataTypes);
+// const LeaveRule = require('../models/LeaveRule')(sequelize,DataTypes);
 const LeaveAllocation = require('../models/LeaveAllocation')(sequelize,DataTypes);
 const Candidate = require('../models/Candidate')(sequelize,DataTypes);
 const User = require('../models/User')(sequelize,DataTypes);
 const UserRole = require('../models/UserRoles')(sequelize,DataTypes);
-const InterviewForm = require('../models/InterviewForm')(sequelize,DataTypes);
+// const InterviewForm = require('../models/InterviewForm')(sequelize,DataTypes);
 
 const Sponsor = require('../models/Sponsor')(sequelize,DataTypes);
 const Employee = require('../models/Employee')(sequelize,DataTypes);
@@ -95,8 +95,8 @@ const PayDetail= require('../models/PayDetail')(sequelize,DataTypes);
 const PayStructure= require('../models/PayStructure')(sequelize,DataTypes);
 const TrainingDetail = require('../models/TrainingData')(sequelize,DataTypes);
 const Attendance = require('../models/Attendance')(sequelize,DataTypes);
-const Duty = require('../models/Duty')(sequelize,DataTypes);
-const WorkUpdate = require('../models/WorkUpdate')(sequelize,DataTypes);
+// const Duty = require('../models/Duty')(sequelize,DataTypes);
+// const WorkUpdate = require('../models/WorkUpdate')(sequelize,DataTypes);
 const LeaveRequest = require('../models/LeaveRequests')(sequelize,DataTypes);
 
 Module.hasMany(Dashboard, { as: 'dashboard', foreignKey: 'module_id' });
@@ -121,17 +121,17 @@ SubModule.hasMany(UserRole, { as: "roles", foreignKey: "sub_module_id" });
 UserRole.belongsTo(SubModule, { as: "submodule", foreignKey: "sub_module_id" });
 
 
-Organisation.hasMany(LeaveType, { as: 'leavetypes', foreignKey: 'organisation_id' });
-LeaveType.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+// Organisation.hasMany(LeaveType, { as: 'leavetypes', foreignKey: 'organisation_id' });
+// LeaveType.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
 
-Organisation.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'organisation_id' });
-LeaveRule.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
+// Organisation.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'organisation_id' });
+// LeaveRule.belongsTo(Organisation, { as: 'organisation', foreignKey: 'organisation_id' });
 
-LeaveType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
-LeaveRule.belongsTo(LeaveType, { as: 'leavetype', foreignKey: 'leave_type_id' });
+// LeaveType.hasMany(LeaveRule,{as : 'leaverules',foreignKey : 'id'})
+// LeaveRule.belongsTo(LeaveType, { as: 'leavetype', foreignKey: 'leave_type_id' });
 
-EmploymentType.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'id' });
-LeaveRule.belongsTo(EmploymentType, { as: 'employeetypes', foreignKey: 'id' });
+// EmploymentType.hasMany(LeaveRule, { as: 'leaverules', foreignKey: 'id' });
+// LeaveRule.belongsTo(EmploymentType, { as: 'employeetypes', foreignKey: 'id' });
 
 
 Organisation.hasMany(Department, {foreignKey: "organisation_id",as: "departments",});
@@ -146,45 +146,45 @@ Department.hasMany(Designation, { as: "designations", foreignKey: "department_id
 Organisation.hasMany(EmploymentType, {foreignKey: "organisation_id",as: "employmentTypes",});
 EmploymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-Organisation.hasMany(PayGroup, {foreignKey: "organisation_id",as: "paygroups",});
-PayGroup.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(PayGroup, {foreignKey: "organisation_id",as: "paygroups",});
+// PayGroup.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-PayGroup.hasMany(AnnualPay, {foreignKey: "paygroup_id",as: "annualpays",});
-AnnualPay.belongsTo(PayGroup, {foreignKey: "paygroup_id",as: "paygroups",});
+// PayGroup.hasMany(AnnualPay, {foreignKey: "paygroup_id",as: "annualpays",});
+// AnnualPay.belongsTo(PayGroup, {foreignKey: "paygroup_id",as: "paygroups",});
 
-Organisation.hasMany(Bank, {foreignKey: "organisation_id",as: "banks",});
-Bank.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(Bank, {foreignKey: "organisation_id",as: "banks",});
+// Bank.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-Bank.hasMany(BankSortCode, {foreignKey: "bank_id",as: "banksortcodes",});
-BankSortCode.belongsTo(Bank, {foreignKey: "bank_id",as: "bank",});
+// Bank.hasMany(BankSortCode, {foreignKey: "bank_id",as: "banksortcodes",});
+// BankSortCode.belongsTo(Bank, {foreignKey: "bank_id",as: "bank",});
 
-Organisation.hasMany(TaxMaster, {foreignKey: "organisation_id",as: "taxmasters",});
-TaxMaster.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(TaxMaster, {foreignKey: "organisation_id",as: "taxmasters",});
+// TaxMaster.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-Organisation.hasMany(PaymentType, {foreignKey: "organisation_id",as: "paymenttypes",});
-PaymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(PaymentType, {foreignKey: "organisation_id",as: "paymenttypes",});
+// PaymentType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-Organisation.hasMany(HolidayType, {foreignKey: "organisation_id",as: "holidaytypes",});
-HolidayType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(HolidayType, {foreignKey: "organisation_id",as: "holidaytypes",});
+// HolidayType.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-Organisation.hasMany(Holiday, {foreignKey: "organisation_id",as: "holidays",});
-Holiday.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(Holiday, {foreignKey: "organisation_id",as: "holidays",});
+// Holiday.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 
-Organisation.hasMany(Visitor, {foreignKey: "organisation_id",as: "visitors",});
-Visitor.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
+// Organisation.hasMany(Visitor, {foreignKey: "organisation_id",as: "visitors",});
+// Visitor.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisation",});
 Shift.belongsTo(Department, { as: "department", foreignKey: "department_id" });
 Shift.belongsTo(Designation, { as: "designation", foreignKey: "designation_id" });
 
-Shift.hasOne(LatePolicy,{foreignKey:"shift_code",as : "latepolicy"});
+// Shift.hasOne(LatePolicy,{foreignKey:"shift_code",as : "latepolicy"});
 
 // Employee.hasMany(Duty,{as : 'employee',foreignKey : 'employee_code'});
 // Duty.belongsTo(Employee,{as : 'employee',foreignKey : 'employee_code'});
 
 
-PersonalDetail.hasMany(Duty,{as : 'personaldetails',foreignKey : 'employee_code'});
-Duty.belongsTo(PersonalDetail,{as : 'personaldetails',foreignKey : 'employee_code'});
-ServiceDetail.hasMany(Duty,{as : 'servicedetails',foreignKey : 'employee_code'});
-Duty.belongsTo(ServiceDetail,{as : 'servicedetails',foreignKey : 'employee_code'});
+// PersonalDetail.hasMany(Duty,{as : 'personaldetails',foreignKey : 'employee_code'});
+// Duty.belongsTo(PersonalDetail,{as : 'personaldetails',foreignKey : 'employee_code'});
+// ServiceDetail.hasMany(Duty,{as : 'servicedetails',foreignKey : 'employee_code'});
+// Duty.belongsTo(ServiceDetail,{as : 'servicedetails',foreignKey : 'employee_code'});
 
 PersonalDetail.belongsTo(ServiceDetail,{as : 'personaldetailss',foreignKey : 'employee_code'});
 ServiceDetail.hasMany(PersonalDetail,{as : 'personaldetailss',foreignKey : 'employee_code'});
@@ -198,8 +198,8 @@ Employee.belongsTo(Organisation, {foreignKey: "organisation_id",as: "organisatio
 PersonalDetail.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
 Employee.hasOne(PersonalDetail, {foreignKey: "employee_code",as: "personaldetail",});
 
-WorkUpdate.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
-Employee.hasMany(WorkUpdate, {foreignKey: "employee_code",as: "work_updates",});
+// WorkUpdate.belongsTo(Employee,{foreignKey : "employee_code",as:"employee"});
+// Employee.hasMany(WorkUpdate, {foreignKey: "employee_code",as: "work_updates",});
 
 LeaveRequest.belongsTo(Employee,{foreignKey : "employeeCode",as:"leave_requests"});
 Employee.hasMany(LeaveRequest, {foreignKey: "employeeCode",as: "leave_requests",});
@@ -265,16 +265,15 @@ Attendance.belongsTo(PersonalDetail, { foreignKey: "employee_code", as: "employe
 Job.hasMany(Candidate,{as : 'candidates',foreignKey : 'job_id'});
 Candidate.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
 
-Job.hasOne(InterviewForm,{as : 'form',foreignKey : 'job_id'});
-InterviewForm.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
+// Job.hasOne(InterviewForm,{as : 'form',foreignKey : 'job_id'});
+// InterviewForm.belongsTo(Job,{as : 'job',foreignKey:'job_id'});
 
 module.exports = {sequelize,Sponsor, Admin,Organisation, Module,
                    Dashboard, SubModule, Feature,TradingHour,
                    Department,Designation,EmploymentType,
-                   PayGroup,AnnualPay,Bank,BankSortCode,
-                   TaxMaster,PaymentType,HolidayType,Holiday,Visitor,Shift,LatePolicy,ShiftOffDay,OrgDocument, Job,Attendance
-                   ,LeaveType,LeaveRule,LeaveAllocation,Candidate,User,UserRole,Duty,WorkUpdate,LeaveRequest,
-                   Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,InterviewForm,
+                   Shift,OrgDocument, Job,Attendance
+                   ,LeaveAllocation,Candidate,User,UserRole,LeaveRequest,
+                   Employee,PersonalDetail,EducationDetail,ServiceDetail,JobDetail,
                    Certification,ContactInfo,EmployeeOtherDetail,EmployeeOtherDocument,KeyResponsibility,KinDetail,
                    NationalDetail,PassportDetail,PayDetail,PayStructure,TrainingDetail,VisaDetail,EsusDetail,DBSDetail,COCOtherDetail
                   };

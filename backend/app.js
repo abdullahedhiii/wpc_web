@@ -53,7 +53,7 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-sequelize.sync({ force: false }).then(() => {
+sequelize.sync({ alter:true }).then(() => {
   app.listen(process.env.PORT, () => {
     console.log('Server is running');
     // runSponsorUpdate().catch(error => {
