@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         lname: {type : DataTypes.STRING,allowNull : false},
         Gender: DataTypes.STRING,
         dob: DataTypes.DATEONLY,
-        nationality_no: {type : DataTypes.STRING,unique : true,},
+        // nationality_no: {type : DataTypes.STRING,unique : true,},
         Nationality: DataTypes.STRING,
         email:{type : DataTypes.STRING,allowNull : false,unique:true},
         contact_1:{type : DataTypes.STRING,allowNull : false,unique : true,},

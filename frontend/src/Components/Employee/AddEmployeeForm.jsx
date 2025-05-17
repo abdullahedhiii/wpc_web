@@ -1314,23 +1314,23 @@ const EmployeeForm = () => {
       if (!email) errors = errors +  " Email,";
       if (!contact_1) errors = errors+  " and Primary contact(1) is required";
       if (errors.length > 0) {
-        alert(errors);
+        toast.error(errors);
        return false;
 
       }
       if(fname.length < 3 || lname.length < 3){
-        alert('Please enter valid names')
+        toast.error('Please enter valid names')
         return false
       }
       if(contact_1.length < 10 ){
-        alert('Please enter a valid phone number')
+        toast.error('Please enter a valid phone number')
         return false
 
       }
       const {department,designation,start,end_if,type,joining,confirmation,work_in,work_out,profile_pic} = formData.service_details;
       const {holiday_leave,medical_leave,maternity_leave} = formData.leave_allocation;
       if(holiday_leave  === ''|| medical_leave  === '' || department === "" || designation === "" || type === "" || work_in === "" || work_out === "" ){
-        alert('Please fill out the required fields (*) !');
+        toast.error('Please fill out the required fields (*) !');
         return false
       }
       const dateJoining = joining ? new Date(joining) : null;
@@ -1342,28 +1342,28 @@ const EmployeeForm = () => {
 
       if (startDate && confirmDate) {
         if (startDate < confirmDate) {
-          alert("Please enter a valid contract start date and confirmation date");
+          toast.error("Please enter a valid contract start date and confirmation date");
           return false;
         }
       }
       
       if (confirmDate && dateJoining) {
         if (confirmDate < dateJoining) {
-          alert("Please enter a valid confirmation date and joining date");
+          toast.error("Please enter a valid confirmation date and joining date");
           return false;
         }
       }
       
         if(outTime < inTime){
-          alert('Enter valid Shift timings');
+          toast.error('Enter valid Shift timings');
           return false;
         }
       if (!startDate && endDate) {
-        alert("You must provide the start date of the contract");
+        toast.error("You must provide the start date of the contract");
         return false;
       } else if (startDate && endDate) {
         if (endDate < startDate) {
-          alert("Please enter valid contract dates");
+          toast.error("Please enter valid contract dates");
           return false;
         }
       }
@@ -1374,7 +1374,7 @@ const EmployeeForm = () => {
       const c_start = new Date(start);
       const c_end = new Date(end);
       if(c_start > c_end){
-        alert('Enter valid job dates');
+        toast.error('Enter valid job dates');
         return;
       }
     }
@@ -1385,12 +1385,12 @@ const EmployeeForm = () => {
         const endDate = new Date(detail.end);
         if (isNaN(startDate) && isNaN(endDate)) continue;    
         if (isNaN(startDate) || isNaN(endDate)) {
-            alert("Please enter valid dates.");
+          toast.error("Please enter valid dates.");
             return false;
         }
     
         if (endDate < startDate) {
-            alert("Please enter valid training info. Start date cannot be after end date.");
+          toast.error("Please enter valid training info. Start date cannot be after end date.");
             return false;
         }
     }  
@@ -1400,7 +1400,7 @@ const EmployeeForm = () => {
       const startDate = new Date(start);
       const endDate = new Date(end);
       if(endDate < startDate){
-        alert('Enter valid Certification start and end dates');
+        toast.error('Enter valid Certification start and end dates');
         return false;
       }
     }
@@ -1413,7 +1413,7 @@ const EmployeeForm = () => {
     let z = review_date ? new Date(review_date) : null;
     
     if ((x && y && y < x) || (x && z && z < x)) {
-      alert('Enter valid passport issue, expiry, and review dates!');
+      toast.error('Enter valid passport issue, expiry, and review dates!');
       return false;
     }
     
@@ -1424,7 +1424,7 @@ const EmployeeForm = () => {
     z = review_date ? new Date(review_date) : null;
     
     if ((x && y && y < x) || (x && z && z < x)) {
-      alert('Enter valid visa issue, expiry, and review dates!');
+      toast.error('Enter valid visa issue, expiry, and review dates!');
       return false;
     }
     
@@ -1435,7 +1435,7 @@ const EmployeeForm = () => {
     z = review_date ? new Date(review_date) : null;
     
     if ((x && y && y < x) || (x && z && z < x)) {
-      alert('Enter valid ESUS issue, expiry, and review dates!');
+      toast.error('Enter valid ESUS issue, expiry, and review dates!');
       return false;
     }
     
@@ -1446,7 +1446,7 @@ const EmployeeForm = () => {
     z = review_date ? new Date(review_date) : null;
     
     if ((x && y && y < x) || (x && z && z < x)) {
-      alert('Enter valid DBS issue, expiry, and review dates!');
+      toast.error('Enter valid DBS issue, expiry, and review dates!');
       return false;
     }
     
@@ -1457,7 +1457,7 @@ const EmployeeForm = () => {
     z = review_date ? new Date(review_date) : null;
     
     if ((x && y && y < x) || (x && z && z < x)) {
-      alert('Enter valid National data issue, expiry, and review dates!');
+      toast.error('Enter valid National data issue, expiry, and review dates!');
       return false;
     }
     
@@ -1468,7 +1468,7 @@ const EmployeeForm = () => {
     z = review_date ? new Date(review_date) : null;
     
     if ((x && y && y < x) || (x && z && z < x)) {
-      alert('Enter valid other details issue, expiry, and review dates!');
+      toast.error('Enter valid other details issue, expiry, and review dates!');
       return false;
     }
     

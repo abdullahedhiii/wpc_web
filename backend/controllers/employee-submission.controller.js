@@ -23,6 +23,7 @@ const {
   LeaveAllocation,
 } = require("../config/sequelize");
 const axios = require('axios');
+const { UniqueConstraintError, ValidationError } = require("sequelize");
 
 const isValidDate = (date) => {
   if (!date || date.trim() === "") return false; // Handle empty or null values
@@ -72,10 +73,11 @@ module.exports.addPersonalDetails = async (req, res) => {
 
   } catch (err) {
     console.log('error in personal detail',err);
-if (err instanceof Sequelize.UniqueConstraintError) {
+if ( err instanceof UniqueConstraintError  ||
+  (err.name === "SequelizeUniqueConstraintError" || err?.original?.code === "23505")) {
 
   return res.status(400).json({ 
-    message: "Personal Details Error : Employee details like email,nationality number or contact numbers must be unique!" 
+    message: "Personal Details Error : Employee details like email, or contact numbers must be unique!" 
   });
 }
     return res.status(500).json({ message: "Personal Detai: Internal server error", error: err });
