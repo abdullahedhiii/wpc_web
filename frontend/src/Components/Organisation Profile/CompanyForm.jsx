@@ -620,7 +620,7 @@ const CompanyForm = () => {
   
   
       const newCompanyId = company_id ? company_id : response.data.organisation.id; 
-  
+      console.log('uploadinng? ',uploadDocuments,' company id ',newCompanyId);
       const documentUploads = uploadDocuments.map((document, index) => {
         if (document.file) {
           const documentData = new FormData();
