@@ -233,24 +233,24 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />,
       },
-      {
-        path: "employeelink/:id",
-        element: <EmployeeFormOnline />
-      },
+      // {
+      //   path: "employeelink/:id",
+      //   element: <EmployeeFormOnline />
+      // },
     ]
   },
  
-  {
-    path: "/visitor",
-    errorElement : <NotFound/>,
+  // {
+  //   path: "/visitor",
+  //   errorElement : <NotFound/>,
 
-    children :[
-    {
-      path : ':id',
-      element : <VisitorForm/>
-    },  
-  ]
-  },
+  //   children :[
+  //   {
+  //     path : ':id',
+  //     element : <VisitorForm/>
+  //   },  
+  // ]
+  // },
 
   {
 
@@ -319,430 +319,430 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "company-profile/employee-link",
-        element: (
-          <ProtectedRoute>
-            <EmployeeLink />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "company-level-user",
-        element: (
-          <ProtectedRoute>
-            <Level1User />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "company-employee-rti",
-        element: (
-          <ProtectedRoute>
-            <RTIEmployee />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "company-authorizing-officer",
-        element: (
-          <ProtectedRoute>
-            <AuthorizingOfficer />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "company-key-contact",
-        element: (
-          <ProtectedRoute>
-            <KeyContact />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settingsdashboard",
-        element: (
-          <ProtectedRoute>
-            <SubDashboard />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-department",
-        element: (
-          <ProtectedRoute>
-            <Department />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/add-new-department",
-        element: (
-          <ProtectedRoute>
-            <DepartmentForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/add-new-department/:department_id",
-        element: (
-          <ProtectedRoute>
-            <DepartmentForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-designation",
-        element: (
-          <ProtectedRoute>
-            <Designation />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/designation",
-        element: (
-          <ProtectedRoute>
-            <DesignationForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/designation/:designation_id",
-        element: (
-          <ProtectedRoute>
-            <DesignationForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-employment-type",
-        element: (
-          <ProtectedRoute>
-            <EmploymentType />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/employee-type",
-        element: (
-          <ProtectedRoute>
-            <EmploymentTypeForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/employee-type/:type_id",
-        element: (
-          <ProtectedRoute>
-            <EmploymentTypeForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-paygroup",
-        element: (
-          <ProtectedRoute>
-            <PayGroup />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/paygroup",
-        element: (
-          <ProtectedRoute>
-            <PayGroupForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/paygroup/:group_id",
-        element: (
-          <ProtectedRoute>
-            <PayGroupForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-annualpay",
-        element: (
-          <ProtectedRoute>
-            <AnnualPay />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/annualpay",
-        element: (
-          <ProtectedRoute>
-            <AnnualPayForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/annualpay/:annual_id",
-        element: (
-          <ProtectedRoute>
-            <AnnualPayForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-bank",
-        element: (
-          <ProtectedRoute>
-            <BankMaster />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/bank",
-        element: (
-          <ProtectedRoute>
-            <BankMasterForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/bank/:bank_id",
-        element: (
-          <ProtectedRoute>
-            <BankMasterForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-bank-sortcode",
-        element: (
-          <ProtectedRoute>
-            <BankSortCode />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/bank-sortcode",
-        element: (
-          <ProtectedRoute>
-            <BankSortCodeForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/bank-sortcode/:sortcode_id",
-        element: (
-          <ProtectedRoute>
-            <BankSortCodeForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-tax",
-        element: (
-          <ProtectedRoute>
-            <TaxMaster />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/tax",
-        element: (
-          <ProtectedRoute>
-            <TaxMasterForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/tax/:tax_id",
-        element: (
-          <ProtectedRoute>
-            <TaxMasterForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/vw-pay-type",
-        element: (
-          <ProtectedRoute>
-            <PaymentType />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/pay-type",
-        element: (
-          <ProtectedRoute>
-            <PaymentTypeForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/pay-type/:p_id",
-        element: (
-          <ProtectedRoute>
-            <PaymentTypeForm />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "settings/payitemlist",
-        element: (
-          <ProtectedRoute>
-            <PayItem />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path : "holidaydashboard",
-        element : (
-          <ProtectedRoute>
-            <SubDashboard/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "holiday-type",
-        element : (
-          <ProtectedRoute>
-            <HolidayType/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "holiday/add-holiday-type",
-        element : (
-          <ProtectedRoute>
-            <HolidayTypeForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "holiday/add-holiday-type/:h_id",
-        element : (
-          <ProtectedRoute>
-            <HolidayTypeForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "holidays",
-        element : (
-          <ProtectedRoute>
-            <HolidayList/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "holiday/add-holiday",
-        element : (
-          <ProtectedRoute>
-            <HolidayListForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "holiday/add-holiday/:ho_id",
-        element : (
-          <ProtectedRoute>
-            <HolidayListForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rotadashboard",
-        element : (
-          <ProtectedRoute>
-            <SubDashboard/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/visitor-link",
-        element : (
-          <ProtectedRoute>
-            <RegVisitor/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/visitor-regis",
-        element : (
-          <ProtectedRoute>
-            <VisitorList/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/shift-management",
-        element : (
-          <ProtectedRoute>
-            <ShiftManagement/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/add-shift-management",
-        element : (
-          <ProtectedRoute>
-            <ShiftManagementForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/add-shift-management/:shift_code",
-        element : (
-          <ProtectedRoute>
-            <ShiftManagementForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/late-policy",
-        element:(
-          <ProtectedRoute>
-            <LatePolicy/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/add-late-policy",
-        element:(
-          <ProtectedRoute>
-            <LatePolicyForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/add-late-policy/:policy_id",
-        element:(
-          <ProtectedRoute>
-            <LatePolicyForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/offday",
-        element:(
-          <ProtectedRoute>
-            <OffDay/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/add-offday",
-        element:(
-          <ProtectedRoute>
-            <OffDayForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "rota/add-offday/:shift_code",
-        element:(
-          <ProtectedRoute>
-            <OffDayForm/>
-          </ProtectedRoute>
-        )
-      },
+      // {
+      //   path: "company-profile/employee-link",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <EmployeeLink />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "company-level-user",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <Level1User />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "company-employee-rti",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <RTIEmployee />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "company-authorizing-officer",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <AuthorizingOfficer />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "company-key-contact",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <KeyContact />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settingsdashboard",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <SubDashboard />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-department",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <Department />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/add-new-department",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <DepartmentForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/add-new-department/:department_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <DepartmentForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-designation",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <Designation />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/designation",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <DesignationForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/designation/:designation_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <DesignationForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-employment-type",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <EmploymentType />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/employee-type",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <EmploymentTypeForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/employee-type/:type_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <EmploymentTypeForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-paygroup",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PayGroup />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/paygroup",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PayGroupForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/paygroup/:group_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PayGroupForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-annualpay",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <AnnualPay />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/annualpay",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <AnnualPayForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/annualpay/:annual_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <AnnualPayForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-bank",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <BankMaster />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/bank",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <BankMasterForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/bank/:bank_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <BankMasterForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-bank-sortcode",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <BankSortCode />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/bank-sortcode",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <BankSortCodeForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/bank-sortcode/:sortcode_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <BankSortCodeForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-tax",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <TaxMaster />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/tax",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <TaxMasterForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/tax/:tax_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <TaxMasterForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/vw-pay-type",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PaymentType />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/pay-type",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PaymentTypeForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/pay-type/:p_id",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PaymentTypeForm />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path: "settings/payitemlist",
+      //   element: (
+      //     <ProtectedRoute>
+      //       <PayItem />
+      //     </ProtectedRoute>
+      //   ),
+      // },
+      // {
+      //   path : "holidaydashboard",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <SubDashboard/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "holiday-type",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <HolidayType/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "holiday/add-holiday-type",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <HolidayTypeForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "holiday/add-holiday-type/:h_id",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <HolidayTypeForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "holidays",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <HolidayList/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "holiday/add-holiday",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <HolidayListForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "holiday/add-holiday/:ho_id",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <HolidayListForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rotadashboard",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <SubDashboard/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/visitor-link",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <RegVisitor/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/visitor-regis",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <VisitorList/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/shift-management",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <ShiftManagement/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/add-shift-management",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <ShiftManagementForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/add-shift-management/:shift_code",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <ShiftManagementForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/late-policy",
+      //   element:(
+      //     <ProtectedRoute>
+      //       <LatePolicy/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/add-late-policy",
+      //   element:(
+      //     <ProtectedRoute>
+      //       <LatePolicyForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/add-late-policy/:policy_id",
+      //   element:(
+      //     <ProtectedRoute>
+      //       <LatePolicyForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/offday",
+      //   element:(
+      //     <ProtectedRoute>
+      //       <OffDay/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/add-offday",
+      //   element:(
+      //     <ProtectedRoute>
+      //       <OffDayForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "rota/add-offday/:shift_code",
+      //   element:(
+      //     <ProtectedRoute>
+      //       <OffDayForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
       {
         path : "employeedashboard",
         element:(
@@ -783,14 +783,14 @@ const router = createBrowserRouter([
         path : 'role/vw-user-config/:id',
         element : (<ProtectedRoute><UserForm/></ProtectedRoute>)
       },
-      {
-        path : 'role/view-users-role',
-        element : (<ProtectedRoute> <RoleManagement/> </ProtectedRoute>)
-      },
-      {
-        path : `role/user-role`,
-        element : (<ProtectedRoute><UserRoleForm/></ProtectedRoute>)
-      },
+      // {
+      //   path : 'role/view-users-role',
+      //   element : (<ProtectedRoute> <RoleManagement/> </ProtectedRoute>)
+      // },
+      // {
+      //   path : `role/user-role`,
+      //   element : (<ProtectedRoute><UserRoleForm/></ProtectedRoute>)
+      // },
       {
         path : "addemployee",
         element : (
@@ -807,45 +807,45 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         )
       },
-      {
-        path : "employee/change-of-circumstances-add",
-        element : (
-          <ProtectedRoute>
-            <ChangeOfCircumstances/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "employee/change-of-circumstances-add-new",
-        element : (
-          <ProtectedRoute>
-            <COCForm/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "leaveapprovedashboard",
-        element : (
-          <ProtectedRoute>
-            <SubDashboard/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "billingorganizationdashboard",
-        element : (
-          <ProtectedRoute>
-            <SubDashboard/>
-          </ProtectedRoute>
-        )
-      }, {
-        path : "recruitmentdashboard",
-        element : (
-          <ProtectedRoute>
-            <StatisticsDashboard title={"Recruitment Statistics"}/>
-          </ProtectedRoute>
-        )
-      },
+      // {
+      //   path : "employee/change-of-circumstances-add",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <ChangeOfCircumstances/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "employee/change-of-circumstances-add-new",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <COCForm/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "leaveapprovedashboard",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <SubDashboard/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "billingorganizationdashboard",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <SubDashboard/>
+      //     </ProtectedRoute>
+      //   )
+      // }, {
+      //   path : "recruitmentdashboard",
+      //   element : (
+      //     <ProtectedRoute>
+      //       <StatisticsDashboard title={"Recruitment Statistics"}/>
+      //     </ProtectedRoute>
+      //   )
+      // },
       {
         path : "recruitment/job-list",
         element : (<ProtectedRoute><JobList/></ProtectedRoute>)
@@ -890,14 +890,14 @@ const router = createBrowserRouter([
         path : "attendance/generate-data",
         element : (<ProtectedRoute><GenerateAttendance/></ProtectedRoute>)
       },
-      {
-        path : "attendance/process-attendance",
-        element : (<ProtectedRoute><ProcessAttendance/></ProtectedRoute>)
-      },
-      {
-        path : "attendance/absent-report",
-        element : (<ProtectedRoute><AbsentReport/></ProtectedRoute>)
-      },
+      // {
+      //   path : "attendance/process-attendance",
+      //   element : (<ProtectedRoute><ProcessAttendance/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "attendance/absent-report",
+      //   element : (<ProtectedRoute><AbsentReport/></ProtectedRoute>)
+      // },
       {
         path : "attendance/daily-attendance",
         element : (<ProtectedRoute><DailyAttendance/></ProtectedRoute>)
@@ -906,26 +906,26 @@ const router = createBrowserRouter([
         path : "attendance/attendance-report",
         element : (<ProtectedRoute><AttendanceHistory/></ProtectedRoute>)
       },
-      {
-        path : "leave-management/leave-type-listing",
-        element : (<ProtectedRoute><LeaveType/></ProtectedRoute>)
-      },
-      {
-        path: "leave-management/new-leave-type",
-        element : (<ProtectedRoute><LeaveTypeForm/></ProtectedRoute>)
-      },
-      {
-        path: "leave-management/leave-type-listing/:leave_id",
-        element : (<ProtectedRoute><LeaveTypeForm/></ProtectedRoute>)
-      },
-      {
-        path : "leave-management/leave-rule-listing",
-        element : (<ProtectedRoute><LeaveRule/></ProtectedRoute>)
-      },
-      {
-        path : "leave-management/save-leave-rule",
-        element  : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
-      },
+      // {
+      //   path : "leave-management/leave-type-listing",
+      //   element : (<ProtectedRoute><LeaveType/></ProtectedRoute>)
+      // },
+      // {
+      //   path: "leave-management/new-leave-type",
+      //   element : (<ProtectedRoute><LeaveTypeForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path: "leave-management/leave-type-listing/:leave_id",
+      //   element : (<ProtectedRoute><LeaveTypeForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "leave-management/leave-rule-listing",
+      //   element : (<ProtectedRoute><LeaveRule/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "leave-management/save-leave-rule",
+      //   element  : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
+      // },
       {
         path : "leave-management/leave-report",
         element  : (<ProtectedRoute><LeaveReport/></ProtectedRoute>)
@@ -934,26 +934,26 @@ const router = createBrowserRouter([
         path : "leave-management/leave-report-employee",
         element  : (<ProtectedRoute><LeaveReportEmployee/></ProtectedRoute>)
       },
-      {
-        path : "leave-management/view-leave-rule/:rule_id",
-        element : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
-      },
-      {
-        path : "employee/change-of-circumstances",
-        element : (<ProtectedRoute><COCView/></ProtectedRoute>)
-      },
-      {
-        path : "leave-management/leave-allocation-listing",
-        element : (<ProtectedRoute><LeaveAllocation/></ProtectedRoute>)
-      },
-      {
-        path : 'leave-management/save-leave-allocation',
-        element : (<ProtectedRoute><LeaveAllocationForm/></ProtectedRoute>)
-      },
-      {
-        path : 'leave-management/leave-allocation-dtl/:allocation_id',
-        element: (<ProtectedRoute><EditLeaveAllocation/></ProtectedRoute>)
-      },
+      // {
+      //   path : "leave-management/view-leave-rule/:rule_id",
+      //   element : (<ProtectedRoute><LeaveRuleForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "employee/change-of-circumstances",
+      //   element : (<ProtectedRoute><COCView/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "leave-management/leave-allocation-listing",
+      //   element : (<ProtectedRoute><LeaveAllocation/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'leave-management/save-leave-allocation',
+      //   element : (<ProtectedRoute><LeaveAllocationForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'leave-management/leave-allocation-dtl/:allocation_id',
+      //   element: (<ProtectedRoute><EditLeaveAllocation/></ProtectedRoute>)
+      // },
       {
         path :"leave-management/leave-balance",
         element:(<ProtectedRoute><LeaveBalance/></ProtectedRoute>)
@@ -1026,26 +1026,26 @@ const router = createBrowserRouter([
       //   path : 'recruitment/add-interview-form/:id',
       //   element : (<ProtectedRoute><AddInterviewForm/></ProtectedRoute>)
       // },
-      {
-        path : 'rota/add-duty-roster',
-        element: (<ProtectedRoute><DutyRoster/></ProtectedRoute>)
-      },
-      {
-        path : 'rota/add-department-duty',
-        element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
-      },
-      {
-        path : 'rota/add-employee-duty',
-        element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
-      },
-      {
-        path : "taskdashboard",
-        element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
-      },
-      {
-        path : 'task-list-employee',
-        element : (<ProtectedRoute><TaskList/></ProtectedRoute>)
-      },
+      // {
+      //   path : 'rota/add-duty-roster',
+      //   element: (<ProtectedRoute><DutyRoster/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'rota/add-department-duty',
+      //   element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'rota/add-employee-duty',
+      //   element : (<ProtectedRoute><DutyRosterForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "taskdashboard",
+      //   element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
+      // },
+      // {
+      //   path : 'task-list-employee',
+      //   element : (<ProtectedRoute><TaskList/></ProtectedRoute>)
+      // },
       {
         path : 'employee-corner',
         element : (<ProtectedRoute><SubDashboard/></ProtectedRoute>)
@@ -1054,29 +1054,29 @@ const router = createBrowserRouter([
         path : 'employee-corner/user-profile',
         element : (<ProtectedRoute><Profile/></ProtectedRoute>)
       },
-      {
-        path : 'employee-corner/update-profile',
-        element : (
-          <ProtectedRoute>
-            <UpdateProfile/>
-          </ProtectedRoute>
-        )
-      },
-      {
-        path : "employee-corner/work-update",
-        element : (<ProtectedRoute><WorkUpdate/></ProtectedRoute>)
+      // {
+      //   path : 'employee-corner/update-profile',
+      //   element : (
+      //     <ProtectedRoute>
+      //       <UpdateProfile/>
+      //     </ProtectedRoute>
+      //   )
+      // },
+      // {
+      //   path : "employee-corner/work-update",
+      //   element : (<ProtectedRoute><WorkUpdate/></ProtectedRoute>)
 
-      },
-      {
-        path : "employee-corner/add-work-update",
-        element : (<ProtectedRoute><WorkUpdateForm/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "employee-corner/add-work-update",
+      //   element : (<ProtectedRoute><WorkUpdateForm/></ProtectedRoute>)
 
-      },
-      {
-        path : "employee-corner/holiday",
-        element : (<ProtectedRoute><HolidayCalendar/></ProtectedRoute>)
+      // },
+      // {
+      //   path : "employee-corner/holiday",
+      //   element : (<ProtectedRoute><HolidayCalendar/></ProtectedRoute>)
 
-      },
+      // },
       {
         path : "employee-corner/attendance-status",
         element : (<ProtectedRoute><AttendanceStatus/></ProtectedRoute>)

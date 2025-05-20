@@ -55,18 +55,18 @@ const decryptKey = (encryptedKey) => {
   }
 };
 
-module.exports.getJobData = async (req, res) => {
-  const job_hash = req.params.id;
+// module.exports.getJobData = async (req, res) => {
+//   const job_hash = req.params.id;
 
-  const job_id = decryptKey(job_hash);
+//   const job_id = decryptKey(job_hash);
   
-  if (job_id) {
-    console.log("Decrypted Job ID:", job_id);
-    res.status(200).json({ job_id });
-  } else {
-    res.status(400).json({ error: "Invalid job hash" });
-  }
-};
+//   if (job_id) {
+//     console.log("Decrypted Job ID:", job_id);
+//     res.status(200).json({ job_id });
+//   } else {
+//     res.status(400).json({ error: "Invalid job hash" });
+//   }
+// };
 
 //    const jobData = {
 //     company: "Work Permit Cloud Ltd",
@@ -101,6 +101,7 @@ module.exports.getJobData = async(req, res) => {
       jobTitle: jobData.jobTitle,
       code: jobData.jobCode,
       experience: `${String(jobData.jobExperienceMin)}-${String(jobData.jobExperienceMax)} years`,
+      qualifications:jobData.qualifications,
       description: jobData.jobDescription,
       skillSet: jobData.skillSet,
       jobType: jobData.jobContractType,

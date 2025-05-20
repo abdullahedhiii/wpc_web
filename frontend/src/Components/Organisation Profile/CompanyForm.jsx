@@ -608,7 +608,7 @@ const CompanyForm = () => {
   
     try {
   
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${import.meta.env.VITE_API_URL}/api/${company_id ? `updateCompany/${company_id}` : "submitCompanyForm"}`,
         formDataToSend,
         {
@@ -630,7 +630,7 @@ const CompanyForm = () => {
           documentData.append("otherDetails", document.otherDetails);
           documentData.append("companyId", newCompanyId);  
   
-          return axios.post(`${import.meta.env.VITE_API_URL}/api/uploadDocument/${newCompanyId}`, documentData, {
+          return axiosInstance.post(`${import.meta.env.VITE_API_URL}/api/uploadDocument/${newCompanyId}`, documentData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
