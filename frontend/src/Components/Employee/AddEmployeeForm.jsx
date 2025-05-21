@@ -434,7 +434,7 @@ const EmployeeForm = () => {
       name: "",
       relation: "",
       email: "",
-      contact_no: "",
+      contact: "",
       address: "",
     },
     certification: { title: "", start: "", end: "", license: "" },
@@ -875,9 +875,9 @@ const EmployeeForm = () => {
         {
           label: "Emergency Contact No.",
           type: "text",
-          value: "kin_details.contact_no",
+          value: "kin_details.contact",
         },
-        { label: "Address", type: "text", value: "kin_details.address" },
+        // { label: "Address", type: "text", value: "kin_details.address" },
       ],
     },
     {
@@ -892,7 +892,7 @@ const EmployeeForm = () => {
         {
           label: "License Number",
           type: "text",
-          value: "certification.number",
+          value: "certification.license",
         },
         { label: "Start Date", type: "date", value: "certification.start" },
         { label: "End Date", type: "date", value: "certification.end" },
@@ -2464,7 +2464,7 @@ e.preventDefault();
 
                             <div className="space-y-2">
                               <label
-                                htmlFor={document.doc}
+                                htmlFor={document.doc_url}
                                 className="block text-[12px] text-gray-700"
                               >
                                 Upload Document
@@ -2482,10 +2482,10 @@ e.preventDefault();
                                 }
                                 className="p-2 border rounded"
                               />
-                                 {typeof document.doc === 'string' &&
- document.doc.startsWith(import.meta.env.VITE_API_URL) && (
+                                 {typeof document.doc_url === 'string' &&
+ document.doc_url.startsWith(import.meta.env.VITE_API_URL) && (
                                       <a
-                                        href={document.doc}
+                                        href={document.doc_url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-green-400 text-sm"

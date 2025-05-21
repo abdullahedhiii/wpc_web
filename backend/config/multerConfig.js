@@ -102,25 +102,21 @@ const fileFilter = (req, file, cb) => {
 
 const orgUpload = multer({
   storage: orgStorage,
-  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
-  fileFilter
+  limits: { fileSize: 10 * 1024 * 1024 },  // 2MB file size limit
 });
 
 const empUpload = multer({
   storage: empStorage,
-  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
-  fileFilter
+  limits: { fileSize: 10 * 1024 * 1024 },  // 2MB file size limit
 });
 
 const attendanceUpload = multer({
   storage: attendanceStorage,
-  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
-  fileFilter
-});
+  limits: { fileSize: 10 * 1024 * 1024 },  // 2MB file size limit
+  });
 
 const CandidateUpload = multer({
   storage: candidateStorage,
-  limits: { fileSize: 2 * 1024 * 1024 },  // 2MB file size limit
-  fileFilter
+  limits: { fileSize: 10 * 1024 * 1024 },  // 2MB file size limit
 })
 module.exports = { orgUpload, empUpload,attendanceUpload,CandidateUpload};

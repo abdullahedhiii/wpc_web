@@ -198,7 +198,7 @@ require('dotenv').config();
       const staff = await Employee.findAll({
           where: { organisation_id: id },
           include: [
-              { model: PersonalDetail, as: 'personaldetail', attributes: ['fname', 'mname', 'lname', 'dob', 'nationality_no', 'Nationality', 'contact_1'],required:false },
+              { model: PersonalDetail, as: 'personaldetail', attributes: ['fname', 'mname', 'lname', 'dob', 'Nationality', 'contact_1'],required:false },
               { model: JobDetail, as: 'jobdetails', attributes: ['start'],required:false  },
               { model: VisaDetail, as: 'visadetail', attributes: ['expiry_date', 'review_date'],required:false  },
               { model: PassportDetail, as: 'passportdetail',required:false  },
