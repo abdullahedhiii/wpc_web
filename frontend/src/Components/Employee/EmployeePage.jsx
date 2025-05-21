@@ -12,6 +12,7 @@ const EmployeePage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const { companyData } = useCompanyContext()
   const [isDownloading, setIsDownloading] = useState(false)
+  const [selectedEmployee,setSelected] = useState("")
   const hasFetched = useRef(false)
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -35,6 +36,7 @@ const EmployeePage = () => {
 
   const handleDownloadPDF = async(employee_code) => {
     setIsDownloading(true)
+    setSelected(employee_code)
      const routee = `${import.meta.env.VITE_API_URL}/api/getEmployeePDF/${employee_code}`;
      try {
       const response = await axiosInstance.get(routee);
@@ -46,6 +48,7 @@ const EmployeePage = () => {
     }
     finally{
       setIsDownloading(false)
+      setSelected("")
     }
   }
 
@@ -158,8 +161,8 @@ const EmployeePage = () => {
                         disabled={isDownloading}
                         className="flex items-center gap-1 text-yellow-700 hover:text-yellow-900 font-semibold transition-colors text-base"
                       >
-                        {isDownloading ? <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-yellow-500"></div> : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>}
-                        {isDownloading ? "Downloading..." : "Download PDF"}
+                        {isDownloading && selectedEmployee === employee.employee_code? <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-yellow-500"></div> : <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>}
+                        {isDownloading && selectedEmployee === employee.employee_code? "Downloading..." : "Download PDF"}
                       </button>
                     </div>
                   </motion.div>

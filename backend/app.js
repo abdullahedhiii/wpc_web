@@ -54,7 +54,7 @@ app.use((err, req, res, next) => {
 });
 
 sequelize.sync({ alter:true }).then(() => {
-  app.listen(process.env.PORT, () => {
+  app.listen(process.env.PORT,'0.0.0.0', () => {
     console.log('Server is running');
     // runSponsorUpdate().catch(error => {
     //   console.error('Initial sponsor update failed:', error);

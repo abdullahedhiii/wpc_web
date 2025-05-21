@@ -8,7 +8,9 @@ const { Organisation, OrgDocument, Employee, PersonalDetail, JobDetail, VisaDeta
   ServiceDetail,
   Designation,
   LeaveAllocation,LeaveType,
-  LeaveRule} = require("../config/sequelize");
+  LeaveRule,
+  PayDetail,
+  PayStructure} = require("../config/sequelize");
 require('dotenv').config();
 
   function sum(arr) {
@@ -204,8 +206,8 @@ require('dotenv').config();
               { model: PassportDetail, as: 'passportdetail',required:false  },
               { model: EsusDetail, as: 'esusdetail', attributes: ['expiry'],required:false  },
               { model: DBSDetail, as: 'dbsdetail', attributes: ['expiry'],required:false  },
-              { model: NationalDetail, as: 'nationaldetail',required:false   }
-              ,{ model: ContactInfo, as: 'contact',required:false }
+              { model: NationalDetail, as: 'nationaldetail',required:false   },
+              { model: ContactInfo, as: 'contact',required:false }
 
           ]
       });
@@ -249,7 +251,7 @@ module.exports.generateStaffReport = async (req, res) => {
         {
           model: PersonalDetail,
           as: "personaldetail",
-          attributes: ["fname", "mname", "lname", "dob", "nationality_no", "Nationality", "contact_1"],
+          attributes: ["fname", "mname", "lname", "dob", "Nationality", "contact_1"],
         },
         { model: JobDetail, as: "jobdetails", attributes: ["start"] },
         { model: VisaDetail, as: "visadetail", attributes: ["expiry_date", "review_date"] },
@@ -790,8 +792,13 @@ module.exports.generateEmployeePDF = async (req, res) => {
     const employee = await Employee.findOne({
       where: { employee_code },
       include: [
-        { model: PersonalDetail, as: "personaldetail", required: false },
-        { model: ServiceDetail, as: "servicedetail", required: false },
+        {model: PersonalDetail, as: "personaldetail", required: false },
+        // {model : NationalDetail, ad : "nationaldetail",required:false},
+        {model: ServiceDetail, as: "servicedetail", required: false },
+        {model : PassportDetail , as: 'passportdetail',required:false},
+        {model : PayDetail, as : 'paydetail',required:false},
+        {model : PayStructure, as : 'paystructure',required:false},
+
       ],
     });
 
@@ -938,18 +945,60 @@ module.exports.generateEmployeePDF = async (req, res) => {
     }
 
     // --- Footer ---
-    const footerY = doc.page.height - 50;
+    let footerY ;
+    footerY = doc.page.height - 50;
     doc.moveTo(50, footerY).lineTo(doc.page.width - 50, footerY).stroke(BORDER_COLOR);
 
     doc.fillColor('#9CA3AF')
       .fontSize(10)
       .font("Helvetica")
       .text(`Generated on: ${new Date().toLocaleDateString()}`, 50, footerY + 10);
+    
+    
+      yPos += 20;
 
-    doc.fillColor('#9CA3AF')
-      .fontSize(10)
-      .font("Helvetica")
-      .text("Confidential Document", doc.page.width - 200, footerY + 10);
+      // --- Leave Details Section ---
+      doc
+        .fontSize(16)
+        .fillColor(YELLOW)
+        .font('Helvetica-Bold')
+        .text("Passport Details", 50, yPos);
+  
+      doc.moveTo(50, yPos + 22).lineTo(doc.page.width - 50, yPos + 22).stroke(YELLOW);
+  
+      yPos += 40;
+  
+      addField("Passport number:", employee?.passportdetail?.passport_no);
+      addField("Passport issue date:", employee?.passportdetail?.issue_date);
+      addField("Passport expiry date:", employee?.passportdetail?.expiry_date);
+
+      yPos += 20;
+
+      doc
+        .fontSize(16)
+        .fillColor(YELLOW)
+        .font('Helvetica-Bold')
+        .text("Pay Details", 50, yPos);
+  
+      doc.moveTo(50, yPos + 22).lineTo(doc.page.width - 50, yPos + 22).stroke(YELLOW);
+  
+      yPos += 40;
+  
+      addField("Pay Group:", employee?.paydetail?.group);
+      addField(`Pay (${employee?.paydetail.currency}):`, employee?.paydetail?.pay);
+      addField("Pay Wedges:", employee?.paydetail?.wedges);
+      addField("Payment type:", employee?.paydetail?.payment_type);
+      addField("Min hours:", employee?.paydetail?.min_hours);
+      addField("Pay Rate (per hour):", employee?.paydetail?.rate);
+      addField("Pay mode:", employee?.paydetail?.pay_mode);
+
+
+      footerY = doc.page.height - 50;
+      doc.moveTo(50, footerY).lineTo(doc.page.width - 50, footerY).stroke(BORDER_COLOR);
+    // doc.fillColor('#9CA3AF')
+    //   .fontSize(10)
+    //   .font("Helvetica")
+    //   .text("Confidential Document", doc.page.width - 200, footerY + 10);
 
     doc.end();
 
