@@ -45,7 +45,7 @@ const UserForm = () => {
   },[]);
 
   useEffect(() => {
-    if (!id && formData.employee_code) {
+    if (!id && formData.employee_code !== '') {
       const emp = employees.find((ele) => ele.employee_code == formData.employee_code);
       if (emp) {
         setFormData((prev) => ({
@@ -55,7 +55,7 @@ const UserForm = () => {
         }));
       }
     }
-  }, [formData.employee_code, id, employees]);
+  }, [formData.employee_code]);
   
 
   const handleInputChange = (e) => {
