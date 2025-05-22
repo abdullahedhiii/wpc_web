@@ -31,8 +31,14 @@ const UserForm = () => {
   const fetchUser = async(req,res) => {
       try{
         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserData/${id}`);
-        setFormData(response.data);
-        console.log(response.data)
+        const emp = employees.find((ele) => ele.employee_code == response.data.employee_code);
+        setFormData({
+          email : response.data.email,
+          password:response.data.password,
+          employee_code : emp.employee_code,
+          employee_name: emp['Employee Name']
+        })
+        console.log('user response' ,response.data)
      
       }
       catch(err){
