@@ -49,7 +49,7 @@ const UserForm = () => {
       if(emp){
          setFormData((prev) => ({
         ...prev,
-        employee_code : ele.employee_code,
+        employee_code : emp.employee_code,
         employee_name : emp['Employee Name']
       }))
       }

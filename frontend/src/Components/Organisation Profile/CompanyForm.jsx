@@ -141,7 +141,7 @@ const CompanyForm = () => {
       fields: [
         {
           label: "Post Code",
-          value: "Address_PostCode",
+          value: "Address_Postcode",
           type: "text",
           required: false,
           additionalElement: null,
@@ -484,14 +484,14 @@ const CompanyForm = () => {
             params: { id: company_id },
           });
           if (response.data) {
-            console.log(response.data.allData);
+            // console.log(response.data.allData);
             setFormData((prevData) => ({
               ...prevData,
               Email: user.email,
               ...response.data.allData,
             }));
             setAllDetails([response.data.allData]);
-            console.log(response.data.tradingHours);
+            // console.log(response.data.tradingHours);
             setTradingHours(response.data.tradingHours);
           }
         }
@@ -505,7 +505,7 @@ const CompanyForm = () => {
   const handleChange = (e, fieldName) => {
     const { value, type, checked, files } = e.target;
     const updatedValue = type === "checkbox" ? checked : value;
-console.log('here to update ',value , ' type ',' fieldName ',fieldName);
+// console.log('here to update ',value , ' type ',' fieldName ',fieldName);
     if (type === "file") {
         setFormData((prevData) => ({
             ...prevData,
@@ -514,7 +514,7 @@ console.log('here to update ',value , ' type ',' fieldName ',fieldName);
         return;
     }
 
-    if (type === "checkbox") {
+    else if (type === "checkbox") {
         setFormData((prevData) => {
             let newState = { ...prevData };
 
@@ -574,7 +574,9 @@ console.log('here to update ',value , ' type ',' fieldName ',fieldName);
 
             return newState;
         });
-    } else {
+    } 
+    
+    else {
         setFormData((prevData) => ({
             ...prevData,
             [fieldName]: updatedValue,
@@ -586,7 +588,7 @@ console.log('here to update ',value , ' type ',' fieldName ',fieldName);
     e.preventDefault();
     setSubmitting(true);
     const formDataToSend = new FormData();
-   console.log('in handle submit form ' ,formData.Address_Postcode);
+  //  console.log('in handle submit form ' ,formData.Address_Postcode);
     Object.entries(formData).forEach(([key, value]) => {
       if (
         (key === "Company_Logo" ||
@@ -620,7 +622,7 @@ console.log('here to update ',value , ' type ',' fieldName ',fieldName);
   
   
       const newCompanyId = company_id ? company_id : response.data.organisation.id; 
-      console.log('uploadinng? ',uploadDocuments,' company id ',newCompanyId);
+      // console.log('uploadinng? ',uploadDocuments,' company id ',newCompanyId);
       const documentUploads = uploadDocuments.map((document, index) => {
         if (document.file) {
           const documentData = new FormData();
@@ -648,7 +650,7 @@ console.log('here to update ',value , ' type ',' fieldName ',fieldName);
       navigate(`/hrms/company-profile/company`);
   //    fetchDetails();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       toast.error(err.response.data.message);
     }
     finally{
