@@ -15,7 +15,7 @@ const UserForm = () => {
   const [submitting,setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData,setFormData] = useState({
-    employee_code: '',
+    employee_code: id ? id : '',
     employee_name : '',
     email : '',
     password: '',
@@ -32,6 +32,8 @@ const UserForm = () => {
       try{
         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserData/${id}`);
         setFormData(response.data);
+        console.log(response.data);
+     
       }
       catch(err){
 

@@ -785,7 +785,6 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
   }
 };
 
-
 module.exports.generateEmployeePDF = async (req, res) => {
   try {
     const employee_code = req.params.employee_code;
@@ -793,12 +792,9 @@ module.exports.generateEmployeePDF = async (req, res) => {
       where: { employee_code },
       include: [
         {model: PersonalDetail, as: "personaldetail", required: false },
-        // {model : NationalDetail, ad : "nationaldetail",required:false},
         {model: ServiceDetail, as: "servicedetail", required: false },
         {model : PassportDetail , as: 'passportdetail',required:false},
         {model : PayDetail, as : 'paydetail',required:false},
-        {model : PayStructure, as : 'paystructure',required:false},
-
       ],
     });
 
@@ -823,12 +819,12 @@ module.exports.generateEmployeePDF = async (req, res) => {
     }
 
     const filePath = path.join(uploadDir, `${employee_code}.pdf`);
-    const doc = new PDFDocument({ margin: 50 });
+    const doc = new PDFDocument({ margin: 30 }); // Reduced margin to maximize space
 
     doc.pipe(fs.createWriteStream(filePath));
 
     // --- Header Bar (Yellow) ---
-    doc.rect(0, 0, doc.page.width, 90).fill(HEADER_BG);
+    doc.rect(0, 0, doc.page.width, 70).fill(HEADER_BG); // Reduced height
 
     // --- Logo in Circle ---
     if (org.Company_Logo) {
@@ -836,34 +832,34 @@ module.exports.generateEmployeePDF = async (req, res) => {
       const logoPath = path.join(__dirname, `../uploads/${org.Company_name}/`, logoFilename);
       if (fs.existsSync(logoPath)) {
         doc.save()
-          .circle(60, 45, 30)
+          .circle(50, 35, 25) // Smaller logo
           .clip()
-          .image(logoPath, 30, 15, { width: 60, height: 60 })
+          .image(logoPath, 25, 10, { width: 50, height: 50 })
           .restore();
       }
     }
 
     // --- Company Name & Report Title ---
     doc
-      .fontSize(22)
+      .fontSize(18) // Smaller font
       .fillColor(HEADER_TEXT)
       .font('Helvetica-Bold')
-      .text(org.Company_name, 110, 30, { align: 'left', continued: false });
+      .text(org.Company_name, 90, 20, { align: 'left', continued: false });
 
     doc
       .moveDown(0.2)
-      .fontSize(14)
+      .fontSize(12) // Smaller font
       .fillColor('#6B7280')
       .font('Helvetica')
-      .text('Employee Report', 110, 60, { align: 'left' });
+      .text('Employee Report', 90, 45, { align: 'left' });
 
     // --- Divider ---
-    doc.moveTo(50, 100).lineTo(doc.page.width - 50, 100).strokeColor(BORDER_COLOR).lineWidth(2).stroke();
+    doc.moveTo(30, 80).lineTo(doc.page.width - 30, 80).strokeColor(BORDER_COLOR).lineWidth(1).stroke();
 
     // --- Employee Card ---
-    let yPos = 120;
+    let yPos = 90;
     doc
-      .roundedRect(50, yPos, doc.page.width - 100, 110, 16)
+      .roundedRect(30, yPos, doc.page.width - 60, 80, 10) // Reduced height
       .fill(YELLOW_LIGHT);
 
     // Profile Picture
@@ -873,9 +869,9 @@ module.exports.generateEmployeePDF = async (req, res) => {
         const response = await axios.get(picUrl, { responseType: "arraybuffer" });
         const imageBuffer = Buffer.from(response.data);
         doc.save()
-          .circle(90, yPos + 55, 40)
+          .circle(70, yPos + 40, 30) // Smaller picture
           .clip()
-          .image(imageBuffer, 50, yPos + 15, { width: 80, height: 80 })
+          .image(imageBuffer, 40, yPos + 10, { width: 60, height: 60 })
           .restore();
       } catch (error) {
         // ignore image error
@@ -885,120 +881,129 @@ module.exports.generateEmployeePDF = async (req, res) => {
     // Employee Name & Code
     doc
       .fillColor(HEADER_TEXT)
-      .fontSize(20)
+      .fontSize(16) // Smaller font
       .font('Helvetica-Bold')
       .text(
         [employee.personaldetail?.fname, employee.personaldetail?.mname, employee.personaldetail?.lname].filter(Boolean).join(" ") || "N/A",
-        150,
-        yPos + 30
+        120,
+        yPos + 25
       );
     doc
       .fillColor('#222')
-      .fontSize(13)
+      .fontSize(12) // Smaller font
       .font('Helvetica')
-      .text(`Employee Code: ${employee_code}`, 150, yPos + 60);
+      .text(`Employee Code: ${employee_code}`, 120, yPos + 50);
 
-    yPos += 130;
+    yPos += 100;
 
-    // --- Employee Details Section ---
+    // Create a two-column layout for the rest of the data
+    const colWidth = 250;
+    const col1X = 30;
+    const col2X = col1X + colWidth + 10;
+    
+    // Set up first column
+    let col1Y = yPos;
+    let col2Y = yPos;
+
+    // --- COLUMN 1: Employee Details Section ---
     doc
-      .fontSize(16)
+      .fontSize(14)
       .fillColor(YELLOW)
       .font('Helvetica-Bold')
-      .text("Employee Details", 50, yPos);
+      .text("Employee Details", col1X, col1Y);
 
-    doc.moveTo(50, yPos + 22).lineTo(doc.page.width - 50, yPos + 22).stroke(YELLOW);
+    doc.moveTo(col1X, col1Y + 18).lineTo(col1X + colWidth, col1Y + 18).stroke(YELLOW);
 
-    yPos += 40;
+    col1Y += 30;
 
-    function addField(label, value) {
-      doc.fillColor(HEADER_TEXT).font("Helvetica-Bold").fontSize(12).text(label, 60, yPos);
-      doc.fillColor('#222').font("Helvetica").fontSize(12).text(value || "N/A", 250, yPos);
-      yPos += 28;
+    function addFieldCol1(label, value) {
+      doc.fillColor(HEADER_TEXT).font("Helvetica-Bold").fontSize(10).text(label, col1X + 5, col1Y);
+      doc.fillColor('#222').font("Helvetica").fontSize(10).text(value || "N/A", col1X + 120, col1Y);
+      col1Y += 20; // Reduced spacing
     }
 
-    addField("Department:", employee.servicedetail?.department);
-    addField("Designation:", employee.servicedetail?.designation);
-    addField("Employment Type:", employee.servicedetail?.type);
-    addField("Contract Start:", employee.servicedetail?.start ? new Date(employee.servicedetail.start).toLocaleDateString() : "N/A");
-    addField("Contract End:", employee.servicedetail?.end_if ? new Date(employee.servicedetail.end_if).toLocaleDateString() : "N/A");
-    addField("Shift Work In Time:", employee.servicedetail?.work_in);
-    addField("Shift Work Out Time:", employee.servicedetail?.work_out);
+    addFieldCol1("Department:", employee.servicedetail?.department);
+    addFieldCol1("Designation:", employee.servicedetail?.designation);
+    addFieldCol1("Employment Type:", employee.servicedetail?.type);
+    addFieldCol1("Contract Start:", employee.servicedetail?.start ? new Date(employee.servicedetail.start).toLocaleDateString() : "N/A");
+    addFieldCol1("Contract End:", employee.servicedetail?.end_if ? new Date(employee.servicedetail.end_if).toLocaleDateString() : "N/A");
+    addFieldCol1("Work In Time:", employee.servicedetail?.work_in);
+    addFieldCol1("Work Out Time:", employee.servicedetail?.work_out);
 
-    yPos += 20;
-
-    // --- Leave Details Section ---
+    // --- Leave Details Section (still in column 1) ---
+    col1Y += 10;
+    
     doc
-      .fontSize(16)
+      .fontSize(14)
       .fillColor(YELLOW)
       .font('Helvetica-Bold')
-      .text("Leave Details", 50, yPos);
+      .text("Leave Details", col1X, col1Y);
 
-    doc.moveTo(50, yPos + 22).lineTo(doc.page.width - 50, yPos + 22).stroke(YELLOW);
+    doc.moveTo(col1X, col1Y + 18).lineTo(col1X + colWidth, col1Y + 18).stroke(YELLOW);
 
-    yPos += 40;
+    col1Y += 30;
 
-    addField("Holiday Leaves Left:", leaveA?.holiday_leaves_in_hand);
-    addField("Medical Leaves Left:", leaveA?.medical_leaves_in_hand);
+    addFieldCol1("Holiday Leaves Left:", leaveA?.holiday_leaves_in_hand);
+    addFieldCol1("Medical Leaves Left:", leaveA?.medical_leaves_in_hand);
     if (leaveA?.maternity_leaves_in_hand !== undefined) {
-      addField("Maternity Leaves Left:", leaveA.maternity_leaves_in_hand);
+      addFieldCol1("Maternity Leaves Left:", leaveA.maternity_leaves_in_hand);
     }
+
+    // --- COLUMN 2: Passport Details Section ---
+    doc
+      .fontSize(14)
+      .fillColor(YELLOW)
+      .font('Helvetica-Bold')
+      .text("Passport Details", col2X, col2Y);
+
+    doc.moveTo(col2X, col2Y + 18).lineTo(col2X + colWidth, col2Y + 18).stroke(YELLOW);
+
+    col2Y += 30;
+
+    function addFieldCol2(label, value) {
+      doc.fillColor(HEADER_TEXT).font("Helvetica-Bold").fontSize(10).text(label, col2X + 5, col2Y);
+      doc.fillColor('#222').font("Helvetica").fontSize(10).text(value || "N/A", col2X + 120, col2Y);
+      col2Y += 20; // Reduced spacing
+    }
+
+    addFieldCol2("Passport number:", employee?.passportdetail?.passport_no);
+    addFieldCol2("Passport issue date:", employee?.passportdetail?.issue_date);
+    addFieldCol2("Passport expiry date:", employee?.passportdetail?.expiry_date);
+
+    // --- Pay Details Section (in column 2) ---
+    col2Y += 10;
+
+    doc
+      .fontSize(14)
+      .fillColor(YELLOW)
+      .font('Helvetica-Bold')
+      .text("Pay Details", col2X, col2Y);
+
+    doc.moveTo(col2X, col2Y + 18).lineTo(col2X + colWidth, col2Y + 18).stroke(YELLOW);
+
+    col2Y += 30;
+
+    addFieldCol2("Pay Group:", employee?.paydetail?.group);
+    addFieldCol2(`Pay (${employee?.paydetail?.currency || ''}):`, employee?.paydetail?.pay);
+    addFieldCol2("Pay Wedges:", employee?.paydetail?.wedges);
+    addFieldCol2("Payment type:", employee?.paydetail?.payment_type);
+    addFieldCol2("Min hours:", employee?.paydetail?.min_hours);
+    addFieldCol2("Pay Rate (per hour):", employee?.paydetail?.rate);
+    addFieldCol2("Pay mode:", employee?.paydetail?.pay_mode);
 
     // --- Footer ---
-    let footerY ;
-    footerY = doc.page.height - 50;
-    doc.moveTo(50, footerY).lineTo(doc.page.width - 50, footerY).stroke(BORDER_COLOR);
+    const footerY = doc.page.height - 30;
+    doc.moveTo(30, footerY).lineTo(doc.page.width - 30, footerY).stroke(BORDER_COLOR);
 
-    doc.fillColor('#9CA3AF')
-      .fontSize(10)
-      .font("Helvetica")
-      .text(`Generated on: ${new Date().toLocaleDateString()}`, 50, footerY + 10);
-    
-    
-      yPos += 20;
-
-      // --- Leave Details Section ---
-      doc
-        .fontSize(16)
-        .fillColor(YELLOW)
-        .font('Helvetica-Bold')
-        .text("Passport Details", 50, yPos);
-  
-      doc.moveTo(50, yPos + 22).lineTo(doc.page.width - 50, yPos + 22).stroke(YELLOW);
-  
-      yPos += 40;
-  
-      addField("Passport number:", employee?.passportdetail?.passport_no);
-      addField("Passport issue date:", employee?.passportdetail?.issue_date);
-      addField("Passport expiry date:", employee?.passportdetail?.expiry_date);
-
-      yPos += 20;
-
-      doc
-        .fontSize(16)
-        .fillColor(YELLOW)
-        .font('Helvetica-Bold')
-        .text("Pay Details", 50, yPos);
-  
-      doc.moveTo(50, yPos + 22).lineTo(doc.page.width - 50, yPos + 22).stroke(YELLOW);
-  
-      yPos += 40;
-  
-      addField("Pay Group:", employee?.paydetail?.group);
-      addField(`Pay (${employee?.paydetail.currency}):`, employee?.paydetail?.pay);
-      addField("Pay Wedges:", employee?.paydetail?.wedges);
-      addField("Payment type:", employee?.paydetail?.payment_type);
-      addField("Min hours:", employee?.paydetail?.min_hours);
-      addField("Pay Rate (per hour):", employee?.paydetail?.rate);
-      addField("Pay mode:", employee?.paydetail?.pay_mode);
-
-
-      footerY = doc.page.height - 50;
-      doc.moveTo(50, footerY).lineTo(doc.page.width - 50, footerY).stroke(BORDER_COLOR);
     // doc.fillColor('#9CA3AF')
-    //   .fontSize(10)
+    //   .fontSize(8)
     //   .font("Helvetica")
-    //   .text("Confidential Document", doc.page.width - 200, footerY + 10);
+    //   .text(`Generated on: ${new Date().toLocaleDateString()}`, 30, footerY + 10);
+    
+    // doc.fillColor('#9CA3AF')
+    //   .fontSize(8)
+    //   .font("Helvetica")
+    //   .text("Confidential Document", doc.page.width - 130, footerY + 10);
 
     doc.end();
 

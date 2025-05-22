@@ -344,7 +344,8 @@ module.exports.updateCompany = async (req, res) => {
     } = req.body;
 
     const tradingHours = req.body.tradingHours.map((item) => JSON.parse(item));
-
+    
+    console.log('addresss post code ',Address_Postcode);
     const companyLogo = req.files["Company_Logo"]
       ? req.files["Company_Logo"][0].filename
       : null;
@@ -3103,7 +3104,7 @@ module.exports.getUserData = async (req, res) => {
       id: user.id,
       employee_code: user.employee_code,
       email: user.email,
-      password: "***",
+      password: "*******",
       employee_name: user.employee_name,
     };
     return res.status(200).json(response);

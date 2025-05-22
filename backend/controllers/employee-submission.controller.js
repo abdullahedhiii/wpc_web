@@ -1033,9 +1033,21 @@ module.exports.submitLeaveallocation = async (req, res) => {
       year = String(new Date().getFullYear());
     }
     if (record) {
+      const new_medical_left = medical_leave > record.medical_max_leaves ? 
+                     record.medical_leaves_in_hand + (medical_leave - record.medical_max_leaves ) :
+                     Math.max(0,record.medical_leaves_in_hand - ( record.medical_max_leaves - medical_leave ) )
+      const new_holiday_left = holiday_leave > record.holiday_max_leaves ? 
+                     record.holiday_leaves_in_hand + (holiday_leave - record.holiday_max_leaves ) :
+                     Math.max(0,record.holiday_leaves_in_hand - ( record.holiday_max_leaves - holiday_leave ) )       
+      const new_maternity_left = maternity_leave > record.maternity_max_leaves ? 
+                     record.maternity_leaves_in_hand + (maternity_leave - record.maternity_max_leaves ) :
+                     Math.max(0,record.maternity_leaves_in_hand - ( record.maternity_max_leaves - maternity_leave ) )         
       await record.update({
+        medical_leaves_in_hand: new_medical_left,
         medical_max_leaves :medical_leave,
+        holiday_leaves_in_hand: new_holiday_left,
         holiday_max_leaves :holiday_leave,
+        maternity_leaves_in_hand: new_maternity_left,
         maternity_max_leaves :maternity_leave,
       });
 
