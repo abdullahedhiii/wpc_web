@@ -505,7 +505,7 @@ const CompanyForm = () => {
   const handleChange = (e, fieldName) => {
     const { value, type, checked, files } = e.target;
     const updatedValue = type === "checkbox" ? checked : value;
-
+console.log('here to update ',value , ' type ',' fieldName ',fieldName);
     if (type === "file") {
         setFormData((prevData) => ({
             ...prevData,
@@ -586,7 +586,7 @@ const CompanyForm = () => {
     e.preventDefault();
     setSubmitting(true);
     const formDataToSend = new FormData();
-  
+   console.log('in handle submit form ' ,formData.Address_Postcode);
     Object.entries(formData).forEach(([key, value]) => {
       if (
         (key === "Company_Logo" ||
