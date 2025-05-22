@@ -49,6 +49,7 @@ const UserForm = () => {
       if(emp){
          setFormData((prev) => ({
         ...prev,
+        employee_code : ele.employee_code,
         employee_name : emp['Employee Name']
       }))
       }
@@ -140,15 +141,12 @@ const UserForm = () => {
                   className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
                   required
                 >
-                if(!id){
- <option value="" disabled>Select Employee Code</option>
- {employees.map((emp) => !emp.has_account && (
-   <option key={emp.id} value={emp.employee_code}>
-     {emp.employee_code}
-   </option>
- ))}
-                }
-                 
+                  <option value="" disabled>Select Employee Code</option>
+                  {employees.map((emp) => !emp.has_account && (
+                    <option key={emp.id} value={emp.employee_code}>
+                      {emp.employee_code}
+                    </option>
+                  ))}
                 </select>
               </div>
   
