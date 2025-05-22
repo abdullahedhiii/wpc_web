@@ -25,9 +25,7 @@ const UserForm = () => {
     fetchEmployeesLink();
   },[]);
   
-  useEffect(() => {
-   console.log('form dtaaa ', formData);
-  },[formData])
+
   const fetchUser = async(req,res) => {
       try{
         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserData/${id}`);
@@ -47,8 +45,10 @@ const UserForm = () => {
   };
   
   useEffect(() => {
-    if(id) fetchUser();
-  },[]);
+    if (id && employees.length > 0) {
+      fetchUser();
+    }
+  }, [id, employees]);
 
   useEffect(() => {
     if (!id && formData.employee_code !== '') {
@@ -149,16 +149,15 @@ const UserForm = () => {
                   className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
                   required
                 >
-                 {!id ?  
-                 <>
-                 <option value="" disabled>Select Employee Code</option>
-                  {employees.map((emp) => !emp.has_account && (
-                    <option key={emp.id} value={emp.employee_code}>
-                      {emp.employee_code}
-                    </option>
-                  ))}
-                </> : null
-                }
+                  {!id && <option value="" disabled>Select Employee Code</option>}
+  {employees.map((emp) => {
+    const isAvailable = !emp.has_account || emp.employee_code === formData.employee_code;
+    return isAvailable && (
+      <option key={emp.id} value={emp.employee_code}>
+        {emp.employee_code}
+      </option>
+    );
+  })}
                 </select>
               </div>
   
