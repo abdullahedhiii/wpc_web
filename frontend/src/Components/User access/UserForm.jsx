@@ -15,7 +15,7 @@ const UserForm = () => {
   const [submitting,setSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formData,setFormData] = useState({
-    employee_code: id ? id : '',
+    employee_code:'',
     employee_name : '',
     email : '',
     password: '',
@@ -32,7 +32,7 @@ const UserForm = () => {
       try{
         const response = await axiosInstance.get(`${import.meta.env.VITE_API_URL}/api/getUserData/${id}`);
         setFormData(response.data);
-        console.log(response.data);
+        console.log(response.data)
      
       }
       catch(err){
@@ -140,12 +140,15 @@ const UserForm = () => {
                   className="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200"
                   required
                 >
-                  <option value="" disabled>Select Employee Code</option>
-                  {employees.map((emp) => !emp.has_account && (
-                    <option key={emp.id} value={emp.employee_code}>
-                      {emp.employee_code}
-                    </option>
-                  ))}
+                if(!id){
+ <option value="" disabled>Select Employee Code</option>
+ {employees.map((emp) => !emp.has_account && (
+   <option key={emp.id} value={emp.employee_code}>
+     {emp.employee_code}
+   </option>
+ ))}
+                }
+                 
                 </select>
               </div>
   
