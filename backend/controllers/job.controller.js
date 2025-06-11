@@ -162,6 +162,9 @@ module.exports.addJobListed = async(req,res) => {
 
 module.exports.addJobPosted = async (req, res) => {
     const id = req.params.id;
+    console.log('Request body:', req.body);
+    console.log('Content:', req.body.content);
+    console.log('Form data:', req.body.formData);
     try {
       const { job_id } = req.body.formData;  
       if(!job_id){
@@ -185,24 +188,30 @@ module.exports.addJobPosted = async (req, res) => {
         if(check_2){
           return res.status(500).json({message : 'Job code must be unique'});
         }
-  
-      }
-    
-      if(job_id){
-        const job = await Job.findOne({ where: { id: job_id  } });
-        await job.update({
-          jobDescription: req.body.content,
-          ...req.body.formData,
-        });
-      }
-      else{
         await Job.create({
           jobDescription: req.body.content,
           organisation_id : id,
           ...req.body.formData,
         })
       }
-       
+    
+     else{
+        console.log('Updating job with ID:', job_id);
+        const job = await Job.findOne({ where: { id: job_id  } });
+        console.log('Found job:', job);
+        if (!job) {
+          return res.status(404).json({ message: "Job not found" });
+        }
+        // Remove jobDescription from formData to prevent overwriting
+        const { jobDescription, ...formDataWithoutDescription } = req.body.formData;
+        const updateData = {
+          jobDescription: req.body.content,
+          ...formDataWithoutDescription,
+        };
+        console.log('Update data:', updateData);
+        await job.update(updateData);
+        console.log('Job updated successfully');
+      }
         return res.status(200).json({ message: "Job posted successfully" });
     } catch (err) {
       // Log error
