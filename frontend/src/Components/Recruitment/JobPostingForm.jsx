@@ -277,13 +277,19 @@ const JobPostingForm = () => {
 
   const handleJobPost = async (e) => {
     e.preventDefault();
-    console.log(content,' in submit job')
+    // console.log(content,' in submit job')
     setSubmitting(true)
     const t1 = new Date(formData.jobClosingDate);
     const t2 = new Date(formData.jobPostingDate);
     if(t1 < t2){
       setSubmitting(false)
       toast.error('Enter valid job closing and posting date');
+      return;
+    }
+
+    if(content.length > 5000){
+      setSubmitting(false)
+      toast.error('Job description cannot be more than 5000 characters');
       return;
     }
     try {
