@@ -276,6 +276,7 @@ const JobPostingForm = () => {
 
   const handleJobPost = async (e) => {
     e.preventDefault();
+    console.log(content,' in submit job')
     setSubmitting(true)
     const t1 = new Date(formData.jobClosingDate);
     const t2 = new Date(formData.jobPostingDate);

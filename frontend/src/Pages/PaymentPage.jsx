@@ -15,6 +15,8 @@ const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentPage = () => {
   const navigate = useNavigate();
+  const stripe = useStripe();
+  const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -56,6 +58,11 @@ const PaymentPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
+
+    const { error } = await stripe.createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardElement),
+    });
 
     setTimeout(() => {
       setIsProcessing(false);

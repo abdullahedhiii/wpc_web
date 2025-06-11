@@ -184,7 +184,7 @@ const TextEditor = ({ content, setContent, label }) => {
         />
 
         <div className="absolute bottom-3 right-3 text-xs text-gray-400">
-          {content?.length || 0} characters
+          {content?.length || 0} / 5000 characters
         </div>
       </div>
     </motion.div>
