@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: true,
         },
         education: {
-          type: DataTypes.STRING,
+          type: DataTypes.STRING(1000),
           allowNull: true,
         },
         recentPosition: {

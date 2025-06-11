@@ -61,6 +61,16 @@ export default function ApplicationForm({ onBack, job_id, jobTitle, organisation
     e.preventDefault()
     setSubmitting(true);
     try {
+      if(formData.education.length > 1000){
+        toast.error('Educational qualification cannot be more than 1000 characters');
+        setSubmitting(false);
+        return;
+      }
+      if(!formData.email.includes('.com') || !formData.email.includes('@')){
+        toast.error('Enter valid email id');
+        setSubmitting(false);
+        return;
+      }
       if(formData.contactNo.length < 10 || formData.contactNo.length > 15){
         toast.error('Contact Number should be of length 10-15 digits');
         setSubmitting(false);
