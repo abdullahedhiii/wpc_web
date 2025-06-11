@@ -3,6 +3,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, Calendar, Lock, CheckCircle, User, Shield, Clock, CreditCardIcon } from 'lucide-react';
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentPage = () => {
   const navigate = useNavigate();

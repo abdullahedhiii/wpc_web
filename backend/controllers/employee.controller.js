@@ -404,7 +404,7 @@ module.exports.getInHand = async (req, res) => {
     // }
 
     const leave_in_hand = id === 'Holiday' ? leaveAllocation.holiday_leaves_in_hand : 
-    id === 'Medical' ? leaveAllocation.medical_leaves_in_hand : maternity_leaves_in_hand;
+    id === 'Medical' ? leaveAllocation.medical_leaves_in_hand : leaveAllocation.maternity_leaves_in_hand;
 
     const if_requested = await LeaveRequest.findAll({
       where: {

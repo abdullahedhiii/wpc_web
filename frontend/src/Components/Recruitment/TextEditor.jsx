@@ -19,12 +19,16 @@ const customStyles = `
     border-top: none !important;
     background: #FFFFFF;
     min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
   }
 
   .ql-editor {
     font-size: 16px;
     line-height: 1.6;
     padding: 16px;
+    max-height: 400px;
+    overflow-y: auto;
   }
 
   .ql-editor:focus {
@@ -172,7 +176,11 @@ const TextEditor = ({ content, setContent, label }) => {
           formats={formats}
           theme="snow"
           className="rounded-lg transition-all duration-200 hover:shadow-md focus-within:shadow-md focus-within:ring-2 focus-within:ring-yellow-200"
-          style={{ minHeight: "200px", maxHeight: "600px" }}
+          style={{ 
+            height: "400px",
+            display: "flex",
+            flexDirection: "column"
+          }}
         />
 
         <div className="absolute bottom-3 right-3 text-xs text-gray-400">
