@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-
-const uploadPath = path.join(__dirname, "../uploads");
+require('dotenv').config();
+const uploadPath = process.env.DOC_PATH ;
 
 
 if (!fs.existsSync(uploadPath)) {

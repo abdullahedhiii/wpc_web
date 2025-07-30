@@ -68,6 +68,7 @@ module.exports.Login = async (req, res) => {
   
   try {
     const { email, password } = req.body;
+    console.log('Login request received:', { email, password });
     let existingUser ,isAdmin;
     existingUser = await Admin.findOne({ where: { email }, raw: true });
     if (existingUser) isAdmin = true;

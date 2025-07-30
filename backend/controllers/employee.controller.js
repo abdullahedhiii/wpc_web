@@ -298,7 +298,7 @@ module.exports.addWorkUpdate = async(req,res) => {
     try{
         const [organisationId, employeeCode] = req.params.id.split(".");
         const fileUrl = req.file
-          ? `${process.env.BACKEND_URL}/uploads/${organisationId}/${employeeCode}/${req.file.filename}`
+          ? `${process.env.RETURN_URL}/${organisationId}/${employeeCode}/${req.file.filename}`
           : null;
       const update =await  WorkUpdate.create({
         employee_code : employeeCode,

@@ -12,7 +12,7 @@ RUN npm install
 COPY . .
 
 # Expose the backend API port
-EXPOSE 3300
+EXPOSE 8080
 
 # Start the Node.js server using your app.js (ensure it's reading from the .env file)
 CMD ["node", "app.js"]

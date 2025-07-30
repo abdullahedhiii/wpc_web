@@ -15,14 +15,20 @@ const multer = require('multer');
 // require('./jobs/sponsor-fetch');
 
 const app = express();
-app.use(express.json());  
+
 app.use(cors({
-  origin: [process.env.FRONTEND_URL,], 
+  origin: process.env.FRONTEND_URL || "https://hr-solutions-frontend.vercel.app", 
   credentials: true,
 }));
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Add this line
 app.use(cookieParser());
+
+app.get("/", (req, res) => {
+  res.send("Backend is live 🚀");
+});
+
 
 app.use('/api',userRoutes);
 app.use('/api',adminRoutes);
@@ -33,7 +39,8 @@ app.use('/api',AttendanceRoutes);
 app.use('/api',PdfRoutes);
 app.use('/api',employeeRoutes);
 
-app.use('/uploads', express.static('uploads'));
+// app.use('/uploads', express.static('uploads'));
+app.use("/uploads", express.static(`${process.env.DOC_PATH}`));
 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
@@ -55,7 +62,8 @@ app.use((err, req, res, next) => {
 
 sequelize.sync({ alter:true }).then(() => {
   app.listen(process.env.PORT,'0.0.0.0', () => {
-    console.log('Server is running');
+
+    console.log('Server is running om port', process.env.PORT);
     // runSponsorUpdate().catch(error => {
     //   console.error('Initial sponsor update failed:', error);
     // });

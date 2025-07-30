@@ -29,7 +29,7 @@ require('dotenv').config();
       const organisation = await Organisation.findOne({ where: { id: organisation_id } });
       const documents = await OrgDocument.findAll({ where: { organisation_id } });
   
-      const dirPath = path.join(__dirname, `../uploads/${organisation_id}`);
+      const dirPath = path.join("/data/uploads", organisation_id.toString());
       const pdfPath = path.join(dirPath, "organisationReport.pdf");
       if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
       if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
@@ -45,7 +45,7 @@ require('dotenv').config();
       // --- Logo in Circle ---
       if (organisation.Company_Logo) {
         const logoFilename = path.basename(organisation.Company_Logo);
-        const logoPath = path.join(__dirname, `../uploads/${organisation.Company_name}/`, logoFilename);
+        const logoPath = path.join("/data/uploads", organisation.Company_name, logoFilename);
         if (fs.existsSync(logoPath)) {
           doc.save()
             .circle(60, 40, 30)
@@ -184,7 +184,7 @@ require('dotenv').config();
   
       stream.on('finish', () => {
         res.json({
-          pdf_url: `${process.env.BACKEND_URL}/uploads/${organisation_id}/organisationReport.pdf`
+          pdf_url: `${process.env.RETURN_URL}/${organisation_id}/organisationReport.pdf`
         });
       });
   
@@ -263,7 +263,7 @@ module.exports.generateStaffReport = async (req, res) => {
       ],
     });
 
-    const dirPath = path.join(__dirname, `../uploads/${id}`);
+    const dirPath = path.join("/data/uploads",id);
     const pdfPath = path.join(dirPath, "staffReport.pdf");
 
     if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
@@ -285,7 +285,7 @@ module.exports.generateStaffReport = async (req, res) => {
     // --- Logo in Circle ---
     if (organisation.Company_Logo) {
       const logoFilename = path.basename(organisation.Company_Logo);
-      const logoPath = path.join(__dirname, `../uploads/${organisation.Company_name}/`, logoFilename);
+      const logoPath = path.join("/data/uploads", organisation.Company_name, logoFilename);
       if (fs.existsSync(logoPath)) {
         doc.save()
           .circle(60, 45, 30)
@@ -458,7 +458,7 @@ module.exports.generateStaffReport = async (req, res) => {
 
     stream.on("finish", () => {
       res.json({
-        pdf_url: `${process.env.BACKEND_URL}/uploads/${id}/staffReport.pdf`,
+        pdf_url: `${process.env.RETURN_URL}/${id}/staffReport.pdf`,
         message: "Staff report generated successfully",
       });
     });
@@ -567,7 +567,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
   try {
     const id = req.params.id;
     const organisation = await Organisation.findOne({ where: { id: id } });
-    const outputDir = path.join(__dirname, "../uploads", id);
+    const outputDir = path.join("/data/uploads",  id);
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
@@ -599,7 +599,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     // --- Logo in Circle ---
     if (organisation.Company_Logo) {
       const logoFilename = path.basename(organisation.Company_Logo);
-      const logoPath = path.join(__dirname, `../uploads/${organisation.Company_name}/`, logoFilename);
+      const logoPath = path.join("/data/uploads", organisation.Company_name, logoFilename);
       if (fs.existsSync(logoPath)) {
         doc.save()
           .circle(60, 40, 30)
@@ -772,7 +772,7 @@ module.exports.generateCompleteLeaveReport = async (req, res) => {
     writeStream.on("finish", () => {
       res.status(200).json({
         message: "Leave report generated successfully",
-        url: `${process.env.BACKEND_URL}/uploads/${id}/LeaveReportAll.pdf`
+        url: `${process.env.RETURN_URL}/${id}/LeaveReportAll.pdf`
       });
     });
 
@@ -829,7 +829,7 @@ module.exports.generateEmployeePDF = async (req, res) => {
     // --- Logo in Circle ---
     if (org.Company_Logo) {
       const logoFilename = path.basename(org.Company_Logo);
-      const logoPath = path.join(__dirname, `../uploads/${org.Company_name}/`, logoFilename);
+      const logoPath = path.join("/data/uploads", org.Company_name, logoFilename);
       if (fs.existsSync(logoPath)) {
         doc.save()
           .circle(50, 35, 25) // Smaller logo
@@ -1009,7 +1009,7 @@ module.exports.generateEmployeePDF = async (req, res) => {
 
     res.status(200).json({
       message: "Employee Report generated successfully",
-      url: `${process.env.BACKEND_URL}/uploads/${org.id}/EmployeeReports/${employee_code}.pdf`,
+      url: `${process.env.RETURN_URL}/${org.id}/EmployeeReports/${employee_code}.pdf`,
     });
   } catch (err) {
     console.error("PDF generation error:", err);

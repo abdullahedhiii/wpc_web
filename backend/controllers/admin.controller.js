@@ -189,16 +189,16 @@ module.exports.submitCompanyForm = async (req, res) => {
       : null;
 
     const companyLogoPath = companyLogo
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${companyLogo}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${companyLogo}`
       : null;
     const authorizingProofIdPath = authorizingProofId
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${authorizingProofId}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${authorizingProofId}`
       : null;
     const keyContactProofIdPath = keyContactProofId
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${keyContactProofId}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${keyContactProofId}`
       : null;
     const level1ProofIdPath = level1ProofId
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${level1ProofId}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${level1ProofId}`
       : null;
 
     // Create Organisation
@@ -360,16 +360,16 @@ module.exports.updateCompany = async (req, res) => {
       : null;
 
     const companyLogoPath = companyLogo
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${companyLogo}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${companyLogo}`
       : undefined; // Will be undefined if not updated
     const authorizingProofIdPath = authorizingProofId
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${authorizingProofId}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${authorizingProofId}`
       : undefined; // Will be undefined if not updated
     const keyContactProofIdPath = keyContactProofId
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${keyContactProofId}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${keyContactProofId}`
       : undefined; // Will be undefined if not updated
     const level1ProofIdPath = level1ProofId
-      ? `${process.env.BACKEND_URL}/uploads/${Company_name}/${level1ProofId}`
+      ? `${process.env.RETURN_URL}/${Company_name}/${level1ProofId}`
       : undefined;
 
     const existingCompany = await Organisation.findByPk(req.params.id);
@@ -498,7 +498,7 @@ module.exports.updateCompany = async (req, res) => {
 //     Penalty,
 //   } = req.body;
 
-//   const logoPath = req.file ? `${process.env.BACKEND_URL}/uploads/${req.file.filename}` : null;
+//   const logoPath = req.file ? `${process.env.RETURN_URL}/${req.file.filename}` : null;
 //
 //   const newOrganisation = await Organisation.create({
 //     Name,
@@ -1701,7 +1701,7 @@ module.exports.addOffDay = async (req, res) => {
 module.exports.uploadDocuments = async (req, res) => {
   try {
     const { documentType, Company_name,companyId } = req.body;
-    const url = `${process.env.BACKEND_URL}/uploads/${Company_name}/${req.file.filename}`;
+    const url = `${process.env.RETURN_URL}/${Company_name}/${req.file.filename}`;
 
     console.log('Trying to upload document ')
     let existingDocument = await OrgDocument.findOne({

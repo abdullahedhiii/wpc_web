@@ -315,11 +315,11 @@ module.exports.applyJob = async (req, res) => {
   const coverLetterFile = req.files?.coverLetter ? req.files.coverLetter[0].filename : null;
 
   const resumeUrl = resumeFile
-    ? `${process.env.BACKEND_URL}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${resumeFile}`
+    ? `${process.env.RETURN_URL}/${organisationId}/JobCandidates/${job_id}/${email}/${resumeFile}`
     : null;
 
   const coverLetterUrl = coverLetterFile
-    ? `${process.env.BACKEND_URL}/uploads/${organisationId}/JobCandidates/${job_id}/${email}/${coverLetterFile}`
+    ? `${process.env.RETURN_URL}/${organisationId}/JobCandidates/${job_id}/${email}/${coverLetterFile}`
     : null;
 
   try {
@@ -431,7 +431,7 @@ module.exports.updateStatus = async (req, res) => {
           }
         })
         try {
-        const outputDir = path.join(__dirname, "../uploads", candidate.organisation_id.toString(),'JobCandidates',candidate.job_id.toString());
+        const outputDir = path.join("/data/uploads", candidate.organisation_id.toString(),'JobCandidates',candidate.job_id.toString());
         if (!fs.existsSync(outputDir)) {
           fs.mkdirSync(outputDir, { recursive: true });
         }
@@ -491,8 +491,12 @@ module.exports.updateStatus = async (req, res) => {
         // Add logo and header
         if (org.Company_Logo) {
           const logoFilename = path.basename(org.Company_Logo);
-          const logoPath = path.join(__dirname, `../uploads/${org.Company_name}/`, logoFilename);
-
+          const logoPath = path.join(
+            "/data/uploads",
+            org.Company_name,
+            logoFilename
+          );
+          
           if (fs.existsSync(logoPath)) {
             doc.save()
                .circle(75, 75, 50)
@@ -616,7 +620,7 @@ module.exports.updateStatus = async (req, res) => {
         });
 
         // Update the offer letter URL in the database
-        updateData.offer_letter_url =  `${process.env.BACKEND_URL}/uploads/${org.id}/JobCandidates/${candidate.job_id}/OfferLetter_${candidate.id}.pdf`;
+        updateData.offer_letter_url =  `${process.env.RETURN_URL}/${org.id}/JobCandidates/${candidate.job_id}/OfferLetter_${candidate.id}.pdf`;
 
         } catch (error) {
           console.error("Error generating offer letter:", error);
