@@ -203,7 +203,7 @@ const LandingPage = () => {
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
             <div className="bg-yellow-500 p-8 text-white text-center">
               <h3 className="text-2xl font-bold mb-2">Enterprise Package</h3>
-              <div className="text-5xl font-bold mb-4">£{import.meta.env.VITE_AMOUNT}<span className="text-lg">/one-time</span></div>
+              <div className="text-5xl font-bold mb-4">£{import.meta.env.VITE_AMOUNT_SHOW}<span className="text-lg">/one-time</span></div>
               <p className="text-yellow-100">Everything you need to manage your HR operations</p>
             </div>
             <div className="p-8">
