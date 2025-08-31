@@ -18,10 +18,12 @@ const PaymentForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (!location.state?.fromApp) {
-    navigate("/"); // redirect if user typed URL directly
-    return null;
-  }
+  useEffect(() => {
+    if (!location.state?.from_api) {
+      navigate("/"); // redirect if user typed URL directly
+      return null;
+    }
+  }, [location.state?.from_api]);
 
   const stripe = useStripe();
   const elements = useElements();
