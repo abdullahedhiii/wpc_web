@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate ,useLocation} from "react-router-dom";
 import { CreditCard, Calendar, Lock, CheckCircle, User, Shield, Clock, CreditCardIcon } from 'lucide-react';
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -16,6 +16,13 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentForm = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  if (!location.state?.fromApp) {
+    navigate("/"); // redirect if user typed URL directly
+    return null;
+  }
+
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);

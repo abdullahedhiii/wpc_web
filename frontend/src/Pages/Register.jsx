@@ -74,7 +74,7 @@ const Register = () => {
         privacyPolicyAccepted: false,
         termsAccepted: false,
       })
-      navigate("/payment-page")
+      navigate("/payment-page",{state:{from_api:true}})
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.")
     } finally {
