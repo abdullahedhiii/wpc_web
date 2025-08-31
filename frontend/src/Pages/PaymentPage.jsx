@@ -10,6 +10,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
+import axios from "axios";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -55,24 +56,59 @@ const PaymentPage = () => {
     }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    if (!stripe || !elements) return;
+  
     setIsProcessing(true);
-
-    const { error } = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement),
-    });
-
-    setTimeout(() => {
+  
+    try {
+      // 1. Create PaymentIntent on backend
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/create-payment-intent`,
+        { amount: 99900, currency: "gbp" } // £999.00 in pence
+      );
+  
+      const { clientSecret } = res.data;
+  
+      // 2. Confirm the card payment
+      const cardElement = elements.getElement(CardElement);
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: formData.cardHolder,
+            },
+          },
+        }
+      );
+  
+      if (error) {
+        console.error(error.message);
+        alert(error.message);
+        setIsProcessing(false);
+        return;
+      }
+  
+      if (paymentIntent.status === "succeeded") {
+        setPaymentSuccess(true);
+  
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Payment failed. Please try again.");
+    } finally {
       setIsProcessing(false);
-      setPaymentSuccess(true);
-      
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-    }, 2000);
+    }
   };
+  
 
   const features = [
     {

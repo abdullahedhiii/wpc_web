@@ -134,6 +134,7 @@ import PaymentPage from "./Pages/PaymentPage";
 
 import { FaBars } from "react-icons/fa"; // Import the hamburger menu icon
 import LeaveApplicationList from "./Components/Employee Corner/LeaveApplicationList";
+import PaymentWrapper from "./Pages/PaymentWrapper";
 
 const MainLayout = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebarContext();
@@ -216,7 +217,7 @@ const router = createBrowserRouter([
   },
   {
     path : 'payment-page',
-    element : <PaymentPage/>
+    element : <PaymentWrapper/>
   },
   {
     path : '/',
