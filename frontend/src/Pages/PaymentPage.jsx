@@ -14,48 +14,23 @@ import axios from "axios";
 
 const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLIC_KEY);
 
-const PaymentPage = () => {
+const PaymentForm = () => {
   const navigate = useNavigate();
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [formData, setFormData] = useState({
-    cardNumber: "",
     cardHolder: "",
-    expiryDate: "",
-    cvc: "",
   });
 
   const handleChange = (e) => {
-    let { name, value } = e.target;
-    
-    // Format card number with spaces
-    if (name === "cardNumber") {
-      value = value.replace(/\s/g, "").match(/.{1,4}/g)?.join(" ") || "";
-      value = value.substring(0, 19); // Limit to 16 digits + 3 spaces
-    }
-    
-    // Format expiry date
-    if (name === "expiryDate") {
-      value = value.replace(/\D/g, "");
-      if (value.length >= 2) {
-        value = value.substring(0, 2) + "/" + value.substring(2, 4);
-      }
-      value = value.substring(0, 7);
-    }
-    
-    // Limit CVC to 3 digits
-    if (name === "cvc") {
-      value = value.replace(/\D/g, "").substring(0, 3);
-    }
-
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,7 +83,6 @@ const PaymentPage = () => {
       setIsProcessing(false);
     }
   };
-  
 
   const features = [
     {
@@ -136,7 +110,7 @@ const PaymentPage = () => {
         transition={{ duration: 0.5 }}
         className="max-w-5xl mx-auto"
       >
-                <div className="text-center mb-12">
+        <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
             Complete Your Registration
           </h1>
@@ -146,7 +120,7 @@ const PaymentPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <motion.div
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
@@ -161,23 +135,24 @@ const PaymentPage = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Card Number</label>
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                  <input
-                    type="text"
-                    name="cardNumber"
-                    value={formData.cardNumber}
-                    onChange={handleChange}
-                    placeholder="1234 5678 9012 3456"
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
-                    required
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Card Details</label>
+                <div className="p-3 rounded-xl border border-gray-200 focus-within:border-yellow-500 focus-within:ring-2 focus-within:ring-yellow-200">
+                  <CardElement
+                    options={{
+                      style: {
+                        base: {
+                          fontSize: "16px",
+                          color: "#32325d",
+                          "::placeholder": { color: "#a0aec0" },
+                        },
+                      },
+                    }}
                   />
                 </div>
               </div>
 
-                            <div className="space-y-2">
+              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Card Holder Name</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -190,40 +165,6 @@ const PaymentPage = () => {
                     className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
                     required
                   />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Expiry Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <input
-                      type="text"
-                      name="expiryDate"
-                      value={formData.expiryDate}
-                      onChange={handleChange}
-                      placeholder="MM/YY"
-                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
-                      required
-                    />
-                  </div>
-                </div>
-
-                                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">CVC</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                    <input
-                      type="text"
-                      name="cvc"
-                      value={formData.cvc}
-                      onChange={handleChange}
-                      placeholder="123"
-                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all"
-                      required
-                    />
-                  </div>
                 </div>
               </div>
 
@@ -249,7 +190,7 @@ const PaymentPage = () => {
             </form>
           </motion.div>
 
-                    <motion.div
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
@@ -273,7 +214,7 @@ const PaymentPage = () => {
               </motion.div>
             ))}
 
-                        <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl shadow-lg p-6 text-white">
               <h3 className="text-xl font-semibold mb-4">Enterprise Package Includes:</h3>
               <ul className="space-y-3">
                 {[
@@ -295,6 +236,14 @@ const PaymentPage = () => {
         </div>
       </motion.div>
     </div>
+  );
+};
+
+const PaymentPage = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentForm />
+    </Elements>
   );
 };
 
