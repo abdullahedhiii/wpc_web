@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { motion } from "framer-motion";
 import { useNavigate ,useLocation} from "react-router-dom";
 import { CreditCard, Calendar, Lock, CheckCircle, User, Shield, Clock, CreditCardIcon } from 'lucide-react';
