@@ -43,7 +43,7 @@ const PaymentForm = () => {
       // 1. Create PaymentIntent on backend
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/create-payment-intent`,
-        { amount: 99900, currency: "gbp" } // £999.00 in pence
+        { amount: import.meta.env.VITE_AMOUNT, currency: "gbp" }
       );
   
       const { clientSecret } = res.data;
@@ -115,7 +115,7 @@ const PaymentForm = () => {
             Complete Your Registration
           </h1>
           <p className="text-lg text-gray-600">
-            One-time payment for lifetime access to HR Solutions
+            One-time payment of £{import.meta.env.VITE_AMOUNT} for lifetime access to HR Solutions
           </p>
         </div>
 
