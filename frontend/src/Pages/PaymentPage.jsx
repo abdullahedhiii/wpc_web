@@ -115,7 +115,7 @@ const PaymentForm = () => {
             Complete Your Registration
           </h1>
           <p className="text-lg text-gray-600">
-            One-time payment of £{import.meta.env.VITE_AMOUNT} for lifetime access to HR Solutions
+            One-time payment of £{import.meta.env.VITE_SHOW_AMOUNT} for lifetime access to HR Solutions
           </p>
         </div>
 
