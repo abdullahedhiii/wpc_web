@@ -12,7 +12,7 @@ import {
 } from "@stripe/react-stripe-js";
 import axios from "axios";
 
-const stripePromise = loadStripe(process.env.VITE_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentForm = () => {
   const navigate = useNavigate();
