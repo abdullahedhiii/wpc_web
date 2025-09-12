@@ -56,8 +56,8 @@ const AttendanceHistory = () => {
         }
     };
 
-    const handleDelete = () => {
-        setAttendance((prev) => prev.filter((attendance) => attendance.id !== id));
+    const handleDelete = (employee_code,date) => {
+        setAttendance((prev) => prev.filter((attendance) => attendance.employee_code !== employee_code && attendance.date !== date));
     }
     return (
         <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
@@ -182,7 +182,7 @@ const AttendanceHistory = () => {
                             searchable
                             downloadable={false}
                             addMore={false}
-                            setFetch={handleDelete}
+                            setFetch={setAttendance}
                             action_route="deleteAttendance"
 
                         />

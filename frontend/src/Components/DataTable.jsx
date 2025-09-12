@@ -386,7 +386,7 @@ return (
                                 </button>
                               )
                             }
-                            {field === "Delete" && (
+                            {field === "Delete" && !action_route === "deleteAttendance" && (
                               <button
                                 onClick={() => handleDelete(row["delete_route"],row["id"])}
                                 disabled={user?.isAdmin ? false : !selectedFeature.can_edit || isDeleting}
