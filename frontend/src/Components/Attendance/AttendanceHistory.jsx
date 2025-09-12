@@ -56,15 +56,20 @@ const AttendanceHistory = () => {
         }
     };
 
-    const handleDeleteAttendance =  (employee_code,date) => {
+    const handleDeleteAttendance = (employee_code, date) => {
+        console.log(employee_code, date);
         setAttendance((prev) =>
-            prev.filter(
-              (attendance) =>
-                (attendance["Employee Code"] === employee_code && attendance["Date"] === date)
-            )
-          );
-                  toast.success("Attendance deleted successfully");
-    };
+          prev.filter(
+            (attendance) =>
+              !(
+                attendance["Employee Code"] === employee_code &&
+                attendance["Date"] === date
+              )
+          )
+        );
+        toast.success("Attendance deleted successfully");
+      };
+      
       
     return (
         <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
