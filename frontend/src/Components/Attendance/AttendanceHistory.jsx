@@ -60,7 +60,7 @@ const AttendanceHistory = () => {
         setAttendance((prev) =>
             prev.filter(
               (attendance) =>
-                !(attendance["Employee Code"] === employee_code && attendance["Date"] === date)
+                (attendance["Employee Code"] === employee_code && attendance["Date"] === date)
             )
           );
                   toast.success("Attendance deleted successfully");
