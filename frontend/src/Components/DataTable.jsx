@@ -55,6 +55,7 @@ const DataTable = ({
       toast.success(response?.data?.message);
     }
   catch(err){
+    console.log(err);
     toast.error('Error in deleting attendance ',err);
   }
   finally{
