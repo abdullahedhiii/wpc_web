@@ -51,7 +51,7 @@ const DataTable = ({
       setIsDeleting(true);
         const route = `${import.meta.env.VITE_API_URL}/api/deleteAttendance/${companyData[0].id}/${employee_code}/${date}`;
       const response = await axiosInstance.delete(route);
-     props.setFetch({employee_code,date });
+     setFetch({employee_code,date });
 
     }
   catch(err){
