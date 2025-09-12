@@ -46,12 +46,12 @@ const DataTable = ({
     );
   }, [data, searchQuery]);
   
-  const handleDeleteAttendance = async(id) => {
+  const  handleDeleteAttendance = async(employee_code,date) => {
     try{
       setIsDeleting(true);
-        const route = `${import.meta.env.VITE_API_URL}/api/deleteAttendance/${companyData[0].id}/${id}`;
-      const response = await axiosInstance.post(route,{});
-      setFetch();
+        const route = `${import.meta.env.VITE_API_URL}/api/deleteAttendance/${companyData[0].id}/${employee_code}/${date}`;
+      const response = await axiosInstance.delete(route);
+      setData((prev) => prev.filter((row) => row['Employee Code'] !== employee_code && row['Date'] !== date));
       toast.success(response?.data?.message);
     }
   catch(err){
@@ -377,7 +377,7 @@ return (
                             {
                               field === "Delete" && action_route === "deleteAttendance" && ( 
                                 <button
-                                  onClick={() => handleDeleteAttendance(row["id"])}
+                                  onClick={() => handleDeleteAttendance(row["Employee Code"],row["Date"])}
                                   disabled={user?.isAdmin ? false : !selectedFeature.can_edit || isDeleting}
                                   className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-red-100 transition-all duration-200"
                                   title="Delete"
