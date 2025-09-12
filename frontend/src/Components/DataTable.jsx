@@ -51,8 +51,8 @@ const DataTable = ({
       setIsDeleting(true);
         const route = `${import.meta.env.VITE_API_URL}/api/deleteAttendance/${companyData[0].id}/${employee_code}/${date}`;
       const response = await axiosInstance.delete(route);
-      setData((prev) => prev.filter((row) => row['Employee Code'] !== employee_code && row['Date'] !== date));
-      toast.success(response?.data?.message);
+     props.setFetch({employee_code,date });
+
     }
   catch(err){
     console.log(err);

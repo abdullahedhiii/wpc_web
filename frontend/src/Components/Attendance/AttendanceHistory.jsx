@@ -56,9 +56,16 @@ const AttendanceHistory = () => {
         }
     };
 
-    const handleDelete = (employee_code,date) => {
-        setAttendance((prev) => prev.filter((attendance) => attendance.employee_code !== employee_code && attendance.date !== date));
-    }
+    const handleDeleteAttendance =  (employee_code,date) => {
+        setAttendance((prev) =>
+            prev.filter(
+              (attendance) =>
+                !(attendance["Employee Code"] === employee_code && attendance["Date"] === date)
+            )
+          );
+                  toast.success("Attendance deleted successfully");
+    };
+      
     return (
         <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
@@ -182,7 +189,7 @@ const AttendanceHistory = () => {
                             searchable
                             downloadable={false}
                             addMore={false}
-                            setFetch={setAttendance}
+                            setFetch={handleDeleteAttendance}
                             action_route="deleteAttendance"
 
                         />
