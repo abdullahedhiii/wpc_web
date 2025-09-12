@@ -9,7 +9,8 @@ import { toast } from 'react-toastify';
 
 const AttendanceHistory = () => {
     const { isSideBarOpen } = useSidebarContext();
-    const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date','Clock In','Clock Out','Location','Duty Hours'];
+    const columns = ['Sl No.','Department','Designation','Employee Code','Employee Name','Date',
+        'Clock In','Clock Out','Location','Duty Hours','Delete'];
     const [attendance, setAttendance] = useState([]);
     const { companyData, fetchEmployeesLink, fetchDepartments, fetchDesignations, employees, departmentData, designationData } = useCompanyContext();
     const [submitted, setSubmitted] = useState(false);
@@ -55,6 +56,9 @@ const AttendanceHistory = () => {
         }
     };
 
+    const handleDelete = () => {
+        setAttendance((prev) => prev.filter((attendance) => attendance.id !== id));
+    }
     return (
         <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100">
             <div className="relative bg-gradient-to-r from-yellow-500 to-yellow-600 pb-5">
@@ -165,10 +169,10 @@ const AttendanceHistory = () => {
                     transition={{ delay: 0.2 }}
                     className={`bg-white rounded-xl shadow-lg overflow-x-auto ${isSideBarOpen ? "max-w-3xl" : "max-w-6xl"}`}
                 >
-                    <div className="flex items-center gap-2 pl-6 pt-6">
+                    {/* <div className="flex items-center gap-2 pl-6 pt-6">
                         <History className="w-5 h-5 text-yellow-700" />
                         <h1 className="text-yellow-900 text-[15px] font-medium">Attendance Results</h1>
-                    </div>
+                    </div> */}
                     <div className="p-6">
                         <DataTable
                             title="Attendance History"
@@ -178,6 +182,9 @@ const AttendanceHistory = () => {
                             searchable
                             downloadable={false}
                             addMore={false}
+                            setFetch={handleDelete}
+                            action_route="deleteAttendance"
+
                         />
                     </div>
                 </motion.div>

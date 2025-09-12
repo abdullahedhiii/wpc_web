@@ -20,7 +20,7 @@ const PaymentForm = () => {
 
   useEffect(() => {
     if (!location.state?.from_api) {
-      navigate("/"); // redirect if user typed URL directly
+      navigate("/");
       return null;
     }
   }, [location.state?.from_api]);
