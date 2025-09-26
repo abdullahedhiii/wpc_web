@@ -141,7 +141,11 @@ const PaymentForm = () => {
                 <img src="/images/mastercard.png" alt="Mastercard" className="h-8" />
               </div>
             </div>
-            <div className="space-y-4">
+          
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+              <div className="space-y-4">
   <label className="block text-sm font-medium text-gray-700">Select Package</label>
   <div className="flex space-x-4">
     <button
@@ -166,11 +170,9 @@ const PaymentForm = () => {
     >
       £200/liftime
     </button>
+    </div>
   </div>
-</div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Card Details</label>
                 <div className="p-3 rounded-xl border border-gray-200 focus-within:border-yellow-500 focus-within:ring-2 focus-within:ring-yellow-200">
                   <CardElement
@@ -268,6 +270,7 @@ const PaymentForm = () => {
           </motion.div>
         </div>
       </motion.div>
+      
     </div>
   );
 };

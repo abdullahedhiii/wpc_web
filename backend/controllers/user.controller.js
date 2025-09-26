@@ -94,6 +94,11 @@ module.exports.Login = async (req, res) => {
     // ---------- PLAN EXPIRY CHECK ----------
     if (isAdmin) {
       // Admin login
+      if(!existingUser.next_pay_date){
+        return res
+          .status(403)
+          .json({ message: "Your have not yet subscribed to our plan. Kindly pay first.",navlink: '/payment-page',admin_id:existingUser.id});
+      }
       if (
         existingUser.next_pay_date &&
         new Date(existingUser.next_pay_date) <= today
@@ -132,6 +137,7 @@ module.exports.Login = async (req, res) => {
       const admin = await Admin.findOne({
         where: { id: employee.organisation.admin_id },
       });
+
 
       if (
         admin &&

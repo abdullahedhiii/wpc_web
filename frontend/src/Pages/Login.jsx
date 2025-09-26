@@ -209,9 +209,9 @@ const Login = () => {
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
   >
-    <p>Your plan has expired. Kindly renew to continue.</p>
+    <p>Your plan has expired or you have not yet subscribed. Kindly pay or renew to continue.</p>
     <button
-      onClick={() => navigate(`/payment-page/${id_if}`)}
+      onClick={() => navigate(`/payment-page/${id_if}`,{state:{from_api:true}})}
       className="bg-yellow-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition"
     >
       Renew Plan

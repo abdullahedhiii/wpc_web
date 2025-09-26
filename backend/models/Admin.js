@@ -45,6 +45,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATEONLY,
         allowNull :true,
       },
+      has_paid:{
+        type: DataTypes.BOOLEAN,
+        defaultValue:false
+      }
     },
     {
       tableName: 'Admins',
