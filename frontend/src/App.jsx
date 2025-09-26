@@ -216,7 +216,7 @@ const router = createBrowserRouter([
     element : <SponsorList/>
   },
   {
-    path : 'payment-page',
+    path : 'payment-page/:id',
     element : <PaymentWrapper/>
   },
   {

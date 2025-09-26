@@ -9,6 +9,7 @@ const cheerio = require('cheerio');
 const path = require('path');
 const csv = require('csv-parser');
 const Op = require('sequelize').Op;
+const Stripe = require('stripe');
 
 module.exports.Register = async (req, res) => {
  
@@ -51,7 +52,7 @@ module.exports.Register = async (req, res) => {
       await transaction.commit();
       console.log('Transaction committed');
     console.log('USer registered',newUser);
-      return res.status(201).json({ message: 'User registered successfully.' });
+      return res.status(201).json({ message: 'User registered successfully.',admin_id:newUser.id });
     
     }  catch (error) {
       console.log('Error in user registration',error);
@@ -65,90 +66,156 @@ module.exports.Register = async (req, res) => {
 };
 
 module.exports.Login = async (req, res) => {
-  
   try {
     const { email, password } = req.body;
-    console.log('Login request received:', { email, password });
-    let existingUser ,isAdmin;
+    const today = new Date();
+
+    console.log("Login request received:", { email });
+
+    let existingUser, isAdmin;
     existingUser = await Admin.findOne({ where: { email }, raw: true });
-    if (existingUser) isAdmin = true;
-    else{
+
+    if (existingUser) {
+      isAdmin = true;
+    } else {
       existingUser = await User.findOne({ where: { email }, raw: true });
-      if(existingUser) isAdmin = false;
+      if (existingUser) isAdmin = false;
     }
-    
-    if(!existingUser){
-      
-      return res.status(400).json({ error: 'Email not found, try again' });
+
+    if (!existingUser) {
+      return res.status(400).json({ error: "Email not found, try again" });
     }
 
     const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
     if (!isPasswordValid) {
-      
-      return res.status(400).json({ error: 'Incorrect password, try again' });
+      return res.status(400).json({ error: "Incorrect password, try again" });
     }
+
+    // ---------- PLAN EXPIRY CHECK ----------
+    if (isAdmin) {
+      // Admin login
+      if (
+        existingUser.next_pay_date &&
+        new Date(existingUser.next_pay_date) <= today
+      ) {
+        return res
+          .status(403)
+          .json({ message: "Your plan has expired. Kindly repay.",navlink: '/payment-page',admin_id:existingUser.id});
+      }
+    } else {
+      // Employee login
+      const employee = await Employee.findOne({
+        where: { employee_code: existingUser.employee_code },
+        include: [
+          {
+            model: Organisation,
+            as: "organisation",
+            attributes: ["Company_name", "id", "admin_id"],
+          },
+          {
+            model: PersonalDetail,
+            as: "personaldetail",
+            attributes: ["fname", "mname", "lname", "contact_1"],
+          },
+          {
+            model: ServiceDetail,
+            as: "servicedetail",
+            attributes: ["profile_pic", "type"],
+          },
+        ],
+      });
+
+      if (!employee) {
+        return res.status(404).json({ error: "Employee not found" });
+      }
+
+      const admin = await Admin.findOne({
+        where: { id: employee.organisation.admin_id },
+      });
+
+      if (
+        admin &&
+        admin.next_pay_date &&
+        new Date(admin.next_pay_date) <= today
+      ) {
+        return res
+          .status(403)
+          .json({ error: "Your company's plan has expired." });
+      }
+    }
+    // ---------------------------------------
 
     const { password: _, ...userDetails } = existingUser;
-    let org,employee;
-    if(isAdmin) org = await Organisation.findOne({where : {admin_id : userDetails.id}})
-    else{
-       employee = await Employee.findOne({where : {employee_code : existingUser.employee_code},
-            include : [
-              {
-                 model : Organisation,
-                 as : 'organisation',
-                 attributes : ['Company_name',"id"]
-              },
-              {
-                model : PersonalDetail,
-                as : 'personaldetail',
-                attributes : ['fname','mname','lname','contact_1']
-              },
-              {
-                model : ServiceDetail,
-                as : 'servicedetail',
-                attributes : ['profile_pic','type']
-              },
-
-            ]
-      })
+    let org, employee;
+    if (isAdmin) {
+      org = await Organisation.findOne({
+        where: { admin_id: userDetails.id },
+      });
+    } else {
+      employee = await Employee.findOne({
+        where: { employee_code: existingUser.employee_code },
+        include: [
+          {
+            model: Organisation,
+            as: "organisation",
+            attributes: ["Company_name", "id"],
+          },
+          {
+            model: PersonalDetail,
+            as: "personaldetail",
+            attributes: ["fname", "mname", "lname", "contact_1"],
+          },
+          {
+            model: ServiceDetail,
+            as: "servicedetail",
+            attributes: ["profile_pic", "type"],
+          },
+        ],
+      });
     }
+
     const token = jwt.sign(
       { id: userDetails.id, email: userDetails.email },
-      process.env.JWT_SECRET, 
-      { expiresIn: '1h' } 
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
     );
-    
+
     res.cookie("access_token", token, {
       httpOnly: true,
       secure: true,
       sameSite: "None",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    
-    
-    const response  = isAdmin ? {...userDetails, profile_image : org?.Company_Logo || null,isAdmin} :
-    {
-           company_name : employee.organisation.Company_name,
-           company_id : employee.organisation.id,
-           email : userDetails.email,
-           phone_number : employee.personaldetail.contact_1,
-           first_name : [employee.personaldetail.fname,employee.personaldetail.mname].filter(Boolean).join(' '),
-           id : userDetails.id,
-           last_name : employee.personaldetail.lname || '',
-           profile_image : employee.servicedetail.profile_pic || null,
-           isAdmin,
-           employee_code : employee.employee_code,
-           type : employee.servicedetail.type,
-    };
-    return res.status(200).json({
-      user: response, 
-    });
+
+    const response = isAdmin
+      ? {
+          ...userDetails,
+          profile_image: org?.Company_Logo || null,
+          isAdmin,
+        }
+      : {
+          company_name: employee.organisation.Company_name,
+          company_id: employee.organisation.id,
+          email: userDetails.email,
+          phone_number: employee.personaldetail.contact_1,
+          first_name: [employee.personaldetail.fname, employee.personaldetail.mname]
+            .filter(Boolean)
+            .join(" "),
+          id: userDetails.id,
+          last_name: employee.personaldetail.lname || "",
+          profile_image: employee.servicedetail.profile_pic || null,
+          isAdmin,
+          employee_code: employee.employee_code,
+          type: employee.servicedetail.type,
+        };
+
+    return res.status(200).json({ user: response });
   } catch (error) {
-    
-    return res.status(500).json({ error: 'An error occurred' });
+    console.error("Login error:", error.message);
+    return res.status(500).json({ error: "An error occurred" });
   }
 };
+
 
 module.exports.logout = async (req, res) => {
   try {
@@ -751,6 +818,75 @@ module.exports.fetchSponsorsFromFile = async (req, res) => {
   }
 };
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+module.exports.createPaymentIntent = async (req, res) => {
+  try {
+    const { admin_id, selectedPlan, amount, currency } = req.body;
+
+    if (!amount || !currency) {
+      return res.status(400).json({ error: "Amount and currency are required" });
+    }
+
+    // 1. Create payment intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency,
+      automatic_payment_methods: { enabled: true },
+    });
+
+    // 2. Find admin
+    const admin = await Admin.findOne({
+      where: { id: admin_id },
+    });
+
+    if (!admin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+
+    // 3. Update plan
+    if (selectedPlan === "enterprise") {
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1); // 1 year ahead
+
+      await admin.update({
+        selectedPlan,
+        next_pay_date: nextYear,
+      });
+    } else {
+      await admin.update({ selectedPlan });
+    }
+
+    // 4. Send client secret to frontend
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    console.error("Error creating payment intent:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
 
 
+module.exports.changeAdminPassword = async (req, res) => {
+  const { email, current_password, new_password } = req.body;
 
+  try {
+    // Find admin by ID
+    const admin = await Admin.findOne({ where: { email: email } });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Compare current password
+    const isMatch = bcrypt.compareSync(current_password, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid current password" });
+    }
+
+
+    await admin.update({ password: new_password });
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};

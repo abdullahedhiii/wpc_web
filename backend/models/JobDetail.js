@@ -14,8 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         title: DataTypes.STRING,
         start: DataTypes.DATEONLY,
         end: DataTypes.DATEONLY,
-        experience: DataTypes.STRING,
-        description: DataTypes.STRING,
+        experience: DataTypes.STRING(500),
+        description: DataTypes.STRING(1000),
       },
       { tableName: "JobDetails", timestamps: false }
     );

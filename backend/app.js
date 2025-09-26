@@ -16,10 +16,23 @@ const multer = require('multer');
 
 const app = express();
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "https://hr-solutions-frontend.vercel.app", 
-  credentials: true,
-}));
+
+const allowedOrigins = [
+  "https://hr-solutions-frontend.vercel.app",
+  "https://ukg-hr.com",
+  "https://www.ukg-hr.com",
+  "http://www.ukg-hr.com",
+  
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
+
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // Add this line

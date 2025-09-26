@@ -1,7 +1,7 @@
 
 import { useState ,useEffect} from "react";
 import { motion } from "framer-motion";
-import { useNavigate ,useLocation} from "react-router-dom";
+import { useNavigate ,useLocation, useParams} from "react-router-dom";
 import { CreditCard, Calendar, Lock, CheckCircle, User, Shield, Clock, CreditCardIcon } from 'lucide-react';
 import { loadStripe } from "@stripe/stripe-js";
 import {
@@ -16,6 +16,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentForm = () => {
   const navigate = useNavigate();
+  const {id} = useParams();
   const location = useLocation();
 
   useEffect(() => {
@@ -41,49 +42,50 @@ const PaymentForm = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+   // 🟡 NEW: Track selected plan
+   const [selectedPlan, setSelectedPlan] = useState("enterprise"); 
+   const handleSubmit = async (e) => {
     e.preventDefault();
-  
     if (!stripe || !elements) return;
-  
+
     setIsProcessing(true);
-  
+
     try {
-      // 1. Create PaymentIntent on backend
+      // 🟡 Pick the correct amount based on plan
+      const amount =
+        selectedPlan === "enterprise"
+          ? import.meta.env.VITE_AMOUNT_ENTERPRISE
+          : import.meta.env.VITE_AMOUNT_LIFETIME;
+
+      // 1. Create PaymentIntent
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/create-payment-intent`,
-        { amount: import.meta.env.VITE_AMOUNT, currency: "gbp" }
+        { admin_id: id,selectedPlan,amount, currency: "gbp" }
       );
-  
+
       const { clientSecret } = res.data;
-  
-      // 2. Confirm the card payment
+
+      // 2. Confirm payment
       const cardElement = elements.getElement(CardElement);
       const { error, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
         {
           payment_method: {
             card: cardElement,
-            billing_details: {
-              name: formData.cardHolder,
-            },
+            billing_details: { name: formData.cardHolder },
           },
         }
       );
-  
+
       if (error) {
-        console.error(error.message);
         alert(error.message);
         setIsProcessing(false);
         return;
       }
-  
+
       if (paymentIntent.status === "succeeded") {
         setPaymentSuccess(true);
-  
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+        setTimeout(() => navigate("/login"), 2000);
       }
     } catch (err) {
       console.error(err);
@@ -123,9 +125,6 @@ const PaymentForm = () => {
           <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
             Complete Your Registration
           </h1>
-          <p className="text-lg text-gray-600">
-            One-time payment of £{import.meta.env.VITE_AMOUNT_SHOW} for lifetime access to HR Solutions
-          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -142,6 +141,33 @@ const PaymentForm = () => {
                 <img src="/images/mastercard.png" alt="Mastercard" className="h-8" />
               </div>
             </div>
+            <div className="space-y-4">
+  <label className="block text-sm font-medium text-gray-700">Select Package</label>
+  <div className="flex space-x-4">
+    <button
+      type="button"
+      onClick={() => setSelectedPlan("enterprise")}
+      className={`px-4 py-2 rounded-xl border ${
+        selectedPlan === "enterprise"
+          ? "bg-yellow-500 text-white border-yellow-600"
+          : "bg-white text-gray-700 border-gray-200"
+      }`}
+    >
+      £50/yearly
+    </button>
+    <button
+      type="button"
+      onClick={() => setSelectedPlan("lifetime")}
+      className={`px-4 py-2 rounded-xl border ${
+        selectedPlan === "lifetime"
+          ? "bg-yellow-500 text-white border-yellow-600"
+          : "bg-white text-gray-700 border-gray-200"
+      }`}
+    >
+      £200/liftime
+    </button>
+  </div>
+</div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
@@ -228,11 +254,9 @@ const PaymentForm = () => {
               <ul className="space-y-3">
                 {[
                   "Unlimited Employee Profiles",
-                  "Advanced Reporting & Analytics",
-                  "Custom Workflow Builder",
-                  "Priority Support 24/7",
-                  "API Access",
-                  "Mobile App Access",
+                  "Simple & Easy Flow",
+                  "Reporting",
+                  
                 ].map((feature, index) => (
                   <li key={index} className="flex items-center space-x-2">
                     <CheckCircle className="w-5 h-5 text-yellow-200" />

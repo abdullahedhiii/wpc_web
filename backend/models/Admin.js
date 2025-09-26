@@ -36,6 +36,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      selectedPlan:{
+        type : DataTypes.STRING,
+        allowNull :true,
+
+      },
+      next_pay_date:{
+        type: DataTypes.DATEONLY,
+        allowNull :true,
+      },
     },
     {
       tableName: 'Admins',

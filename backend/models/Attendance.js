@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       duty_hours: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: true,
       },
       grace_period_exceeded :{

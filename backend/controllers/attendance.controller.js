@@ -4,6 +4,16 @@ const { Attendance, Shift, LatePolicy,Employee,PersonalDetail, ServiceDetail, De
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const moment = require("moment");
 
+function formatDutyHours(dutyHours) {
+  if (!dutyHours && dutyHours !== 0) return "N/A";
+
+  const hours = Math.floor(dutyHours);
+  const minutes = Math.round((dutyHours - hours) * 60);
+
+  return minutes > 0 ? `${hours} hrs ${minutes} mins` : `${hours} hrs`;
+}
+
+
 function parseTimeString(timeString) {
   const parsedTime = moment(timeString, ["h:mm A", "hh:mm A"], true);
   if (!parsedTime.isValid()) {
@@ -12,29 +22,30 @@ function parseTimeString(timeString) {
   }
   return parsedTime.toDate().getTime(); // Returns timestamp
 }
-
 function parseDateString(dateString) {
-  const formats = [
-      "DD-MM-YYYY", "YYYY-MM-DD", "MM-DD-YYYY", 
-      "DD-MM-YYYY HH:mm:ss", "YYYY-MM-DD HH:mm:ss"
-  ];
+  if (!dateString) return "Invalid";
 
-  if (!/^\d{1,2}-\d{1,2}-\d{4}(\s\d{2}:\d{2}:\d{2})?$/.test(dateString)) {
+  // Normalize separators to `-`
+  let cleanedDate = dateString.trim().replace(/[\/.]/g, "-");
+
+  // Let moment try to parse flexibly
+  const parsedDate = moment(cleanedDate, [
+    "YYYY-MM-DD",
+    "DD-MM-YYYY",
+    "MM-DD-YYYY"
+  ], false); // non-strict allows single-digit days/months
+
+  if (!parsedDate.isValid()) {
     console.log("Invalid date format:", dateString);
     return "Invalid";
-}
-
-  const parsedDate = moment(dateString, formats, true);
-  
-  if (!parsedDate.isValid()) return "Invalid"; 
-  
-  const today = moment().startOf("day");
-  if (parsedDate.isAfter(today)) {
-      return "Invalid"; 
   }
 
-  return parsedDate.format("YYYY-MM-DD"); // Convert to PostgreSQL format
+  const today = moment().startOf("day");
+  if (parsedDate.isAfter(today)) return "Invalid";
+
+  return parsedDate.format("YYYY-MM-DD"); // normalized for DB
 }
+
 
 // function parseDateString(dateString) {
 //   if (!dateString) return "Invalid";
@@ -174,7 +185,15 @@ module.exports.submitCSV = async (req, res) => {
                 continue;
               }
 
-              const duty_hours = (clockOutTime - clockInTime) / (1000 * 60 * 60);
+
+              // calculate raw hours
+              let duty_hours = (clockOutTime - clockInTime) / (1000 * 60 * 60);
+              
+              // handle case where checkout is after midnight
+              if (duty_hours < 0) {
+                duty_hours += 24;
+              }
+              
               const service_d = await ServiceDetail.findOne({
                 where: {
                   employee_code: employee_code
@@ -196,7 +215,7 @@ module.exports.submitCSV = async (req, res) => {
                   clock_out,
                   location,
                   status,
-                  duty_hours: Math.round(duty_hours)
+                  duty_hours: duty_hours
               });
 
               recordCount++;
@@ -474,20 +493,25 @@ module.exports.submitCSV = async (req, res) => {
       }, {});
   
       const formattedResponse = records.map((ele, index) => {
-        const employeeName = employeeMap[ele.employee_code] || 'N/A'; 
+        const employeeName = employeeMap[ele.employee_code] || "N/A"; 
+      
+        // Convert duty_hours (float) into hrs + mins
+    
+      
         return {
           "Sl No.": index + 1,
           "Employee Code": ele.employee_code,
           "Employee Name": employeeName,
           "Date": ele.date,
           "Clock In": ele.clock_in,
-       //   "Clock In Location": "will do", 
+          // "Clock In Location": "will do", 
           "Clock Out": ele.clock_out,
-       //   "Clock Out Location": ele.clock_out_location,
+          // "Clock Out Location": ele.clock_out_location,
           "Location": ele.location,
-       "Duty hours": ele.duty_hours,
+          "Duty hours": formatDutyHours(ele.duty_hours),
         };
       });
+      
   
       return res.status(200).json(formattedResponse); 
     } catch (err) {
@@ -496,21 +520,17 @@ module.exports.submitCSV = async (req, res) => {
     }
   };
   
-
   module.exports.getDailyAttendance = async (req, res) => {
     const { data } = req.query;
-    
-    
+  
     try {
       const record = await Attendance.findOne({
         where: {
           employee_code: data.employeeCode,
-          date: data.date, // Ensure data.date is a string in 'YYYY-MM-DD' format
+          date: data.date, // Ensure data.date is 'YYYY-MM-DD'
         },
-        order: [["date", "ASC"]], 
-
+        order: [["date", "ASC"]],
       });
-      
   
       const personal = await PersonalDetail.findOne({
         where: { employee_code: data.employeeCode },
@@ -519,38 +539,66 @@ module.exports.submitCSV = async (req, res) => {
       const service = await ServiceDetail.findOne({
         where: { employee_code: data.employeeCode },
       });
-      let formattedResponse;
-      if(!record) {
-          formattedResponse = []
-      }
-      else{ formattedResponse = [
-        {
-          "Sl No.": 1,
-          Department: service?.department,
-          Designation: service?.designation,
-          "Employee Code": data.employeeCode,
-          "Employee Name": [personal?.fname, personal?.mname, personal?.lname]
-            .filter(Boolean)
-            .join(" "),
-          Date: data.date,
-          "Clock In": record?.clock_in || "N/A",
-       //   "Clock In Location": record?.clock_in_location || "N/A",
-          "Clock Out": record?.clock_out || "N/A",
-       //   "Clock Out Location": record?.clock_out_location || "N/A",
-          "Location": record?.location || "N/A",
-       "Duty Hours": record?.duty_hours || "N/A",
-          // Action: "Edit",
-        },
-      ];}
   
-      
+      let formattedResponse;
+  
+      if (!record) {
+        formattedResponse = [];
+      } else {
+        // Format duty hours (if exists)
+        let formattedDutyHours = "N/A";
+        if (record.duty_hours) {
+
+          formattedDutyHours =formatDutyHours(record.duty_hours)
+        }
+  
+        formattedResponse = [
+          {
+            "Sl No.": 1,
+            Department: service?.department || "N/A",
+            Designation: service?.designation || "N/A",
+            "Employee Code": data.employeeCode,
+            "Employee Name": [personal?.fname, personal?.mname, personal?.lname]
+              .filter(Boolean)
+              .join(" "),
+            Date: data.date,
+            "Clock In": record?.clock_in || "N/A",
+            // "Clock In Location": record?.clock_in_location || "N/A",
+            "Clock Out": record?.clock_out || "N/A",
+            // "Clock Out Location": record?.clock_out_location || "N/A",
+            "Location": record?.location || "N/A",
+            "Duty Hours": formattedDutyHours,
+            // Action: "Edit",
+          },
+        ];
+      }
+  
       return res.status(200).json(formattedResponse);
     } catch (err) {
-      
       return res.status(500).json({ error: "Server error", details: err.message });
     }
   };
   
+  module.exports.deleteAttendance = async (req, res) => {
+    try {
+      const { company_id,   employee_code, date } = req.params;
+  
+      const attendance = await Attendance.findOne({ where: { employee_code, date, organisation_id: company_id } });
+  
+      if (!attendance) {
+        return res.status(404).json({ message: "Attendance record not found" });
+      }
+  
+      await attendance.destroy();
+  
+      return res.status(200).json({ message: "Attendance deleted successfully" });
+    } catch (error) {
+      console.error("Delete attendance error:", error);
+      return res.status(500).json({ message: "Error deleting attendance", error });
+    }
+  };
+  
+
   module.exports.getAttendanceHistory = async (req, res) => {
     const { employeeCode, fromDate, toDate } = req.query.data;
     
@@ -594,7 +642,7 @@ module.exports.submitCSV = async (req, res) => {
           "Clock Out": record?.clock_out || "N/A",
        //   "Clock Out Location": record?.clock_out_location || "N/A",
           "Location": record?.location || "N/A",
-       "Duty Hours": record?.duty_hours || "N/A",
+       "Duty Hours": formatDutyHours(record?.duty_hours) || "N/A",
         }));
       }
   

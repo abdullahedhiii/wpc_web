@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 require('dotenv').config();
 const {Visitor} = require('../config/sequelize');
+const nodemailer = require("nodemailer");
 
 const encryptKey = (organisation_id) => {
   const algorithm = 'aes-256-cbc';
@@ -79,5 +80,56 @@ module.exports.registerVisit = async (req, res) => {
   } catch (err) {
     
     res.status(500).json({ error: "An error occurred while registering the visitor" });
+  }
+};
+
+
+module.exports.SendContactEmail = async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    if (!name || !email || !subject || !message) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // 1. Create transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail", // or 'smtp.mailtrap.io' etc.
+      auth: {
+        user: process.env.COMPANY_EMAIL,
+        pass: process.env.APP_PASS,
+      },
+    });
+
+    // 2. Compose email
+    const mailOptions = {
+      from: `"${name}" <${email}>`, // sender info
+      to: process.env.SUPPORT_EMAIL,        // your receiving email
+      subject: "New HR solutions contact request - URGENT",
+      text: `
+        You have a new contact request:
+        
+        Name: ${name}
+        Email: ${email}
+        Subject: ${subject}
+        Message: ${message}
+      `,
+      html: `
+        <h2>New Contact Request</h2>
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Subject:</b> ${subject}</p>
+        <p><b>Message:</b></p>
+        <p>${message}</p>
+      `,
+    };
+
+    // 3. Send email
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ success: true, message: "Email sent successfully!" });
+  } catch (error) {
+    console.error("Error sending email:", error.message);
+    res.status(500).json({ error: "Failed to send email" });
   }
 };

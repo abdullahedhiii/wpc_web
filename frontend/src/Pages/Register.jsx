@@ -62,7 +62,7 @@ const Register = () => {
     setIsSubmitting(true)
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, formData)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/register`, formData)
       setFormData({
         companyName: "",
         firstName: "",
@@ -74,7 +74,7 @@ const Register = () => {
         privacyPolicyAccepted: false,
         termsAccepted: false,
       })
-      navigate("/payment-page",{state:{from_api:true}})
+      navigate(`/payment-page/${response.data.admin_id}`,{state:{from_api:true}})
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.")
     } finally {

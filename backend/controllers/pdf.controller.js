@@ -809,8 +809,7 @@ module.exports.generateEmployeePDF = async (req, res) => {
 
     // Create directory if it doesn't exist
     const uploadDir = path.join(
-      process.cwd(),
-      "uploads",
+      process.env.DOC_PATH,
       org.id.toString(),
       "EmployeeReports"
     );
@@ -1006,7 +1005,9 @@ module.exports.generateEmployeePDF = async (req, res) => {
     //   .text("Confidential Document", doc.page.width - 130, footerY + 10);
 
     doc.end();
-
+    res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename=employee-${employee_code}.pdf`);
+    res.setHeader("Cache-Control", "no-store"); // prevent caching issues
     res.status(200).json({
       message: "Employee Report generated successfully",
       url: `${process.env.RETURN_URL}/${org.id}/EmployeeReports/${employee_code}.pdf`,
