@@ -87,7 +87,7 @@ export default function ContactUs() {
           </div>
         </section>
 
-        {/* Contact Form Section */}
+        {/* Contact Form Section
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
@@ -188,7 +188,7 @@ export default function ContactUs() {
               </div>
             </form>
           </div>
-        </section>
+        </section> */}
 
         {/* How We Can Help */}
         <section className="mb-20">

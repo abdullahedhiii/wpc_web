@@ -94,7 +94,7 @@ module.exports.Login = async (req, res) => {
     // ---------- PLAN EXPIRY CHECK ----------
     if (isAdmin) {
       // Admin login
-      if(!existingUser.next_pay_date){
+      if(existingUser.selectedPlan !== 'enterprise' && !existingUser.next_pay_date){
         return res
           .status(403)
           .json({ message: "Your have not yet subscribed to our plan. Kindly pay first.",navlink: '/payment-page',admin_id:existingUser.id});
@@ -833,36 +833,22 @@ module.exports.createPaymentIntent = async (req, res) => {
       return res.status(400).json({ error: "Amount and currency are required" });
     }
 
-    // 1. Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
       automatic_payment_methods: { enabled: true },
     });
 
-    // 2. Find admin
-    const admin = await Admin.findOne({
-      where: { id: admin_id },
-    });
-
-    if (!admin) {
-      return res.status(404).json({ error: "Admin not found" });
-    }
-
-    // 3. Update plan
-    if (selectedPlan === "enterprise") {
-      const nextYear = new Date();
-      nextYear.setFullYear(nextYear.getFullYear() + 1); // 1 year ahead
-
-      await admin.update({
-        selectedPlan,
-        next_pay_date: nextYear,
-      });
-    } else {
-      await admin.update({ selectedPlan });
-    }
-
-    // 4. Send client secret to frontend
+      await Admin.update(
+        {
+          selectedPlan,
+          next_pay_date: selectedPlan === "enterprise"
+            ? new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+            : null,
+        },
+        { where: { id: admin_id } }
+      );
+  
     res.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.error("Error creating payment intent:", error.message);
@@ -886,9 +872,13 @@ module.exports.changeAdminPassword = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid current password" });
     }
-
-
-    await admin.update({ password: new_password });
+   const hashed = await bcrypt.hash(admin.password, 10);
+    await Admin.update(
+      {
+        password : hashed
+      },
+      { where: { id: admin.id } }
+    );
 
     return res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {

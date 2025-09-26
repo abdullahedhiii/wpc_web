@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.get('/getKey/:id',gethashykey);
 router.post('/registerVisitor',registerVisit);
-router.get('/contact-email',SendContactEmail);
+router.post('/contact-email',SendContactEmail);
 
 module.exports = router;

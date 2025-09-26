@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 require('dotenv').config();
 const {Visitor} = require('../config/sequelize');
-const nodemailer = require("nodemailer");
 
+const { Resend } = require("resend");
 const encryptKey = (organisation_id) => {
   const algorithm = 'aes-256-cbc';
   const secretKey = process.env.SECRET_KEY;
@@ -92,28 +92,15 @@ module.exports.SendContactEmail = async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // 1. Create transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // or 'smtp.mailtrap.io' etc.
-      auth: {
-        user: process.env.COMPANY_EMAIL,
-        pass: process.env.APP_PASS,
-      },
-    });
+    // Initialize Resend client
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // 2. Compose email
-    const mailOptions = {
-      from: `"${name}" <${email}>`, // sender info
-      to: process.env.SUPPORT_EMAIL,        // your receiving email
-      subject: "New HR solutions contact request - URGENT",
-      text: `
-        You have a new contact request:
-        
-        Name: ${name}
-        Email: ${email}
-        Subject: ${subject}
-        Message: ${message}
-      `,
+    // Send email
+    const data = await resend.emails.send({
+      from: process.env.SUPPORT_EMAIL, // must be verified domain/sender
+      to: process.env.COMPANY_EMAIL, // receiver
+      reply_to: email,
+      subject: `New HR solutions contact request - ${subject}`,
       html: `
         <h2>New Contact Request</h2>
         <p><b>Name:</b> ${name}</p>
@@ -122,10 +109,19 @@ module.exports.SendContactEmail = async (req, res) => {
         <p><b>Message:</b></p>
         <p>${message}</p>
       `,
-    };
+      text: `
+        New Contact Request:
 
-    // 3. Send email
-    await transporter.sendMail(mailOptions);
+        Name: ${name}
+        Email: ${email}
+        Subject: ${subject}
+        Message: ${message}
+      `,
+    });
+
+    if (data.error) {
+      throw new Error(data.error.message);
+    }
 
     res.status(200).json({ success: true, message: "Email sent successfully!" });
   } catch (error) {
