@@ -434,10 +434,26 @@ const LandingPage = () => {
             <div>
               <h4 className="text-lg font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400">
-                <li>About Us</li>
-                <li>Contact</li>
-                <li>Careers</li>
-                <li>Blog</li>
+              <li>
+                 <button onClick={() => setPage("careers")} className="hover:text-yellow-600">
+                  Careers
+                 </button>
+                </li>
+                <li>
+                <button onClick={() => setPage("contact")} className="hover:text-yellow-600">
+                  Contact
+                 </button>
+                </li>
+                <li>
+                <button onClick={() => setPage("about")} className="hover:text-yellow-600">
+                  About Us
+                 </button>
+                </li>
+                <li>
+                <button onClick={() => setPage("blog")} className="hover:text-yellow-600">
+                  Blog
+                 </button>
+                </li>
               </ul>
             </div>
             <div>
