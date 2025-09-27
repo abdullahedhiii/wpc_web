@@ -16,7 +16,7 @@ const Login = () => {
   const { user } = useSelector((state) => state.user);
 
   const [info, setInfo] = useState({ email: "", password: "" });
-  const [updateInfo, setUpdateInfo] = useState({ email: "", current_password: "", new_password: "" });
+  const [updateInfo, setUpdateInfo] = useState({ email: "", new_password: "", confirm_password: "" });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -40,6 +40,10 @@ const Login = () => {
     try {
       if (isForgotPassword) {
         // Update password API
+        if(updateInfo.new_password !== updateInfo.confirm_password){
+          setError('Passwords do not match');
+          return;
+        }
         await axios.post(`${import.meta.env.VITE_API_URL}/api/changePassword`, updateInfo, {
           withCredentials: true,
         });
@@ -159,10 +163,10 @@ const Login = () => {
                     <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
                     <input
                       type="password"
-                      name="current_password"
-                      value={updateInfo.current_password}
+                      name="new_password"
+                      value={updateInfo.new_password}
                       onChange={handleChange}
-                      placeholder="Current Password"
+                      placeholder="New Password"
                       className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 bg-white shadow-sm"
                       required
                     />
@@ -171,10 +175,10 @@ const Login = () => {
                     <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
                     <input
                       type="password"
-                      name="new_password"
-                      value={updateInfo.new_password}
+                      name="confirm_password"
+                      value={updateInfo.confirm_password}
                       onChange={handleChange}
-                      placeholder="New Password"
+                      placeholder="Confirm New Password"
                       className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 bg-white shadow-sm"
                       required
                     />

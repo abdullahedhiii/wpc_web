@@ -858,21 +858,20 @@ module.exports.createPaymentIntent = async (req, res) => {
 
 
 module.exports.changeAdminPassword = async (req, res) => {
-  const { email, current_password, new_password } = req.body;
+  const { email, new_password, confirm_password } = req.body;
 
   try {
-    // Find admin by ID
+    if(new_password !== confirm_password){
+      return res.status(400).json({ message: "Passwords do not match" });
+
+    }
     const admin = await Admin.findOne({ where: { email: email } });
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" });
     }
-
-    // Compare current password
-    const isMatch = bcrypt.compareSync(current_password, admin.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid current password" });
-    }
-   const hashed = await bcrypt.hash(admin.password, 10);
+   
+  
+   const hashed = await bcrypt.hash(new_password, 10);
     await Admin.update(
       {
         password : hashed
