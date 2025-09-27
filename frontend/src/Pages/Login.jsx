@@ -6,7 +6,8 @@ import { login } from "../redux/UserSlice";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useCompanyContext } from "../contexts/CompanyContext";
 import { motion } from "framer-motion";
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, Phone } from 'lucide-react';
+import { toast } from "react-toastify";
 
 const Login = () => {
   const { fetchModules } = useModuleContext();
@@ -16,7 +17,7 @@ const Login = () => {
   const { user } = useSelector((state) => state.user);
 
   const [info, setInfo] = useState({ email: "", password: "" });
-  const [updateInfo, setUpdateInfo] = useState({ email: "", new_password: "", confirm_password: "" });
+  const [updateInfo, setUpdateInfo] = useState({ email: "", new_password: "", confirm_password: "",phone_number:"" });
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -39,6 +40,10 @@ const Login = () => {
 
     try {
       if (isForgotPassword) {
+        if(updateInfo.phone_number.length < 10) {
+          setError("Enter a valid phone number");
+          return
+        }
         // Update password API
         if(updateInfo.new_password !== updateInfo.confirm_password){
           setError('Passwords do not match');
@@ -48,7 +53,7 @@ const Login = () => {
           withCredentials: true,
         });
         setIsForgotPassword(false); 
-        alert("Password updated successfully. Please login again.");
+        toast.success("Password updated successfully. Please login again.");
       } else {
         // Login API
         const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/login`, info, {
@@ -159,6 +164,18 @@ const Login = () => {
                 </div>
               ) : (
                 <>
+                 <div className="relative">
+                    <Phone className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                    <input
+                      type="text"
+                      name="phone_number"
+                      value={updateInfo.phone_number}
+                      onChange={handleChange}
+                      placeholder="Phone Number"
+                      className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 bg-white shadow-sm"
+                      required
+                    />
+                  </div>
                   <div className="relative">
                     <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
                     <input
@@ -183,6 +200,7 @@ const Login = () => {
                       required
                     />
                   </div>
+
                 </>
               )}
 
