@@ -923,10 +923,6 @@ module.exports.validateHash = async (req, res) => {
   }
 };
 
-
-const bcrypt = require("bcrypt");
-const { Admin, UserHash } = require("../models");
-
 module.exports.changeAdminPassword = async (req, res) => {
   const { hash, new_password, confirm_password } = req.body;
 

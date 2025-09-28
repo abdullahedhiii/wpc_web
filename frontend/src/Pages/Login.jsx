@@ -7,7 +7,7 @@ import { login } from "../redux/UserSlice";
 import { useModuleContext } from "../contexts/ModuleContext";
 import { useCompanyContext } from "../contexts/CompanyContext";
 import { motion } from "framer-motion";
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, HomeIcon } from 'lucide-react';
 
 const Login = () => {
   const { fetchModules } = useModuleContext();
@@ -62,6 +62,18 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-50 to-yellow-100 p-4">
+      <div className="absolute top-0 left-0 w-full bg-white shadow-md py-2">
+  <div className="flex justify-center">
+    <button
+      onClick={() => navigate("/")}
+      className="flex items-center gap-2 text-gray-800 text-[14px] font-semibold  hover:text-yellow-600 transition-colors"
+    >
+      <HomeIcon className="w-4 h-4" />
+      {/* Home */}
+    </button>
+  </div>
+</div>
+
       <motion.div className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-yellow-100">
         <div className="flex flex-col md:flex-row">
           {/* Left Panel */}

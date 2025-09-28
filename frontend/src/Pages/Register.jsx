@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import ReCAPTCHA from "react-google-recaptcha"
 import axios from "axios"
 import { motion } from "framer-motion"
-import { Building2, User, Mail, Phone, Lock, CheckCircle2, Shield, Users, BarChart3, Clock, Eye, EyeOff } from 'lucide-react'
+import { Building2, User, Mail, Phone, Lock, CheckCircle2, Shield, Users, BarChart3, Clock, Eye, EyeOff, HomeIcon } from 'lucide-react'
 
 const Register = () => {
   const navigate = useNavigate()
@@ -107,11 +107,22 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-yellow-100 flex items-center justify-center p-4">
+           <div className="absolute top-0 left-0 w-full bg-white shadow-md py-2">
+  <div className="flex justify-center">
+    <button
+      onClick={() => navigate("/")}
+      className="flex items-center gap-2 text-gray-800 text-[14px] font-semibold  hover:text-yellow-600 transition-colors"
+    >
+      <HomeIcon className="w-4 h-4" />
+      {/* Home */}
+    </button>
+  </div>
+</div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-6xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-yellow-100"
+        className="max-w-6xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-yellow-100 mt-10"
       >
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/2 bg-gradient-to-br from-yellow-500 to-yellow-400 p-10 md:p-14 text-white relative overflow-hidden flex flex-col justify-between">
