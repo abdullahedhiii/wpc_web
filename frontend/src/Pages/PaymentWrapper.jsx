@@ -6,7 +6,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 const PaymentWrapper = () => {
   return (
-    <Elements stripe={stripePromise}>
+    <Elements stripe={stripePromise} options={{locale: "en-GB"}}>
       <PaymentPage />
     </Elements>
   );

@@ -57,6 +57,7 @@ const PaymentForm = () => {
           ? import.meta.env.VITE_AMOUNT_ENTERPRISE
           : import.meta.env.VITE_AMOUNT_LIFETIME;
 
+      console.log(amount,' ',selectedPlan);
       // 1. Create PaymentIntent
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/create-payment-intent`,
