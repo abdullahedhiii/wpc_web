@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const ResetPassword = () => {
   const { token } = useParams(); 
   const navigate = useNavigate();
-
+  console.log(token);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,11 +30,9 @@ const ResetPassword = () => {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/validate-hash?hash=${token}`
         );
-        if (res.data.valid) {
-          setIsValid(true);
-        } else {
-          setIsValid(false);
-        }
+        if(res.data.message === "Valid link.")
+        setIsValid(true);
+      else setIsValid(false)
       } catch (err) {
         setIsValid(false);
       }

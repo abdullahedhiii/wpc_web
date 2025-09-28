@@ -1,4 +1,4 @@
-const {sequelize,User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole, Sponsor} = require('../config/sequelize');
+const {sequelize,UserHash,User,Admin,Module,SubModule,Feature,Dashboard, Organisation, Employee, PersonalDetail, ServiceDetail, ContactInfo, UserRole, Sponsor} = require('../config/sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 require('dotenv').config(); 
@@ -11,7 +11,6 @@ const csv = require('csv-parser');
 const Op = require('sequelize').Op;
 const Stripe = require('stripe');
 const { Resend } = require("resend");
-const UserHash = require('../models/UserHash');
 const crypto = require("crypto");
 
 module.exports.Register = async (req, res) => {
