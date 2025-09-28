@@ -10,6 +10,9 @@ const path = require('path');
 const csv = require('csv-parser');
 const Op = require('sequelize').Op;
 const Stripe = require('stripe');
+const { Resend } = require("resend");
+const UserHash = require('../models/UserHash');
+const crypto = require("crypto");
 
 module.exports.Register = async (req, res) => {
  
@@ -857,29 +860,113 @@ module.exports.createPaymentIntent = async (req, res) => {
 };
 
 
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+module.exports.SendResetLink = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const admin = await Admin.findOne({ where: { email } });
+    if (!admin) {
+      return res.status(400).json({ message: "Your account does not exist." });
+    }
+
+    const rawToken = `${admin.email}${admin.phone_number}${admin.id}${Date.now()}`;
+    const hash = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+    const expiry = new Date(Date.now() + 15 * 60 * 1000);
+
+    await UserHash.create({
+      email: admin.email,
+      hash,
+      expiry,
+    });
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${hash}`;
+
+    await resend.emails.send({
+      from: `HR Solutions <${process.env.SUPPORT_EMAIL}>`,
+      to: admin.email,
+      subject: "Password Reset Request",
+      html: `
+        <p>Hello ${admin.first_name || "User"},</p>
+        <p>You requested a password reset. Please click the link below to reset your password:</p>
+        <p><a href="${resetLink}">${resetLink}</a></p>
+        <p>This link will expire in 15 minutes.</p>
+        <p>If you didn’t request this, please ignore this email.</p>
+      `,
+    });
+
+    return res.status(200).json({ message: "Reset link sent successfully." });
+  } catch (err) {
+    console.error("Error sending reset link:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports.validateHash = async (req, res) => {
+  const { hash } = req.query;
+  try {
+    const record = await UserHash.findOne({ where: { hash } });
+
+    if (!record) {
+      return res.status(400).json({ message: "Invalid or already used link." });
+    }
+
+    if (record.expiry < new Date()) {
+      return res.status(400).json({ message: "Reset link has expired." });
+    }
+
+    return res.status(200).json({ message: "Valid link." });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+const bcrypt = require("bcrypt");
+const { Admin, UserHash } = require("../models");
+
 module.exports.changeAdminPassword = async (req, res) => {
-  const { email,phone_number, new_password, confirm_password } = req.body;
+  const { hash, new_password, confirm_password } = req.body;
 
   try {
-
-    const admin = await Admin.findOne({ where: { email: email,phone_number:phone_number } });
-    if (!admin) {
-      return res.status(404).json({ message: "Your account does not exist." });
+    if (new_password !== confirm_password) {
+      return res.status(400).json({ message: "Passwords do not match." });
     }
-    if(new_password !== confirm_password){
-      return res.status(400).json({ message: "Passwords do not match" });
 
-    }   
-  
-   const hashed = await bcrypt.hash(new_password, 10);
+    const regex = /^(?=.{8,})(?=[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).*$/;
+    if (!regex.test(new_password)) {
+      return res.status(400).json({
+        message:
+          "Password must be at least 8 characters, start with a capital letter, and contain a special character.",
+      });
+    }
+
+    const userHash = await UserHash.findOne({ where: { hash } });
+    if (!userHash) {
+      return res.status(400).json({ message: "Invalid or expired link." });
+    }
+
+    if (new Date() > new Date(userHash.expiry)) {
+      return res.status(400).json({ message: "Reset link has expired." });
+    }
+
+    const admin = await Admin.findOne({ where: { email: userHash.email } });
+    if (!admin) {
+      return res.status(400).json({ message: "Admin not found." });
+    }
+
+    const hashed = await bcrypt.hash(new_password, 10);
+
     await Admin.update(
-      {
-        password : hashed
-      },
+      { password: hashed },
       { where: { id: admin.id } }
     );
 
-    return res.status(200).json({ message: "Password updated successfully" });
+    await UserHash.destroy({ where: { hash: hash, email:admin.email } });
+
+    return res.status(200).json({ message: "Password updated successfully." });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error", error: err.message });

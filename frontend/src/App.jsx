@@ -135,6 +135,8 @@ import PaymentPage from "./Pages/PaymentPage";
 import { FaBars } from "react-icons/fa"; // Import the hamburger menu icon
 import LeaveApplicationList from "./Components/Employee Corner/LeaveApplicationList";
 import PaymentWrapper from "./Pages/PaymentWrapper";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 
 const MainLayout = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebarContext();
@@ -234,7 +236,15 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />,
       },
-      // {
+      {
+        path : "forgot-password",
+        element: <ForgotPassword/>
+      },
+      {
+        path : "reset-password/:token",
+        element: <ResetPassword/>
+      }
+      // {,
       //   path: "employeelink/:id",
       //   element: <EmployeeFormOnline />
       // },

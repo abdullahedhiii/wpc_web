@@ -3,7 +3,9 @@ const { Login, Register, getModules,
     fetchSponsorsFromFile,retrieveCookie, getUserOrganisation, 
     logout, getSponsors, 
     createPaymentIntent,
-    changeAdminPassword} = require('../controllers/user.controller');
+    changeAdminPassword,
+    SendResetLink,
+    validateHash} = require('../controllers/user.controller');
 const router = express.Router();
 const {authenticateUser} = require('../middleware/Authenticate');
 
@@ -18,5 +20,7 @@ router.get('/getSponsors',getSponsors);
 // router.get('/fetchSponsorsFromFile',fetchSponsorsFromFile);
 router.get('/cron/sync-sponsors',fetchSponsorsFromFile);
 router.post('/create-payment-intent',createPaymentIntent);
+router.post('/forgot-password',SendResetLink)
 router.post('/changePassword',changeAdminPassword);
+router.get('/validate-hash',validateHash)
 module.exports = router;
