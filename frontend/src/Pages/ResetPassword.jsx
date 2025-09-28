@@ -51,8 +51,8 @@ const ResetPassword = () => {
     setIsSubmitting(true);
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/reset-password/${token}`,
-        { password }
+        `${import.meta.env.VITE_API_URL}/api/changePassword`,
+        { hash : token, new_password:password, confirm_password:confirmPassword }
       );
 
       toast.success("Password reset successful! Please login.");
