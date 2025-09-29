@@ -85,12 +85,12 @@ module.exports.Login = async (req, res) => {
     }
 
     if (!existingUser) {
-      return res.status(400).json({ error: "Email not found, try again" });
+      return res.status(400).json({ message: "Email not found, try again" });
     }
 
     const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
     if (!isPasswordValid) {
-      return res.status(400).json({ error: "Incorrect password, try again" });
+      return res.status(400).json({ message: "Incorrect password, try again" });
     }
 
     // ---------- PLAN EXPIRY CHECK ----------
@@ -148,7 +148,7 @@ module.exports.Login = async (req, res) => {
       ) {
         return res
           .status(403)
-          .json({ error: "Your company's plan has expired." });
+          .json({ message: "Your company's plan has expired." });
       }
     }
     // ---------------------------------------
