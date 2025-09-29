@@ -74,7 +74,7 @@ const Login = () => {
   </div>
 </div>
 
-      <motion.div className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-yellow-100">
+      <motion.div className="max-w-5xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-yellow-100 mt-10">
         <div className="flex flex-col md:flex-row">
           {/* Left Panel */}
           <div className="md:w-1/2 bg-gradient-to-br from-yellow-500 to-yellow-400 p-10 md:p-14 text-white relative overflow-hidden flex flex-col justify-between">

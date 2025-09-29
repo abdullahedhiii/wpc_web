@@ -5,7 +5,8 @@ const { Login, Register, getModules,
     createPaymentIntent,
     changeAdminPassword,
     SendResetLink,
-    validateHash} = require('../controllers/user.controller');
+    validateHash,
+    sendConfirmationEmail} = require('../controllers/user.controller');
 const router = express.Router();
 const {authenticateUser} = require('../middleware/Authenticate');
 
@@ -23,4 +24,5 @@ router.post('/create-payment-intent',createPaymentIntent);
 router.post('/forgot-password',SendResetLink)
 router.post('/changePassword',changeAdminPassword);
 router.get('/validate-hash',validateHash)
+router.get('/send-confirmation-email/:id',sendConfirmationEmail)
 module.exports = router;

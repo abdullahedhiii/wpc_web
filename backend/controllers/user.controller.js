@@ -826,7 +826,9 @@ module.exports.fetchSponsorsFromFile = async (req, res) => {
   }
 };
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 module.exports.createPaymentIntent = async (req, res) => {
   try {
     const { admin_id, selectedPlan, amount, currency } = req.body;
@@ -858,8 +860,61 @@ module.exports.createPaymentIntent = async (req, res) => {
   }
 };
 
+module.exports.sendConfirmationEmail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const admin = await Admin.findOne({
+      where: { id }
+    });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+    if (!admin) {
+      return res.status(400).json({ message: "Admin not found" });
+    }
+
+    // Payment amount based on plan
+    const planAmount = admin.selectedPlan === "enterprise" ? "£50" : "£200";
+    const expiryDate = admin.next_pay_date 
+      ? new Date(admin.next_pay_date).toLocaleDateString("en-GB") 
+      : null;
+
+    await resend.emails.send({
+      from: `HR Solutions <${process.env.SUPPORT_EMAIL}>`,
+      to: admin.email,
+      subject: "Welcome to HR Solutions – Account Confirmation",
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          <h2 style="color: #f59e0b;">Welcome to HR Solutions</h2>
+          <p>Hello <strong>${admin.first_name || "User"}</strong>,</p>
+          
+          <p>We’re excited to let you know that your account has been created successfully. Thank you for choosing our services!</p>
+          
+          <p><strong>Plan Selected:</strong> ${admin.selectedPlan}</p>
+          <p><strong>Payment Made:</strong> ${planAmount}</p>
+          ${
+            expiryDate 
+              ? `<p><strong>Plan Valid Until:</strong> ${expiryDate}</p>` 
+              : ""
+          }
+          
+          <p>You can log in anytime at 
+            <a href="${process.env.FRONTEND_URL}" style="color: #f59e0b; text-decoration: none;">HR Solutions</a>.
+          </p>
+          
+          <p>If you have any questions or need support, feel free to contact us at <a href="mailto:${process.env.SUPPORT_EMAIL}">${process.env.SUPPORT_EMAIL}</a>.</p>
+          
+          <p>Best regards,<br/>The HR Solutions Team</p>
+        </div>
+      `,
+    });
+
+    return res.status(200).json({ message: "Confirmation email sent successfully" });
+
+  } catch (err) {
+    console.error("Error sending confirmation email:", err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 
 module.exports.SendResetLink = async (req, res) => {
   const { email } = req.body;

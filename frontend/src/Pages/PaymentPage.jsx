@@ -86,7 +86,8 @@ const PaymentForm = () => {
 
       if (paymentIntent.status === "succeeded") {
         setPaymentSuccess(true);
-        setTimeout(() => navigate("/login"), 2000);
+        await axios.get(`${import.meta.env.VITE_API_URL}/api/send-confirmation-email/${id}`);
+        setTimeout(() => navigate("/login"), 3000);
       }
     } catch (err) {
       console.error(err);
