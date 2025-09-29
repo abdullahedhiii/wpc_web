@@ -11,6 +11,7 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -57,7 +58,7 @@ const PaymentForm = () => {
           ? import.meta.env.VITE_AMOUNT_ENTERPRISE
           : import.meta.env.VITE_AMOUNT_LIFETIME;
 
-      console.log(amount,' ',selectedPlan);
+      // console.log(amount,' ',selectedPlan);
       // 1. Create PaymentIntent
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/create-payment-intent`,
@@ -87,11 +88,14 @@ const PaymentForm = () => {
       if (paymentIntent.status === "succeeded") {
         setPaymentSuccess(true);
         await axios.get(`${import.meta.env.VITE_API_URL}/api/send-confirmation-email/${id}`);
+
+        toast.success("Your account has been successfully created")
         setTimeout(() => navigate("/login"), 3000);
       }
     } catch (err) {
-      console.error(err);
-      alert("Payment failed. Please try again.");
+      // console.error(err);
+      
+    toast.error("Payment failed. Please try again.");
     } finally {
       setIsProcessing(false);
     }

@@ -55,7 +55,7 @@ const DataTable = ({
 
     }
   catch(err){
-    console.log(err);
+    // console.log(err);
     toast.error('Error in deleting attendance ',err);
   }
   finally{
@@ -66,9 +66,9 @@ const DataTable = ({
   const handleDelete = async(delete_route,id) => {
     try{
       setIsDeleting(true);
-      console.log(id);
+      // console.log(id);
       const route = `${import.meta.env.VITE_API_URL}/api/${delete_route}/${companyData[0].id}`;
-      console.log(route);
+      // console.log(route);
        const response = await axiosInstance.post(route,{},{
         params : {
           job_id : id,

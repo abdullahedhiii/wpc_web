@@ -32,7 +32,7 @@ const Dashboard = () => {
       else if(firstSubModule) navigate(`/hrms/${firstSubModule.main_route}`);
 
     } catch (err) {
-      console.error("Module selection error:", err);
+      // console.error("Module selection error:", err);
     }
   };
   

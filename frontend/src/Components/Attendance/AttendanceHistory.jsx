@@ -57,7 +57,7 @@ const AttendanceHistory = () => {
     };
 
     const handleDeleteAttendance = ({employee_code, date}) => {
-        console.log(employee_code, date);
+        // console.log(employee_code, date);
         setAttendance((prev) =>
           prev.filter(
             (attendance) =>

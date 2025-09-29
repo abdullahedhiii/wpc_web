@@ -36,7 +36,7 @@ const UserForm = () => {
           employee_code : response.data.employee_code,
           employee_name: emp['Employee Name']
         })
-        console.log('user response' ,response.data)
+        // console.log('user response' ,response.data)
      
       }
       catch(err){

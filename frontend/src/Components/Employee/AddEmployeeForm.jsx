@@ -1561,7 +1561,7 @@ const EmployeeForm = () => {
     
       for (const edu of formData.education_details) {
         const educationFormData = new FormData();
-        console.log(formData.education_details)
+        // console.log(formData.education_details)
         for (const key in edu) {
           if (edu[key]) {
             if (key === "transcript_document" || key === "certificate_document") {
@@ -1569,7 +1569,7 @@ const EmployeeForm = () => {
             } else {
               educationFormData.append(key, edu[key]);
             }
-            console.log('Appended ',key, ' to education data')
+            // console.log('Appended ',key, ' to education data')
           }
         }
         

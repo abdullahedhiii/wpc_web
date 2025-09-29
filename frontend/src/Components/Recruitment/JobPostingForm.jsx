@@ -90,7 +90,7 @@ const JobPostingForm = () => {
             const response  = await axiosInstance.get(`/api/getJobDetails/${id}`);
             setFormData(response.data);
             setContent(response.data.jobDescription)
-            console.log(response.data,' in fetch job detail')
+            // console.log(response.data,' in fetch job detail')
             // setSocOptions([{label : response.data.socCode, value : response.data.socCode}]);
             // setTitleOptions([{label : response.data.jobTitle, value : response.data.jobTitle}]);
 

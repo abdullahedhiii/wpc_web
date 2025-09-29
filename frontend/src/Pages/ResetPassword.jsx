@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 const ResetPassword = () => {
   const { token } = useParams(); 
   const navigate = useNavigate();
-  console.log(token);
+  // console.log(token);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
