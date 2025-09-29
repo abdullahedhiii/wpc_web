@@ -453,8 +453,8 @@ return (
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
       <p className="text-sm text-gray-500">
   Showing {filteredData.length === 0 ? 0 : (currentPage - 1) * numentries + 1} 
-  to {Math.min(currentPage * numentries, filteredData.length)} 
-  of {filteredData.length} entries
+  {" "}to {Math.min(currentPage * numentries, filteredData.length)} 
+  {" "}of {filteredData.length} entries
 </p>
 
         <div className="flex gap-2">
