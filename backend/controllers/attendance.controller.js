@@ -3,6 +3,7 @@ const csvParser = require("csv-parser");
 const { Attendance, Shift, LatePolicy,Employee,PersonalDetail, ServiceDetail, Department, Designation, Holiday } = require("../config/sequelize"); // Import models
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const moment = require("moment");
+const XLSX = require("xlsx");
 
 function formatDutyHours(dutyHours) {
   if (!dutyHours && dutyHours !== 0) return "N/A";
@@ -83,44 +84,50 @@ module.exports.submitCSV = async (req, res) => {
 
       let has_error = false;
       const requiredHeaders = [
-          "Employee Code",
+          "Employee ID",
           "Employee Name",
           "Date",
-          "Clock in",
-          "Clock out",
+          "Clock-In",
+          "Clock-Out",
           "Location"
       ];
 
    //   const holidayList = await Holiday.findAll({ where: { organisation_id } });
+     
+
+      const workbook = XLSX.readFile(filePath);
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      
+      const excelData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+
       let headersChecked = false;
-
-      const stream = fs.createReadStream(filePath).pipe(csvParser());
-
-      for await (const row of stream) {
+      for (const row of excelData) {
           if (!headersChecked) {
-              const csvHeaders = Object.keys(row);
-              const missingHeaders = requiredHeaders.filter(header => !csvHeaders.includes(header));
-
-              if (missingHeaders.length > 0) {
-                  console.log("Missing headers:", missingHeaders);
-                  errorDetails.missingHeaders = missingHeaders;
-                  has_error = true;
-                  return res.status(400).json({ 
-                      message: `Invalid CSV format. Missing columns: ${missingHeaders.join(", ")}` 
-                  });
-              }
-              headersChecked = true;
+            const excelHeaders = Object.keys(row);
+            const missingHeaders = requiredHeaders.filter(header => !excelHeaders.includes(header));
+    
+            if (missingHeaders.length > 0) {
+                console.log("Missing headers:", missingHeaders);
+                errorDetails.missingHeaders = missingHeaders;
+                has_error = true;
+                fs.unlinkSync(filePath);
+                return res.status(400).json({
+                    message: `Invalid Excel format. Missing columns: ${missingHeaders.join(", ")}`
+                });
+            }
+            headersChecked = true;
           }
 
           try {
-              const { 
-                  "Employee Code": employee_code, 
-                  "Employee Name": employee_name,
-                  "Date": date, 
-                  "Clock in": clock_in, 
-                  "Clock out": clock_out,
-                  "Location": location
-              } = row;
+            const {
+              "Employee ID": employee_code,
+              "Employee Name": employee_name,
+              "Date": date,
+              "Clock-In": clock_in,
+              "Clock-Out": clock_out,
+              "Location": location
+          } = row;
 
               console.log(row);
 

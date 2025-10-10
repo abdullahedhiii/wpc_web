@@ -17,8 +17,8 @@ const UploadAttendance = () => {
         const selectedFile = event.target.files[0];
         if (selectedFile) {
             const fileType = selectedFile.name.split('.').pop().toLowerCase();
-            if (fileType !== "csv") {
-                alert("Only CSV files are allowed");
+            if (fileType !== "xlsx") {
+                alert("Only Excel files are allowed");
                 setFile(null);
                 event.target.value = "";
                 return;
@@ -65,8 +65,8 @@ const UploadAttendance = () => {
     
     const handleDownloadSample = () => {
         const link = document.createElement("a");
-        link.href = "/sample_documents/sample_attendance.csv";
-        link.download = "sample_attendance.csv";
+        link.href = "/sample_documents/attendance_template.xlsx";
+        link.download = "attendance_template.xlsx";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -108,7 +108,8 @@ const UploadAttendance = () => {
                                 <div className="p-2 bg-yellow-100 rounded-lg">
                                     <Upload className="w-5 h-5 text-yellow-600" />
                                 </div>
-                                <h2 className="text-lg font-semibold text-gray-800">Upload CSV File</h2>
+                                <h2 className="text-lg font-semibold text-gray-800">Upload Employee Attendance</h2>
+                                <h3 className="text-sm text-gray-500">Upload excel file containing attendance records for a employee. Place the records in the first sheet</h3>
                             </div>
                         </div>
                     </div>
@@ -126,14 +127,14 @@ const UploadAttendance = () => {
                                             <p className="mb-2 text-sm text-gray-500">
                                                 <span className="font-semibold">Click to upload</span> or drag and drop
                                             </p>
-                                            <p className="text-xs text-gray-500">CSV files only (Max. 2MB)</p>
+                                            <p className="text-xs text-gray-500">Excel files only (Max. 2MB)</p>
                                         </div>
                                         <input
                                             id="fileInput"
                                             type="file"
                                             className="hidden"
                                             onChange={handleChange}
-                                            accept=".csv"
+                                            accept=".xlsx"
                                         />
                                     </label>
                                 </div>

@@ -91,12 +91,12 @@ const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     "image/jpeg", "image/png", "image/gif",  
     "application/pdf",                    
-    "text/csv"                             
+    "text/xlsx"                             
   ];
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only JPEG, PNG, GIF, PDF, and CSV files are allowed!"), false);
+    cb(new Error("Only JPEG, PNG, GIF, PDF, and Excel files are allowed!"), false);
   }
 };
 
