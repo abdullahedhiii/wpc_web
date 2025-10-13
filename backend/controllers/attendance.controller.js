@@ -23,18 +23,13 @@ function parseTimeString(timeString) {
   }
   return parsedTime.toDate().getTime(); // Returns timestamp
 }
+
 function parseDateString(dateString) {
   if (!dateString) return "Invalid";
 
-  // Normalize separators to `-`
-  let cleanedDate = dateString.trim().replace(/[\/.]/g, "-");
-
-  // Let moment try to parse flexibly
-  const parsedDate = moment(cleanedDate, [
-    "YYYY-MM-DD",
-    "DD-MM-YYYY",
-    "MM-DD-YYYY"
-  ], false); // non-strict allows single-digit days/months
+  // Strictly enforce MM/DD/YYYY or M/D/YYYY
+  const parsedDate = moment(dateString.trim(), ["MM/DD/YYYY", "M/D/YYYY","MM-DD-YYYY", "M-D-YYYY"], true); 
+  // the third parameter 'true' makes parsing strict
 
   if (!parsedDate.isValid()) {
     console.log("Invalid date format:", dateString);
@@ -42,10 +37,54 @@ function parseDateString(dateString) {
   }
 
   const today = moment().startOf("day");
-  if (parsedDate.isAfter(today)) return "Invalid";
+  if (parsedDate.isAfter(today)) {
+    console.log("Future date not allowed:", dateString);
+    return "Invalid";
+  }
 
-  return parsedDate.format("YYYY-MM-DD"); // normalized for DB
+  return parsedDate.format("YYYY-MM-DD");
 }
+
+
+// function parseDateString(dateValue) {
+//   if (!dateValue && dateValue !== 0) return "Invalid";
+
+//   // 🟡 Handle Excel serial numbers (numeric dates)
+//   if (typeof dateValue === "number") {
+//     const excelEpoch = new Date(Date.UTC(1899, 11, 30)); // Excel base date
+//     const parsedDate = new Date(excelEpoch.getTime() + dateValue * 86400 * 1000);
+//     const today = new Date();
+//     if (parsedDate > today) return "Invalid";
+//     return moment(parsedDate).format("YYYY-MM-DD");
+//   }
+
+//   // 🟢 Handle normal string formats
+//   const cleanedDate = dateValue.trim().replace(/[\/.]/g, "-");
+//   const parsedDate = moment(dateValue, [
+//     "YYYY-MM-DD",
+//     "DD-MM-YYYY",
+//     "MM-DD-YYYY",
+//     "D/M/YY",
+//     "M/D/YY",
+//     "DD/MM/YY",
+//     "MM/DD/YY",
+//     "D/M/YYYY",
+//     "M/D/YYYY",
+//     "DD/MM/YYYY",
+//     "MM/DD/YYYY"
+//   ], false); // non-strict
+  
+//   if (!parsedDate.isValid()) {
+//     console.log("Invalid date format:", dateValue);
+//     return "Invalid";
+//   }
+
+//   const today = moment().startOf("day");
+//   if (parsedDate.isAfter(today)) return "Invalid";
+
+//   return parsedDate.format("YYYY-MM-DD");
+// }
+
 
 
 // function parseDateString(dateString) {
@@ -99,8 +138,11 @@ module.exports.submitCSV = async (req, res) => {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       
-      const excelData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
+      const excelData = XLSX.utils.sheet_to_json(worksheet, {
+        defval: "",
+        raw: false, // ⬅️ converts Excel date/time numbers into strings automatically
+      });
+      
       let headersChecked = false;
       for (const row of excelData) {
           if (!headersChecked) {
@@ -138,6 +180,15 @@ module.exports.submitCSV = async (req, res) => {
                   continue;
               }
 
+              const employee_check = await Employee.findOne({ where: { employee_code, organisation_id } });
+
+              if (!employee_check) {
+                  has_error = true;
+                  errorDetails.employeeNotFound++;
+                  console.log("Employee not found:", employee_check);
+                  continue;
+              }
+
               const parsedDate = parseDateString(date);
               if (parsedDate === 'Invalid') {
                   has_error = true;
@@ -159,15 +210,6 @@ module.exports.submitCSV = async (req, res) => {
               //     errorDetails.holidays++;
               //     continue;
               // }
-
-              const employee_check = await Employee.findOne({ where: { employee_code, organisation_id } });
-
-              if (!employee_check) {
-                  has_error = true;
-                  errorDetails.employeeNotFound++;
-                  console.log("Employee not found:", employee_check);
-                  continue;
-              }
 
               const clockInTime = parseTimeString(clock_in);
               const clockOutTime = parseTimeString(clock_out);

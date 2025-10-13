@@ -109,8 +109,10 @@ const UploadAttendance = () => {
                                     <Upload className="w-5 h-5 text-yellow-600" />
                                 </div>
                                 <h2 className="text-lg font-semibold text-gray-800">Upload Employee Attendance</h2>
-                                <h3 className="text-sm text-gray-500">Upload excel file containing attendance records for a employee. Place the records in the first sheet</h3>
+                                
                             </div>
+                            <h3 className="text-sm text-gray-500">Upload excel file containing attendance records for a employee. Place the records in the first sheet</h3>
+
                         </div>
                     </div>
 
