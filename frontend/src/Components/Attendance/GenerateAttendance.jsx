@@ -11,6 +11,7 @@ const GenerateAttendance = () => {
   const [attendance, setAttendance] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   useEffect(() => {
+    fetchEmployeesLink();
     fetchDepartments();
   }, []);
 

@@ -27,9 +27,7 @@ function parseTimeString(timeString) {
 function parseDateString(dateString) {
   if (!dateString) return "Invalid";
 
-  // Strictly enforce MM/DD/YYYY or M/D/YYYY
-  const parsedDate = moment(dateString.trim(), ["MM/DD/YYYY", "M/D/YYYY","MM-DD-YYYY", "M-D-YYYY"], true); 
-  // the third parameter 'true' makes parsing strict
+  const parsedDate = moment(dateString.trim(), ["MM/DD/YYYY", "MM-DD-YYYY"], false); 
 
   if (!parsedDate.isValid()) {
     console.log("Invalid date format:", dateString);
