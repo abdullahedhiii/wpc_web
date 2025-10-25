@@ -136,11 +136,16 @@ module.exports.submitCSV = async (req, res) => {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      range.e.c = 5; // limit to column F (0-indexed)
+      worksheet['!ref'] = XLSX.utils.encode_range(range);
+
       const excelData = XLSX.utils.sheet_to_json(worksheet, {
         defval: "",
-        raw: false, // ⬅️ converts Excel date/time numbers into strings automatically
+        raw: false,
       });
-      
+
+
       let headersChecked = false;
       for (const row of excelData) {
           if (!headersChecked) {
@@ -170,8 +175,12 @@ module.exports.submitCSV = async (req, res) => {
           } = row;
 
               console.log(row);
+              if (!employee_code && !date  &&  !clock_in  &&  !clock_out  &&  !location  &&  !employee_name ) {
+                  console.log('Skipping row')
+                  continue;
+              }  
 
-              if (!employee_code || !date || !clock_in || !clock_out) {
+              if (!employee_code || !date || !clock_in || !clock_out  ) {
                   console.log("Invalid row:", row);
                   has_error = true; 
                   errorDetails.invalidRows++;

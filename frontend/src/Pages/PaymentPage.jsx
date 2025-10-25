@@ -95,7 +95,7 @@ const PaymentForm = () => {
     } catch (err) {
       // console.error(err);
       
-    toast.error("Payment failed. Please try again.");
+     toast.error("Payment failed. Please try again.");
     } finally {
       setIsProcessing(false);
     }

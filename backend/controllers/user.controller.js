@@ -90,7 +90,7 @@ module.exports.Login = async (req, res) => {
 
     const isPasswordValid = bcrypt.compareSync(password, existingUser.password);
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Incorrect password, try again" });
+      return res.status(400).json({ message: "Incorrect email or password, try again" });
     }
 
     // ---------- PLAN EXPIRY CHECK ----------
@@ -866,7 +866,7 @@ module.exports.sendConfirmationEmail = async (req, res) => {
     const admin = await Admin.findOne({
       where: { id }
     });
-
+dd
     if (!admin) {
       return res.status(400).json({ message: "Admin not found" });
     }
