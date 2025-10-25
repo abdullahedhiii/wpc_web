@@ -1646,7 +1646,7 @@ const EmployeeFormOnline = () => {
                                   <input
                                     type="text"
                                     className="w-full p-1 border rounded"
-                                    value={education.sl_no}
+                                    value={education.sl_no ? education.sl_no : index}
                                     onChange={(e) =>
                                       handleEducationChange(e, index)
                                     }
