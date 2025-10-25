@@ -101,7 +101,7 @@ const CompanyForm = () => {
           label: "Trading Period",
           value: "Company_Period",
           type: "select",
-          options: ["Over 12 to 18 months"],
+          options: ["Less than a year", "Two or more years"],
           required: true,
         },
         {
