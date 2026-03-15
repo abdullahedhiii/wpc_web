@@ -34,6 +34,10 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
+       setInfo((prev) => ({
+      ...prev,
+       email: info.email.toLowerCase()
+}));
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/login`,
         info,
