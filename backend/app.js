@@ -11,6 +11,7 @@ const JobRoutes = require('./routes/job.routes');
 const AttendanceRoutes = require('./routes/attendance.routes');
 const PdfRoutes = require('./routes/pdf.routes');
 const employeeRoutes = require('./routes/employee-routes');
+const migrationRoutes = require('./routes/migration.routes');
 const multer = require('multer');
 // require('./jobs/sponsor-fetch');
 
@@ -51,6 +52,7 @@ app.use('/api',JobRoutes);
 app.use('/api',AttendanceRoutes);
 app.use('/api',PdfRoutes);
 app.use('/api',employeeRoutes);
+app.use('/api',migrationRoutes);
 
 // app.use('/uploads', express.static('uploads'));
 app.use("/uploads", express.static(`${process.env.DOC_PATH}`));
