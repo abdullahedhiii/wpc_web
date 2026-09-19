@@ -217,6 +217,17 @@ const Login = () => {
                 Sign up
               </button>
             </div>
+
+            {/* Transfer to MadyHR.ai (static page in /public) */}
+            <div className="mt-3 text-center text-sm text-gray-500">
+              Moving to MadyHR.ai?{" "}
+              <a
+                href="/activate.html"
+                className="font-medium text-yellow-600 hover:text-yellow-700 hover:underline"
+              >
+                Request your transfer
+              </a>
+            </div>
           </div>
         </div>
       </motion.div>

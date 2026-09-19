@@ -1,43 +1,50 @@
 /*
- * ukg-hr.com — route Sign up and Sign in to the MadyHR.ai pages.
+ * ukg-hr.com — send new sign-ups to the MadyHR.ai page.
  *
- *   Sign up  ->  /transition.html   (what MadyHR.ai is, features, pricing)
- *   Sign in  ->  /activate.html     (transfer request form)
+ *   Homepage "Get Started" / "Sign up"  ->  /transition.html
+ *   Login page "Sign up" link           ->  /transition.html
  *
- * Both open in a new tab. If you'd rather they replace the current page,
- * set NEW_TAB to false below.
+ * Existing customers must still be able to sign in and use the old
+ * platform, so this script:
+ *   - only runs on the homepage and the login page (never inside /hrms/…),
+ *   - never touches sign-in, submit buttons or anything inside a form,
+ *   - ignores links to other sites (YouTube, etc.).
+ *
+ * The transfer request form (/activate.html) is linked from the login page
+ * and from /transition.html instead of hijacking Sign in.
+ *
+ * Opens in a new tab. Set NEW_TAB to false to replace the current page.
  */
 (function () {
   'use strict';
 
   var SIGNUP_PAGE = '/transition.html';
-  var SIGNIN_PAGE = '/activate.html';
   var NEW_TAB = true;
 
-  // Don't intercept these — your own admin route, password resets, API calls.
-  var SKIP = /(forgot|reset|admin|\/api\/)/i;
+  // Checked on every click, not at load: the site is a single-page app, so
+  // the path changes without this script reloading.
+  var ACTIVE_ON = /^\/(index\.html|login\/?)?$/i;
 
-  var SIGNIN_TEXT = /\b(sign\s*in|signin|log\s*in|login|member (area|login)|customer login|my account)\b/i;
-  var SIGNIN_HREF = /(signin|sign-in|login|log-in|\/auth|dashboard|portal)/i;
-
-  var SIGNUP_TEXT = /\b(sign\s*up|signup|register|create (an )?account|get started|start free|free trial|subscribe|request a demo|book a demo)\b/i;
-  var SIGNUP_HREF = /(signup|sign-up|register|registration|create-account|trial|demo)/i;
+  var SIGNUP_TEXT = /\b(get started|sign\s*up|signup|register|create (an )?account|start free|free trial)\b/i;
+  var SIGNUP_HREF = /^\/(register|signup|sign-up)\b/i;
 
   function target(el) {
-    var label = (el.textContent || '') + ' ' + (el.getAttribute('aria-label') || '') + ' ' + (el.value || '');
+    // Sign In / Login buttons are submit buttons inside the login form: never touch.
+    if (el.closest('form')) return null;
+    if (el.matches('input[type="submit"], button[type="submit"]')) return null;
+
     var href = el.getAttribute('href') || '';
+    if (/^[a-z][a-z0-9+.-]*:|^\/\//i.test(href)) return null;   // other sites, mailto:, tel:
 
-    if (SKIP.test(label) || SKIP.test(href)) return null;
-
-    // Sign up is checked first: "Sign up" and "Sign in" are one character apart,
-    // and a button labelled "Sign up free" should never land on the form.
+    var label = (el.textContent || '') + ' ' + (el.getAttribute('aria-label') || '');
     if (SIGNUP_TEXT.test(label) || SIGNUP_HREF.test(href)) return SIGNUP_PAGE;
-    if (SIGNIN_TEXT.test(label) || SIGNIN_HREF.test(href)) return SIGNIN_PAGE;
     return null;
   }
 
   document.addEventListener('click', function (e) {
-    var el = e.target.closest('a, button, input[type="submit"], [role="button"]');
+    if (!ACTIVE_ON.test(window.location.pathname)) return;
+
+    var el = e.target.closest('a, button, [role="button"]');
     if (!el) return;
 
     var page = target(el);
@@ -48,7 +55,10 @@
 
     if (!NEW_TAB) { window.location.href = page; return; }
 
-    var win = window.open(page, '_blank', 'noopener');
-    if (!win) window.location.href = page;   // pop-up blocked — go there in place
+    // No 'noopener' flag here: with it, window.open always returns null, which
+    // made the old version also navigate the current tab away.
+    var win = window.open(page, '_blank');
+    if (win) win.opener = null;
+    else window.location.href = page;        // pop-up blocked — go there in place
   }, true);
 })();
